@@ -160,6 +160,7 @@
     <ClCompile Include="src\base\Time.cpp" />
     <ClCompile Include="src\base\Window.cpp" />
     <ClCompile Include="src\math\Vector2f.cpp" />
+    <ClCompile Include="src\math\Vector3f.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\base\Game.h" />
@@ -168,6 +169,7 @@
     <ClInclude Include="include\base\Time.h" />
     <ClInclude Include="include\base\Window.h" />
     <ClInclude Include="include\math\Vector2f.h" />
+    <ClInclude Include="include\math\Vector3f.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

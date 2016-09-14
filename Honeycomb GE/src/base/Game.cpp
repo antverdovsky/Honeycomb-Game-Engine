@@ -5,6 +5,7 @@
 #include "..\..\include\base\Game.h"
 #include "..\..\include\base\Input.h"
 #include "..\..\include\math\Vector2f.h";
+#include "..\..\include\math\Vector3f.h"
 
 Game::Game() {
 
