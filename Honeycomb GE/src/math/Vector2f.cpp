@@ -15,6 +15,13 @@ Vector2f Vector2f::add(Vector2f v2) {
 	return Vector2f(this->x + v2.x, this->y + v2.y);
 }
 
+Vector2f Vector2f::addTo(Vector2f v2) {
+	Vector2f resultant = this->add(v2);
+
+	this->set(resultant.x, resultant.y);
+	return *this;
+}
+
 float Vector2f::angle(Vector2f v2) {
 	// Calculate cos(theta) = (v1 * v2) / (|v1||v2|)
 	float dot = this->dot(v2);
@@ -45,6 +52,13 @@ float Vector2f::magnitude() {
 	return sqrt(x * x + y * y);
 }
 
+Vector2f Vector2f::normalize() {
+	Vector2f normalized = this->normalized();
+
+	this->set(normalized.x, normalized.y);
+	return *this;
+}
+
 Vector2f Vector2f::normalized() {
 	float mag = this->magnitude();
 
@@ -57,8 +71,22 @@ Vector2f Vector2f::rotate(float rad) {
 	return Vector2f(0, 0);
 }
 
+Vector2f Vector2f::rotateTo(float rad) {
+	Vector2f rotated = this->rotate(rad);
+
+	this->set(rotated.x, rotated.y);
+	return *this;
+}
+
 Vector2f Vector2f::scale(float scale) {
 	return Vector2f(this->x * scale, this->y * scale);
+}
+
+Vector2f Vector2f::scaleTo(float scale) {
+	Vector2f scaled = this->scale(scale);
+
+	this->set(scaled.x, scaled.y);
+	return *this;
 }
 
 void Vector2f::set(float x, float y) {
@@ -74,18 +102,38 @@ void Vector2f::setY(float y) {
 	this->y = y;
 }
 
-Vector2f Vector2f::operator+(const Vector2f &v2) {
-	return this->add(v2);
-}
-
-Vector2f Vector2f::operator*(const float &scale) {
+Vector2f Vector2f::operator*(float scale) {
 	return this->scale(scale);
 }
 
-Vector2f Vector2f::operator-() const {
+Vector2f Vector2f::operator*=(float scale) {
+	return this->scaleTo(scale);
+}
+
+Vector2f Vector2f::operator/(float scale) {
+	return this->scale(1.0F / scale);
+}
+
+Vector2f Vector2f::operator/=(float scale) {
+	return this->scale(1.0F / scale);
+}
+
+Vector2f Vector2f::operator+(Vector2f v2) {
+	return this->add(v2);
+}
+
+Vector2f Vector2f::operator+=(Vector2f v2) {
+	return this->addTo(v2);
+}
+
+Vector2f Vector2f::operator-() {
 	return Vector2f(-this->x, -this->y);
 }
 
-Vector2f Vector2f::operator-(const Vector2f &v2) {
+Vector2f Vector2f::operator-(Vector2f v2) {
 	return this->add(-v2);
+}
+
+Vector2f Vector2f::operator-=(Vector2f v2) {
+	return this->addTo(-v2);
 }

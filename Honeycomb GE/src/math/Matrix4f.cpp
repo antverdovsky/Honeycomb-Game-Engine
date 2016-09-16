@@ -1,0 +1,107 @@
+#include <iostream>
+
+#include "..\..\include\math\Matrix4f.h"
+
+const float Matrix4f::IDENTITY[4][4] = {
+	{ 1, 0, 0, 0 },
+	{ 0, 1, 0, 0 },
+	{ 0, 0, 1, 0 },
+	{ 0, 0, 0, 1 }
+};
+
+Matrix4f Matrix4f::add(Matrix4f m2) {
+	Matrix4f sum;
+
+	for (int r = 0; r < 4; r++) {
+		for (int c = 0; c < 4; c++) {
+			sum.matrix[r][c] = this->matrix[r][c] + m2.matrix[r][c];
+		}
+	}
+
+	return sum;
+}
+
+Matrix4f Matrix4f::identity() {
+	Matrix4f identityMatrix;
+	identityMatrix.setMatrix(IDENTITY);
+
+	return identityMatrix;
+}
+
+float Matrix4f::getAt(int r, int c) {
+	return this->matrix[r][c];
+}
+
+Matrix4f Matrix4f::multiply(Matrix4f m2) {
+	Matrix4f product;
+
+	for (int r = 0; r < 4; r++) { // Go through all points on the matrix
+		for (int c = 0; c < 4; c++) {
+			// The new value in the matrix will be equal to the dot product of
+			// the row and column vectors.
+			float dot = 0;
+			for (int j = 0; j < 4; j++)
+				dot += this->matrix[r][j] * m2.matrix[j][c];
+
+			product.matrix[r][c] = dot;
+		}
+	}
+
+	return product;
+}
+
+Matrix4f Matrix4f::scale(float scale) {
+	Matrix4f scaled;
+
+	for (int r = 0; r < 4; r++) {
+		for (int c = 0; c < 4; c++) {
+			scaled.matrix[r][c] = this->matrix[r][c] * scale;
+		}
+	}
+
+	return scaled;
+}
+
+void Matrix4f::setAt(int r, int c, float val) {
+	this->matrix[r][c] = val;
+}
+
+Matrix4f Matrix4f::operator+(Matrix4f m2) {
+	return this->add(m2);
+}
+
+Matrix4f Matrix4f::operator*(Matrix4f m2) {
+	return this->multiply(m2);
+}
+
+Matrix4f Matrix4f::operator*(float scale) {
+	return this->scale(scale);
+}
+
+Matrix4f Matrix4f::operator-() {
+	return this->scale(-1.0F);
+}
+
+Matrix4f Matrix4f::operator-(Matrix4f m2) {
+	return this->add(-m2);
+}
+
+void Matrix4f::setMatrix(float f[4][4]) {
+	// Copy the specified matrix array values into this matrix array, column 
+	// by column.
+	for (int r = 0; r < 4; r++) {
+		for (int c = 0; c < 4; c++) {
+			this->matrix[r][c] = f[r][c];
+		}
+	}
+}
+
+void Matrix4f::setMatrix(const float f[4][4]) {
+	// Copy the specified matrix array values into this matrix array, column 
+	// by column.
+	for (int r = 0; r < 4; r++) {
+		for (int c = 0; c < 4; c++) {
+			this->matrix[r][c] = f[r][c];
+		}
+	}
+}

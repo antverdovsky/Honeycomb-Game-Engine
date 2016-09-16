@@ -5,12 +5,12 @@
 #include "..\..\include\base\Input.h";
 #include "..\..\include\math\Vector2f.h";
 
-bool keysDown[MAX_NUM_KEYS];
-bool keysReleased[MAX_NUM_KEYS];
+bool Input::keysDown[MAX_NUM_KEYS];
+bool Input::keysReleased[MAX_NUM_KEYS];
 
-Vector2f mousePos(0, 0);
-bool buttonsDown[MAX_NUM_BUTTONS];
-bool buttonsReleased[MAX_NUM_BUTTONS];
+Vector2f Input::mousePos(0, 0);
+bool Input::buttonsDown[MAX_NUM_BUTTONS];
+bool Input::buttonsReleased[MAX_NUM_BUTTONS];
 
 void Input::cursorPositionCallback(GLFWWindow *window, double x, double y) {
 #if _DEBUG // If debug -> Print out the new x and y positions.

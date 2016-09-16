@@ -7,25 +7,25 @@
 class GLFWWindow;
 class Vector2f;
 
-// The maximum key codes and mouse codes supported by this game engine.
-const int MAX_NUM_KEYS = 512;
-const int MAX_NUM_BUTTONS = 5;
-
-// These logical arrays store a boolean representing whether a specified
-// key is up or down. A key which is considered to be down is any key which
-// is currently being pressed down. A key which is considered to be up is
-// any key which was just released. A pressed key is a key which is being
-// held down continously.
-extern bool keysDown[MAX_NUM_KEYS];
-extern bool keysReleased[MAX_NUM_KEYS];
-
-// Arrays which store the mouse position and whether each mouse button is
-// down or up. The down/up conditions are the same as for the keys.
-extern Vector2f mousePos;
-extern bool buttonsDown[MAX_NUM_BUTTONS];
-extern bool buttonsReleased[MAX_NUM_BUTTONS];
-
 namespace Input {
+	// The maximum key codes and mouse codes supported by this game engine.
+	const int MAX_NUM_KEYS = 512;
+	const int MAX_NUM_BUTTONS = 5;
+
+	// These logical arrays store a boolean representing whether a specified
+	// key is up or down. A key which is considered to be down is any key which
+	// is currently being pressed down. A key which is considered to be up is
+	// any key which was just released. A pressed key is a key which is being
+	// held down continously.
+	extern bool keysDown[MAX_NUM_KEYS];
+	extern bool keysReleased[MAX_NUM_KEYS];
+
+	// Arrays which store the mouse position and whether each mouse button is
+	// down or up. The down/up conditions are the same as for the keys.
+	extern Vector2f mousePos;
+	extern bool buttonsDown[MAX_NUM_BUTTONS];
+	extern bool buttonsReleased[MAX_NUM_BUTTONS];
+
 	/// Clears the memory of the input arrays. This must be done one per frame,
 	/// otherwise the Input will consider the keys to remain down/up.
 	void clear();
