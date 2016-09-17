@@ -126,7 +126,7 @@ public:
 	void setY(float y);
 
 	/// Sets the z-component of the vector.
-	/// float y : The new x-component.
+	/// float y : The new z-component.
 	void setZ(float z);
 
 	/// Overloads the mulitplication operator to return a vector instance

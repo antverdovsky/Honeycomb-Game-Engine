@@ -160,6 +160,7 @@
     <ClCompile Include="src\base\Time.cpp" />
     <ClCompile Include="src\base\Window.cpp" />
     <ClCompile Include="src\math\Matrix4f.cpp" />
+    <ClCompile Include="src\math\Quaternion.cpp" />
     <ClCompile Include="src\math\Vector2f.cpp" />
     <ClCompile Include="src\math\Vector3f.cpp" />
   </ItemGroup>
@@ -170,6 +171,7 @@
     <ClInclude Include="include\base\Time.h" />
     <ClInclude Include="include\base\Window.h" />
     <ClInclude Include="include\math\Matrix4f.h" />
+    <ClInclude Include="include\math\Quaternion.h" />
     <ClInclude Include="include\math\Vector2f.h" />
     <ClInclude Include="include\math\Vector3f.h" />
   </ItemGroup>

@@ -72,7 +72,7 @@ float Vector3f::magnitude() {
 }
 
 Vector3f Vector3f::normalize() {
-	Vector3f normalized = this->normalized;
+	Vector3f normalized = this->normalized();
 
 	this->set(normalized.x, normalized.y, normalized.z);
 	return *this;

@@ -21,6 +21,13 @@ Matrix4f Matrix4f::add(Matrix4f m2) {
 	return sum;
 }
 
+Matrix4f Matrix4f::addTo(Matrix4f m2) {
+	Matrix4f sum;
+
+	sum.setMatrix(sum.matrix);
+	return *this;
+}
+
 Matrix4f Matrix4f::identity() {
 	Matrix4f identityMatrix;
 	identityMatrix.setMatrix(IDENTITY);
@@ -50,6 +57,13 @@ Matrix4f Matrix4f::multiply(Matrix4f m2) {
 	return product;
 }
 
+Matrix4f Matrix4f::multiplyTo(Matrix4f m2) {
+	Matrix4f product;
+
+	this->setMatrix(product.matrix);
+	return *this;
+}
+
 Matrix4f Matrix4f::scale(float scale) {
 	Matrix4f scaled;
 
@@ -62,20 +76,47 @@ Matrix4f Matrix4f::scale(float scale) {
 	return scaled;
 }
 
+Matrix4f Matrix4f::scaleTo(float scale) {
+	Matrix4f scaled = this->scale(scale);
+
+	this->setMatrix(scaled.matrix);
+	return *this;
+}
+
 void Matrix4f::setAt(int r, int c, float val) {
 	this->matrix[r][c] = val;
 }
 
-Matrix4f Matrix4f::operator+(Matrix4f m2) {
-	return this->add(m2);
+Matrix4f Matrix4f::operator*(float scale) {
+	return this->scale(scale);
+}
+
+Matrix4f Matrix4f::operator*=(float scale) {
+	return this->scaleTo(scale);
 }
 
 Matrix4f Matrix4f::operator*(Matrix4f m2) {
 	return this->multiply(m2);
 }
 
-Matrix4f Matrix4f::operator*(float scale) {
-	return this->scale(scale);
+Matrix4f Matrix4f::operator*=(Matrix4f m2) {
+	return this->multiplyTo(m2);
+}
+
+Matrix4f Matrix4f::operator/(float scale) {
+	return this->scale(1.0F / scale);
+}
+
+Matrix4f Matrix4f::operator/=(float scale) {
+	return this->scaleTo(1.0F / scale);
+}
+
+Matrix4f Matrix4f::operator+(Matrix4f m2) {
+	return this->add(m2);
+}
+
+Matrix4f Matrix4f::operator+=(Matrix4f m2) {
+	return this->addTo(m2);
 }
 
 Matrix4f Matrix4f::operator-() {
@@ -84,6 +125,10 @@ Matrix4f Matrix4f::operator-() {
 
 Matrix4f Matrix4f::operator-(Matrix4f m2) {
 	return this->add(-m2);
+}
+
+Matrix4f Matrix4f::operator-=(Matrix4f m2) {
+	return this->addTo(-m2);
 }
 
 void Matrix4f::setMatrix(float f[4][4]) {
