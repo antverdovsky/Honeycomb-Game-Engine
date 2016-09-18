@@ -11,6 +11,8 @@
 
 
 int main(int argc, char** argv) {
+	std::cout << glfwGetVersionString() << std::endl;
+
 	Main::start(); // Initialize the Game Engine components
 	Main::run(); // Main Game Loop
 	Main::stop(); // Destruct the Game Engine components
@@ -28,17 +30,30 @@ void Main::initializeGLEW(Window *window) {
 void Main::initializeGLFW() {
 	glfwInit(); // Initialize GLFW
 
-	//glfwWindowHint(GLFW_DEPTH_BITS, 24); // Use 24 bits for 3D depths
-	//glfwWindowHint(GLFW_RED_BITS, 8); // Use 8 bits for RGBA values
-	//glfwWindowHint(GLFW_BLUE_BITS, 8);
-	//glfwWindowHint(GLFW_GREEN_BITS, 8);
-	//glfwWindowHint(GLFW_ALPHA_BITS, 8);
+	glfwWindowHint(GLFW_DEPTH_BITS, 24); // Use 24 bits for 3D depths
+	glfwWindowHint(GLFW_RED_BITS, 8); // Use 8 bits for RGBA values
+	glfwWindowHint(GLFW_BLUE_BITS, 8);
+	glfwWindowHint(GLFW_GREEN_BITS, 8);
+	glfwWindowHint(GLFW_ALPHA_BITS, 8);
 
 	glfwWindowHint(GLFW_SAMPLES, 4); // Enable 4x AA
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE); // Forbid window resizing
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GLFW_VERSION_MAJOR); // OpenGL
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GLFW_VERSION_MINOR); // 3.2
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // New GL
+}
+
+void Main::initializeOpenGL() {
+	glClearColor(1.0F, 0.0F, 0.0F, 0.0F); // Set clear color to zero
+
+	if (!drawBackFaces) { // Should back faces be drawn?
+		glFrontFace(GL_CW); // Every face drawn in clockwise is the front
+		glCullFace(GL_BACK); // Set the back face as the face to not be drawn
+		glEnable(GL_CULL_FACE); // Disable rendering unseen back faces
+	}
+	
+	glEnable(GL_DEPTH_TEST); // Enable depth perception for drawing order
+	glEnable(GL_FRAMEBUFFER_SRGB); // Gamma correction
 }
 
 void Main::render() {
@@ -82,7 +97,7 @@ void Main::run() {
 
 			if (timeSpentRenderingFrames > Time::SECOND) {
 #if _DEBUG // If debug mode -> Print out how many frames rendered in 1 sec
-				std::cout << "FPS: " << framesRendered << std::endl;
+//				std::cout << "FPS: " << framesRendered << std::endl;
 #endif
 
 				timeSpentRenderingFrames = 0;
@@ -98,11 +113,12 @@ void Main::run() {
 void Main::start() {
 	if (Main::isGameRunning) return; // If already running -> No need to start!
 
-	// Initialize the GLFW, the Window and the GLEW.
+	// Initialize the GLFW, the Window, GLEW and OpenGL.
 	Main::initializeGLFW();
-	Main::game = new Game();
 	Main::window = new Window(SCREEN_SIZE_WIDTH, SCREEN_SIZE_HEIGHT, TITLE);
 	Main::initializeGLEW(Main::window);
+	Main::initializeOpenGL();
+	Main::game = new Game();
 
 	// Initialize Input settings & link to the game window.
 	glfwSetInputMode(Main::window->getWindow(), GLFW_STICKY_KEYS, GL_TRUE);

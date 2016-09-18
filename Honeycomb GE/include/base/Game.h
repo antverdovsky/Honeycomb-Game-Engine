@@ -2,6 +2,8 @@
 #ifndef GAME_H
 #define GAME_H
 
+class Mesh;
+
 class Game {
 public:
 	Game();
@@ -12,6 +14,9 @@ public:
 	void render();
 
 	void update();
+	
+private:
+	Mesh* m;
 };
 
 #endif

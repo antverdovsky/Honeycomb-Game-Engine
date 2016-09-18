@@ -14,7 +14,7 @@ bool Input::buttonsReleased[MAX_NUM_BUTTONS];
 
 void Input::cursorPositionCallback(GLFWWindow *window, double x, double y) {
 #if _DEBUG // If debug -> Print out the new x and y positions.
-	//std::cout << "MOUSE X: " << x << " | MOUSE Y: " << y << std::endl;
+//	std::cout << "MOUSE X: " << x << " | MOUSE Y: " << y << std::endl;
 #endif
 	mousePos.set(x, y);
 }
@@ -61,8 +61,8 @@ void Input::clear() {
 void Input::keyCallback(GLFWWindow * window, int key, int scanCode, int action,
 	int mods) {
 #if _DEBUG // If debug -> Print out the key pressed & the other specified info
-	 std::cout << "KEY PRESSED: " << key << " | SC: " << scanCode <<
-	 	" | ACTION: " << action << " | MODS: " << mods << std::endl;
+//	 std::cout << "KEY PRESSED: " << key << " | SC: " << scanCode <<
+//	 	" | ACTION: " << action << " | MODS: " << mods << std::endl;
 #endif
 
 	if (key < 0 || key > MAX_NUM_KEYS) return; // Verify key is in range
@@ -81,8 +81,8 @@ void Input::keyCallback(GLFWWindow * window, int key, int scanCode, int action,
 void Input::mouseButtonCallback(GLFWWindow *window, int button, int action,
 	int mods) {
 #if _DEBUG // If debug -> Print out the button pressed
-	std::cout << "BUTTON PRESSED: " << button << " | ACTION: " << action <<
-		" | MODS: " << mods << std::endl;
+//	std::cout << "BUTTON PRESSED: " << button << " | ACTION: " << action <<
+//		" | MODS: " << mods << std::endl;
 #endif
 
 	if (button < 0 || button > MAX_NUM_BUTTONS) return; // Verify in range

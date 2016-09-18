@@ -17,6 +17,8 @@ namespace Main {
 	Game* game; // Reference to the Game component.
 	bool isGameRunning = false; // Boolean representing whether the game is running
 
+	bool drawBackFaces = true; // Boolean whether or not to draw back faces
+
 	/// Initializes the GLEW using the specified game window. The method should
 	/// be called after GLFW has been initialized, and after a game window instance
 	/// has been created.
@@ -26,6 +28,9 @@ namespace Main {
 	/// Initializes the GLFW. The method should be called before GLEW or the game
 	/// window components are initialized.
 	void initializeGLFW();
+
+	/// Initializes OpenGL settings for the game.
+	void initializeOpenGL();
 
 	/// Renders the game and the game window.
 	void render();
