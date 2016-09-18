@@ -3,7 +3,7 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
-#include "..\..\include\base\Input.h";
+#include "..\..\include\io\Input.h";
 #include "..\..\include\base\Game.h";
 #include "..\..\include\base\Main.h";
 #include "..\..\include\base\Time.h";

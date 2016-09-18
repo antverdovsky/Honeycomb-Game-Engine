@@ -2,7 +2,7 @@
 
 #include <GLFW\glfw3.h>
 
-#include "..\..\include\base\Input.h";
+#include "..\..\include\io\Input.h";
 #include "..\..\include\math\Vector2f.h";
 
 bool Input::keysDown[MAX_NUM_KEYS];

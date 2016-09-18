@@ -155,29 +155,33 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\base\Game.cpp" />
-    <ClCompile Include="src\base\Input.cpp" />
+    <ClCompile Include="src\io\Input.cpp" />
     <ClCompile Include="src\base\Main.cpp" />
     <ClCompile Include="src\base\Time.cpp" />
     <ClCompile Include="src\base\Window.cpp" />
+    <ClCompile Include="src\io\FileIO.cpp" />
     <ClCompile Include="src\math\Matrix4f.cpp" />
     <ClCompile Include="src\math\Quaternion.cpp" />
     <ClCompile Include="src\math\Vector2f.cpp" />
     <ClCompile Include="src\math\Vector3f.cpp" />
     <ClCompile Include="src\mesh\Mesh.cpp" />
     <ClCompile Include="src\mesh\Vertex.cpp" />
+    <ClCompile Include="src\shader\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\base\Game.h" />
-    <ClInclude Include="include\base\Input.h" />
+    <ClInclude Include="include\io\Input.h" />
     <ClInclude Include="include\base\Main.h" />
     <ClInclude Include="include\base\Time.h" />
     <ClInclude Include="include\base\Window.h" />
+    <ClInclude Include="include\io\FileIO.h" />
     <ClInclude Include="include\math\Matrix4f.h" />
     <ClInclude Include="include\math\Quaternion.h" />
     <ClInclude Include="include\math\Vector2f.h" />
     <ClInclude Include="include\math\Vector3f.h" />
     <ClInclude Include="include\mesh\Mesh.h" />
     <ClInclude Include="include\mesh\Vertex.h" />
+    <ClInclude Include="include\shader\Shader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

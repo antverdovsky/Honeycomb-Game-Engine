@@ -17,7 +17,7 @@ Mesh::Mesh(Vertex vert[], int count) {
 	this->size = count * 3;
 
 	// Add the vertex data to this mesh.
-	this->setVertexData(vert, count);
+	this->addVertexData(vert, count);
 }
 
 Mesh::~Mesh() {
@@ -44,7 +44,7 @@ void Mesh::draw() {
 	glDisableVertexAttribArray(0);
 }
 
-void Mesh::setVertexData(Vertex vert[], int count) {
+void Mesh::addVertexData(Vertex vert[], int count) {
 	// Bind the buffer to the VBO and send the data to the buffer [Statc Draw
 	// indicated that data is constant].
 	glBindBuffer(GL_ARRAY_BUFFER, this->vertexBufferObj);

@@ -4,7 +4,7 @@
 #include <GLFW\glfw3.h>
 
 #include "..\..\include\base\Game.h"
-#include "..\..\include\base\Input.h"
+#include "..\..\include\io\Input.h"
 #include "..\..\include\math\Matrix4f.h"
 #include "..\..\include\math\Vector2f.h"
 #include "..\..\include\math\Vector3f.h"
