@@ -17,7 +17,7 @@ namespace Main {
 	Game* game; // Reference to the Game component.
 	bool isGameRunning = false; // Boolean representing whether the game is running
 
-	bool drawBackFaces = true; // Boolean whether or not to draw back faces
+	bool drawBackFaces = false; // Boolean whether or not to draw back faces
 
 	/// Initializes the GLEW using the specified game window. The method should
 	/// be called after GLFW has been initialized, and after a game window instance

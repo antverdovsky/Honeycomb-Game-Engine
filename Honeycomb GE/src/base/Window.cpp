@@ -9,7 +9,7 @@ Window::Window(int width, int height, std::string title) {
 }
 
 Window::~Window() {
-
+	delete this->window;
 }
 
 GLFWwindow* Window::getWindow() {
@@ -22,12 +22,11 @@ bool Window::isCloseRequested() {
 	return glfwWindowShouldClose(this->window);
 }
 
-void Window::render() {
+void Window::clear() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the Window
-
-	glfwSwapBuffers(this->window); // Swap foreground and background buffers
 }
 
-void Window::update() {
+void Window::refresh() {
 	glfwPollEvents(); // Update window input
+	glfwSwapBuffers(this->window); // Swap foreground and background buffers
 }

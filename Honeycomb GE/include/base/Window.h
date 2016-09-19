@@ -18,6 +18,9 @@ public:
 	/// Empty Destructor.
 	~Window();
 
+	/// Clears the game window.
+	void clear();
+
 	/// Gets the instance of the GLFW window stored in this Window instance.
 	/// return : The GLFW Window instance.
 	GLFWwindow* getWindow();
@@ -27,11 +30,8 @@ public:
 	/// return : True if the user has pressed 'x'; False otherwise.
 	bool isCloseRequested();
 
-	/// Renders the game window.
-	void render();
-
-	/// Updates the game window.
-	void update();
+	/// Refreshes the game window.
+	void refresh();
 private:
 	GLFWwindow *window; // Stores the referencce to the GLFW window.
 };

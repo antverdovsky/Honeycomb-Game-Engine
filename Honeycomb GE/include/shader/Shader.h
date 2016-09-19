@@ -2,6 +2,8 @@
 #ifndef SHADER_H
 #define SHADER_H
 
+#include <vector>
+
 class Shader {
 public:
 	/// Initializes the Shader instance.
@@ -22,8 +24,12 @@ public:
 	/// After all of the shaders have been added and compiled, this links the
 	/// program and validates that everything was done correctly.
 	void finalizeProgram();
+
+	/// Unbinds the shader program so that it may not be used anymore.
+	void unbindProgram();
 private:
 	int programID; // "Pointer" ID to this shader program in the driver
+	std::vector<int> shaderIDs; // "Pointer" IDs to the individual shaders
 };
 
 #endif

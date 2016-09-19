@@ -13,35 +13,40 @@ Shader::Shader() {
 }
 
 Shader::~Shader() {
-
+	glDeleteProgram(this->programID);
 }
 
 void Shader::addShader(std::string file, int type) {
 	// Read in all of the source from the file provided and get a pointer to it
 	std::string src = FileIO::readFileToStr(file);
 	const char *srcPtr = src.c_str();
-
-	// Create the shader and compile it
+	
 	GLuint shaderID = glCreateShader(type);
 	glShaderSource(shaderID, 1, &srcPtr, NULL);
 	glCompileShader(shaderID);
 
 	// Get and print all of the error / warning messages which the compiler has
 	GLint logLen = 0;
+	GLint success = 0;
 	glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &logLen);
-	if (logLen > 0) { // If there is anything in the log to print
+	glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
+	if (logLen > 0 && success == GL_FALSE) { // If something went wrong
 #if _DEBUG
 		// Get the message that OpenGL is trying to state, print it out and 
 		// discard the temporarily stored message from memory.
 		GLchar *logString = new char[logLen + 1];
 		glGetShaderInfoLog(shaderID, logLen, NULL, logString);
-		std::cout << logString << std::endl; // TODO
+		std::cout << "FAILED: " << std::endl << logString << std::endl; // TODO
 		delete[] logString;
+
+		glDeleteShader(shaderID);
+		return;
 #endif
 	}
 
-	// Attach the shader to this shader program
+	// Attach the shader to this shader program & store its ID for future use
 	glAttachShader(this->programID, shaderID);
+	this->shaderIDs.push_back(shaderID);
 }
 
 void Shader::bindProgram() {
@@ -53,13 +58,16 @@ void Shader::finalizeProgram() {
 
 	// Check to the make sure that the link was done correctly
 	GLint logLen = 0;
+	GLint success = 0;
 	glGetProgramiv(this->programID, GL_INFO_LOG_LENGTH, &logLen);
-	if (logLen > 0) {
+	glGetProgramiv(this->programID, GL_LINK_STATUS, &success);
+	if (logLen > 0 && success == 0) {
 #if _DEBUG
 		GLchar *logString = new char[logLen + 1];
 		glGetProgramInfoLog(this->programID, logLen, NULL, logString);
-		std::cout << logString << std::endl; // TODO
+		std::cout << "FAILED: " << std::endl << logString << std::endl;
 		delete[] logString;
+		return;
 #endif
 	}
 
@@ -68,10 +76,23 @@ void Shader::finalizeProgram() {
 	// Check to make sure that the validation returned no errors
 	GLint isValidated;
 	glGetProgramiv(this->programID, GL_VALIDATE_STATUS, &isValidated);
+
 	if (!isValidated) {
 #if _DEBUG
 		std::cout << "UNABLE TO VALIDATE PROGRAM: " << this->programID << 
 			std::endl;
+
+		return;
 #endif
 	}
+
+	// Detach and delete each individual shader, as its no longer needed
+	for (int shaderID : shaderIDs) {
+		glDetachShader(this->programID, shaderID);
+		glDeleteShader(shaderID);
+	}
+}
+
+void Shader::unbindProgram() {
+	glUseProgram(0);
 }

@@ -11,8 +11,6 @@
 
 
 int main(int argc, char** argv) {
-	std::cout << glfwGetVersionString() << std::endl;
-
 	Main::start(); // Initialize the Game Engine components
 	Main::run(); // Main Game Loop
 	Main::stop(); // Destruct the Game Engine components
@@ -38,13 +36,13 @@ void Main::initializeGLFW() {
 
 	glfwWindowHint(GLFW_SAMPLES, 4); // Enable 4x AA
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE); // Forbid window resizing
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GLFW_VERSION_MAJOR); // OpenGL
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GLFW_VERSION_MINOR); // 3.2
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // New GL
+//	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // OpenGL 4.4
+//	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+//	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // New GL
 }
 
 void Main::initializeOpenGL() {
-	glClearColor(1.0F, 0.0F, 0.0F, 0.0F); // Set clear color to zero
+	glClearColor(0.0F, 0.0F, 0.0F, 0.0F); // Set clear color to black
 
 	if (!drawBackFaces) { // Should back faces be drawn?
 		glFrontFace(GL_CW); // Every face drawn in clockwise is the front
@@ -54,13 +52,14 @@ void Main::initializeOpenGL() {
 	
 	glEnable(GL_DEPTH_TEST); // Enable depth perception for drawing order
 	glEnable(GL_FRAMEBUFFER_SRGB); // Gamma correction
+
+	std::cout << glGetString(GL_VERSION) << std::endl;
 }
 
 void Main::render() {
-	Main::window->render();
-	Main::window->update();
-
+	Main::window->clear();
 	Main::game->render();
+	Main::window->refresh();
 }
 
 void Main::run() {

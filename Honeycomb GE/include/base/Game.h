@@ -3,6 +3,7 @@
 #define GAME_H
 
 class Mesh;
+class Shader;
 
 class Game {
 public:
@@ -16,7 +17,8 @@ public:
 	void update();
 	
 private:
-	Mesh* m;
+	Mesh* testMesh;
+	Shader* testShader;
 };
 
 #endif
