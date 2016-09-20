@@ -4,7 +4,7 @@
 
 #include <string>
 
-namespace FileIO {
+namespace Honeycomb::File {
 	/// Reads in the file from the specified file path and returns its contents
 	/// as a string. If the file does not exist, an empty string ("") will be
 	/// returned instead.

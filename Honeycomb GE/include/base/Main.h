@@ -5,11 +5,12 @@
 class Game;
 class Window;
 
-namespace Main {
+namespace Honeycomb::Base::Main {
 	// The game window width, height and title.
 	const static int SCREEN_SIZE_WIDTH = 800;
 	const static int SCREEN_SIZE_HEIGHT = 600;
 	const static std::string TITLE = "Honeycomb";
+	const static bool RESIZEABLE = true;
 
 	const static int FRAME_CAP = 60; // The FPS cap
 

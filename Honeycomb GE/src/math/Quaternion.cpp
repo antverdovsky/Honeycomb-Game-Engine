@@ -3,134 +3,138 @@
 #include "..\..\include\math\Quaternion.h"
 #include "..\..\include\math\Vector3f.h"
 
-Quaternion::Quaternion(float x, float y, float z, float w) {
-	this->x = x;
-	this->y = y;
-	this->z = z;
-	this->w = w;
-}
+using Honeycomb::Math::Vector3f;
 
-Quaternion::~Quaternion() {
+namespace Honeycomb::Math {
+	Quaternion::Quaternion(float x, float y, float z, float w) {
+		this->x = x;
+		this->y = y;
+		this->z = z;
+		this->w = w;
+	}
 
-}
+	Quaternion::~Quaternion() {
 
-Quaternion Quaternion::conjugate() {
-	Quaternion conjugated = this->conjugated();
+	}
 
-	this->set(conjugated.x, conjugated.y, conjugated.z, conjugated.w);
-	return *this;
-}
+	Quaternion Quaternion::conjugate() {
+		Quaternion conjugated = this->conjugated();
 
-Quaternion Quaternion::conjugated() {
-	return Quaternion(-x, -y, -z, w);
-}
+		this->set(conjugated.x, conjugated.y, conjugated.z, conjugated.w);
+		return *this;
+	}
 
-void Quaternion::get(float &x, float &y, float &z, float &w) {
-	x = this->x;
-	y = this->y;
-	z = this->z;
-	w = this->w;
-}
+	Quaternion Quaternion::conjugated() {
+		return Quaternion(-x, -y, -z, w);
+	}
 
-float Quaternion::getW() {
-	return this->w;
-}
+	void Quaternion::get(float &x, float &y, float &z, float &w) {
+		x = this->x;
+		y = this->y;
+		z = this->z;
+		w = this->w;
+	}
 
-float Quaternion::getX() {
-	return this->x;
-}
+	float Quaternion::getW() {
+		return this->w;
+	}
 
-float Quaternion::getY() {
-	return this->y;
-}
+	float Quaternion::getX() {
+		return this->x;
+	}
 
-float Quaternion::getZ() {
-	return this->z;
-}
+	float Quaternion::getY() {
+		return this->y;
+	}
 
-float Quaternion::magnitude() {
-	return sqrt(x * x + y * y + z * z + w * w);
-}
+	float Quaternion::getZ() {
+		return this->z;
+	}
 
-Quaternion Quaternion::multiply(Quaternion q2) {
-	float x_ = q2.w * x + q2.x * w - q2.y * z + q2.z * y;
-	float y_ = q2.w * y + q2.x * z + q2.y * w - q2.z * x;
-	float z_ = q2.w * z - q2.x * y + q2.y * x + q2.z * w;
-	float w_ = q2.w * w - q2.x * x - q2.y * y - q2.z * z;
+	float Quaternion::magnitude() {
+		return sqrt(x * x + y * y + z * z + w * w);
+	}
 
-	return Quaternion(x_, y_, z_, w_);
-}
+	Quaternion Quaternion::multiply(Quaternion q2) {
+		float x_ = q2.w * x + q2.x * w - q2.y * z + q2.z * y;
+		float y_ = q2.w * y + q2.x * z + q2.y * w - q2.z * x;
+		float z_ = q2.w * z - q2.x * y + q2.y * x + q2.z * w;
+		float w_ = q2.w * w - q2.x * x - q2.y * y - q2.z * z;
 
-Quaternion Quaternion::multiply(Vector3f v) {
-	// Convert the specified vector to a quaternion (multiplication code
-	// will remain the same).
-	Quaternion vecAsQuat = Quaternion(v.getX(), v.getY(), v.getZ(), 0.0F);
+		return Quaternion(x_, y_, z_, w_);
+	}
 
-	return this->multiply(vecAsQuat);
-}
+	Quaternion Quaternion::multiply(Vector3f v) {
+		// Convert the specified vector to a quaternion (multiplication code
+		// will remain the same).
+		Quaternion vecAsQuat = Quaternion(v.getX(), v.getY(), v.getZ(), 0.0F);
 
-Quaternion Quaternion::multiplyTo(Quaternion q2) {
-	Quaternion multiplied = this->multiply(q2);
+		return this->multiply(vecAsQuat);
+	}
 
-	this->set(multiplied.x, multiplied.y, multiplied.z, multiplied.w);
-	return *this;
-}
+	Quaternion Quaternion::multiplyTo(Quaternion q2) {
+		Quaternion multiplied = this->multiply(q2);
 
-Quaternion Quaternion::multiplyTo(Vector3f v) {
-	Quaternion vecAsQuat = Quaternion(v.getX(), v.getY(), v.getZ(), 0.0F);
+		this->set(multiplied.x, multiplied.y, multiplied.z, multiplied.w);
+		return *this;
+	}
 
-	return this->multiplyTo(vecAsQuat);
-}
+	Quaternion Quaternion::multiplyTo(Vector3f v) {
+		Quaternion vecAsQuat = Quaternion(v.getX(), v.getY(), v.getZ(), 0.0F);
 
-Quaternion Quaternion::normalize() {
-	Quaternion normalized = this->normalize();
+		return this->multiplyTo(vecAsQuat);
+	}
 
-	this->set(normalized.x, normalized.y, normalized.z, normalized.w);
-	return *this;
-}
+	Quaternion Quaternion::normalize() {
+		Quaternion normalized = this->normalize();
 
-Quaternion Quaternion::normalized() {
-	float mag = this->magnitude();
+		this->set(normalized.x, normalized.y, normalized.z, normalized.w);
+		return *this;
+	}
 
-	return Quaternion(this->x / mag, this->y / mag, this->z / mag, 
-		this->w / mag);
-}
+	Quaternion Quaternion::normalized() {
+		float mag = this->magnitude();
 
-void Quaternion::set(float x, float y, float z, float w) {
-	this->x = x;
-	this->y = y;
-	this->z = z;
-	this->w = w;
-}
+		return Quaternion(this->x / mag, this->y / mag, this->z / mag,
+			this->w / mag);
+	}
 
-void Quaternion::setW(float w) {
-	this->w = w;
-}
+	void Quaternion::set(float x, float y, float z, float w) {
+		this->x = x;
+		this->y = y;
+		this->z = z;
+		this->w = w;
+	}
 
-void Quaternion::setX(float x) {
-	this->x = x;
-}
+	void Quaternion::setW(float w) {
+		this->w = w;
+	}
 
-void Quaternion::setY(float y) {
-	this->y = y;
-}
+	void Quaternion::setX(float x) {
+		this->x = x;
+	}
 
-void Quaternion::setZ(float z) {
-	this->z = z;
-}
+	void Quaternion::setY(float y) {
+		this->y = y;
+	}
 
-Quaternion Quaternion::operator*(Quaternion q2) {
-	return this->multiply(q2);
-}
+	void Quaternion::setZ(float z) {
+		this->z = z;
+	}
 
-Quaternion Quaternion::operator*(Vector3f v) {
-	return this->multiply(v);
-}
+	Quaternion Quaternion::operator*(Quaternion q2) {
+		return this->multiply(q2);
+	}
 
-Quaternion Quaternion::operator*=(Quaternion q2) {
-	return this->multiplyTo(q2);
-}
+	Quaternion Quaternion::operator*(Vector3f v) {
+		return this->multiply(v);
+	}
 
-Quaternion Quaternion::operator*=(Vector3f v) {
-	return this->multiplyTo(v);
+	Quaternion Quaternion::operator*=(Quaternion q2) {
+		return this->multiplyTo(q2);
+	}
+
+	Quaternion Quaternion::operator*=(Vector3f v) {
+		return this->multiplyTo(v);
+	}
 }

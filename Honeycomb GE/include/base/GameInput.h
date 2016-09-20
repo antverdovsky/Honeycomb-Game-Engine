@@ -4,10 +4,10 @@
 
 #include <vector>
 
+namespace Honeycomb::Math { class Vector2f; }
 class GLFWWindow;
-class Vector2f;
 
-namespace Input {
+namespace Honeycomb::Base::Input {
 	// The maximum key codes and mouse codes supported by this game engine.
 	const int MAX_NUM_KEYS = 512;
 	const int MAX_NUM_BUTTONS = 5;
@@ -22,7 +22,7 @@ namespace Input {
 
 	// Arrays which store the mouse position and whether each mouse button is
 	// down or up. The down/up conditions are the same as for the keys.
-	extern Vector2f mousePos;
+	extern Honeycomb::Math::Vector2f mousePos;
 	extern bool buttonsDown[MAX_NUM_BUTTONS];
 	extern bool buttonsReleased[MAX_NUM_BUTTONS];
 
@@ -62,7 +62,7 @@ namespace Input {
 
 	/// Gets the mouse position within the game window (in pixels).
 	/// return : The mouse position 2D vector.
-	Vector2f getMousePosition();
+	Honeycomb::Math::Vector2f getMousePosition();
 
 	/// Function which handles the key press event for the game.
 	/// GLFWWindow *window : Ref. to the window for which to capture input.

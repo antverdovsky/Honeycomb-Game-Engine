@@ -2,23 +2,26 @@
 #ifndef GAME_H
 #define GAME_H
 
-class Mesh;
-class Shader;
+namespace Honeycomb::Mesh { class Mesh; }
+namespace Honeycomb::Shader { class Shader; }
 
-class Game {
-public:
-	Game();
-	~Game();
+namespace Honeycomb::Base {
+	class Game {
+	public:
+		Game();
+		
+		~Game();
 
-	void input();
+		void input();
 
-	void render();
+		void render();
 
-	void update();
-	
-private:
-	Mesh* testMesh;
-	Shader* testShader;
-};
+		void update();
+
+	private:
+		Honeycomb::Mesh::Mesh* testMesh;
+		Honeycomb::Shader::Shader* testShader;
+	};
+}
 
 #endif

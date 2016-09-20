@@ -2,7 +2,7 @@
 #ifndef TIME_H
 #define TIME_H
 
-namespace Time {
+namespace Honeycomb::Base::Time {
 	const float SECOND = 1000.0F; // Number of ms (this Time unit) in a sec.
 
 	extern float deltaTime; // The last known time between frames.
