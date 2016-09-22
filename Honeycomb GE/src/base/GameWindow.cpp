@@ -3,36 +3,48 @@
 #include "..\..\include\base\GameWindow.h"
 
 namespace Honeycomb::Base {
-	Window::Window(int width, int height, std::string title, bool resize) {
-		this->width = width;
-		this->height = height;
-		this->resizeable = resize;
+	// Set the initial Game Window value to NULL, as it is not created until
+	// the getGameWindow() creates it.
+	GameWindow *GameWindow::gameWindow = NULL;
 
-		// Create the GLFW window using the parameters and store it.
-		this->window = glfwCreateWindow(width, height, title.c_str(), nullptr,
-			nullptr);
+	GameWindow::~GameWindow() {
+		glfwDestroyWindow(this->getGLFWwindow());
 	}
 
-	Window::~Window() {
-
-	}
-
-	GLFWwindow* Window::getWindow() {
-		return this->window;
-	}
-
-	bool Window::isCloseRequested() {
-		// If the GLFW reports that the user is trying to close the window,
-		// then consider it as a "close requested" event.
-		return glfwWindowShouldClose(this->window);
-	}
-
-	void Window::clear() {
+	void GameWindow::clear() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the Window
 	}
 
-	void Window::refresh() {
+	GameWindow* GameWindow::getGameWindow() {
+		// If the game window instance does not yet exist -> Create a new one
+		if (gameWindow == NULL)
+			gameWindow = new GameWindow();
+		
+		return gameWindow; // Return the game window instance
+	}
+
+	GLFWwindow* GameWindow::getGLFWwindow() {
+		return this->glfwWindow;
+	}
+
+	bool GameWindow::isCloseRequested() {
+		// If the GLFW reports that the user is trying to close the window,
+		// then consider it as a "close requested" event.
+		return glfwWindowShouldClose(this->glfwWindow);
+	}
+
+	void GameWindow::refresh() {
 		glfwPollEvents(); // Update window input
-		glfwSwapBuffers(this->window); // Swap foreground and background buffers
+		glfwSwapBuffers(this->glfwWindow); // Swap the two buffers
+	}
+
+	GameWindow::GameWindow() {
+		// Create the GLFW window using the parameters and store it.
+		this->glfwWindow = glfwCreateWindow(width, height, title.c_str(), 
+			nullptr, nullptr);
+
+		glfwWindowHint(GLFW_RESIZABLE, resizeable);
+
+		glfwMakeContextCurrent(this->glfwWindow);
 	}
 }

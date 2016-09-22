@@ -18,31 +18,6 @@ int main(int argc, char** argv) {
 }
 
 namespace Honeycomb::Base::Main {
-	void initializeGLEW(Window *window) {
-		// Set the specified game window as the main game window.
-		glfwMakeContextCurrent(window->getWindow());
-
-		// Enable experimental GLEW and initialize it.
-		glewExperimental = true;
-		glewInit();
-	}
-
-	void initializeGLFW() {
-		glfwInit(); // Initialize GLFW
-
-		glfwWindowHint(GLFW_DEPTH_BITS, 24); // Use 24 bits for 3D depths
-		glfwWindowHint(GLFW_RED_BITS, 8); // Use 8 bits for RGBA values
-		glfwWindowHint(GLFW_BLUE_BITS, 8);
-		glfwWindowHint(GLFW_GREEN_BITS, 8);
-		glfwWindowHint(GLFW_ALPHA_BITS, 8);
-
-		glfwWindowHint(GLFW_SAMPLES, 4); // Enable 4x AA
-		glfwWindowHint(GLFW_RESIZABLE, GL_FALSE); // Forbid window resizing
-	//	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // OpenGL 4.4
-	//	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
-	//	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // New GL
-	}
-
 	void initializeOpenGL() {
 		glClearColor(0.0F, 0.0F, 0.0F, 0.0F); // Set clear color to black
 
@@ -55,7 +30,7 @@ namespace Honeycomb::Base::Main {
 		glEnable(GL_DEPTH_TEST); // Enable depth perception for drawing order
 		glEnable(GL_FRAMEBUFFER_SRGB); // Gamma correction
 
-		std::cout << glGetString(GL_VERSION) << std::endl;
+//		std::cout << glGetString(GL_VERSION) << std::endl;
 	}
 
 	void render() {
@@ -112,31 +87,29 @@ namespace Honeycomb::Base::Main {
 	}
 
 	void start() {
-		if (Main::isGameRunning) return; // If already running -> No need to start!
+		if (isGameRunning) return; // If already running -> No need to start!
 
 		// Initialize the GLFW, the Window, GLEW and OpenGL.
-		Main::initializeGLFW();
-		Main::window = new Window(SCREEN_SIZE_WIDTH, SCREEN_SIZE_HEIGHT, TITLE,
-			RESIZEABLE);
-		Main::initializeGLEW(Main::window);
-		Main::initializeOpenGL();
-		Main::game = new Game();
+		glfwInit();
+		window = GameWindow::getGameWindow();
+		glewExperimental = true; glewInit();
+		initializeOpenGL();
+		game = new Game();
 
 		// Initialize Input settings & link to the game window.
-		glfwSetInputMode(Main::window->getWindow(), GLFW_STICKY_KEYS, GL_TRUE);
-		glfwSetKeyCallback(Main::window->getWindow(), (GLFWkeyfun)Input::keyCallback);
-		glfwSetCursorPosCallback(Main::window->getWindow(),
+		glfwSetInputMode(window->getGLFWwindow(), GLFW_STICKY_KEYS, GL_TRUE);
+		glfwSetKeyCallback(window->getGLFWwindow(), 
+			(GLFWkeyfun)Input::keyCallback);
+		glfwSetCursorPosCallback(window->getGLFWwindow(),
 			(GLFWcursorposfun)Input::cursorPositionCallback);
-		glfwSetMouseButtonCallback(Main::window->getWindow(),
+		glfwSetMouseButtonCallback(window->getGLFWwindow(),
 			(GLFWmousebuttonfun)Input::mouseButtonCallback);
 	}
 
 	void stop() {
 		if (!Main::isGameRunning) return; // If already stopped -> No need to stop!
 
-		// Destroy the GLFW window and terminate GLFW library.
-		glfwDestroyWindow(Main::window->getWindow());
-		glfwTerminate();
+		glfwTerminate(); // Terminate GLFW
 
 		// Destroy Game components.
 		delete game;
