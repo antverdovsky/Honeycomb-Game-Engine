@@ -10,12 +10,19 @@ struct GLFWwindow;
 namespace Honeycomb::Base {
 	class GameWindow {
 	public:
-		/// Empty Destructor.
+		/// Cleans up the Window, and destroys the GLFW window instance.
 		~GameWindow();
+
+		/// Callback function for when the size of the window is modified.
+		/// GLFWwindow *window : The reference to the GLFW window instance.
+		/// int width : The new width of the window.
+		/// int height : The new height of the window.
+		static void callbackFrameBuffersize(GLFWwindow *window, int width,
+			int height);
 
 		/// Clears the game window.
 		void clear();
-
+		
 		/// Gets the current active game window instance. If no instance
 		/// exists, a new instance will be created.
 		/// return : The game window stored in this singleton.
@@ -40,7 +47,7 @@ namespace Honeycomb::Base {
 
 		int width = 800; // The width of the window.
 		int height = 600; // The height of the window.
-		bool resizeable = true; // Allow & check for resizing?
+		bool resizeable = false; // Allow & check for resizing?
 		std::string title = "Honeycomb GE"; // Title of the Game Window
 
 		/// Constructs a new GLFW window using the width, height, resizeable,

@@ -3,16 +3,18 @@
 #define MAIN_H
 
 class Game;
+class GameInput;
 class GameWindow;
 
 namespace Honeycomb::Base::Main {
 	const static int FRAME_CAP = 60; // The FPS cap
 
-	GameWindow* window; // Reference to the Game Window component.
-	Game* game; // Reference to the Game component.
+	extern GameWindow *window; // Reference to the Game Window component.
+	extern GameInput *input; // Reference to the Game Input component.
+	extern Game *game; // Reference to the Game component.
 	
-	bool isGameRunning = false; // Boolean representing whether game is running
-	bool drawBackFaces = false; // Boolean whether or not to draw back faces
+	extern bool isGameRunning; // Is the game loop running?
+	extern bool drawBackFaces; // Draw back faces?
 
 	/// Initializes OpenGL settings for the game.
 	void initializeOpenGL();

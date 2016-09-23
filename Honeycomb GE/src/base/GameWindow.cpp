@@ -11,6 +11,16 @@ namespace Honeycomb::Base {
 		glfwDestroyWindow(this->getGLFWwindow());
 	}
 
+	void GameWindow::callbackFrameBuffersize(GLFWwindow *window, int width,
+		int height) {
+		// Write the new window width & height to the singleton instance
+		getGameWindow()->width = width;
+		getGameWindow()->height = height;
+
+		// Tell OpenGL of the frame buffer size change
+		glViewport(0, 0, width, height);
+	}
+
 	void GameWindow::clear() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the Window
 	}
@@ -43,8 +53,10 @@ namespace Honeycomb::Base {
 		this->glfwWindow = glfwCreateWindow(width, height, title.c_str(), 
 			nullptr, nullptr);
 
-		glfwWindowHint(GLFW_RESIZABLE, resizeable);
+		glfwSetFramebufferSizeCallback(this->glfwWindow, 
+			(GLFWframebuffersizefun)callbackFrameBuffersize);
 
+		glfwWindowHint(GLFW_RESIZABLE, resizeable);
 		glfwMakeContextCurrent(this->glfwWindow);
 	}
 }

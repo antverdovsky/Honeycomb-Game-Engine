@@ -3,6 +3,8 @@
 #include "..\..\include\math\Vector2f.h"
 
 namespace Honeycomb::Math {
+	Vector2f::Vector2f() : Vector2f(0.0F, 0.0F) { }
+
 	Vector2f::Vector2f(float x, float y) {
 		this->x = x;
 		this->y = y;

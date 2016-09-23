@@ -18,6 +18,13 @@ int main(int argc, char** argv) {
 }
 
 namespace Honeycomb::Base::Main {
+	GameWindow *window; // Reference to the Game Window component.
+	GameInput *input; // Reference to the Game Input component.
+	Game *game; // Reference to the Game component.
+
+	bool isGameRunning = false; // Is the game loop running?
+	bool drawBackFaces = false; // Draw back faces?
+
 	void initializeOpenGL() {
 		glClearColor(0.0F, 0.0F, 0.0F, 0.0F); // Set clear color to black
 
@@ -29,8 +36,6 @@ namespace Honeycomb::Base::Main {
 
 		glEnable(GL_DEPTH_TEST); // Enable depth perception for drawing order
 		glEnable(GL_FRAMEBUFFER_SRGB); // Gamma correction
-
-//		std::cout << glGetString(GL_VERSION) << std::endl;
 	}
 
 	void render() {
@@ -95,24 +100,16 @@ namespace Honeycomb::Base::Main {
 		glewExperimental = true; glewInit();
 		initializeOpenGL();
 		game = new Game();
-
-		// Initialize Input settings & link to the game window.
-		glfwSetInputMode(window->getGLFWwindow(), GLFW_STICKY_KEYS, GL_TRUE);
-		glfwSetKeyCallback(window->getGLFWwindow(), 
-			(GLFWkeyfun)Input::keyCallback);
-		glfwSetCursorPosCallback(window->getGLFWwindow(),
-			(GLFWcursorposfun)Input::cursorPositionCallback);
-		glfwSetMouseButtonCallback(window->getGLFWwindow(),
-			(GLFWmousebuttonfun)Input::mouseButtonCallback);
 	}
 
 	void stop() {
-		if (!Main::isGameRunning) return; // If already stopped -> No need to stop!
+		if (!isGameRunning) return; // If already stopped -> No need to stop!
 
 		glfwTerminate(); // Terminate GLFW
 
 		// Destroy Game components.
 		delete game;
+		delete input;
 		delete window;
 	}
 

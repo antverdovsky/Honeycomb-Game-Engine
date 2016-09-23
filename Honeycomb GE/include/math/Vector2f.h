@@ -5,6 +5,10 @@
 namespace Honeycomb::Math {
 	class Vector2f {
 	public:
+		/// Creates a new two dimensional vector with 0.0 for both the x and y
+		/// components.
+		Vector2f();
+
 		/// Creates a new two dimensional vector with the specified x and y
 		/// components.
 		/// float x : The x-component.

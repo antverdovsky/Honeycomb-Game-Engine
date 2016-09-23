@@ -3,6 +3,8 @@
 #include "..\..\include\math\Vector3f.h"
 
 namespace Honeycomb::Math {
+	Vector3f::Vector3f() : Vector3f(0.0F, 0.0F, 0.0F) { }
+
 	Vector3f::Vector3f(float x, float y, float z) {
 		this->x = x;
 		this->y = y;

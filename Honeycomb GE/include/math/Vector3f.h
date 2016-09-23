@@ -5,6 +5,10 @@
 namespace Honeycomb::Math {
 	class Vector3f {
 	public:
+		/// Creates a new three dimensional vector with 0.0 as the x, y and z
+		/// components.
+		Vector3f();
+
 		/// Creates a new three dimensional vector with the specified x, y and z
 		/// components.
 		/// float x : The x-component.

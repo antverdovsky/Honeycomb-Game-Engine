@@ -7,6 +7,7 @@
 
 #include "..\..\include\base\Game.h"
 #include "..\..\include\base\GameInput.h"
+#include "..\..\include\base\Main.h"
 #include "..\..\include\file\FileIO.h"
 #include "..\..\include\math\Matrix4f.h"
 #include "..\..\include\math\Vector2f.h"
@@ -21,6 +22,7 @@ std::string testShaderVertex1 =
 std::string testShaderFrag1 =
 	"..\\Honeycomb GE\\res\\shaders\\testShader1\\fragmentShader1.frag";
 
+using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Mesh::Mesh;
 using Honeycomb::Mesh::Vertex;
@@ -50,7 +52,7 @@ namespace Honeycomb::Base {
 	}
 
 	void Game::input() {
-		Input::clear();
+		Main::input->getGameInput()->clear();
 	}
 
 	void Game::render() {
