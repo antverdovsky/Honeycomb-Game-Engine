@@ -22,8 +22,8 @@ namespace Honeycomb::Shader {
 		/// Binds the shader program so that it may be used.
 		void bindProgram();
 
-		/// After all of the shaders have been added and compiled, this links the
-		/// program and validates that everything was done correctly.
+		/// After all of the shaders have been added and compiled, this links 
+		/// the program and validates that everything was done correctly.
 		void finalizeProgram();
 
 		/// Unbinds the shader program so that it may not be used anymore.

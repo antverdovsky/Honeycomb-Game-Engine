@@ -52,7 +52,7 @@ namespace Honeycomb::Math {
 	}
 
 	float Quaternion::magnitude() {
-		return sqrt(x * x + y * y + z * z + w * w);
+		return (float)sqrt(x * x + y * y + z * z + w * w);
 	}
 
 	Quaternion Quaternion::multiply(Quaternion q2) {
@@ -86,7 +86,7 @@ namespace Honeycomb::Math {
 	}
 
 	Quaternion Quaternion::normalize() {
-		Quaternion normalized = this->normalize();
+		Quaternion normalized = this->normalized();
 
 		this->set(normalized.x, normalized.y, normalized.z, normalized.w);
 		return *this;

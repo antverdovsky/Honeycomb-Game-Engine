@@ -9,8 +9,8 @@ namespace Honeycomb::Math {
 		/// components.
 		Vector3f();
 
-		/// Creates a new three dimensional vector with the specified x, y and z
-		/// components.
+		/// Creates a new three dimensional vector with the specified x, y and 
+		/// z components.
 		/// float x : The x-component.
 		/// float y : The y-component.
 		/// float z : The z-component.
@@ -25,26 +25,26 @@ namespace Honeycomb::Math {
 		/// return : The resultant of the two vectors.
 		Vector3f add(Vector3f v2);
 
-		/// Adds the specified vector to this vector, resulting in this instance
-		/// equaling to the resultant of the sum.
+		/// Adds the specified vector to this vector, resulting in this 
+		/// instance equaling to the resultant of the sum.
 		/// Vector3f v2 : The second vector.
 		/// return : This resultant vector.
 		Vector3f addTo(Vector3f v2);
 
-		/// Calculates the angle (in radians) between this vector and the specified
-		/// second vector.
+		/// Calculates the angle (in radians) between this vector and the 
+		/// specified second vector.
 		/// Vector3f v2 : The second vector.
 		/// return : The angle between, in radians.
 		float angle(Vector3f v2);
 
-		/// Calculates the cross product of this vector and the specified second
-		/// vector and returns the product.
+		/// Calculates the cross product of this vector and the specified 
+		/// second vector and returns the product.
 		/// Vector3f v2 : The second vector.
 		/// return : The cross product vector.
 		Vector3f cross(Vector3f v2);
 
-		/// Calculates the cross product of this vector and the specified vector and
-		/// then overrides this vector to store the product.
+		/// Calculates the cross product of this vector and the specified 
+		/// vector and then overrides this vector to store the product.
 		/// Vector3f v2 : The second vector.
 		/// return : This cross product vector.
 		Vector3f crossTo(Vector3f v2);
@@ -54,11 +54,11 @@ namespace Honeycomb::Math {
 		/// return : The dot product scalar.
 		float dot(Vector3f v2);
 
-		/// Gets the x, y, z components of the vector and writes them to the passed
-		/// in reference values.
-		/// float &x : The reference to where the x-component is to be written to.
-		/// float &y : The reference to where the y-component is to be written to.
-		/// float &z : The reference to where the z-component is to be written to.
+		/// Gets the x, y, z components of the vector and writes them to the 
+		/// passed in reference values.
+		/// float &x : The ref. to where the x-component is to be written to.
+		/// float &y : The ref. to where the y-component is to be written to.
+		/// float &z : The ref. to where the z-component is to be written to.
 		void get(float &x, float &y, float &z);
 
 		/// Gets the x-component of the vector.
@@ -83,25 +83,25 @@ namespace Honeycomb::Math {
 		Vector3f normalize();
 
 		/// Gets a normalized version of this vector, without modifying it.
-		/// return : A vector which points in the same direction as this instance,
-		///			 but has a magnitude equal to 1.
+		/// return : A vector which points in the same direction as this 
+		///			 instance, but has a magnitude equal to 1.
 		Vector3f normalized();
 
-		/// Returns a vector which is equivalent to this instance, rotated by the
-		/// specified amount of radians, on the specified vector axis.
+		/// Returns a vector which is equivalent to this instance, rotated by 
+		/// the specified amount of radians, on the specified vector axis.
 		/// Vector3f axis : The axis on which to rotate the vector.
-		/// float rad : The amount by which to rotate the vector, in radians. A
-		///				positive amount will rotate the vector counterclockwise,
-		///				and a negative amount will rotate the angle clockwise.
+		/// float rad : The amount by which to rotate the vector, in radians.
+		///				A positive amount rotates the vector counterclockwise,
+		///				and a negative amount rotates the angle clockwise.
 		/// return : The rotated vector.
 		Vector3f rotate(Vector3f axis, float rad);
 
 		/// Rotates this vector by the specified amount of radians, on the 
 		/// specified vector axis.
 		/// Vector3f axis : The axis on which to rotate the vector.
-		/// float rad : The amount by which to rotate the vector, in radians. A
-		///				positive amount will rotate the vector counterclockwise,
-		///				and a negative amount will rotate the angle clockwise.
+		/// float rad : The amount by which to rotate the vector, in radians.
+		///				A positive amount rotates the vector counterclockwise,
+		///				and a negative amount rotates the angle clockwise.
 		/// return : The rotated vector.
 		Vector3f rotateTo(Vector3f axis, float rad);
 
@@ -141,28 +141,29 @@ namespace Honeycomb::Math {
 		/// return : The scaled vector.
 		Vector3f operator*(float scale);
 
-		/// Overloads the multiplication set operator to set this vector equal to
-		/// the scaled vector, and return it.
+		/// Overloads the multiplication set operator to set this vector equal 
+		/// to the scaled vector, and return it.
 		/// float scale : The constant by which to scale the vector.
 		/// return : This scaled vector.
 		Vector3f operator*=(float scale);
 
 		/// Overloads the division operator to return a vector instance
-		/// which is equivalent to this vector, inversely scaled by the specified 
-		/// amount. This vector instance is not modified.
+		/// which is equivalent to this vector, inversely scaled by the 
+		/// specified amount. This vector instance is not modified.
 		/// float scale : The inverse constant by which to scale the vector.
 		/// return : The scaled vector.
 		Vector3f operator/(float scale);
 
-		/// Overloads the division set operator to set this vector to the inversely
-		/// scaled vector. 
+		/// Overloads the division set operator to set this vector to the 
+		/// inversely scaled vector. 
 		/// float scale : The inverse constant by which to scale this vector.
 		/// return : This scaled vector.
 		Vector3f operator/=(float scale);
 
 		/// Overloads the addition operator to return a vector instance
-		/// which is equivalent to the resultant of this vector and the specified
-		/// vector. Neither this nor the specified vector's values are modified.
+		/// which is equivalent to the resultant of this vector and the 
+		/// specified vector. Neither this nor the specified vector's values 
+		/// are modified.
 		/// const Vector3f &v2 : Reference to the second vector.
 		/// return : The resultant vector.
 		Vector3f operator+(Vector3f v2);
@@ -179,14 +180,16 @@ namespace Honeycomb::Math {
 		Vector3f operator-();
 
 		/// Overloads the subtraction operator to return a vector instance
-		/// which is equivalent to the difference of this vector and the specified
-		/// vector. Neither this nor the specified vector's values are modified.
+		/// which is equivalent to the difference of this vector and the 
+		/// specified vector. Neither this nor the specified vector's values 
+		/// are modified.
 		/// const Vector3f &v2 : Reference to the second vector.
 		/// return : The difference vector.
 		Vector3f operator-(Vector3f v2);
 
-		/// Overloads the subtraction set operator to return this vector instance,
-		/// equal to the resultant difference of this and the specified vector.
+		/// Overloads the subtraction set operator to return this vector 
+		/// instance, equal to the resultant difference of this and the 
+		/// specified vector.
 		/// Vector2f v2 : Reference to the second vector.
 		/// return : The resultant vector.
 		Vector3f operator-=(Vector3f v2);

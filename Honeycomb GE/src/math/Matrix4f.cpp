@@ -45,8 +45,8 @@ namespace Honeycomb::Math {
 
 		for (int r = 0; r < 4; r++) { // Go through all points on the matrix
 			for (int c = 0; c < 4; c++) {
-				// The new value in the matrix will be equal to the dot product of
-				// the row and column vectors.
+				// The new value in the matrix will be equal to the dot product
+				// of the row and column vectors.
 				float dot = 0;
 				for (int j = 0; j < 4; j++)
 					dot += this->matrix[r][j] * m2.matrix[j][c];
@@ -133,8 +133,8 @@ namespace Honeycomb::Math {
 	}
 
 	void Matrix4f::setMatrix(float f[4][4]) {
-		// Copy the specified matrix array values into this matrix array, column 
-		// by column.
+		// Copy the specified matrix array values into this matrix array, 
+		// column by column.
 		for (int r = 0; r < 4; r++) {
 			for (int c = 0; c < 4; c++) {
 				this->matrix[r][c] = f[r][c];
@@ -143,8 +143,8 @@ namespace Honeycomb::Math {
 	}
 
 	void Matrix4f::setMatrix(const float f[4][4]) {
-		// Copy the specified matrix array values into this matrix array, column 
-		// by column.
+		// Copy the specified matrix array values into this matrix array, 
+		// column by column.
 		for (int r = 0; r < 4; r++) {
 			for (int c = 0; c < 4; c++) {
 				this->matrix[r][c] = f[r][c];

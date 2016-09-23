@@ -35,8 +35,8 @@ namespace Honeycomb::Mesh {
 		this->count = count;
 		this->size = count * 3 * sizeof(GLfloat);
 
-		// Bind the buffer to the VBO and send the data to the buffer [Statc Draw
-		// indicated that data is constant].
+		// Bind the buffer to the VBO and send the data to the buffer [Statc 
+		// Draw indicates that data is constant].
 		glBindBuffer(GL_ARRAY_BUFFER, this->vertexBufferObj);
 		glBufferData(GL_ARRAY_BUFFER, this->size, vertFloats, GL_STATIC_DRAW);
 

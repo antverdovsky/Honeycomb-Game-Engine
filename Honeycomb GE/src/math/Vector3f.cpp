@@ -32,7 +32,7 @@ namespace Honeycomb::Math {
 		float magMult = this->magnitude() * v2.magnitude();
 		float cosTheta = dot / magMult;
 
-		return acos(cosTheta);
+		return (float)acos(cosTheta);
 	}
 
 	Vector3f Vector3f::cross(Vector3f v2) {
@@ -71,7 +71,7 @@ namespace Honeycomb::Math {
 	}
 
 	float Vector3f::magnitude() {
-		return sqrt(x * x + y * y + z * z);
+		return (float)sqrt(x * x + y * y + z * z);
 	}
 
 	Vector3f Vector3f::normalize() {

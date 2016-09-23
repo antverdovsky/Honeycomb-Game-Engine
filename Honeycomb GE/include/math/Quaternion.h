@@ -7,7 +7,8 @@ namespace Honeycomb::Math { class Vector3f; }
 namespace Honeycomb::Math {
 	class Quaternion {
 	public:
-		/// Initializes a new Quaternion with the specified x, y, z, and w components.
+		/// Initializes a new Quaternion with the specified x, y, z, and w 
+		/// components.
 		/// float x : The x component.
 		/// float y : The y component.
 		/// float z : The z component.
@@ -29,10 +30,10 @@ namespace Honeycomb::Math {
 
 		/// Gets the x, y, z, w components of the vector and writes them to the 
 		/// passed in reference values.
-		/// float &x : The reference to where the x-component is to be written to.
-		/// float &y : The reference to where the y-component is to be written to.
-		/// float &z : The reference to where the z-component is to be written to.
-		/// float &w : The reference to where the w-component is to be written to.
+		/// float &x : The ref. to where the x-component is to be written to.
+		/// float &y : The ref. to where the y-component is to be written to.
+		/// float &z : The ref. to where the z-component is to be written to.
+		/// float &w : The ref. to where the w-component is to be written to.
 		void get(float &x, float &y, float &z, float &w);
 
 		/// Gets the x-component of the quaternion.
@@ -55,9 +56,9 @@ namespace Honeycomb::Math {
 		/// return : The magnitude.
 		float magnitude();
 
-		/// Multiplies this and the specified quaternion and returns the quaternion
-		/// representing the product. Neither this nor the specified Quaternion is
-		/// modified.
+		/// Multiplies this and the specified quaternion and returns the 
+		/// quaternion representing the product. Neither this nor the specified
+		/// Quaternion is modified.
 		/// Quaternion q2 : The second quaternion.
 		/// return : The product quaternion.
 		Quaternion multiply(Quaternion q2);
@@ -112,14 +113,14 @@ namespace Honeycomb::Math {
 		/// float w : The new w-component.
 		void setW(float w);
 
-		/// Overloads the multiplication operator to return the product of this and
-		/// the specified quaternion.
+		/// Overloads the multiplication operator to return the product of this
+		/// and the specified quaternion.
 		/// Quaternion q2 : The second quaternion.
 		/// return : The product quaternion.
 		Quaternion operator*(Quaternion q2);
 
-		/// Overloads the multiplication operator to return the product of this and
-		/// the specified vector.
+		/// Overloads the multiplication operator to return the product of this
+		/// and the specified vector.
 		/// Vector3f v : The vector.
 		/// return : The product quaternion.
 		Quaternion operator*(Vector3f v);

@@ -19,12 +19,12 @@ namespace Honeycomb::Mesh {
 		Honeycomb::Math::Vector3f* getPosition();
 
 		/// Converts an array of verticies to an array of the Vector positions
-		/// of each vertex. The array will be returned as a dynamically allocated
-		/// array and should, therefore, be deleted after being used.
+		/// of each vertex. The array will be returned as a dynamically 
+		/// allocated array and should, therefore, be deleted after being used.
 		/// Vertex vert[] : The verticies to be converted to a float buffer.
 		/// int count : The number of verticies which are to be converted.
-		/// return : An array of floats which is composed of each vertex's x, y,
-		///			 and z components.
+		/// return : An array of floats which is composed of each vertex's x,
+		///			 y and z, in that order.
 		static float* toFloatBuffer(Vertex vert[], int count);
 	private:
 		Honeycomb::Math::Vector3f* position; // Stores the position vector.
