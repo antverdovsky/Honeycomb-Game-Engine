@@ -1,5 +1,7 @@
 #include "..\..\include\mesh\Vertex.h"
 
+#include <iostream>
+
 #include "..\..\include\math\Vector3f.h"
 
 using Honeycomb::Math::Vector3f;
@@ -17,7 +19,7 @@ namespace Honeycomb::Mesh {
 		return this->position;
 	}
 
-	float* Vertex::toFloatBuffer(Vertex vert[], int count) {
+	float* Vertex::verticiesToFloatBuffer(Vertex vert[], int count) {
 		// The float buffer array will store each component (total 3) for each
 		// vertex (total count), therefore the float buffer must store 
 		// 3 * count elements.
@@ -31,6 +33,10 @@ namespace Honeycomb::Mesh {
 			floatBuffer[i++] = vert[i / 3].getPosition()->getX();
 			floatBuffer[i++] = vert[i / 3].getPosition()->getY();
 			floatBuffer[i++] = vert[i / 3].getPosition()->getZ();
+		}
+
+		for (int i = 0; i < count * 3; i++) {
+			std::cout << floatBuffer[i] << ", ";
 		}
 
 		return floatBuffer;

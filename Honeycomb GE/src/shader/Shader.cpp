@@ -20,7 +20,7 @@ namespace Honeycomb::Shader {
 	}
 
 	void Shader::addShader(std::string file, int type) {
-		// Read in all of the source from the file provided and get a pointer to it
+		// Read in the source from the file provided and get a pointer to it
 		std::string src = readFileToStr(file);
 		const char *srcPtr = src.c_str();
 
@@ -28,7 +28,7 @@ namespace Honeycomb::Shader {
 		glShaderSource(shaderID, 1, &srcPtr, NULL);
 		glCompileShader(shaderID);
 
-		// Get and print all of the error / warning messages which the compiler has
+		// Print all of the error / warning messages which the compiler has
 		GLint logLen = 0;
 		GLint success = 0;
 		glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &logLen);
@@ -39,7 +39,7 @@ namespace Honeycomb::Shader {
 		// discard the temporarily stored message from memory.
 			GLchar *logString = new char[logLen + 1];
 			glGetShaderInfoLog(shaderID, logLen, NULL, logString);
-			std::cout << "FAILED: " << std::endl << logString << std::endl; // TODO
+			std::cout << "FAILED: " << std::endl << logString << std::endl;
 			delete[] logString;
 
 			glDeleteShader(shaderID);
@@ -47,7 +47,7 @@ namespace Honeycomb::Shader {
 #endif
 		}
 
-		// Attach the shader to this shader program & store its ID for future use
+		// Attach the shader to this shader program & store its ID for later
 		glAttachShader(this->programID, shaderID);
 		this->shaderIDs.push_back(shaderID);
 	}

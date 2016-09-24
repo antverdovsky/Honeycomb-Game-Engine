@@ -31,15 +31,25 @@ using Honeycomb::Shader::Shader;
 namespace Honeycomb::Base {
 	Game::Game() {
 		Vertex data[] = {
-			Vertex(Vector3f(-0.5F, -0.5F, 0.0F)),
-			Vertex(Vector3f(0.0F, 1.0F, 0.0F)),
-			Vertex(Vector3f(0.5F, -0.5F, 0.0F))
+			Vertex(Vector3f(-0.5F, 0.5F, 0.0F)),
+			Vertex(Vector3f(0.5F, 0.5F, 0.0F)),
+			Vertex(Vector3f(0.5F, -0.5F, 0.0F)),
+			Vertex(Vector3f(-0.5F, -0.5F, 0.0F))
+
+			//Vertex(Vector3f(0.5, -0.5F, -1.0F)),
+			//Vertex(Vector3f(-0.5F, -0.5F, -1.0F)),
+			//Vertex(Vector3f(-0.5, 0.5F, -1.0F))
+		};
+
+		int indicies[] = {
+			0, 1, 2,
+			2, 3, 0
 		};
 
 		testMesh = new Mesh::Mesh();
 		testShader = new Shader::Shader();
 
-		testMesh->addVertexData(data, 3);
+		testMesh->addVertexData(data, 4, indicies, 6);
 
 		testShader->addShader(testShaderVertex1, GL_VERTEX_SHADER);
 		testShader->addShader(testShaderFrag1, GL_FRAGMENT_SHADER);

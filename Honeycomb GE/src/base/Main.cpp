@@ -23,11 +23,11 @@ namespace Honeycomb::Base::Main {
 	Game *game; // Reference to the Game component.
 
 	bool isGameRunning = false; // Is the game loop running?
-	bool drawBackFaces = false; // Draw back faces?
+	bool drawBackFaces = true; // Draw back faces?
 
 	void initializeOpenGL() {
 		glClearColor(0.0F, 0.0F, 0.0F, 0.0F); // Set clear color to black
-
+		
 		if (!drawBackFaces) { // Should back faces be drawn?
 			glFrontFace(GL_CW); // Every face drawn in clockwise is the front
 			glCullFace(GL_BACK); // Do not draw the back face (CCW)
@@ -39,9 +39,9 @@ namespace Honeycomb::Base::Main {
 	}
 
 	void render() {
-		Main::window->clear();
-		Main::game->render();
-		Main::window->refresh();
+		window->clear();
+		game->render();
+		window->refresh();
 	}
 
 	void run() {
@@ -68,8 +68,8 @@ namespace Honeycomb::Base::Main {
 			// If the time between this iteration and last iteration exceeds
 			// the minimum amount of time between frames -> Render & update.
 			if (deltaTime >= msPerFrame) {
-				Main::render(); // Render the game & the game window.
-				Main::update(); // Update the game.
+				render(); // Render the game & the game window.
+				update(); // Update the game.
 
 				// Time spent rendering frames is to increase by how long it 
 				// took to render this frame.
@@ -118,7 +118,7 @@ namespace Honeycomb::Base::Main {
 	}
 
 	void update() {
-		Main::game->input();
-		Main::game->update();
+		game->input();
+		game->update();
 	}
 }

@@ -15,15 +15,22 @@ namespace Honeycomb::Mesh {
 
 		/// Adds the vertex data for this mesh.
 		/// Vertex vert[] : The vertex data.
-		/// int count : The number of verticies which are passed in.
-		void addVertexData(Vertex vert[], int count);
+		/// int vertCount : The number of verticies which are passed in.
+		/// int indx[] : The indicies data.
+		/// int indxCount : The number of indicies which are passed in.
+		void addVertexData(Vertex vert[], int vertCount, int index[], 
+				int indexCount);
 
 		/// Draws this Mesh to the screen using the vertex data.
 		void draw();
 	private:
 		int vertexBufferObj; // VBO "Pointer"
-		int count; // The count of vertices stored for this mesh
-		int size; // The size (in bytes) of the vertices stored for this mesh
+		int vertCount; // The count of vertices stored for this mesh
+		int vertSize; // The byte size of the vertices stored for this mesh
+
+		int indexBufferObj; // IBO "Pointer" (for VBO indexing)
+		int indexCount; // The count of the indicies stored for this mesh
+		int indexSize; // The byte size of the indicies stored for this mesh
 	};
 }
 

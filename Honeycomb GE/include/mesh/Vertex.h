@@ -25,7 +25,7 @@ namespace Honeycomb::Mesh {
 		/// int count : The number of verticies which are to be converted.
 		/// return : An array of floats which is composed of each vertex's x,
 		///			 y and z, in that order.
-		static float* toFloatBuffer(Vertex vert[], int count);
+		static float* verticiesToFloatBuffer(Vertex vert[], int count);
 	private:
 		Honeycomb::Math::Vector3f* position; // Stores the position vector.
 	};
