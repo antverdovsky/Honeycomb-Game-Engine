@@ -3,7 +3,7 @@
 #define GAME_H
 
 namespace Honeycomb::Mesh { class Mesh; }
-namespace Honeycomb::Shader { class Shader; }
+namespace Honeycomb::Shader { class ShaderProgram; }
 
 namespace Honeycomb::Base {
 	class Game {
@@ -20,7 +20,7 @@ namespace Honeycomb::Base {
 
 	private:
 		Honeycomb::Mesh::Mesh* testMesh;
-		Honeycomb::Shader::Shader* testShader;
+		Honeycomb::Shader::ShaderProgram* testShader;
 	};
 }
 

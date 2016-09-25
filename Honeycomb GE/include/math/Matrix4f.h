@@ -22,6 +22,12 @@ namespace Honeycomb::Math {
 		/// return : The 4x4 identity matrix.
 		static Matrix4f identity();
 
+		/// Gets a 1D array of all of the values stored by this Matrix class.
+		/// The values are ordered by row major order (All column values of 
+		/// row 1 precede all column values of row 2, etc).
+		/// return : The array pointer.
+		float* get();
+
 		/// Gets the value in the 4x4 Matrix at the specified row and column.
 		/// int r : The row position.
 		/// int c : The column position.

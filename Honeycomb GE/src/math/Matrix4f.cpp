@@ -36,6 +36,19 @@ namespace Honeycomb::Math {
 		return identityMatrix;
 	}
 
+	float* Matrix4f::get() {
+		float oneDim[16]; // Create a one dimensional array of 16 values (4x4)
+
+		for (int r = 0; r < 4; r++) {
+			for (int c = 0; c < 4; c++) {
+				// Convert the 2D index to 1D and write from the matrix to it
+				oneDim[r * 4 + c] = this->getAt(r, c);
+			}
+		}
+
+		return oneDim;
+	}
+
 	float Matrix4f::getAt(int r, int c) {
 		return this->matrix[r][c];
 	}

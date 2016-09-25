@@ -7,6 +7,7 @@
 
 #include "..\..\include\base\Game.h"
 #include "..\..\include\base\GameInput.h"
+#include "..\..\include\base\GameTime.h"
 #include "..\..\include\base\Main.h"
 #include "..\..\include\file\FileIO.h"
 #include "..\..\include\math\Matrix4f.h"
@@ -15,12 +16,12 @@
 
 #include "..\..\include\mesh\Vertex.h"
 #include "..\..\include\mesh\Mesh.h"
-#include "..\..\include\shader\Shader.h"
+#include "..\..\include\shader\ShaderProgram.h"
 
-std::string testShaderVertex1 = 
-	"..\\Honeycomb GE\\res\\shaders\\testShader1\\vertexShader1.vert";
-std::string testShaderFrag1 =
-	"..\\Honeycomb GE\\res\\shaders\\testShader1\\fragmentShader1.frag";
+std::string testShaderVertexUniform = 
+	"..\\Honeycomb GE\\res\\shaders\\testShaderUniform\\vertexShader2.vert";
+std::string testShaderFragUniform =
+	"..\\Honeycomb GE\\res\\shaders\\testShaderUniform\\fragmentShader2.frag";
 std::string testModelCube =
 	"..\\Honeycomb GE\\res\\models\\test1\\testMonkey.obj";
 
@@ -28,7 +29,7 @@ using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Mesh::Mesh;
 using Honeycomb::Mesh::Vertex;
-using Honeycomb::Shader::Shader;
+using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb::Base {
 	Game::Game() {
@@ -51,11 +52,14 @@ namespace Honeycomb::Base {
 		*/
 
 		testMesh = Mesh::Mesh::loadMeshOBJ(testModelCube);
-		testShader = new Shader::Shader();
+		testShader = new ShaderProgram();
+		
+		testShader->addShader(testShaderVertexUniform, GL_VERTEX_SHADER);
+		testShader->addShader(testShaderFragUniform, GL_FRAGMENT_SHADER);
+		testShader->finalizeShaderProgram();
 
-		testShader->addShader(testShaderVertex1, GL_VERTEX_SHADER);
-		testShader->addShader(testShaderFrag1, GL_FRAGMENT_SHADER);
-		testShader->finalizeProgram();
+		testShader->addUniform("uni_scale");
+		testShader->bindShaderProgram();
 	}
 
 	Game::~Game() {
@@ -68,12 +72,15 @@ namespace Honeycomb::Base {
 	}
 
 	void Game::render() {
-		testShader->bindProgram();
+		//testShader->bindShaderProgram();
 		testMesh->draw();
-		testShader->unbindProgram();
+		//testShader->unbindShaderProgram();
 	}
 
+	float uni_scale = 0;
 	void Game::update() {
-
+		uni_scale = sin(Time::getGameTime() / 1000);
+		std::cout << uni_scale << std::endl;
+		testShader->setUniform_f("uni_scale", uni_scale);
 	}
 }

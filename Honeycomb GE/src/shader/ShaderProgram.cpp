@@ -1,5 +1,4 @@
-#include "..\..\include\file\FileIO.h"
-#include "..\..\include\shader\Shader.h"
+#include "..\..\include\shader\ShaderProgram.h"
 
 #include <iostream>
 #include <fstream>
@@ -7,19 +6,25 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
+#include "..\..\include\file\FileIO.h"
+#include "..\..\include\math\Vector3f.h"
+#include "..\..\include\math\Matrix4f.h"
+
 using namespace Honeycomb::File;
+using Honeycomb::Math::Vector3f;
+using Honeycomb::Math::Matrix4f;
 
 namespace Honeycomb::Shader {
-	Shader::Shader() {
+	ShaderProgram::ShaderProgram() {
 		// Create a pointer to the program ID for the shader
 		this->programID = glCreateProgram();
 	}
 
-	Shader::~Shader() {
+	ShaderProgram::~ShaderProgram() {
 		glDeleteProgram(this->programID);
 	}
 
-	void Shader::addShader(std::string file, int type) {
+	void ShaderProgram::addShader(std::string file, int type) {
 		// Read in the source from the file provided and get a pointer to it
 		std::string src = readFileToStr(file);
 		const char *srcPtr = src.c_str();
@@ -49,14 +54,31 @@ namespace Honeycomb::Shader {
 
 		// Attach the shader to this shader program & store its ID for later
 		glAttachShader(this->programID, shaderID);
-		this->shaderIDs.push_back(shaderID);
+		this->shaders.push_back(shaderID);
 	}
 
-	void Shader::bindProgram() {
+	void ShaderProgram::addUniform(std::string uni) {
+		// Create the uniform on the GPU & get its location
+		int uniformLoc = glGetUniformLocation(this->programID, uni.c_str());
+
+		if (uniformLoc == -1) {
+#if _DEBUG
+			std::cout << "Unable to create uniform " << uni << std::endl;
+
+			return;
+#endif
+		}
+		
+		// Bind the uniform name and its location to the HashMap so it can be
+		// referenced for future use.
+		uniforms.insert({ uni, uniformLoc });
+	}
+
+	void ShaderProgram::bindShaderProgram() {
 		glUseProgram(this->programID);
 	}
 
-	void Shader::finalizeProgram() {
+	void ShaderProgram::finalizeShaderProgram() {
 		glLinkProgram(this->programID); // Link the Program
 
 		// Check to the make sure that the link was done correctly
@@ -90,13 +112,37 @@ namespace Honeycomb::Shader {
 		}
 
 		// Detach and delete each individual shader, as its no longer needed
-		for (int shaderID : shaderIDs) {
+		for (int shaderID : shaders) {
 			glDetachShader(this->programID, shaderID);
 			glDeleteShader(shaderID);
 		}
 	}
 
-	void Shader::unbindProgram() {
+	int ShaderProgram::getUniformLocation(std::string uni) {
+		return uniforms.at(uni);
+	}
+
+	void ShaderProgram::setUniform_f(std::string uni, float val) {
+		int loc = getUniformLocation(uni); // Get uniform location
+		glUniform1f(loc, val); // Write the value to the location
+	}
+
+	void ShaderProgram::setUniform_i(std::string uni, int val) {
+		int loc = getUniformLocation(uni);
+		glUniform1i(loc, val);
+	}
+	
+	void ShaderProgram::setUniform_vec3(std::string uni, Vector3f val) {
+		int loc = getUniformLocation(uni);
+		glUniform3f(loc, val.getX(), val.getY(), val.getZ());
+	}
+
+	void ShaderProgram::setUniform_mat4(std::string uni, Matrix4f val) {
+		int loc = getUniformLocation(uni);
+		glUniformMatrix4fv(loc, 1, false, val.get());
+	}
+	
+	void ShaderProgram::unbindShaderProgram() {
 		glUseProgram(0);
 	}
 }
