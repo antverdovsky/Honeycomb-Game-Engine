@@ -11,6 +11,10 @@ namespace Honeycomb::Mesh {
 		/// Vector3f pos : The position of the vertex.
 		Vertex(Honeycomb::Math::Vector3f pos);
 
+		/// Copy Constructor.
+		/// Vertex &v : The vector to copy into this one.
+		Vertex(Vertex &v);
+
 		/// Destroys the vertex, and its position vector.
 		~Vertex();
 

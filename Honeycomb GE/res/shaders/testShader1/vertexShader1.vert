@@ -13,5 +13,5 @@ layout(location = 0) in vec3 pos;
 
 void main() {
     // Set the position of each vertex to the position found above.
-    gl_Position = vec4(pos, 1.0);
+    gl_Position = vec4(0.25 * pos, 1.0);
 }

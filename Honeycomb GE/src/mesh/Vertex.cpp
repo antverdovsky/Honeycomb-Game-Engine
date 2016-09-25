@@ -10,6 +10,11 @@ namespace Honeycomb::Mesh {
 	Vertex::Vertex(Vector3f pos) {
 		this->position = new Vector3f(pos.getX(), pos.getY(), pos.getZ());
 	}
+	
+	Vertex::Vertex(Vertex &v) {
+		this->position = new Vector3f(v.position->getX(), v.position->getY(),
+			v.position->getZ());
+	}
 
 	Vertex::~Vertex() {
 		delete this->position;
@@ -33,10 +38,6 @@ namespace Honeycomb::Mesh {
 			floatBuffer[i++] = vert[i / 3].getPosition()->getX();
 			floatBuffer[i++] = vert[i / 3].getPosition()->getY();
 			floatBuffer[i++] = vert[i / 3].getPosition()->getZ();
-		}
-
-		for (int i = 0; i < count * 3; i++) {
-			std::cout << floatBuffer[i] << ", ";
 		}
 
 		return floatBuffer;
