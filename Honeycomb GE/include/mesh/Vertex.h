@@ -31,7 +31,7 @@ namespace Honeycomb::Mesh {
 		///			 y and z, in that order.
 		static float* verticiesToFloatBuffer(Vertex vert[], int count);
 	private:
-		Honeycomb::Math::Vector3f* position; // Stores the position vector.
+		Honeycomb::Math::Vector3f *position; // Stores the position vector.
 	};
 }
 

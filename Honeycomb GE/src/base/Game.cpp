@@ -14,14 +14,15 @@
 #include "..\..\include\math\Vector2f.h"
 #include "..\..\include\math\Vector3f.h"
 
+#include "..\..\include\object\Transform.h"
 #include "..\..\include\mesh\Vertex.h"
 #include "..\..\include\mesh\Mesh.h"
 #include "..\..\include\shader\ShaderProgram.h"
 
-std::string testShaderVertexUniform = 
-	"..\\Honeycomb GE\\res\\shaders\\testShaderUniform\\vertexShader2.vert";
-std::string testShaderFragUniform =
-	"..\\Honeycomb GE\\res\\shaders\\testShaderUniform\\fragmentShader2.frag";
+std::string testShaderVertexTransform = 
+	"..\\Honeycomb GE\\res\\shaders\\testShader3_Transform\\vertexShader3.vert";
+std::string testShaderFragTransform =
+	"..\\Honeycomb GE\\res\\shaders\\testShader3_Transform\\fragmentShader3.frag";
 std::string testModelCube =
 	"..\\Honeycomb GE\\res\\models\\test1\\testMonkey.obj";
 
@@ -30,6 +31,7 @@ using Honeycomb::Math::Vector3f;
 using Honeycomb::Mesh::Mesh;
 using Honeycomb::Mesh::Vertex;
 using Honeycomb::Shader::ShaderProgram;
+using Honeycomb::Object::Transform;
 
 namespace Honeycomb::Base {
 	Game::Game() {
@@ -51,14 +53,15 @@ namespace Honeycomb::Base {
 		};
 		*/
 
+		testTransform = new Transform();
 		testMesh = Mesh::Mesh::loadMeshOBJ(testModelCube);
 		testShader = new ShaderProgram();
 		
-		testShader->addShader(testShaderVertexUniform, GL_VERTEX_SHADER);
-		testShader->addShader(testShaderFragUniform, GL_FRAGMENT_SHADER);
+		testShader->addShader(testShaderVertexTransform, GL_VERTEX_SHADER);
+		testShader->addShader(testShaderFragTransform, GL_FRAGMENT_SHADER);
 		testShader->finalizeShaderProgram();
 
-		testShader->addUniform("uni_scale");
+		testShader->addUniform("transform");
 		testShader->bindShaderProgram();
 	}
 
@@ -72,15 +75,25 @@ namespace Honeycomb::Base {
 	}
 
 	void Game::render() {
-		//testShader->bindShaderProgram();
 		testMesh->draw();
 		//testShader->unbindShaderProgram();
 	}
 
 	float uni_scale = 0;
 	void Game::update() {
-		uni_scale = sin(Time::getGameTime() / 1000);
-		std::cout << uni_scale << std::endl;
-		testShader->setUniform_f("uni_scale", uni_scale);
+		Vector3f newPos = Vector3f(cos(Time::getGameTime() / 1000),
+			sin(Time::getGameTime() / 1000), 0);
+		testTransform->setTranslation(newPos);
+
+		Vector3f newRot = Vector3f(0, sin(Time::getGameTime() / 1000), 0);
+		testTransform->setRotation(newRot * 2 * 3.14159);
+
+		Vector3f newScl = Vector3f(abs(sin(Time::getGameTime() / 1000)),
+			abs(sin(Time::getGameTime() / 1000)), 
+			abs(sin(Time::getGameTime() / 1000)));
+		testTransform->setScale(newScl);
+		
+		testShader->setUniform_mat4("transform", 
+			testTransform->cumulateTransformations());
 	}
 }

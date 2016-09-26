@@ -69,9 +69,11 @@ namespace Honeycomb::Math {
 	}
 
 	Vector2f Vector2f::rotate(float rad) {
-		// TODO (matricies requried!)
+		float cosRad = cos(rad);
+		float sinRad = sin(rad);
 
-		return Vector2f(0, 0);
+		// Use the Euclidean space rotation formula
+		return Vector2f(x * cosRad - y * sinRad, x * sinRad + y * cosRad);
 	}
 
 	Vector2f Vector2f::rotateTo(float rad) {

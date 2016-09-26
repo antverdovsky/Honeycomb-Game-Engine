@@ -139,7 +139,10 @@ namespace Honeycomb::Shader {
 
 	void ShaderProgram::setUniform_mat4(std::string uni, Matrix4f val) {
 		int loc = getUniformLocation(uni);
-		glUniformMatrix4fv(loc, 1, false, val.get());
+		
+		float *matPtr = &val.get()[0];
+		glUniformMatrix4fv(loc, 1, true, matPtr);
+		delete matPtr;
 	}
 	
 	void ShaderProgram::unbindShaderProgram() {

@@ -36,9 +36,12 @@ namespace Honeycomb::Math {
 	}
 
 	Vector3f Vector3f::cross(Vector3f v2) {
-		// TODO (matricies requried!)
-
-		return Vector3f(0, 0, 0);
+		// Calculate the cross product using the determinant of the cross
+		// product matrix of this and the second vector.
+		return Vector3f(
+			this->y * v2.z - v2.y * this->z, 
+			this->z * v2.x - v2.z * this->x, 
+			this->x * v2.y - v2.x * this->y);
 	}
 
 	Vector3f Vector3f::crossTo(Vector3f v2) {
@@ -94,8 +97,9 @@ namespace Honeycomb::Math {
 	}
 
 	Vector3f Vector3f::rotateTo(Vector3f axis, float rad) {
-		// TODO (matrices required!)
+		Vector3f rotated = this->rotate(axis, rad);
 
+		this->set(rotated.x, rotated.y, rotated.z);
 		return *this;
 	}
 

@@ -170,6 +170,7 @@
     <ClCompile Include="src\math\Vector3f.cpp" />
     <ClCompile Include="src\mesh\Mesh.cpp" />
     <ClCompile Include="src\mesh\Vertex.cpp" />
+    <ClCompile Include="src\object\Transform.cpp" />
     <ClCompile Include="src\shader\ShaderProgram.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +186,7 @@
     <ClInclude Include="include\math\Vector3f.h" />
     <ClInclude Include="include\mesh\Mesh.h" />
     <ClInclude Include="include\mesh\Vertex.h" />
+    <ClInclude Include="include\object\Transform.h" />
     <ClInclude Include="include\shader\ShaderProgram.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

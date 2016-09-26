@@ -37,7 +37,7 @@ namespace Honeycomb::Math {
 	}
 
 	float* Matrix4f::get() {
-		float oneDim[16]; // Create a one dimensional array of 16 values (4x4)
+		float* oneDim = new float[16]; // Create a 1D array of 16 values (4x4)
 
 		for (int r = 0; r < 4; r++) {
 			for (int c = 0; c < 4; c++) {
