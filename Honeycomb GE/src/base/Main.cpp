@@ -85,6 +85,8 @@ namespace Honeycomb::Base::Main {
 				// we have the current number of frames for the last second.
 				// Reset the variables so the FPS can be calculated next frame.
 				if (timeSpentRenderingFrames >= Time::SECOND) {
+					std::cout << "FPS " << framesRendered << std::endl;
+					
 					timeSpentRenderingFrames = 0;
 					framesRendered = 0;
 				}

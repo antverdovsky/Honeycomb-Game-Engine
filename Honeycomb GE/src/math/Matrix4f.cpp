@@ -3,12 +3,26 @@
 #include "..\..\include\math\Matrix4f.h"
 
 namespace Honeycomb::Math {
-	const float Matrix4f::IDENTITY[4][4] = {
+	float Matrix4f::M_IDENTITY[4][4] = {
 		{ 1, 0, 0, 0 },
 		{ 0, 1, 0, 0 },
 		{ 0, 0, 1, 0 },
 		{ 0, 0, 0, 1 }
 	};
+
+	Matrix4f Matrix4f::IDENTITY = Matrix4f(Matrix4f::M_IDENTITY);
+
+	Matrix4f::Matrix4f() {
+		
+	}
+
+	Matrix4f::Matrix4f(float m[4][4]) {
+		this->setMatrix(m);
+	}
+
+	Matrix4f::~Matrix4f() {
+
+	}
 
 	Matrix4f Matrix4f::add(Matrix4f m2) {
 		Matrix4f sum;
@@ -29,11 +43,8 @@ namespace Honeycomb::Math {
 		return *this;
 	}
 
-	Matrix4f Matrix4f::identity() {
-		Matrix4f identityMatrix;
-		identityMatrix.setMatrix(IDENTITY);
-
-		return identityMatrix;
+	Matrix4f& Matrix4f::identity() {
+		return Matrix4f::IDENTITY;
 	}
 
 	float* Matrix4f::get() {
@@ -101,6 +112,26 @@ namespace Honeycomb::Math {
 		this->matrix[r][c] = val;
 	}
 
+	void Matrix4f::setMatrix(float f[4][4]) {
+		// Copy the specified matrix array values into this matrix array, 
+		// column by column.
+		for (int r = 0; r < 4; r++) {
+			for (int c = 0; c < 4; c++) {
+				this->matrix[r][c] = f[r][c];
+			}
+		}
+	}
+
+	void Matrix4f::setMatrix(const float f[4][4]) {
+		// Copy the specified matrix array values into this matrix array, 
+		// column by column.
+		for (int r = 0; r < 4; r++) {
+			for (int c = 0; c < 4; c++) {
+				this->matrix[r][c] = f[r][c];
+			}
+		}
+	}
+
 	Matrix4f Matrix4f::operator*(float scale) {
 		return this->scale(scale);
 	}
@@ -143,25 +174,5 @@ namespace Honeycomb::Math {
 
 	Matrix4f Matrix4f::operator-=(Matrix4f m2) {
 		return this->addTo(-m2);
-	}
-
-	void Matrix4f::setMatrix(float f[4][4]) {
-		// Copy the specified matrix array values into this matrix array, 
-		// column by column.
-		for (int r = 0; r < 4; r++) {
-			for (int c = 0; c < 4; c++) {
-				this->matrix[r][c] = f[r][c];
-			}
-		}
-	}
-
-	void Matrix4f::setMatrix(const float f[4][4]) {
-		// Copy the specified matrix array values into this matrix array, 
-		// column by column.
-		for (int r = 0; r < 4; r++) {
-			for (int c = 0; c < 4; c++) {
-				this->matrix[r][c] = f[r][c];
-			}
-		}
 	}
 }

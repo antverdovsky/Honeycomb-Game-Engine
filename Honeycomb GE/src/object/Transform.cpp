@@ -10,18 +10,58 @@ using Honeycomb::Math::Matrix4f;
 
 namespace Honeycomb::Object {
 	Transform::Transform() {
-		this->translation = new Vector3f();
-		this->rotation = new Vector3f();
-		this->scale = new Vector3f(1, 1, 1); // Default scale is full size
+		this->translation = Vector3f();
+		this->rotation = Vector3f();
+		this->scale = Vector3f(1, 1, 1); // Default scale is full size
 	}
 
 	Transform::~Transform() {
-		delete this->translation;
-		delete this->rotation;
-		delete this->scale;
+
 	}
 
-	Matrix4f Transform::cumulateTransformations() {
+	Matrix4f Transform::modelTransformation() {
+		return this->transformation;
+	}
+
+	Vector3f Transform::getRotation() {
+		return this->rotation;
+	}
+
+	Vector3f Transform::getScale() {
+		return this->scale;
+	}
+
+	Vector3f Transform::getTranslation() {
+		return this->translation;
+	}
+
+	void Transform::setRotation(Vector3f vec) {
+		this->rotation.set(vec.getX(), vec.getY(), vec.getZ());
+
+		this->calculateTransformation();
+	}
+
+	void Transform::setScale(Vector3f vec) {
+		this->scale.set(vec.getX(), vec.getY(), vec.getZ());
+
+		this->calculateTransformation();
+	}
+
+	void Transform::setTranslation(Vector3f vec) {
+		this->translation.set(vec.getX(), vec.getY(), vec.getZ());
+
+		this->calculateTransformation();
+	}
+
+	void Transform::rotate(Vector3f vec) {
+		this->setRotation(this->rotation + vec);
+	}
+
+	void Transform::translate(Vector3f vec) {
+		this->setTranslation(this->translation + vec);
+	}
+
+	Matrix4f Transform::calculateTransformation() {
 		// Create individual matricies for each component of the transform
 		Matrix4f transMat = this->matrixTranslation();
 		Matrix4f rotMat = this->matrixRotation();
@@ -29,39 +69,8 @@ namespace Honeycomb::Object {
 
 		// Perform matrix multiplication on the components (first scale, then
 		// rotate, then translate).
-		return transMat * rotMat * sclMat;
-	}
-
-	Vector3f* Transform::getRotation() {
-		return this->rotation;
-	}
-
-	Vector3f* Transform::getScale() {
-		return this->scale;
-	}
-
-	Vector3f* Transform::getTranslation() {
-		return this->translation;
-	}
-
-	void Transform::setRotation(Vector3f vec) {
-		this->rotation->set(vec.getX(), vec.getY(), vec.getZ());
-	}
-
-	void Transform::setScale(Vector3f vec) {
-		this->scale->set(vec.getX(), vec.getY(), vec.getZ());
-	}
-
-	void Transform::setTranslation(Vector3f vec) {
-		this->translation->set(vec.getX(), vec.getY(), vec.getZ());
-	}
-
-	void Transform::rotate(Vector3f vec) {
-		this->setRotation(*this->rotation + vec);
-	}
-
-	void Transform::translate(Vector3f vec) {
-		this->setTranslation(*this->translation + vec);
+		this->transformation = transMat * rotMat * sclMat;
+		return this->transformation;
 	}
 
 	Matrix4f Transform::matrixRotation() {
@@ -71,7 +80,7 @@ namespace Honeycomb::Object {
 		Matrix4f rotZ = Matrix4f::identity();
 
 		{ // Local scope for calculating the rotation matrix for X
-			float x = this->rotation->getX();
+			float x = this->rotation.getX();
 			float cosX = cos(x);
 			float sinX = sin(x);
 
@@ -82,7 +91,7 @@ namespace Honeycomb::Object {
 		}
 
 		{ // Local scope for calculating the rotation matrix for Y
-			float y = this->rotation->getY();
+			float y = this->rotation.getY();
 			float cosY = cos(y);
 			float sinY = sin(y);
 
@@ -93,7 +102,7 @@ namespace Honeycomb::Object {
 		}
 
 		{ // Local scope for calculating the rotation matrix for Z
-			float z = this->rotation->getZ();
+			float z = this->rotation.getZ();
 			float cosZ = cos(z);
 			float sinZ = sin(z);
 
@@ -111,9 +120,9 @@ namespace Honeycomb::Object {
 
 		// A scale matrix is composed as an identity matrix whose diagonal
 		// equals { X, Y, Z, 1 }				// x 0 0 0
-		scl.setAt(0, 0, this->scale->getX());	// 0 y 0 0
-		scl.setAt(1, 1, this->scale->getY());	// 0 0 z 0
-		scl.setAt(2, 2, this->scale->getZ());	// 0 0 0 1
+		scl.setAt(0, 0, this->scale.getX());	// 0 y 0 0
+		scl.setAt(1, 1, this->scale.getY());	// 0 0 z 0
+		scl.setAt(2, 2, this->scale.getZ());	// 0 0 0 1
 
 		return scl;
 	}
@@ -123,9 +132,9 @@ namespace Honeycomb::Object {
 
 		// A translation matrix is composed as an identity matrix whose last
 		// column equals { X, Y, Z, 1 }.				// 1 0 0 x
-		trans.setAt(0, 3, this->translation->getX());	// 0 1 0 y
-		trans.setAt(1, 3, this->translation->getY());	// 0 0 1 z
-		trans.setAt(2, 3, this->translation->getZ());	// 0 0 0 1
+		trans.setAt(0, 3, this->translation.getX());	// 0 1 0 y
+		trans.setAt(1, 3, this->translation.getY());	// 0 0 1 z
+		trans.setAt(2, 3, this->translation.getZ());	// 0 0 0 1
 
 		return trans;
 	}

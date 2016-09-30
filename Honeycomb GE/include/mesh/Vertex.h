@@ -2,6 +2,8 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
+#include "..\..\include\math\Vector3f.h"
+
 namespace Honeycomb::Math { class Vector3f; }
 
 namespace Honeycomb::Mesh {
@@ -20,7 +22,7 @@ namespace Honeycomb::Mesh {
 
 		/// Gets the position vector.
 		/// return : The position vector.
-		Honeycomb::Math::Vector3f* getPosition();
+		Honeycomb::Math::Vector3f getPosition();
 
 		/// Converts an array of verticies to an array of the Vector positions
 		/// of each vertex. The array will be returned as a dynamically 
@@ -31,7 +33,7 @@ namespace Honeycomb::Mesh {
 		///			 y and z, in that order.
 		static float* verticiesToFloatBuffer(Vertex vert[], int count);
 	private:
-		Honeycomb::Math::Vector3f *position; // Stores the position vector.
+		Honeycomb::Math::Vector3f position; // Stores the position vector.
 	};
 }
 

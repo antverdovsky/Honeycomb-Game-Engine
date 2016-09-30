@@ -2,25 +2,23 @@
 
 #include <iostream>
 
-#include "..\..\include\math\Vector3f.h"
-
 using Honeycomb::Math::Vector3f;
 
 namespace Honeycomb::Mesh {
 	Vertex::Vertex(Vector3f pos) {
-		this->position = new Vector3f(pos.getX(), pos.getY(), pos.getZ());
+		this->position = Vector3f(pos.getX(), pos.getY(), pos.getZ());
 	}
 	
 	Vertex::Vertex(Vertex &v) {
-		this->position = new Vector3f(v.position->getX(), v.position->getY(),
-			v.position->getZ());
+		this->position = Vector3f(v.position.getX(), v.position.getY(),
+			v.position.getZ());
 	}
 
 	Vertex::~Vertex() {
-		delete this->position;
+
 	}
 
-	Vector3f* Vertex::getPosition() {
+	Vector3f Vertex::getPosition() {
 		return this->position;
 	}
 
@@ -35,9 +33,9 @@ namespace Honeycomb::Mesh {
 			// time a component is copied over, the current index is increased 
 			// so that the next component is copied into the next slot in the 
 			// float buffer.
-			floatBuffer[i++] = vert[i / 3].getPosition()->getX();
-			floatBuffer[i++] = vert[i / 3].getPosition()->getY();
-			floatBuffer[i++] = vert[i / 3].getPosition()->getZ();
+			floatBuffer[i++] = vert[i / 3].getPosition().getX();
+			floatBuffer[i++] = vert[i / 3].getPosition().getY();
+			floatBuffer[i++] = vert[i / 3].getPosition().getZ();
 		}
 
 		return floatBuffer;

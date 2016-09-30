@@ -13,25 +13,28 @@
 #include "..\..\include\math\Matrix4f.h"
 #include "..\..\include\math\Vector2f.h"
 #include "..\..\include\math\Vector3f.h"
-
+#include "..\..\include\render\Camera.h"
 #include "..\..\include\object\Transform.h"
 #include "..\..\include\mesh\Vertex.h"
 #include "..\..\include\mesh\Mesh.h"
 #include "..\..\include\shader\ShaderProgram.h"
+#include "..\..\include\base\GameWindow.h"
 
-std::string testShaderVertexTransform = 
-	"..\\Honeycomb GE\\res\\shaders\\testShader3_Transform\\vertexShader3.vert";
-std::string testShaderFragTransform =
-	"..\\Honeycomb GE\\res\\shaders\\testShader3_Transform\\fragmentShader3.frag";
+std::string vertexShader = 
+	"..\\Honeycomb GE\\res\\shaders\\vertexShader.vs";
+std::string fragShader =
+	"..\\Honeycomb GE\\res\\shaders\\fragShader.fs";
 std::string testModelCube =
-	"..\\Honeycomb GE\\res\\models\\test1\\testMonkey.obj";
+	"..\\Honeycomb GE\\res\\models\\test1\\testCube.obj";
 
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
+using Honeycomb::Math::Matrix4f;
 using Honeycomb::Mesh::Mesh;
 using Honeycomb::Mesh::Vertex;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Object::Transform;
+using Honeycomb::Render::Camera;
 
 namespace Honeycomb::Base {
 	Game::Game() {
@@ -54,14 +57,16 @@ namespace Honeycomb::Base {
 		*/
 
 		testTransform = new Transform();
+		testCamera = new Camera(100.0F, 0.3F, 90, 600, 800);
 		testMesh = Mesh::Mesh::loadMeshOBJ(testModelCube);
 		testShader = new ShaderProgram();
 		
-		testShader->addShader(testShaderVertexTransform, GL_VERTEX_SHADER);
-		testShader->addShader(testShaderFragTransform, GL_FRAGMENT_SHADER);
+		testShader->addShader(vertexShader, GL_VERTEX_SHADER);
+		testShader->addShader(fragShader, GL_FRAGMENT_SHADER);
 		testShader->finalizeShaderProgram();
 
 		testShader->addUniform("transform");
+		//testShader->addUniform("projection");
 		testShader->bindShaderProgram();
 	}
 
@@ -81,19 +86,34 @@ namespace Honeycomb::Base {
 
 	float uni_scale = 0;
 	void Game::update() {
-		Vector3f newPos = Vector3f(cos(Time::getGameTime() / 1000),
-			sin(Time::getGameTime() / 1000), 0);
-		testTransform->setTranslation(newPos);
-
-		Vector3f newRot = Vector3f(0, sin(Time::getGameTime() / 1000), 0);
-		testTransform->setRotation(newRot * 2 * 3.14159);
-
-		Vector3f newScl = Vector3f(abs(sin(Time::getGameTime() / 1000)),
-			abs(sin(Time::getGameTime() / 1000)), 
-			abs(sin(Time::getGameTime() / 1000)));
-		testTransform->setScale(newScl);
 		
+		Vector3f newPos = Vector3f(//cos(Time::getGameTime() / 1000) / 2,
+			//5 * sin(Time::getGameTime() / 1000),
+			//5 * sin(Time::getGameTime() / 1000),
+			0, 0, -4);
+			//0, 0, -20 * abs(sin(Time::getGameTime() / 1000))); //-abs(5 * sin(Time::getGameTime() / 3000)));
+		testTransform->setTranslation(newPos);
+		
+
+		Vector3f newRot = Vector3f(0, ///sin(Time::getGameTime() / 1000),
+			sin(Time::getGameTime() / 5000),
+			0); ///sin(Time::getGameTime() / 1000));
+		testTransform->rotate(Vector3f(0.001F, 0.001F, 0.001F));
+
+		
+		Vector3f newScl = Vector3f(//2 * sin(Time::getGameTime() / 3000), 
+			//2 * sin(Time::getGameTime() / 3000), 
+			//2 * sin(Time::getGameTime() / 3000));
+			1, 1, 1);
+		testTransform->setScale(Vector3f(1, 1, 1));
+		
+		Matrix4f camMat = testCamera->getProjection();
+		Matrix4f transMat = testTransform->modelTransformation();
+		Matrix4f finalMat = camMat * transMat;
+
+		//testShader->setUniform_mat4("projection",
+		//	*testCamera->getProjection());
 		testShader->setUniform_mat4("transform", 
-			testTransform->cumulateTransformations());
+			finalMat);
 	}
 }

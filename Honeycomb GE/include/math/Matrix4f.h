@@ -5,7 +5,17 @@
 namespace Honeycomb::Math {
 	class Matrix4f {
 	public:
-		/// Returns an instancce of the Matrix class initialized to the matrix
+		/// Creates an empty 4x4 Matrix.
+		Matrix4f();
+
+		/// Creaates a 4x4 Matrix initialized to the specified 2D 4x4 array.
+		/// float m[4][4] : The 2D 4x4 Matrix array.
+		Matrix4f(float m[4][4]);
+
+		/// Default Destructor.
+		~Matrix4f();
+
+		/// Returns an instance of the Matrix class initialized to the matrix
 		/// sum of this and the specified second matrix. Neither matrix is 
 		/// modified in the process.
 		/// Matrix4f m2 : The second matrix.
@@ -20,7 +30,7 @@ namespace Honeycomb::Math {
 		/// Returns an instance of the Matrix class which is initialized to a 
 		/// 4x4 identity matrix.
 		/// return : The 4x4 identity matrix.
-		static Matrix4f identity();
+		static Matrix4f& identity();
 
 		/// Gets a 1D array of all of the values stored by this Matrix class.
 		/// The values are ordered by row major order (All column values of 
@@ -64,6 +74,14 @@ namespace Honeycomb::Math {
 		/// int c : The column position.
 		/// return : The value at the position.
 		void setAt(int r, int c, float val);
+
+		/// Sets the entire matrix to the specified 2D 4x4 array.
+		/// float f[4][4] : The 4x4 array to override this matrix.
+		void setMatrix(float f[4][4]);
+
+		/// Sets the entire matrix to the specified 2D 4x4 array.
+		/// float f[4][4] : The 4x4 array to override this matrix.
+		void setMatrix(const float f[4][4]);
 
 		/// Overloads the mulitplication operator to return a matrix instance
 		/// which is equivalent to this matrix, scaled by the specified amount.
@@ -136,17 +154,10 @@ namespace Honeycomb::Math {
 		/// return : This difference matrix.
 		Matrix4f operator-=(Matrix4f m2);
 	private:
-		const static float IDENTITY[4][4]; // Stores the identity matrix
-
 		float matrix[4][4]; // Stores the 4x4 array which represents the matrix
 
-		/// Sets the entire matrix to the specified 2D 4x4 array.
-		/// float f[4][4] : The 4x4 array to override this matrix.
-		void setMatrix(float f[4][4]);
-
-		/// Sets the entire matrix to the specified 2D 4x4 array.
-		/// float f[4][4] : The 4x4 array to override this matrix.
-		void setMatrix(const float f[4][4]);
+		static float M_IDENTITY[4][4];
+		static Matrix4f IDENTITY;
 	};
 }
 
