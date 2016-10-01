@@ -12,10 +12,10 @@
 layout(location = 0) in vec3 pos;
 
 uniform mat4 transform = mat4(1.0); // Transform Matrix (pos, rot, scl)
-//uniform mat4 projection = mat4(1.0); // Projection Matrix (camera)
+uniform mat4 projection = mat4(1.0); // Projection Matrix (camera)
 
 void main() {
     // The position of each vertex equals to the transformation matrix
     // mutliplied with the vector representing the original position.
-    gl_Position = transform * vec4(pos, 1.0);
+    gl_Position = projection * transform * vec4(pos, 1.0);
 }

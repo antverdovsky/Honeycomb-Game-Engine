@@ -1,6 +1,7 @@
 #include <math.h>
 
 #include "..\..\include\math\Vector3f.h"
+#include "..\..\include\math\Quaternion.h"
 
 namespace Honeycomb::Math {
 	Vector3f::Vector3f() : Vector3f(0.0F, 0.0F, 0.0F) { }
@@ -91,9 +92,26 @@ namespace Honeycomb::Math {
 	}
 
 	Vector3f Vector3f::rotate(Vector3f axis, float rad) {
-		// TODO (matricies requried!)
+		// Calculate the sin and cos of the half angle.
+		float sinHalfAngle = sin(rad / 2);
+		float cosHalfAngle = cos(rad / 2);
 
-		return Vector3f(0, 0, 0);
+		// Construct a Rotation Quaternion which will rotate the vector.
+		Quaternion rotQuat = Quaternion(
+			axis.x * sinHalfAngle,
+			axis.y * sinHalfAngle,
+			axis.z * sinHalfAngle,
+			cosHalfAngle
+		);
+		Quaternion rotQuatConj = rotQuat.conjugated();
+
+		// Multiply the Quaternion by this Vector instance to get the resulting
+		// rotated Quaternion, and multiply by conjugate to cancel out the 
+		// imaginary components.
+		Quaternion result = rotQuat * (*this) * rotQuatConj;
+
+		// All components of the rotated vector lie within the Quaternion.
+		return Vector3f(result.getX(), result.getY(), result.getZ());
 	}
 
 	Vector3f Vector3f::rotateTo(Vector3f axis, float rad) {

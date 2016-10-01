@@ -18,10 +18,7 @@ int main(int argc, char** argv) {
 }
 
 namespace Honeycomb::Base::Main {
-	GameWindow *window; // Reference to the Game Window component.
-	GameInput *input; // Reference to the Game Input component.
-	Game *game; // Reference to the Game component.
-
+	Game *game;
 	bool isGameRunning = false; // Is the game loop running?
 	bool drawBackFaces = true; // Draw back faces?
 
@@ -39,9 +36,9 @@ namespace Honeycomb::Base::Main {
 	}
 
 	void render() {
-		window->clear();
+		GameWindow::getGameWindow()->clear();
 		game->render();
-		window->refresh();
+		GameWindow::getGameWindow()->refresh();
 	}
 
 	void run() {
@@ -93,7 +90,7 @@ namespace Honeycomb::Base::Main {
 			}
 
 			// "Is game running" is based on the window close requested event
-			isGameRunning = !window->isCloseRequested();
+			isGameRunning = !GameWindow::getGameWindow()->isCloseRequested();
 		} while (isGameRunning);
 	}
 
@@ -102,9 +99,10 @@ namespace Honeycomb::Base::Main {
 
 		// Initialize the GLFW, the Window, GLEW and OpenGL.
 		glfwInit();
-		window = GameWindow::getGameWindow();
+		GameWindow::getGameWindow(); // Initialize the Game Window (first time)
 		glewExperimental = true; glewInit();
 		initializeOpenGL();
+
 		game = new Game();
 	}
 
@@ -112,11 +110,6 @@ namespace Honeycomb::Base::Main {
 		if (!isGameRunning) return; // If already stopped -> No need to stop!
 
 		glfwTerminate(); // Terminate GLFW
-
-		// Destroy Game components.
-		delete game;
-		delete input;
-		delete window;
 	}
 
 	void update() {

@@ -5,7 +5,11 @@
 #include <string>
 #include <GLFW\glfw3.h>
 
+#include "..\..\include\render\Camera.h"
+
 struct GLFWwindow;
+
+namespace Honeycomb::Render { class Camera; }
 
 namespace Honeycomb::Base {
 	class GameWindow {
@@ -33,6 +37,14 @@ namespace Honeycomb::Base {
 		/// return : The GLFW Window instance.
 		GLFWwindow *getGLFWwindow();
 
+		/// Gets the height of this window (in pixels).
+		/// return : The height.
+		int getWindowHeight();
+
+		/// Gets the width of this window (in pixels).
+		/// return : The width.
+		int getWindowWidth();
+
 		/// Checks if the window is requesting to be closed (the user has
 		/// pressed the 'x' button on the window).
 		/// return : True if the user has pressed 'x'; False otherwise.
@@ -43,10 +55,10 @@ namespace Honeycomb::Base {
 	private:
 		static GameWindow *gameWindow; // Instance stored by the singleton
 
-		GLFWwindow *glfwWindow; // Stores the reference to the GLFW window.
+		GLFWwindow *glfwWindow; // Stores the reference to the GLFW window
 
-		int width = 800; // The width of the window.
-		int height = 600; // The height of the window.
+		int width = 1024; // The width of the window.
+		int height = 768; // The height of the window.
 		bool resizeable = false; // Allow & check for resizing?
 		std::string title = "Honeycomb GE"; // Title of the Game Window
 

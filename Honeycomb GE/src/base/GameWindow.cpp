@@ -2,6 +2,8 @@
 
 #include "..\..\include\base\GameWindow.h"
 
+using Honeycomb::Render::Camera;
+
 namespace Honeycomb::Base {
 	// Set the initial Game Window value to NULL, as it is not created until
 	// the getGameWindow() creates it.
@@ -35,6 +37,14 @@ namespace Honeycomb::Base {
 
 	GLFWwindow* GameWindow::getGLFWwindow() {
 		return this->glfwWindow;
+	}
+
+	int GameWindow::getWindowHeight() {
+		return this->height;
+	}
+
+	int GameWindow::getWindowWidth() {
+		return this->width;
 	}
 
 	bool GameWindow::isCloseRequested() {

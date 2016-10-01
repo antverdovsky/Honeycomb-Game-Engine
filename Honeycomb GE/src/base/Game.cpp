@@ -25,7 +25,7 @@ std::string vertexShader =
 std::string fragShader =
 	"..\\Honeycomb GE\\res\\shaders\\fragShader.fs";
 std::string testModelCube =
-	"..\\Honeycomb GE\\res\\models\\test1\\testCube.obj";
+	"..\\Honeycomb GE\\res\\models\\test1\\testMonkey.obj";
 
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
@@ -38,26 +38,12 @@ using Honeycomb::Render::Camera;
 
 namespace Honeycomb::Base {
 	Game::Game() {
-		/*
-		Vertex data[] = {
-			Vertex(Vector3f(-0.5F, 0.5F, 0.0F)),
-			Vertex(Vector3f(0.5F, 0.5F, 0.0F)),
-			Vertex(Vector3f(0.5F, -0.5F, 0.0F)),
-			Vertex(Vector3f(-0.5F, -0.5F, 0.0F))
-
-			//Vertex(Vector3f(0.5, -0.5F, -1.0F)),
-			//Vertex(Vector3f(-0.5F, -0.5F, -1.0F)),
-			//Vertex(Vector3f(-0.5, 0.5F, -1.0F))
-		};
-
-		int indicies[] = {
-			0, 1, 2,
-			2, 3, 0
-		};
-		*/
+		float camW = GameWindow::getGameWindow()->getWindowWidth();
+		float camH = GameWindow::getGameWindow()->getWindowHeight();
 
 		testTransform = new Transform();
-		testCamera = new Camera(100.0F, 0.3F, 90, 600, 800);
+		testCamera = new Camera(Camera::CameraType::PERSPECTIVE, 0.3F, 100.0F,
+			75.0F, camH, camW);
 		testMesh = Mesh::Mesh::loadMeshOBJ(testModelCube);
 		testShader = new ShaderProgram();
 		
@@ -65,9 +51,12 @@ namespace Honeycomb::Base {
 		testShader->addShader(fragShader, GL_FRAGMENT_SHADER);
 		testShader->finalizeShaderProgram();
 
+		testShader->addUniform("projection");
 		testShader->addUniform("transform");
-		//testShader->addUniform("projection");
 		testShader->bindShaderProgram();
+
+		testShader->setUniform_mat4("projection",
+			testCamera->getProjection());
 	}
 
 	Game::~Game() {
@@ -76,7 +65,7 @@ namespace Honeycomb::Base {
 	}
 
 	void Game::input() {
-		Main::input->getGameInput()->clear();
+		GameInput::getGameInput()->clear();
 	}
 
 	void Game::render() {
@@ -86,17 +75,17 @@ namespace Honeycomb::Base {
 
 	float uni_scale = 0;
 	void Game::update() {
-		
+		float invSpeed = 5000;
 		Vector3f newPos = Vector3f(//cos(Time::getGameTime() / 1000) / 2,
 			//5 * sin(Time::getGameTime() / 1000),
 			//5 * sin(Time::getGameTime() / 1000),
-			0, 0, -4);
+			0, 0, -5);
 			//0, 0, -20 * abs(sin(Time::getGameTime() / 1000))); //-abs(5 * sin(Time::getGameTime() / 3000)));
 		testTransform->setTranslation(newPos);
 		
 
-		Vector3f newRot = Vector3f(0, ///sin(Time::getGameTime() / 1000),
-			sin(Time::getGameTime() / 5000),
+		Vector3f newRot = Vector3f(0, ///sin(Time::getGameTime() / invSpeed),
+			3.1415926 / 2.0,
 			0); ///sin(Time::getGameTime() / 1000));
 		testTransform->rotate(Vector3f(0.001F, 0.001F, 0.001F));
 
@@ -107,13 +96,9 @@ namespace Honeycomb::Base {
 			1, 1, 1);
 		testTransform->setScale(Vector3f(1, 1, 1));
 		
-		Matrix4f camMat = testCamera->getProjection();
 		Matrix4f transMat = testTransform->modelTransformation();
-		Matrix4f finalMat = camMat * transMat;
-
-		//testShader->setUniform_mat4("projection",
-		//	*testCamera->getProjection());
+		
 		testShader->setUniform_mat4("transform", 
-			finalMat);
+			testTransform->modelTransformation());
 	}
 }

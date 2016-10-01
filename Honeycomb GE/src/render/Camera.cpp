@@ -1,24 +1,31 @@
 #include "..\..\include\render\Camera.h"
+#include "..\..\include\math\MathUtils.h"
 
 #include <math.h>
 #include <iostream>
 
 using Honeycomb::Math::Matrix4f;
+using namespace Honeycomb::Math::Utils;
 
 namespace Honeycomb::Render {
-	Camera::Camera(float clF, float clN, float fov, float projH, float projW)
-		: projection() {
+	Camera::Camera(CameraType cT, float clF, float clN, float cTP, float projH,
+			float projW) {
+		this->type = cT;
 		this->clipFar = clF;
 		this->clipNear = clN;
-		this->fieldOfView = fov;
+		this->typeParameter = cTP;
 		this->projectionHeight = projH;
 		this->projectionWidth = projW;
 
-		this->calcProjectionPerspective();
+		this->calcProjection();
 	}
 
 	Camera::~Camera() {
-		//delete this->projection;
+
+	}
+
+	Camera::CameraType Camera::getCameraType() {
+		return this->type;
 	}
 
 	float Camera::getClipFar() {
@@ -29,8 +36,8 @@ namespace Honeycomb::Render {
 		return this->clipNear;
 	}
 
-	float Camera::getFieldOfView() {
-		return this->fieldOfView;
+	float Camera::getTypeParameter() {
+		return this->typeParameter;
 	}
 
 	Matrix4f Camera::getProjection() {
@@ -45,6 +52,56 @@ namespace Honeycomb::Render {
 		return this->projectionWidth;
 	}
 
+	void Camera::setProjectionSize(int h, int w) {
+		// Write the new values into the Camera instance
+		this->projectionHeight = h;
+		this->projectionWidth = w;
+		
+		this->calcProjection(); // Recalculate the Projection
+	}
+
+	Matrix4f Camera::calcProjection() {
+		// Call the appropriate matrix projection calculation method according
+		// to the type of Camera.
+		switch (this->type) {
+		case CameraType::PERSPECTIVE:
+			return this->calcProjectionPerspective();
+		case CameraType::ORTHOGRAPHIC:
+			return this->calcProjectionOrthographic();
+		default:
+			return this->getProjection();
+		}
+	}
+
+	Matrix4f Camera::calcProjectionOrthographic() {
+		// Mathematics Explanation From:
+		// www.scratchapixel.com/lessons/3d-basic-rendering/
+		// perspective-and-orthographic-projection-matrix
+
+		// Calculate the "top" and "right" sections of the projection. Since 
+		// the viewport is divided into positive and negative sides, the top 
+		// and right must be halfed. Additionally, left and bottom are not
+		// needed since bot == -top and left == -right.
+		float top = projectionHeight / projectionWidth * typeParameter;
+		float right = projectionWidth / projectionHeight * typeParameter;
+
+		// Variables which will go inside of the Camera Projection Matrix.
+		float pmA = 1 / right;
+		float pmB = 1 / top;
+		float pmC = -2 / (clipFar - clipNear);
+		float pmD = -(clipFar + clipNear) / (clipFar - clipNear);
+
+		// Construct the Projection Matrix:
+		this->projection = Matrix4f::identity();
+		this->projection.setAt(0, 0, pmA);		// [ A  0  0  0 ]
+		this->projection.setAt(1, 1, pmB);		// [ 0  B  0  0 ]
+		this->projection.setAt(2, 2, pmC);		// [ 0  0  C  D ]
+		this->projection.setAt(2, 3, pmD);		// [ 0  0  0  1 ]
+		this->projection.setAt(3, 3, 1.0F);
+
+		return this->projection;
+	}
+
 	Matrix4f Camera::calcProjectionPerspective() {
 		// Mathematics Explanation From:
 		// www.scratchapixel.com/lessons/3d-basic-rendering/
@@ -52,11 +109,16 @@ namespace Honeycomb::Render {
 
 		float aR = projectionWidth / projectionHeight; // Aspect Ratio
 		float tanHalfFOV = // Tangent of the Field of View Halved
-			tan(fieldOfView * (atan(1) * 4) / 180 / 2); // (atan(1) * 4) = pi
+			tan(degToRad(typeParameter / 2));
 		
+		// Calculate the "top" section of the projection. Since the projection
+		// is symmetric (top == -bot, left == -right), there is no need for the
+		// other sections of the projection.
+		float top = tanHalfFOV * clipNear;
+
 		// Variables which will go inside of the Camera Projection Matrix.
-		float pmB = 1 / tanHalfFOV;
-		float pmA = pmB / aR;
+		float pmA = clipNear / (top * aR);
+		float pmB = clipNear / top;
 		float pmC = -(clipFar + clipNear) / (clipFar - clipNear);
 		float pmD = -2 * clipNear * clipFar / (clipFar - clipNear);
 

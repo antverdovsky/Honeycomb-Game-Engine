@@ -102,16 +102,17 @@ namespace Honeycomb::Base {
 		mousePos = new Vector2f();
 
 		// Set up the GLFW Input
-		glfwSetInputMode(Main::window->getGLFWwindow(), GLFW_STICKY_KEYS, 
-			GL_TRUE);
+		glfwSetInputMode(GameWindow::getGameWindow()->getGLFWwindow(), 
+			GLFW_STICKY_KEYS, GL_TRUE);
 
 		// Link all of the callback functions so OpenGL notifies us when
 		// something is inputted into the window.
-		glfwSetKeyCallback(Main::window->getGLFWwindow(),
+		glfwSetKeyCallback(GameWindow::getGameWindow()->getGLFWwindow(),
 			(GLFWkeyfun)callbackKey);
-		glfwSetCursorPosCallback(Main::window->getGLFWwindow(),
+		glfwSetCursorPosCallback(GameWindow::getGameWindow()->getGLFWwindow(),
 			(GLFWcursorposfun)callbackCursorPosition);
-		glfwSetMouseButtonCallback(Main::window->getGLFWwindow(),
+		glfwSetMouseButtonCallback(
+			GameWindow::getGameWindow()->getGLFWwindow(),
 			(GLFWmousebuttonfun)callbackMouseButton);
 	}
 }

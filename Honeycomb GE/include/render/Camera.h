@@ -9,16 +9,29 @@ namespace Honeycomb::Math { class Matrix4f; }
 namespace Honeycomb::Render {
 	class Camera {
 	public:
+		enum CameraType { // The type of camera (Orthographic or Perspective)
+			ORTHOGRAPHIC,
+			PERSPECTIVE
+		};
+
 		/// Initializes a new Camera instance.
+		/// CameraType cT : The camera type.
 		/// float clF : The far clipping plane.
 		/// float clN : The near clipping plane.
-		/// float fov : The field of view (in degrees).
+		/// float cTP : The camera type parameter. If the Camera Type is set to
+		///				perspective, this is the FOV. If the Camera Type is set
+		///				to orthographic, this is the orthographic size.
 		/// float projH : The camera projection height.
 		/// float projW : The camera projection width.
-		Camera(float clF, float clN, float fov, float projH, float projW);
+		Camera(CameraType cT, float clF, float clN, float cTP, float projH, 
+			float projW);
 
 		/// Destroys this Camera instance.
 		~Camera();
+
+		/// Gets the camera type (Ortho / Persp).
+		/// return : The camera type.
+		CameraType getCameraType();
 
 		/// Gets the far clipping plane for this camera.
 		/// return : The far clipping plane.
@@ -28,9 +41,11 @@ namespace Honeycomb::Render {
 		/// return : The near clipping plane.
 		float getClipNear();
 
-		/// Gets the field of view for this camera.
-		/// return : The field of view (in degrees).
-		float getFieldOfView();
+		/// Gets the type parameter for the camera. If this is a perspective
+		/// camera, the parameter is equal to the FOV (in degrees). Otherwise,
+		/// the parameter is equal to the orthographic size.
+		/// return : The type parameter.
+		float getTypeParameter();
 
 		/// Gets the projection matrix for this camera.
 		/// return : The projection matrix.
@@ -43,14 +58,31 @@ namespace Honeycomb::Render {
 		/// Gets the projection width for this camera.
 		/// return : The projection width.
 		float getProjectionWidth();
+
+		/// Sets the projection width and height for the Camera.
+		/// int h : The new height of the projection size.
+		/// int w : The new width of the projection size.
+		void setProjectionSize(int h, int w);
 	private:
+		CameraType type = PERSPECTIVE; // The type of Camera (Persp / Ortho)
 		float clipFar = 1000.0F; // The far clipping plane
 		float clipNear = 0.1F; // The near clipping plane
-		float fieldOfView = 75.0F; // The field of view (in degrees)
+		float typeParameter = 75.0F; // The Camera Type parameter (FOV / Ortho)
 		float projectionHeight = 1.0F; // The projection height
 		float projectionWidth = 1.0F; // The projection width
 
 		Honeycomb::Math::Matrix4f projection; // Stores the projection
+
+		/// Calculates (or recalculates) either the perspective or the
+		/// orthographic projection matrix for this camera, depending on its
+		/// type.
+		/// return : The projection matrix.
+		Honeycomb::Math::Matrix4f calcProjection();
+
+		/// Calculates (or recalculates) the orthographic projection matrix for
+		/// this camera, and stores it into the projection matrix variable.
+		/// return : The projection matrix.
+		Honeycomb::Math::Matrix4f calcProjectionOrthographic();
 
 		/// Calculates (or recalculates) the perspective projection matrix for 
 		/// this camera, and stores it into the projection matrix variable.

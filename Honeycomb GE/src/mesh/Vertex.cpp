@@ -9,11 +9,6 @@ namespace Honeycomb::Mesh {
 		this->position = Vector3f(pos.getX(), pos.getY(), pos.getZ());
 	}
 	
-	Vertex::Vertex(Vertex &v) {
-		this->position = Vector3f(v.position.getX(), v.position.getY(),
-			v.position.getZ());
-	}
-
 	Vertex::~Vertex() {
 
 	}
