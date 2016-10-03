@@ -16,9 +16,9 @@ namespace Honeycomb::Mesh {
 		/// Destroys the vertex, and its position vector.
 		~Vertex();
 
-		/// Gets the position vector.
+		/// Gets the reference to the position vector.
 		/// return : The position vector.
-		Honeycomb::Math::Vector3f getPosition();
+		Honeycomb::Math::Vector3f& getPosition();
 
 		/// Converts an array of verticies to an array of the Vector positions
 		/// of each vertex. The array will be returned as a dynamically 

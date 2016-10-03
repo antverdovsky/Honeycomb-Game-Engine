@@ -91,11 +91,13 @@ namespace Honeycomb::Base {
 		// Set the released state of all buttons and keys to false. (The down 
 		// state is not modified as that is automatically cleared when the use 
 		// lets go of the button).
-		for (int i = 0; i < MAX_NUM_KEYS; i++)
+		for (int i = 0; i < MAX_NUM_KEYS; i++) {
 			keysReleased[i] = false;
+		}
 
-		for (int i = 0; i < MAX_NUM_BUTTONS; i++)
+		for (int i = 0; i < MAX_NUM_BUTTONS; i++) {
 			buttonsReleased[i] = false;
+		}
 	}
 
 	GameInput::GameInput() {
@@ -114,5 +116,15 @@ namespace Honeycomb::Base {
 		glfwSetMouseButtonCallback(
 			GameWindow::getGameWindow()->getGLFWwindow(),
 			(GLFWmousebuttonfun)callbackMouseButton);
+
+		for (int i = 0; i < MAX_NUM_KEYS; i++) {
+			this->keysDown[i] = false;
+			this->keysReleased[i] = false;
+		}
+
+		for (int i = 0; i < MAX_NUM_BUTTONS; i++) {
+			this->buttonsDown[i] = false;
+			this->buttonsReleased[i] = false;
+		}
 	}
 }

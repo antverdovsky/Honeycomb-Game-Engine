@@ -103,6 +103,7 @@ namespace Honeycomb::Base::Main {
 		glewExperimental = true; glewInit();
 		initializeOpenGL();
 
+		GameInput::getGameInput(); // Initialize the Game Input (first time)
 		game = new Game();
 	}
 

@@ -61,6 +61,18 @@ namespace Honeycomb::Math {
 		/// float &z : The ref. to where the z-component is to be written to.
 		void get(float &x, float &y, float &z);
 
+		/// Returns the global forward vector.
+		/// return : The vector.
+		static Vector3f& getGlobalForward();
+
+		/// Returns the global up vector.
+		/// return : The vector.
+		static Vector3f& getGlobalUp();
+		
+		/// Returns the global right vector.
+		/// return : The vector.
+		static Vector3f& getGlobalRight();
+
 		/// Gets the x-component of the vector.
 		/// return : The x-component.
 		float getX();
@@ -197,6 +209,10 @@ namespace Honeycomb::Math {
 		float x; // The x component
 		float y; // The y component
 		float z; // The z component
+
+		static Vector3f forward; // Global Forward Vector { 0, 0, 1 }
+		static Vector3f right; // Global Right Vector { 1, 0, 0 }
+		static Vector3f up; // Global Up Vector { 0, 1, 0 }
 	};
 }
 

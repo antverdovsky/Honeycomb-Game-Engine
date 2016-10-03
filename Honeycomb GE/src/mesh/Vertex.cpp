@@ -13,7 +13,7 @@ namespace Honeycomb::Mesh {
 
 	}
 
-	Vector3f Vertex::getPosition() {
+	Vector3f& Vertex::getPosition() {
 		return this->position;
 	}
 

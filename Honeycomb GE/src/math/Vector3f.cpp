@@ -4,6 +4,11 @@
 #include "..\..\include\math\Quaternion.h"
 
 namespace Honeycomb::Math {
+	/// perhaps change from right to left, so the cross product works..>????
+	Vector3f Vector3f::forward = Vector3f(0, 0, 1);
+	Vector3f Vector3f::right = Vector3f(1, 0, 0);
+	Vector3f Vector3f::up = Vector3f(0, 1, 0);
+
 	Vector3f::Vector3f() : Vector3f(0.0F, 0.0F, 0.0F) { }
 
 	Vector3f::Vector3f(float x, float y, float z) {
@@ -28,7 +33,7 @@ namespace Honeycomb::Math {
 	}
 
 	float Vector3f::angle(Vector3f v2) {
-		// Calculate cos(theta) = (v1 * v2) / (|v1||v2|)
+		// Calculate cos(theta) = (v1 . v2) / (|v1||v2|)
 		float dot = this->dot(v2);
 		float magMult = this->magnitude() * v2.magnitude();
 		float cosTheta = dot / magMult;
@@ -60,6 +65,18 @@ namespace Honeycomb::Math {
 		x = this->x;
 		y = this->y;
 		z = this->z;
+	}
+
+	Vector3f& Vector3f::getGlobalForward() {
+		return forward;
+	}
+
+	Vector3f& Vector3f::getGlobalRight() {
+		return right;
+	}
+
+	Vector3f& Vector3f::getGlobalUp() {
+		return up;
 	}
 
 	float Vector3f::getX() {

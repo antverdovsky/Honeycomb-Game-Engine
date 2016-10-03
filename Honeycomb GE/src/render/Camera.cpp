@@ -5,17 +5,19 @@
 #include <iostream>
 
 using Honeycomb::Math::Matrix4f;
+using Honeycomb::Object::Transform;
 using namespace Honeycomb::Math::Utils;
 
 namespace Honeycomb::Render {
 	Camera::Camera(CameraType cT, float clF, float clN, float cTP, float projH,
-			float projW) {
+			float projW, Transform trans) {
 		this->type = cT;
 		this->clipFar = clF;
 		this->clipNear = clN;
 		this->typeParameter = cTP;
 		this->projectionHeight = projH;
 		this->projectionWidth = projW;
+		this->transform = trans;
 
 		this->calcProjection();
 	}
@@ -34,6 +36,10 @@ namespace Honeycomb::Render {
 
 	float Camera::getClipNear() {
 		return this->clipNear;
+	}
+
+	Transform& Camera::getTransform() {
+		return this->transform;
 	}
 
 	float Camera::getTypeParameter() {
