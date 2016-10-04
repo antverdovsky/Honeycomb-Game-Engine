@@ -4,7 +4,6 @@
 #include "..\..\include\math\Quaternion.h"
 
 namespace Honeycomb::Math {
-	/// perhaps change from right to left, so the cross product works..>????
 	Vector3f Vector3f::forward = Vector3f(0, 0, 1);
 	Vector3f Vector3f::right = Vector3f(1, 0, 0);
 	Vector3f Vector3f::up = Vector3f(0, 1, 0);

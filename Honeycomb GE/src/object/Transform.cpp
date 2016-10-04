@@ -102,20 +102,22 @@ namespace Honeycomb::Object {
 
 		// Rotate the Local Forward, Right and Up vectors according to the 
 		// rotation passed in. todo...
-		this->localForward.rotateTo(Vector3f::getGlobalRight(), del.getX());
-		this->localRight.rotateTo(Vector3f::getGlobalRight(), del.getX());
-		this->localUp.rotateTo(Vector3f::getGlobalRight(), del.getX());
-
-		// y rot
-		this->localForward.rotateTo(Vector3f::getGlobalUp(), del.getY());
-		this->localRight.rotateTo(Vector3f::getGlobalUp(), del.getY());
-		this->localUp.rotateTo(Vector3f::getGlobalUp(), del.getY());
 
 		// z rot
 		this->localForward.rotateTo(Vector3f::getGlobalForward(), del.getZ());
 		this->localRight.rotateTo(Vector3f::getGlobalForward(), del.getZ());
 		this->localUp.rotateTo(Vector3f::getGlobalForward(), del.getZ());
 
+		// y rot
+		this->localForward.rotateTo(Vector3f::getGlobalUp(), del.getY());
+		this->localRight.rotateTo(Vector3f::getGlobalUp(), del.getY());
+		this->localUp.rotateTo(Vector3f::getGlobalUp(), del.getY());
+
+		// x rot
+		this->localForward.rotateTo(Vector3f::getGlobalRight(), del.getX());
+		this->localRight.rotateTo(Vector3f::getGlobalRight(), del.getX());
+		this->localUp.rotateTo(Vector3f::getGlobalRight(), del.getX());
+		
 		this->localForward.normalize();
 		this->localRight.normalize();
 		this->localUp.normalize();
@@ -181,9 +183,11 @@ namespace Honeycomb::Object {
 		Matrix4f rotMat = this->getRotationMatrix();
 		Matrix4f sclMat = this->getScaleMatrix();
 
+		Matrix4f test = this->getOrientationMatrix();
+
 		// Perform matrix multiplication on the components (first scale, then
 		// rotate, then translate).
-		this->transformationMatrix = transMat * rotMat * sclMat;
+		this->transformationMatrix = transMat *  rotMat * sclMat;
 		return this->transformationMatrix;
 	}
 

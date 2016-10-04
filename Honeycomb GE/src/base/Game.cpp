@@ -44,7 +44,7 @@ namespace Honeycomb::Base {
 		float camH = GameWindow::getGameWindow()->getWindowHeight();
 
 		testTransform = new Transform(Vector3f(0, 0, -10), Vector3f(), Vector3f(1, 1, 1),
-			Vector3f(0, 0, -1), Vector3f(-1, 0, 0), Vector3f(0, 1, 0));
+			Vector3f(-1, 0, 0), Vector3f(0, 0, 1), Vector3f(0, 1, 0));
 		testCamera = new Camera(Camera::CameraType::PERSPECTIVE, 0.3F, 100.0F,
 			75.0F, camH, camW, Transform(Vector3f(), Vector3f(0, 0, 0), Vector3f(),
 				-Vector3f::getGlobalForward(), Vector3f::getGlobalRight(), 
@@ -171,16 +171,19 @@ namespace Honeycomb::Base {
 	float uni_scale = 0;
 	void Game::update() {
 		Vector3f camF = testCamera->getTransform().getLocalForward();
-		std::cout << "CAM FOR: " << camF.getX() << ", " << camF.getY() << ", " << camF.getZ() << std::endl;
+	 	std::cout << "CAM FOR: " << camF.getX() << ", " << camF.getY() << ", " << camF.getZ() << std::endl;
 
-		Vector3f camPos = testCamera->getTransform().getTranslation();
-		std::cout << "CAM POS: " << camPos.getX() << ", " << camPos.getY() << ", " << camPos.getZ() << std::endl;
+		Vector3f camRot = testCamera->getTransform().getRotation();
+		std::cout << "CAM ROT: " << camRot.getX() << ", " << camRot.getY() << ", " << camRot.getZ() << std::endl;
+
+		//Vector3f camPos = testCamera->getTransform().getTranslation();
+		//std::cout << "CAM POS: " << camPos.getX() << ", " << camPos.getY() << ", " << camPos.getZ() << std::endl;
 
 		//testTransform->translate(testTransform->getLocalForward().cross(testTransform->getLocalUp()) * 0.005F);
 		//testTransform->translate(testTransform->getLocalForward() * 0.005F);
 
 		//testTransform->rotate(Vector3f(1, 1, 1) * 0.01F);
-		testTransform->translate(testTransform->getLocalRight() * 0.005F);
+		testTransform->translate(testTransform->getLocalForward() * 0.0025F);
 
 		//testTransform->setTranslation(Vector3f(0, 0, 10 * cos(Time::getGameTime() / 1000)));
 		/*
@@ -218,6 +221,7 @@ namespace Honeycomb::Base {
 
 		Matrix4f objTransf = testTransform->getTransformationMatrix();
 		Matrix4f camProj = testCamera->getProjection();
+		
 		Matrix4f camOrien = testCamera->getTransform().getOrientationMatrix();
 
 		// negative since everything in the world moves opposite of the way
