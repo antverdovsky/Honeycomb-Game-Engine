@@ -27,7 +27,7 @@ std::string vertexShader =
 std::string fragShader =
 	"..\\Honeycomb GE\\res\\shaders\\fragShader.fs";
 std::string testModelCube =
-	"..\\Honeycomb GE\\res\\models\\test1\\testMonkey.obj";
+	"..\\Honeycomb GE\\res\\models\\test1\\testCar.obj";
 
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
@@ -47,11 +47,11 @@ namespace Honeycomb::Base {
 
 		testTransform = new Transform(Vector3f(), Quaternion(), Vector3f(1, 1, 1));
 		testCamera = new Camera(Camera::CameraType::PERSPECTIVE, 100.0F, 0.3F,
-			60.0F, camH, camW, Transform(Vector3f(), Quaternion(Vector3f::getGlobalUp(), -PI), Vector3f(1, 1, 1)));
+			60.0F, camH, camW, Transform(Vector3f(), Quaternion(), Vector3f(1, 1, 1)));
 		testMesh = Mesh::Mesh::loadMeshOBJ(testModelCube);
 		testShader = new ShaderProgram();
 
-		testTransform->setTranslation(Vector3f(0, 0, -10));
+		testTransform->setTranslation(Vector3f(0, 0, 10));
 
 		testShader->addShader(vertexShader, GL_VERTEX_SHADER);
 		testShader->addShader(fragShader, GL_FRAGMENT_SHADER);
@@ -79,12 +79,17 @@ namespace Honeycomb::Base {
 		
 		if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_Z)) { // rot transform
 			this->testTransform->rotate(this->testTransform->getLocalUp(),
-				-0.025F);
+				-0.075F);
 		}
 
 		if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_X)) {
 			this->testTransform->rotate(this->testTransform->getLocalRight(),
-				-0.025F);
+				-0.075F);
+		}
+
+		if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_C)) {
+			this->testTransform->rotate(this->testTransform->getLocalForward(),
+				-0.075F);
 		}
 		
 		if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_W)) { // move forward
@@ -191,18 +196,20 @@ namespace Honeycomb::Base {
 			Vector3f transR = testTransform->getLocalRight();
 			std::cout << "TRS RIGHT: " << transR.getX() << ", " << transR.getY() << ", " << transR.getZ() << std::endl;
 
+			Vector3f transU = testTransform->getLocalUp();
+			std::cout << "TRS UP: " << transU.getX() << ", " << transU.getY() << ", " << transU.getZ() << std::endl;
 
 			Vector3f camF = testCamera->getTransform().getLocalForward();
 			std::cout << "CAM FOR: " << camF.getX() << ", " << camF.getY() << ", " << camF.getZ() << std::endl;
 
-			//Vector3f camRot = testCamera->getTransform().getRotation();
-			//std::cout << "CAM ROT: " << camRot.getX() << ", " << camRot.getY() << ", " << camRot.getZ() << std::endl;
+			Vector3f camR = testCamera->getTransform().getLocalRight();
+			std::cout << "CAM RIGHT: " << camR.getX() << ", " << camR.getY() << ", " << camR.getZ() << std::endl;
 
 			Vector3f camPos = testCamera->getTransform().getTranslation();
 			std::cout << "CAM POS: " << camPos.getX() << ", " << camPos.getY() << ", " << camPos.getZ() << std::endl;
 		}
 
-		
+		testTransform->translate(testTransform->getLocalForward() * 0.005F);
 
 		//testTransform->rotate(testTransform->getLocalUp(), -0.025F);
 
