@@ -108,17 +108,8 @@ namespace Honeycomb::Math {
 	}
 
 	Vector3f Vector3f::rotate(Vector3f axis, float rad) {
-		// Calculate the sin and cos of the half angle.
-		float sinHalfAngle = sin(rad / 2);
-		float cosHalfAngle = cos(rad / 2);
-
 		// Construct a Rotation Quaternion which will rotate the vector.
-		Quaternion rotQuat = Quaternion(
-			axis.x * sinHalfAngle,
-			axis.y * sinHalfAngle,
-			axis.z * sinHalfAngle,
-			cosHalfAngle
-		);
+		Quaternion rotQuat = Quaternion(axis, rad);
 		Quaternion rotQuatConj = rotQuat.conjugated();
 
 		// Multiply the Quaternion by this Vector instance to get the resulting
@@ -130,8 +121,21 @@ namespace Honeycomb::Math {
 		return Vector3f(result.getX(), result.getY(), result.getZ());
 	}
 
+	Vector3f Vector3f::rotate(Quaternion quat) {
+		Quaternion rotated = quat * (*this) * quat.conjugated();
+
+		return Vector3f(rotated.getX(), rotated.getY(), rotated.getZ());
+	}
+
 	Vector3f Vector3f::rotateTo(Vector3f axis, float rad) {
 		Vector3f rotated = this->rotate(axis, rad);
+
+		this->set(rotated.x, rotated.y, rotated.z);
+		return *this;
+	}
+
+	Vector3f Vector3f::rotateTo(Quaternion quat) {
+		Vector3f rotated = this->rotate(quat);
 
 		this->set(rotated.x, rotated.y, rotated.z);
 		return *this;

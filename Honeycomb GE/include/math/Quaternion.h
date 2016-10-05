@@ -7,6 +7,15 @@ namespace Honeycomb::Math { class Vector3f; }
 namespace Honeycomb::Math {
 	class Quaternion {
 	public:
+		/// Initializes a new Quaternion to 0.0 for x, y, and z and 1.0 for the
+		/// w component.
+		Quaternion();
+
+		/// Initializes a new rotation Quaternion.
+		/// Vector3f axis : ?
+		/// float rad : ? todo
+		Quaternion(Vector3f axis, float rad);
+
 		/// Initializes a new Quaternion with the specified x, y, z, and w 
 		/// components.
 		/// float x : The x component.
@@ -35,6 +44,18 @@ namespace Honeycomb::Math {
 		/// float &z : The ref. to where the z-component is to be written to.
 		/// float &w : The ref. to where the w-component is to be written to.
 		void get(float &x, float &y, float &z, float &w);
+
+		/// Gets a vector representing the forward of this Quaternion.
+		/// return : The forward direction vector.
+		Vector3f getForwardVector();
+
+		/// Gets a vector representing the right of this Quaternion.
+		/// return : The right direction vector.
+		Vector3f getRightVector();
+
+		/// Gets a vector representing the up of this Quaternion.
+		/// return : The up direction vector.
+		Vector3f getUpVector();
 
 		/// Gets the x-component of the quaternion.
 		/// return : The x-component.

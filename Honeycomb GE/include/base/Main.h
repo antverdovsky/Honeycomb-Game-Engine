@@ -7,7 +7,7 @@ class GameInput;
 class GameWindow;
 
 namespace Honeycomb::Base::Main {
-	const static int FRAME_CAP = 5000; // The FPS cap
+	const static int FRAME_CAP = 30; // The FPS cap
 
 	extern Game *game; // Reference to the Game component.
 	

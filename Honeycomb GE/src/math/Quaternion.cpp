@@ -6,6 +6,22 @@
 using Honeycomb::Math::Vector3f;
 
 namespace Honeycomb::Math {
+	Quaternion::Quaternion() : Quaternion(0.0F, 0.0F, 0.0F, 1.0F) {
+
+	}
+
+	Quaternion::Quaternion(Vector3f axis, float rad) {
+		// Calculate the sin and cos of the half angle.
+		float sinHalfAngle = sin(rad / 2);
+		float cosHalfAngle = cos(rad / 2);
+
+		// Construct a Rotation Quaternion
+		this->x = axis.getX() * sinHalfAngle;
+		this->y = axis.getY() * sinHalfAngle;
+		this->z = axis.getZ() * sinHalfAngle;
+		this->w = cosHalfAngle;
+	}
+
 	Quaternion::Quaternion(float x, float y, float z, float w) {
 		this->x = x;
 		this->y = y;
@@ -33,6 +49,18 @@ namespace Honeycomb::Math {
 		y = this->y;
 		z = this->z;
 		w = this->w;
+	}
+
+	Vector3f Quaternion::getForwardVector() {
+		return Vector3f::getGlobalForward().rotate(*this);
+	}
+
+	Vector3f Quaternion::getRightVector() {
+		return Vector3f::getGlobalRight().rotate(*this);
+	}
+
+	Vector3f Quaternion::getUpVector() {
+		return Vector3f::getGlobalUp().rotate(*this);
 	}
 
 	float Quaternion::getW() {

@@ -2,6 +2,8 @@
 #ifndef VECTOR_3F_H
 #define VECTOR_3F_H
 
+namespace Honeycomb::Math { class Quaternion; }
+
 namespace Honeycomb::Math {
 	class Vector3f {
 	public:
@@ -108,14 +110,23 @@ namespace Honeycomb::Math {
 		/// return : The rotated vector.
 		Vector3f rotate(Vector3f axis, float rad);
 
+		/// Returns a vector which is equivalent to this instance, rotated by
+		/// the specified quaternion.
+		/// return : The rotated vector.
+		Vector3f rotate(Quaternion quat);
+
 		/// Rotates this vector by the specified amount of radians, on the 
 		/// specified vector axis.
 		/// Vector3f axis : The axis on which to rotate the vector.
 		/// float rad : The amount by which to rotate the vector, in radians.
 		///				A positive amount rotates the vector counterclockwise,
 		///				and a negative amount rotates the angle clockwise.
-		/// return : The rotated vector.
+		/// return : This rotated vector.
 		Vector3f rotateTo(Vector3f axis, float rad);
+
+		/// Rotates this vector by the specified quaternion.
+		/// return : This rotated vector.
+		Vector3f rotateTo(Quaternion quat);
 
 		/// Returns a vector which is equivalent to this vector, but scaled by
 		/// the specified scaling factor. This vector is not modified.

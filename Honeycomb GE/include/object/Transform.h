@@ -2,8 +2,9 @@
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
-#include "..\..\include\math\Vector3f.h";
+#include "..\..\include\math\Vector3f.h"
 #include "..\..\include\math\Matrix4f.h"
+#include "..\..\include\math\Quaternion.h"
 
 namespace Honeycomb::Object {
 	class Transform {
@@ -13,16 +14,12 @@ namespace Honeycomb::Object {
 		Transform();
 
 		/// Initializes an instance of the Transform object to the specified
-		/// position, rotation, scale, and local directions.
+		/// position, rotation, and scale.
 		/// Vector3f pos : The position of the object.
-		/// Vector3f rot : The rotation of the object.
+		/// Quaternion rot : The rotation of the object.
 		/// Vector3f scl : The scale of the object.
-		/// Vector3f lFor : The forward direction of the object.
-		/// Vector3f lUp : The up direction of the object;
-		/// Vector3f lRig : The right direction of the object.
-		Transform(Honeycomb::Math::Vector3f pos, Honeycomb::Math::Vector3f rot,
-			Honeycomb::Math::Vector3f scl, Honeycomb::Math::Vector3f lFor,
-			Honeycomb::Math::Vector3f lRig, Honeycomb::Math::Vector3f lUp);
+		Transform(Honeycomb::Math::Vector3f pos, 
+			Honeycomb::Math::Quaternion rot, Honeycomb::Math::Vector3f scl);
 
 		/// Gets the vector pointing in the local forward direction of this
 		/// transform.
@@ -59,9 +56,9 @@ namespace Honeycomb::Object {
 		/// return : The scale matrix.
 		Honeycomb::Math::Matrix4f getScaleMatrix();
 
-		/// Gets the rotation vector of this transform.
-		/// return : The rotation vector.
-		Honeycomb::Math::Vector3f getRotation();
+		/// Gets the rotation quaternion of this transform.
+		/// return : The rotation quaternion.
+		Honeycomb::Math::Quaternion getRotation();
 
 		/// Gets the scale vector of this uniform.
 		/// return : The scale vector.
@@ -72,8 +69,8 @@ namespace Honeycomb::Object {
 		Honeycomb::Math::Vector3f getTranslation();
 
 		/// Sets the rotation vector of this transform.
-		/// Vector3f vec : The new rotation vector.
-		void setRotation(Honeycomb::Math::Vector3f vec);
+		/// Quaternion quat : The new rotation quaternion.
+		void setRotation(Honeycomb::Math::Quaternion quat);
 
 		/// Sets the scale vector of this transform.
 		/// Vector3f vec : The new scale vector.
@@ -83,19 +80,21 @@ namespace Honeycomb::Object {
 		/// Vector3f vec : The new position vector.
 		void setTranslation(Honeycomb::Math::Vector3f vec);
 
-		/// Rotates this transform by the specified amount of radians on each
+		/// Rotates this transform by the specified amount of radians on the
 		/// axis. A positive amount will rotate the transform counterclockwise,
 		/// and a negative amount will rotate the transform clockwise.
-		/// Vector3f vec : The amounts, in radians, by which to rotate on each
-		///				   major axis.
-		void rotate(Honeycomb::Math::Vector3f vec);
+		/// Vector3f axis : The axis on which to rotate the vector.
+		/// float rad : The amount by which to rotate the vector, in radians.
+		///				A positive amount rotates the vector counterclockwise,
+		///				and a negative amount rotates the angle clockwise.
+		void rotate(Honeycomb::Math::Vector3f axis, float rad);
 
 		/// Translates this transform in the direction and distance specified.
 		/// Vector3f vec : The direction and distance to translate.
 		void translate(Honeycomb::Math::Vector3f vec);
 	private:
-		Honeycomb::Math::Vector3f rotation; // Stores the local rotation
 		Honeycomb::Math::Vector3f translation; // Stores the local position
+		Honeycomb::Math::Quaternion rotation; // Local rotation quaternion
 		Honeycomb::Math::Vector3f scale; // Stores the local scale
 
 		Honeycomb::Math::Vector3f localForward; // Local Forward Direction
