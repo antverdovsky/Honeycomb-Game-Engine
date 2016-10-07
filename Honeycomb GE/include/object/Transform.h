@@ -36,37 +36,36 @@ namespace Honeycomb::Object {
 		/// return : The local up vector.
 		Honeycomb::Math::Vector3f getLocalUp();
 
-		/// Gets the current orientation matrix for this transform.
-		/// return : The orientation matrix.
+		/// todo
 		Honeycomb::Math::Matrix4f getOrientationMatrix();
-
-		/// Gets the current transformation matrix for this transform.
-		/// return : The transformation matrix.
-		Honeycomb::Math::Matrix4f getTransformationMatrix();
-
-		/// Gets the current translation matrix for this transform.
-		/// return : The translation matrix.
-		Honeycomb::Math::Matrix4f getTranslationMatrix();
-
-		/// Gets the current rotation matrix for this transform.
-		/// return : The rotation matrix.
-		Honeycomb::Math::Matrix4f getRotationMatrix();
-
-		/// Gets the current scale matrix for this transform.
-		/// return : The scale matrix.
-		Honeycomb::Math::Matrix4f getScaleMatrix();
 
 		/// Gets the rotation quaternion of this transform.
 		/// return : The rotation quaternion.
 		Honeycomb::Math::Quaternion getRotation();
 
+		/// Gets the current rotation matrix for this transform.
+		/// return : The rotation matrix.
+		Honeycomb::Math::Matrix4f getRotationMatrix();
+
 		/// Gets the scale vector of this uniform.
 		/// return : The scale vector.
 		Honeycomb::Math::Vector3f getScale();
 
+		/// Gets the current scale matrix for this transform.
+		/// return : The scale matrix.
+		Honeycomb::Math::Matrix4f getScaleMatrix();
+
+		/// Gets the current transformation matrix for this transform.
+		/// return : The transformation matrix.
+		Honeycomb::Math::Matrix4f getTransformationMatrix();
+
 		/// Gets the position vector of this transform.
 		/// return : The position vector.
 		Honeycomb::Math::Vector3f getTranslation();
+
+		/// Gets the current translation matrix for this transform.
+		/// return : The translation matrix.
+		Honeycomb::Math::Matrix4f getTranslationMatrix();
 
 		/// Sets the rotation vector of this transform.
 		/// Quaternion quat : The new rotation quaternion.
@@ -101,24 +100,14 @@ namespace Honeycomb::Object {
 		Honeycomb::Math::Vector3f localUp; // Local Up Direction
 		Honeycomb::Math::Vector3f localRight; // Local Right Direction
 
-		Honeycomb::Math::Matrix4f orientationMatrix; // Orientation Mat
 		Honeycomb::Math::Matrix4f transformationMatrix; // Transformation Mat
-
 		Honeycomb::Math::Matrix4f translationMatrix; // Translation Mat
 		Honeycomb::Math::Matrix4f rotationMatrix; // Rotation Mat
 		Honeycomb::Math::Matrix4f scaleMatrix; // Scale Mat
+		Honeycomb::Math::Matrix4f orientationMatrix; // Orientation Mat
 
-		/// Calculates the orientation matrix (matrix composed of the local
-		/// forward, up and right directions) for this transform. This should 
-		/// be called every time the object's orientation changes.
-		/// return : The updated directional matrix.
+		//todo
 		Honeycomb::Math::Matrix4f calculateOrientationMatrix();
-
-		/// Calculates the transformation matrix for the transform. This should
-		/// be called every time either the rotation, scale, or translation of 
-		/// the transform is modified.
-		/// return : The updated transformation matrix.
-		Honeycomb::Math::Matrix4f calculateTransformationMatrix();
 
 		/// Constructs a rotation matrix from the rotation vector of this
 		/// transform.
@@ -128,6 +117,12 @@ namespace Honeycomb::Object {
 		/// Constructs a scale matrix from the scale vector of this transform.
 		/// return : The scale vector.
 		Honeycomb::Math::Matrix4f calculateScaleMatrix();
+
+		/// Calculates the transformation matrix for the transform. This should
+		/// be called every time either the rotation, scale, or translation of 
+		/// the transform is modified.
+		/// return : The updated transformation matrix.
+		Honeycomb::Math::Matrix4f calculateTransformationMatrix();
 
 		/// Constructs a translation matrix from the position vector of this
 		/// transform.

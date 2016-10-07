@@ -4,6 +4,7 @@
 #include "..\..\include\math\Vector3f.h"
 
 using Honeycomb::Math::Vector3f;
+using Honeycomb::Math::Matrix4f;
 
 namespace Honeycomb::Math {
 	Quaternion::Quaternion() : Quaternion(0.0F, 0.0F, 0.0F, 1.0F) {
@@ -20,6 +21,8 @@ namespace Honeycomb::Math {
 		this->y = axis.getY() * sinHalfAngle;
 		this->z = axis.getZ() * sinHalfAngle;
 		this->w = cosHalfAngle;
+
+		this->normalize();
 	}
 
 	Quaternion::Quaternion(float x, float y, float z, float w) {
@@ -84,12 +87,21 @@ namespace Honeycomb::Math {
 	}
 
 	Quaternion Quaternion::multiply(Quaternion q2) {
-		float x_ = q2.w * x + q2.x * w - q2.y * z + q2.z * y;
-		float y_ = q2.w * y + q2.x * z + q2.y * w - q2.z * x;
-		float z_ = q2.w * z - q2.x * y + q2.y * x + q2.z * w;
-		float w_ = q2.w * w - q2.x * x - q2.y * y - q2.z * z;
+		// Calculate the vectors composed of the real components of the
+		// quaternions and calculate the cross and dot products of the vectors.
+		Vector3f a = Vector3f(this->x, this->y, this->z);
+		Vector3f b = Vector3f(q2.x, q2.y, q2.z);
+		Vector3f cross = a.cross(b);
+		float dot = a.dot(b);
 
-		return Quaternion(x_, y_, z_, w_);
+		// Calculate the sum of the a and b vectors after they have been scaled
+		// by the w-components. Then add the sum to the cross product to get 
+		// the real components of the new Quaternion.
+		Vector3f part = (b * this->w) + (a * q2.w);
+		Vector3f full = part + cross;
+
+		return Quaternion(full.getX(), full.getY(), full.getZ(),
+			this->w * q2.w - dot);
 	}
 
 	Quaternion Quaternion::multiply(Vector3f v) {
@@ -148,6 +160,25 @@ namespace Honeycomb::Math {
 
 	void Quaternion::setZ(float z) {
 		this->z = z;
+	}
+
+	Matrix4f Quaternion::toRotationMatrix4f() {
+		Matrix4f rotMat = Matrix4f::identity();
+		this->normalize();
+
+		rotMat.setAt(0, 0, 1 - 2 * this->y * this->y - 2 * this->z * this->z);
+		rotMat.setAt(0, 1, 2 * this->x * this->y - 2 * this->z * this->w);
+		rotMat.setAt(0, 2, 2 * this->x * this->z + 2 * this->y * this->w);
+
+		rotMat.setAt(1, 0, 2 * this->x * this->y + 2 * this->z * this->w);
+		rotMat.setAt(1, 1, 1 - 2 * this->x * this->x - 2 * this->z * this->z);
+		rotMat.setAt(1, 2, 2 * this->y * this->z - 2 * this->x * this->w);
+
+		rotMat.setAt(2, 0, 2 * this->x * this->z - 2 * this->y * this->w);
+		rotMat.setAt(2, 1, 2 * this->y * this->z + 2 * this->x * this->w);
+		rotMat.setAt(2, 2, 1 - 2 * this->x * this->x - 2 * this->y * this->y);
+
+		return rotMat;
 	}
 
 	Quaternion Quaternion::operator*(Quaternion q2) {

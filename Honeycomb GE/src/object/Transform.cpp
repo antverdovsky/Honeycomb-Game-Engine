@@ -13,20 +13,9 @@ using Honeycomb::Math::Quaternion;
 using namespace Honeycomb::Math::Utils;
 
 namespace Honeycomb::Object {
-	Transform::Transform() {
-		this->setTranslation(Vector3f());
-		this->setRotation(Quaternion(0, 0, 0, 1));
-		this->setScale(Vector3f(1, 1, 1)); // Default scale is full size
+	Transform::Transform() : 
+			Transform(Vector3f(), Quaternion(), Vector3f(1, 1, 1)) {
 
-		this->localForward = Vector3f::getGlobalForward();
-		this->localRight = Vector3f::getGlobalRight();
-		this->localUp = Vector3f::getGlobalUp();
-
-		this->calculateTranslationMatrix();
-		this->calculateRotationMatrix();
-		this->calculateScaleMatrix();
-		this->calculateOrientationMatrix();
-		this->calculateTransformationMatrix();
 	}
 
 	Transform::Transform(Vector3f pos, Quaternion rot, Vector3f scl) {
@@ -38,10 +27,10 @@ namespace Honeycomb::Object {
 		this->localRight = Vector3f::getGlobalRight();
 		this->localUp = Vector3f::getGlobalUp();
 
+		this->calculateOrientationMatrix();
 		this->calculateTranslationMatrix();
 		this->calculateRotationMatrix();
 		this->calculateScaleMatrix();
-		this->calculateOrientationMatrix();
 		this->calculateTransformationMatrix();
 	}
 
@@ -61,20 +50,20 @@ namespace Honeycomb::Object {
 		return this->orientationMatrix;
 	}
 
-	Matrix4f Transform::getTransformationMatrix() {
-		return this->transformationMatrix;
-	}
-
-	Matrix4f Transform::getTranslationMatrix() {
-		return this->translationMatrix;
-	}
-
 	Matrix4f Transform::getRotationMatrix() {
 		return this->rotationMatrix;
 	}
 
 	Matrix4f Transform::getScaleMatrix() {
 		return this->scaleMatrix;
+	}
+
+	Matrix4f Transform::getTransformationMatrix() {
+		return this->transformationMatrix;
+	}
+
+	Matrix4f Transform::getTranslationMatrix() {
+		return this->translationMatrix;
 	}
 
 	Quaternion Transform::getRotation() {
@@ -92,6 +81,7 @@ namespace Honeycomb::Object {
 	void Transform::setRotation(Quaternion quat) {
 		this->rotation.set(quat.getX(), quat.getY(), quat.getZ(), quat.getW());
 
+		this->calculateOrientationMatrix();
 		this->calculateRotationMatrix();
 		this->calculateTransformationMatrix();
 	}
@@ -120,9 +110,30 @@ namespace Honeycomb::Object {
 
 	Matrix4f Transform::calculateOrientationMatrix() {
 		this->orientationMatrix = Matrix4f::identity();
-		
-		// ???????????? :-) idk what i'm doing :-).......................
-		
+
+		// Calculate new directions using the rotations
+		this->localForward = this->rotation.getForwardVector().normalized();
+		this->localRight = this->rotation.getRightVector().normalized();
+		this->localUp = this->rotation.getUpVector().normalized();
+
+		// Copy each X component from each directional vector to Orientation,
+		// so the result of the first column looks like: [ r.X, u.X, f.X ]'.
+		this->orientationMatrix.setAt(0, 0, this->localRight.getX());
+		this->orientationMatrix.setAt(1, 0, this->localUp.getX());
+		this->orientationMatrix.setAt(2, 0, this->localForward.getX());
+
+		// Copy each Y component from each directional vector to Orientation,
+		// so the result of the second column looks like: [ r.Y, u.Y, f.Y ]'.
+		this->orientationMatrix.setAt(0, 1, this->localRight.getY());
+		this->orientationMatrix.setAt(1, 1, this->localUp.getY());
+		this->orientationMatrix.setAt(2, 1, this->localForward.getY());
+
+		// Copy each Z component from each directional vector to Orientation,
+		// so the result of the third column looks like: [ r.Z, u.Z, f.Z ]'.
+		this->orientationMatrix.setAt(0, 2, this->localRight.getZ());
+		this->orientationMatrix.setAt(1, 2, this->localUp.getZ());
+		this->orientationMatrix.setAt(2, 2, this->localForward.getZ());
+
 		return this->orientationMatrix;
 	}
 
@@ -131,8 +142,6 @@ namespace Honeycomb::Object {
 		Matrix4f transMat = this->getTranslationMatrix();
 		Matrix4f rotMat = this->getRotationMatrix();
 		Matrix4f sclMat = this->getScaleMatrix();
-
-		Matrix4f test = this->getOrientationMatrix();
 
 		// Perform matrix multiplication on the components (first scale, then
 		// rotate, then translate).
@@ -143,34 +152,10 @@ namespace Honeycomb::Object {
 	Matrix4f Transform::calculateRotationMatrix() {
 		this->rotationMatrix = Matrix4f::identity();
 
-		// Calculate new directions using the rotations
-		this->localForward = this->rotation.getForwardVector();
-		this->localRight = this->rotation.getRightVector();
-		this->localUp = this->rotation.getUpVector();
+		//todo
+		this->rotationMatrix = this->rotation.toRotationMatrix4f();
+		return this->rotationMatrix;
 
-		// Copy each X component from each directional vector to Orientation,
-		// so the result of the first column looks like: [ r.X, u.X, f.X ]'.
-		this->rotationMatrix.setAt(0, 0, this->localRight.getX());
-		this->rotationMatrix.setAt(1, 0, this->localUp.getX());
-		this->rotationMatrix.setAt(2, 0, this->localForward.getX());
-
-		// Copy each Y component from each directional vector to Orientation,
-		// so the result of the second column looks like: [ r.Y, u.Y, f.Y ]'.
-		this->rotationMatrix.setAt(0, 1, this->localRight.getY());
-		this->rotationMatrix.setAt(1, 1, this->localUp.getY());
-		this->rotationMatrix.setAt(2, 1, this->localForward.getY());
-
-		// Copy each Z component from each directional vector to Orientation,
-		// so the result of the third column looks like: [ r.Z, u.Z, f.Z ]'.
-		this->rotationMatrix.setAt(0, 2, this->localRight.getZ());
-		this->rotationMatrix.setAt(1, 2, this->localUp.getZ());
-		this->rotationMatrix.setAt(2, 2, this->localForward.getZ());
-
-		// Return the Orientation Matrix, which should look like:
-		// [ r.X  r.Y  r.Z  0.0 ]
-		// [ u.X  u.Y  u.Z  0.0 ]
-		// [ f.X  f.Y  f.Z  0.0 ]
-		// [ 0.0  0.0  0.0  1.0 ]
 		return this->rotationMatrix;
 	}
 
@@ -178,11 +163,16 @@ namespace Honeycomb::Object {
 		this->scaleMatrix = Matrix4f::identity();
 
 		// A scale matrix is composed as an identity matrix whose diagonal
-		// equals { X, Y, Z, 1 }							// x 0 0 0
-		this->scaleMatrix.setAt(0, 0, this->scale.getX());	// 0 y 0 0
-		this->scaleMatrix.setAt(1, 1, this->scale.getY());	// 0 0 z 0
-		this->scaleMatrix.setAt(2, 2, this->scale.getZ());	// 0 0 0 1
+		// equals { X, Y, Z, 1 }
+		this->scaleMatrix.setAt(0, 0, this->scale.getX());
+		this->scaleMatrix.setAt(1, 1, this->scale.getY());
+		this->scaleMatrix.setAt(2, 2, this->scale.getZ());
 
+		// Return the Scale Matrix, which should look like
+		// [  X   0.0  0.0  0.0 ]
+		// [ 0.0   Y   0.0  0.0 ]
+		// [ 0.0  0.0   Z   0.0 ]
+		// [ 0.0  0.0  0.0  1.0 ]
 		return this->scaleMatrix;
 	}
 
@@ -190,14 +180,19 @@ namespace Honeycomb::Object {
 		this->translationMatrix = Matrix4f::identity();
 
 		// A translation matrix is composed as an identity matrix whose last
-		// column equals { X, Y, Z, 1 }.				// 1 0 0 x
-		this->translationMatrix.setAt(0, 3, 
-			this->translation.getX());					// 0 1 0 y
-		this->translationMatrix.setAt(1, 3, 
-			this->translation.getY());					// 0 0 1 z
-		this->translationMatrix.setAt(2, 3, 
-			this->translation.getZ());					// 0 0 0 1
+		// column equals { X, Y, Z, 1 }.				
+		this->translationMatrix.setAt(0, 3,
+			this->translation.getX());
+		this->translationMatrix.setAt(1, 3,
+			this->translation.getY());
+		this->translationMatrix.setAt(2, 3,
+			this->translation.getZ());
 
+		// Return the Translation Matrix, which should look like
+		// [ 1.0  0.0  0.0   x  ]
+		// [ 0.0  1.0  0.0   y  ]
+		// [ 0.0  0.0  1.0   z  ]
+		// [ 0.0  0.0  0.0  1.0 ]
 		return this->translationMatrix;
 	}
 }

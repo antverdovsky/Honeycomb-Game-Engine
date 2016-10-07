@@ -5,7 +5,7 @@
 
 namespace Honeycomb::Math {
 	Vector3f Vector3f::forward = Vector3f(0, 0, 1);
-	Vector3f Vector3f::right = Vector3f(1, 0, 0);
+	Vector3f Vector3f::right = Vector3f(-1, 0, 0);
 	Vector3f Vector3f::up = Vector3f(0, 1, 0);
 
 	Vector3f::Vector3f() : Vector3f(0.0F, 0.0F, 0.0F) { }

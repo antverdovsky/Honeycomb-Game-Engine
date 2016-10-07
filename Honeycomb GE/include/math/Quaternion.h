@@ -2,6 +2,8 @@
 #ifndef QUATERNION_H
 #define QUATERNION_H
 
+#include "..\..\include\math\Matrix4f.h"
+
 namespace Honeycomb::Math { class Vector3f; }
 
 namespace Honeycomb::Math {
@@ -133,6 +135,8 @@ namespace Honeycomb::Math {
 		/// Sets the w-component of the quaternion.
 		/// float w : The new w-component.
 		void setW(float w);
+
+		Matrix4f toRotationMatrix4f();
 
 		/// Overloads the multiplication operator to return the product of this
 		/// and the specified quaternion.
