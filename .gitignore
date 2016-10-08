@@ -285,7 +285,7 @@ __pycache__/
 *.pyc
 
 # Models & Material Files
-Honeycomb GE\res\models
+Honeycomb GE/res/models
 
 # Builds Folder
-Honeycomb GE\Builds
+Honeycomb GE/Builds
