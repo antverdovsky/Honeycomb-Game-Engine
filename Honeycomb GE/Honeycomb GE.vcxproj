@@ -26,26 +26,26 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -158,9 +158,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\base\Game.cpp" />
+    <ClCompile Include="src\base\BaseGame.cpp" />
     <ClCompile Include="src\base\GameInput.cpp" />
-    <ClCompile Include="src\base\Main.cpp" />
+    <ClCompile Include="src\base\BaseMain.cpp" />
     <ClCompile Include="src\base\GameTime.cpp" />
     <ClCompile Include="src\base\GameWindow.cpp" />
     <ClCompile Include="src\file\FileIO.cpp" />
@@ -176,9 +176,9 @@
     <ClCompile Include="src\shader\ShaderProgram.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\base\Game.h" />
+    <ClInclude Include="include\base\BaseGame.h" />
     <ClInclude Include="include\base\GameInput.h" />
-    <ClInclude Include="include\base\Main.h" />
+    <ClInclude Include="include\base\BaseMain.h" />
     <ClInclude Include="include\base\GameTime.h" />
     <ClInclude Include="include\base\GameWindow.h" />
     <ClInclude Include="include\file\FileIO.h" />

@@ -15,12 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\base\Main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\base\Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\math\Vector2f.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -63,11 +57,14 @@
     <ClCompile Include="src\math\MathUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\base\BaseGame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\base\BaseMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\base\Game.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\math\Vector2f.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -98,9 +95,6 @@
     <ClInclude Include="include\base\GameWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\base\Main.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\shader\ShaderProgram.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -111,6 +105,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\math\MathUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\base\BaseGame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\base\BaseMain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

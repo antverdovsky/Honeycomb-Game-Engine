@@ -286,3 +286,6 @@ __pycache__/
 
 # Models & Material Files
 Honeycomb GE\res\models
+
+# Builds Folder
+Honeycomb GE\Builds
