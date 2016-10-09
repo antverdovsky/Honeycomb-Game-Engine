@@ -7,6 +7,7 @@
 #include "..\..\Honeycomb GE\include\base\BaseGame.h"
 
 namespace Honeycomb::Object { class Transform; }
+namespace Honeycomb::Mesh::Importer { class Model; }
 namespace Honeycomb::Mesh { class Mesh; }
 namespace Honeycomb::Render { class Camera; }
 namespace Honeycomb::Shader { class ShaderProgram; }
@@ -37,6 +38,7 @@ private:
 
 	Honeycomb::Render::Camera* testCamera;
 	Honeycomb::Object::Transform* testTransform;
+	Honeycomb::Mesh::Importer::Model* testModel;
 	Honeycomb::Mesh::Mesh* testMesh;
 	Honeycomb::Shader::ShaderProgram* testShader;
 };

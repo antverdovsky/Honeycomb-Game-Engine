@@ -169,6 +169,8 @@
     <ClCompile Include="src\math\Quaternion.cpp" />
     <ClCompile Include="src\math\Vector2f.cpp" />
     <ClCompile Include="src\math\Vector3f.cpp" />
+    <ClCompile Include="src\mesh\importer\Model.cpp" />
+    <ClCompile Include="src\mesh\importer\Model_OBJ.cpp" />
     <ClCompile Include="src\mesh\Mesh.cpp" />
     <ClCompile Include="src\mesh\Vertex.cpp" />
     <ClCompile Include="src\object\Transform.cpp" />
@@ -187,6 +189,8 @@
     <ClInclude Include="include\math\Quaternion.h" />
     <ClInclude Include="include\math\Vector2f.h" />
     <ClInclude Include="include\math\Vector3f.h" />
+    <ClInclude Include="include\mesh\importer\Model.h" />
+    <ClInclude Include="include\mesh\importer\Model_OBJ.h" />
     <ClInclude Include="include\mesh\Mesh.h" />
     <ClInclude Include="include\mesh\Vertex.h" />
     <ClInclude Include="include\object\Transform.h" />

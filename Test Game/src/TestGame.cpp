@@ -18,6 +18,8 @@
 #include "..\..\Honeycomb GE\include\object\Transform.h"
 #include "..\..\Honeycomb GE\include\mesh\Vertex.h"
 #include "..\..\Honeycomb GE\include\mesh\Mesh.h"
+#include "..\..\Honeycomb GE\include\mesh\importer\Model.h"
+#include "..\..\Honeycomb GE\include\mesh\importer\Model_OBJ.h"
 #include "..\..\Honeycomb GE\include\shader\ShaderProgram.h"
 #include "..\..\Honeycomb GE\include\base\GameWindow.h"
 #include "..\..\Honeycomb GE\include\math\MathUtils.h"
@@ -27,6 +29,8 @@ using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Matrix4f;
 using Honeycomb::Math::Quaternion;
 using Honeycomb::Mesh::Mesh;
+using Honeycomb::Mesh::Importer::Model;
+using Honeycomb::Mesh::Importer::Model_OBJ;
 using Honeycomb::Mesh::Vertex;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Object::Transform;
@@ -182,7 +186,8 @@ void TestGame::start() {
 	testCamera = new Camera(Camera::CameraType::PERSPECTIVE, 100.0F, 0.3F,
 		60, camH, camW, Transform(Vector3f(),
 			Quaternion(Vector3f::getGlobalUp(), PI), Vector3f(1, 1, 1)));
-	testMesh = Mesh::Mesh::loadMeshOBJ(testModelCube);
+	testModel = Model_OBJ::loadModel(testModelCube);
+	testMesh = new Mesh(*testModel);
 	testShader = new ShaderProgram();
 
 	testTransform->setTranslation(Vector3f(0, 0, -10));
