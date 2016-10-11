@@ -78,15 +78,15 @@ namespace Honeycomb::Math {
 		return up;
 	}
 
-	float Vector3f::getX() {
+	float& Vector3f::getX() {
 		return this->x;
 	}
 
-	float Vector3f::getY() {
+	float& Vector3f::getY() {
 		return this->y;
 	}
 
-	float Vector3f::getZ() {
+	float& Vector3f::getZ() {
 		return this->z;
 	}
 
@@ -168,6 +168,25 @@ namespace Honeycomb::Math {
 
 	void Vector3f::setZ(float z) {
 		this->z = z;
+	}
+
+	float* Vector3f::vectorsToFloatBuffer(Vector3f vec[], int count) {
+		// The float buffer array will store each component (total 3) for each
+		// vector (total count), therefore the float buffer must store 
+		// 3 * count elements.
+		float *floatBuffer = new float[count * 3];
+
+		for (int i = 0; i < count * 3; ) { // Go through the float buffer array
+			// Store each component of the element into the float buffer. Each 
+			// time a component is copied over, the current index is increased 
+			// so that the next component is copied into the next slot in the 
+			// float buffer.
+			floatBuffer[i++] = vec[i / 3].getX();
+			floatBuffer[i++] = vec[i / 3].getY();
+			floatBuffer[i++] = vec[i / 3].getZ();
+		}
+
+		return floatBuffer;
 	}
 
 	Vector3f Vector3f::operator*(float scale) {

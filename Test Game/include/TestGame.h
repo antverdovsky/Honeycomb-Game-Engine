@@ -34,7 +34,7 @@ private:
 	std::string fragShader =
 		"..\\Honeycomb GE\\res\\shaders\\fragShader.fs";
 	std::string testModelCube =
-		"..\\Honeycomb GE\\res\\models\\test1\\testMonkey.obj";
+		"..\\Honeycomb GE\\res\\models\\test1\\testCube.obj";
 
 	Honeycomb::Render::Camera* testCamera;
 	Honeycomb::Object::Transform* testTransform;

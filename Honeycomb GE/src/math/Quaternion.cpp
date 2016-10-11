@@ -66,19 +66,19 @@ namespace Honeycomb::Math {
 		return Vector3f::getGlobalUp().rotate(*this);
 	}
 
-	float Quaternion::getW() {
+	float& Quaternion::getW() {
 		return this->w;
 	}
 
-	float Quaternion::getX() {
+	float& Quaternion::getX() {
 		return this->x;
 	}
 
-	float Quaternion::getY() {
+	float& Quaternion::getY() {
 		return this->y;
 	}
 
-	float Quaternion::getZ() {
+	float& Quaternion::getZ() {
 		return this->z;
 	}
 

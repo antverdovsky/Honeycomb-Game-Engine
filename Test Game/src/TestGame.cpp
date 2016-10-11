@@ -16,7 +16,6 @@
 #include "..\..\Honeycomb GE\include\math\Quaternion.h"
 #include "..\..\Honeycomb GE\include\render\Camera.h"
 #include "..\..\Honeycomb GE\include\object\Transform.h"
-#include "..\..\Honeycomb GE\include\mesh\Vertex.h"
 #include "..\..\Honeycomb GE\include\mesh\Mesh.h"
 #include "..\..\Honeycomb GE\include\mesh\importer\Model.h"
 #include "..\..\Honeycomb GE\include\mesh\importer\Model_OBJ.h"
@@ -31,7 +30,6 @@ using Honeycomb::Math::Quaternion;
 using Honeycomb::Mesh::Mesh;
 using Honeycomb::Mesh::Importer::Model;
 using Honeycomb::Mesh::Importer::Model_OBJ;
-using Honeycomb::Mesh::Vertex;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Object::Transform;
 using Honeycomb::Render::Camera;
@@ -205,6 +203,7 @@ void TestGame::start() {
 	testShader->setUniform_mat4("camProjection",
 		testCamera->getProjection());
 
+	delete testModel;
 	GameInput::getGameInput()->clear();
 }
 	

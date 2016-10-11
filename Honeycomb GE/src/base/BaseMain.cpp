@@ -108,9 +108,6 @@ namespace Honeycomb::Base::BaseMain {
 		GameInput::getGameInput(); // Initialize the Game Input (first time)
 		game = g;
 		game->start();
-
-		std::cout << g << std::endl;
-		std::cout << game << std::endl;
 	}
 
 	void stop() {

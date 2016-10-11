@@ -49,11 +49,11 @@ namespace Honeycomb::Math {
 
 		/// Gets the x-component of the vector.
 		/// return : The x-component.
-		float getX();
+		float& getX();
 
 		/// Gets the y-component of the vector.
 		/// return : The y-component.
-		float getY();
+		float& getY();
 
 		/// Gets the magnitude of the vector.
 		/// return : The magnitude.

@@ -9,11 +9,9 @@
 
 #include "..\..\include\file\FileIO.h"
 #include "..\..\include\math\Vector3f.h"
-#include "..\..\include\mesh\Vertex.h"
 #include "..\..\include\mesh\importer\Model.h"
 
 using Honeycomb::Math::Vector3f;
-using Honeycomb::Mesh::Vertex;
 using Honeycomb::Mesh::Importer::Model;
 
 namespace Honeycomb::Mesh {
@@ -27,7 +25,7 @@ namespace Honeycomb::Mesh {
 		glGenBuffers(1, &ibo);
 
 		// Copy the VBO and IBO pointers into the mesh instance. Set default 
-		// mesh size to zero (no vertices or indicies yet).
+		// mesh size to zero (no vertices or indices yet).
 		this->vertexBufferObj = vbo;
 		this->vertCount = 0;
 		this->vertSize = 0;
@@ -38,26 +36,40 @@ namespace Honeycomb::Mesh {
 
 	Mesh::Mesh(Model m) : Mesh() {
 		this->addVertexData(&m.getVerticies()[0], m.getVerticies().size(),
-			&m.getIndicies()[0], m.getIndicies().size());
+			&m.getVertexIndices()[0], m.getVertexIndices().size());
 	}
 
 	Mesh::~Mesh() {
 
 	}
 
-	void Mesh::addVertexData(Vertex vert[], int vertCount, int index[],
-			int indexCount) {
+	void Mesh::addVertexData(Vector3f vert[], int vertCount, int index[],
+			int indxCount) {
+		for (int i = 0; i < vertCount; i++) {
+			std::cout << vert[i].getX() << ", " << vert[i].getY() << ", " <<
+				vert[i].getZ() << std::endl;
+		}
+
+		for (int i = 0; i < indxCount; i++) {
+			std::cout << index[i] << ", ";
+		}std::cout << std::endl;
+
 		// Convert the verticies into floats which OpenGL understands
-		GLfloat *vertFloats = Vertex::verticiesToFloatBuffer(vert, vertCount);
+		GLfloat *vertFloats = Vector3f::vectorsToFloatBuffer(vert, vertCount);
+
+		for (int i = 0; i < vertCount * 3; i++) {
+			std::cout << vertFloats[i] << ", ";
+		}
+		std::cout << std::endl;
 
 		// Get the count of the verticies and the memory size (in bytes) of the
 		// verticies (each vertex has 3 floats (x, y, z)).
 		this->vertCount = vertCount;
 		this->vertSize = vertCount * 3 * sizeof(GLfloat);
 
-		// Get the count of indicies and their memory size
-		this->indexCount = indexCount;
-		this->indexSize = indexCount * sizeof(int);
+		// Get the count of indices and their memory size
+		this->indexCount = indxCount;
+		this->indexSize = indxCount * sizeof(int);
 
 		// Bind the buffer to the VBO and send the vertex data to the buffer 
 		// [Static Draw indicates that data is constant].

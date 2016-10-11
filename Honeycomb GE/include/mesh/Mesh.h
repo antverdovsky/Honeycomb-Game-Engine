@@ -4,7 +4,8 @@
 
 #include <string>
 
-namespace Honeycomb::Mesh { class Vertex; }
+namespace Honeycomb::Mesh { class Face; }
+namespace Honeycomb::Math { class Vector3f; }
 namespace Honeycomb::Mesh::Importer { class Model; }
 
 namespace Honeycomb::Mesh {
@@ -23,10 +24,10 @@ namespace Honeycomb::Mesh {
 		/// Adds the vertex data for this mesh.
 		/// Vertex vert[] : The vertex data.
 		/// int vertCount : The number of verticies which are passed in.
-		/// int indx[] : The indicies data.
-		/// int indxCount : The number of indicies which are passed in.
-		void addVertexData(Vertex vert[], int vertCount, int index[], 
-				int indexCount);
+		/// int index[] : The indices data.
+		/// int indxCount : The number of indices.
+		void addVertexData(Honeycomb::Math::Vector3f vert[], int vertCount,
+				int index[], int intxCount);
 
 		/// Draws this Mesh to the screen using the vertex data.
 		void draw();
@@ -36,8 +37,8 @@ namespace Honeycomb::Mesh {
 		int vertSize; // The byte size of the vertices stored for this mesh
 
 		int indexBufferObj; // IBO "Pointer" (for VBO indexing)
-		int indexCount; // The count of the indicies stored for this mesh
-		int indexSize; // The byte size of the indicies stored for this mesh
+		int indexCount; // The count of the indices stored for this mesh
+		int indexSize; // The byte size of the indices stored for this mesh
 	};
 }
 

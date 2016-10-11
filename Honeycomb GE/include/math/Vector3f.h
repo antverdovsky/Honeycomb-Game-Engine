@@ -77,15 +77,15 @@ namespace Honeycomb::Math {
 
 		/// Gets the x-component of the vector.
 		/// return : The x-component.
-		float getX();
+		float& getX();
 
 		/// Gets the y-component of the vector.
 		/// return : The y-component.
-		float getY();
+		float& getY();
 
 		/// Gets the z-component of the vector.
 		/// return : The z-component.
-		float getZ();
+		float& getZ();
 
 		/// Gets the magnitude of the vector.
 		/// return : The magnitude.
@@ -156,6 +156,15 @@ namespace Honeycomb::Math {
 		/// Sets the z-component of the vector.
 		/// float y : The new z-component.
 		void setZ(float z);
+
+		/// Converts an array of vectors to an array of the floats of each
+		/// component of each vertex. The array will be returned as a newly 
+		/// allocated array and should, therefore, be deleted after being used.
+		/// Vector3f vec[] : The vectors to be converted to a float buffer.
+		/// int count : The number of vectors which are to be converted.
+		/// return : An array of floats which is composed of each vector's x,
+		///			 y and z, in that order.
+		static float* vectorsToFloatBuffer(Vector3f vec[], int count);
 
 		/// Overloads the mulitplication operator to return a vector instance
 		/// which is equivalent to this vector, scaled by the specified amount.

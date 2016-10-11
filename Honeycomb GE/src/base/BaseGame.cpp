@@ -16,7 +16,6 @@
 #include "..\..\include\math\Quaternion.h"
 #include "..\..\include\render\Camera.h"
 #include "..\..\include\object\Transform.h"
-#include "..\..\include\mesh\Vertex.h"
 #include "..\..\include\mesh\Mesh.h"
 #include "..\..\include\shader\ShaderProgram.h"
 #include "..\..\include\base\GameWindow.h"

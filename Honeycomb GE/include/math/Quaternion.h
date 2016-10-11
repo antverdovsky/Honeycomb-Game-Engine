@@ -61,19 +61,19 @@ namespace Honeycomb::Math {
 
 		/// Gets the x-component of the quaternion.
 		/// return : The x-component.
-		float getX();
+		float& getX();
 
 		/// Gets the y-component of the quaternion.
 		/// return : The y-component.
-		float getY();
+		float& getY();
 
 		/// Gets the z-component of the quaternion.
 		/// return : The z-component.
-		float getZ();
+		float& getZ();
 
 		/// Gets the w-component of the quaternion.
 		/// return : The w-component.
-		float getW();
+		float& getW();
 
 		/// Gets the magnitude of the Quaternion.
 		/// return : The magnitude.

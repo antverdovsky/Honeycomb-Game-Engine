@@ -43,11 +43,11 @@ namespace Honeycomb::Math {
 		y = this->y;
 	}
 
-	float Vector2f::getX() {
+	float& Vector2f::getX() {
 		return this->x;
 	}
 
-	float Vector2f::getY() {
+	float& Vector2f::getY() {
 		return this->y;
 	}
 
