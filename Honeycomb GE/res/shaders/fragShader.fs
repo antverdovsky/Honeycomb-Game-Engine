@@ -7,5 +7,5 @@
 out vec3 color; // The output color
 
 void main() {
-    color = vec3(0.5, 0.5, 0.5); // Set the color to White.
+    color = vec3(0.0, 0.0, 1.0); // Set the color to White.
 }

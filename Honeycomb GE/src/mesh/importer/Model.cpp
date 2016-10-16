@@ -2,37 +2,23 @@
 
 #include "..\..\..\include\math\Vector2f.h"
 #include "..\..\..\include\math\Vector3f.h"
+#include "..\..\..\include\mesh\Vertex.h"
 
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
+using Honeycomb::Mesh::Vertex;
 
 namespace Honeycomb::Mesh::Importer {
 	Model::~Model() {
 
 	}
 	
-	std::vector<int>& Model::getNormalIndices() {
-		return this->normalIndices;
+	std::vector<int>& Model::getIndices() {
+		return this->indices;
 	}
 
-	std::vector<Vector3f>& Model::getNormals() {
-		return this->normals;
-	}
-
-	std::vector<int>& Model::getUVIndices() {
-		return this->uvIndices;
-	}
-
-	std::vector<Vector2f>& Model::getUVs() {
-		return this->uvs;
-	}
-
-	std::vector<int>& Model::getVertexIndices() {
-		return this->vertexIndices;
-	}
-
-	std::vector<Vector3f>& Model::getVerticies() {
-		return this->verticies;
+	std::vector<Vertex>& Model::getVerticies() {
+		return this->vertices;
 	}
 
 	Model* Model::loadModel(std::string file) {
@@ -43,17 +29,8 @@ namespace Honeycomb::Mesh::Importer {
 
 	}
 
-	Model::Model(std::vector<int> normIndx, std::vector<int> uvIndx,
-			std::vector<int> vertIndx,
-			std::vector<Honeycomb::Math::Vector3f> norms,
-			std::vector<Honeycomb::Math::Vector2f> uvs,
-			std::vector<Honeycomb::Math::Vector3f> verts) {
-		this->normalIndices = normIndx;
-		this->uvIndices = uvIndx;
-		this->vertexIndices = vertIndx;
-
-		this->normals = norms;
-		this->uvs = uvs;
-		this->verticies = verts;
+	Model::Model(std::vector<int> indx, std::vector<Vertex> vert) {
+		this->indices = indx;
+		this->vertices = vert;
 	}
 }

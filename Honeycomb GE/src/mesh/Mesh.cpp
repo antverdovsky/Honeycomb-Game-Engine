@@ -10,8 +10,10 @@
 #include "..\..\include\file\FileIO.h"
 #include "..\..\include\math\Vector3f.h"
 #include "..\..\include\mesh\importer\Model.h"
+#include "..\..\include\mesh\Vertex.h"
 
 using Honeycomb::Math::Vector3f;
+using Honeycomb::Mesh::Vertex;
 using Honeycomb::Mesh::Importer::Model;
 
 namespace Honeycomb::Mesh {
@@ -36,36 +38,47 @@ namespace Honeycomb::Mesh {
 
 	Mesh::Mesh(Model m) : Mesh() {
 		this->addVertexData(&m.getVerticies()[0], m.getVerticies().size(),
-			&m.getVertexIndices()[0], m.getVertexIndices().size());
+			&m.getIndices()[0], m.getIndices().size());
 	}
 
 	Mesh::~Mesh() {
 
 	}
 
-	void Mesh::addVertexData(Vector3f vert[], int vertCount, int index[],
+	void Mesh::addVertexData(Vertex vert[], int vertCount, int index[],
 			int indxCount) {
+		std::cout << "All Verticies: " << std::endl;
 		for (int i = 0; i < vertCount; i++) {
-			std::cout << vert[i].getX() << ", " << vert[i].getY() << ", " <<
-				vert[i].getZ() << std::endl;
+			Vertex v = vert[i];
+
+			std::cout << v.getPosition().getX() << ", " <<
+				v.getPosition().getY() << ", " <<
+				v.getPosition().getZ() << " | " <<
+				v.getUV().getX() << ", " <<
+				v.getUV().getY() << ", " << " | " <<
+				v.getNormal().getX() << ", " <<
+				v.getNormal().getY() << ", " <<
+				v.getNormal().getZ() << "." << std::endl;
 		}
 
+		std::cout << "All Indices: " << std::endl;
 		for (int i = 0; i < indxCount; i++) {
 			std::cout << index[i] << ", ";
-		}std::cout << std::endl;
+		}
 
 		// Convert the verticies into floats which OpenGL understands
-		GLfloat *vertFloats = Vector3f::vectorsToFloatBuffer(vert, vertCount);
+		GLfloat *vertFloats = Vertex::toFloatBuffer(vert, vertCount);
 
-		for (int i = 0; i < vertCount * 3; i++) {
+		std::cout << "All Vertex Floats Data: " << std::endl;
+		for (int i = 0; i < vertCount * 8; i++) {
 			std::cout << vertFloats[i] << ", ";
-		}
-		std::cout << std::endl;
+		}std::cout << std::endl;
 
 		// Get the count of the verticies and the memory size (in bytes) of the
-		// verticies (each vertex has 3 floats (x, y, z)).
+		// verticies (each vertex has 8 floats (3 for positions, 2 for texture
+		// coordinates, 3 for normals)).
 		this->vertCount = vertCount;
-		this->vertSize = vertCount * 3 * sizeof(GLfloat);
+		this->vertSize = vertCount * 8 * sizeof(GLfloat);
 
 		// Get the count of indices and their memory size
 		this->indexCount = indxCount;
@@ -86,8 +99,10 @@ namespace Honeycomb::Mesh {
 	}
 
 	void Mesh::draw() {
-		// Enable the position vertex attribute array
-		glEnableVertexAttribArray(0);
+		// Enable attribute arrays for the vertices
+		glEnableVertexAttribArray(0); // The position
+		glEnableVertexAttribArray(1); // The texture coordinates
+		glEnableVertexAttribArray(2); // The normals
 
 		// Bind the buffer to the VBO.
 		glBindBuffer(GL_ARRAY_BUFFER, this->vertexBufferObj);
@@ -95,7 +110,9 @@ namespace Honeycomb::Mesh {
 		// The positions are to be stored at 0, with each one containing 3 
 		// floats per face, normalization is not needed, size is taken from the
 		// variable stored for this mesh, and the data starts at 0.
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 32, (void*)0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 32, (void*)12);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 32, (void*)20);
 
 		// Bind the buffer to the IBO.
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBufferObj);
@@ -107,5 +124,7 @@ namespace Honeycomb::Mesh {
 
 		// Disable the position vertex attribute array
 		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(1);
+		glDisableVertexAttribArray(2);
 	}
 }

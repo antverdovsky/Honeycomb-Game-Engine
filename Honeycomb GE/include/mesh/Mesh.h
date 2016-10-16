@@ -4,7 +4,7 @@
 
 #include <string>
 
-namespace Honeycomb::Mesh { class Face; }
+namespace Honeycomb::Mesh { class Vertex; }
 namespace Honeycomb::Math { class Vector3f; }
 namespace Honeycomb::Mesh::Importer { class Model; }
 
@@ -26,7 +26,7 @@ namespace Honeycomb::Mesh {
 		/// int vertCount : The number of verticies which are passed in.
 		/// int index[] : The indices data.
 		/// int indxCount : The number of indices.
-		void addVertexData(Honeycomb::Math::Vector3f vert[], int vertCount,
+		void addVertexData(Honeycomb::Mesh::Vertex vert[], int vertCount,
 				int index[], int intxCount);
 
 		/// Draws this Mesh to the screen using the vertex data.

@@ -17,6 +17,7 @@
 #include "..\..\Honeycomb GE\include\render\Camera.h"
 #include "..\..\Honeycomb GE\include\object\Transform.h"
 #include "..\..\Honeycomb GE\include\mesh\Mesh.h"
+#include "..\..\Honeycomb GE\include\mesh\Vertex.h"
 #include "..\..\Honeycomb GE\include\mesh\importer\Model.h"
 #include "..\..\Honeycomb GE\include\mesh\importer\Model_OBJ.h"
 #include "..\..\Honeycomb GE\include\shader\ShaderProgram.h"
@@ -26,6 +27,7 @@
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Matrix4f;
+using Honeycomb::Mesh::Vertex;
 using Honeycomb::Math::Quaternion;
 using Honeycomb::Mesh::Mesh;
 using Honeycomb::Mesh::Importer::Model;
@@ -49,8 +51,16 @@ TestGame::~TestGame() {
 	delete testShader;
 }
 
+bool wireframe = false;
 void TestGame::input() {
 	float speed = 0.0025F;
+
+	if (GameInput::getGameInput()->getKeyReleased(GLFW_KEY_P)) { // wireframe
+		wireframe = !wireframe;
+		
+		if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
 
 	if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_Z)) { // rot transform
 		this->testTransform->rotate(this->testTransform->getLocalUp(),
@@ -177,6 +187,12 @@ void TestGame::render() {
 } 
 
 void TestGame::start() {
+	Vertex v1[] = {
+		Vertex(Vector3f(1, 2, 3), Vector3f(4, 5, 6), Vector2f(0, -1)),
+		Vertex(Vector3f(-1, -2, -3), Vector3f(-4, -5, -6), Vector2f(0, 1))
+	};
+	float* vals = Vertex::toFloatBuffer(v1, 2);
+
 	float camW = GameWindow::getGameWindow()->getWindowWidth();
 	float camH = GameWindow::getGameWindow()->getWindowHeight();
 

@@ -12,19 +12,13 @@ namespace Honeycomb::Mesh::Importer {
 		/// be removed after being used.
 		/// std::string file : The file pointing to the Wavefront Model.
 		/// return : The initialized Wavefront Model.
-		static Model_OBJ* loadModel(std::string file);
+		static Model* loadModel(std::string file);
 	private:
 		/// Creates a Wavefront (.obj) Model using the specified indices,
-		/// normals, texture coordinates and verticies.
-		/// vector<Face> fcs : The indices.
-		/// vector<Vector3f> norms: The normals.
-		/// vector<Vector2f> texCrds : The texture coordinates.
-		/// vector<verts> verts : The verticies.
-		Model_OBJ(std::vector<int> normIndx, std::vector<int> uvIndx,
-				std::vector<int> vertIndx,
-				std::vector<Honeycomb::Math::Vector3f> norms,
-				std::vector<Honeycomb::Math::Vector2f> uvs,
-				std::vector<Honeycomb::Math::Vector3f> verts);
+		/// and vertices.
+		/// vector<int> indx : The indices.
+		/// vector<Vertex> vert : The vertices.
+		Model_OBJ(std::vector<int> indx, std::vector<Vertex> vert);
 
 		/// Default Destructor.
 		~Model_OBJ();
