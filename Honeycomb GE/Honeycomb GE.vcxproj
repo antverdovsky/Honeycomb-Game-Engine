@@ -88,7 +88,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\include;C:\OpenGL\GLEW\glew-2.0.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\C-lib\SOIL\src;C:\C-lib\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\include;C:\C-lib\OpenGL\GLEW\glew-2.0.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/std:c++latest /FS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -97,6 +97,15 @@
       <AdditionalLibraryDirectories>C:\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\OpenGL\GLEW\glew-2.0.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <Lib>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>C:\C-lib\SOIL\lib;C:\C-lib\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\C-lib\OpenGL\GLEW\glew-2.0.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -105,7 +114,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\include;C:\OpenGL\GLEW\glew-2.0.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\C-lib\SOIL\src;C:\C-lib\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\include;C:\C-lib\OpenGL\GLEW\glew-2.0.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/std:c++latest /FS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -114,6 +123,15 @@
       <AdditionalLibraryDirectories>C:\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\OpenGL\GLEW\glew-2.0.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <Lib>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>C:\C-lib\SOIL\lib;C:\C-lib\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\C-lib\OpenGL\GLEW\glew-2.0.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -124,7 +142,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\include;C:\OpenGL\GLEW\glew-2.0.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\C-lib\SOIL\src;C:\C-lib\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\include;C:\C-lib\OpenGL\GLEW\glew-2.0.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/std:c++latest /FS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -135,6 +153,15 @@
       <AdditionalLibraryDirectories>C:\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\OpenGL\GLEW\glew-2.0.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <Lib>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>C:\C-lib\SOIL\lib;C:\C-lib\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\C-lib\OpenGL\GLEW\glew-2.0.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -145,7 +172,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\include;C:\OpenGL\GLEW\glew-2.0.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\C-lib\SOIL\src;C:\C-lib\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\include;C:\C-lib\OpenGL\GLEW\glew-2.0.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/std:c++latest /FS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -156,6 +183,15 @@
       <AdditionalLibraryDirectories>C:\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\OpenGL\GLEW\glew-2.0.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <Lib>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3.lib;SOIL.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>C:\C-lib\SOIL\lib;C:\C-lib\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\C-lib\OpenGL\GLEW\glew-2.0.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\base\BaseGame.cpp" />
@@ -164,6 +200,7 @@
     <ClCompile Include="src\base\GameTime.cpp" />
     <ClCompile Include="src\base\GameWindow.cpp" />
     <ClCompile Include="src\file\FileIO.cpp" />
+    <ClCompile Include="src\graphics\Texture2D.cpp" />
     <ClCompile Include="src\math\MathUtils.cpp" />
     <ClCompile Include="src\math\Matrix4f.cpp" />
     <ClCompile Include="src\math\Quaternion.cpp" />
@@ -184,6 +221,7 @@
     <ClInclude Include="include\base\GameTime.h" />
     <ClInclude Include="include\base\GameWindow.h" />
     <ClInclude Include="include\file\FileIO.h" />
+    <ClInclude Include="include\graphics\Texture2D.h" />
     <ClInclude Include="include\math\MathUtils.h" />
     <ClInclude Include="include\math\Matrix4f.h" />
     <ClInclude Include="include\math\Quaternion.h" />

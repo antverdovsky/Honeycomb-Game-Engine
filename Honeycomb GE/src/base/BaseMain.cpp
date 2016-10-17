@@ -5,28 +5,16 @@
 
 #include <iostream>
 
-/*
-int main(int argc, char** argv) {
-	Honeycomb::Base::BaseGame *game = new
-		Honeycomb::Base::BaseGame(); // Initialize a blank game to run
-
-	Honeycomb::Base::BaseMain::start(game); // Initialize the Engine components
-	Honeycomb::Base::BaseMain::run(game); // Main Game Loop
-	Honeycomb::Base::BaseMain::stop(game); // Destruct the Engine components
-	
-	return 0;
-}
-*/
-
 namespace Honeycomb::Base::BaseMain {
 	bool isGameRunning = false; // Is the game loop running?
-	bool drawBackFaces = false; // Draw back faces?
+	bool drawBackFaces = true; // Draw back faces?
 
 	BaseGame *game;
 	
 	void initializeOpenGL() {
 		glClearColor(0.0F, 0.0F, 0.0F, 0.0F); // Set clear color to black
 		
+		/// TODO: Not currently working...
 		if (!drawBackFaces) { // Should back faces be drawn?
 			glFrontFace(GL_CW); // Every face drawn in clockwise is the front
 			glCullFace(GL_BACK); // Do not draw the back face (CCW)

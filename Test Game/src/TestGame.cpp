@@ -23,12 +23,14 @@
 #include "..\..\Honeycomb GE\include\shader\ShaderProgram.h"
 #include "..\..\Honeycomb GE\include\base\GameWindow.h"
 #include "..\..\Honeycomb GE\include\math\MathUtils.h"
+#include "..\..\Honeycomb GE\include\graphics\Texture2D.h"
 
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Matrix4f;
 using Honeycomb::Mesh::Vertex;
 using Honeycomb::Math::Quaternion;
+using Honeycomb::Graphics::Texture2D;
 using Honeycomb::Mesh::Mesh;
 using Honeycomb::Mesh::Importer::Model;
 using Honeycomb::Mesh::Importer::Model_OBJ;
@@ -36,6 +38,7 @@ using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Object::Transform;
 using Honeycomb::Render::Camera;
 
+using namespace Honeycomb::File;
 using namespace Honeycomb::Base::Time;
 using namespace Honeycomb::Math::Utils;
 
@@ -182,17 +185,12 @@ void TestGame::input() {
 }
 
 void TestGame::render() {
+	testTexture->bind();
 	testMesh->draw();
 	//testShader->unbindShaderProgram();
 } 
 
 void TestGame::start() {
-	Vertex v1[] = {
-		Vertex(Vector3f(1, 2, 3), Vector3f(4, 5, 6), Vector2f(0, -1)),
-		Vertex(Vector3f(-1, -2, -3), Vector3f(-4, -5, -6), Vector2f(0, 1))
-	};
-	float* vals = Vertex::toFloatBuffer(v1, 2);
-
 	float camW = GameWindow::getGameWindow()->getWindowWidth();
 	float camH = GameWindow::getGameWindow()->getWindowHeight();
 
@@ -200,14 +198,24 @@ void TestGame::start() {
 	testCamera = new Camera(Camera::CameraType::PERSPECTIVE, 100.0F, 0.3F,
 		60, camH, camW, Transform(Vector3f(),
 			Quaternion(Vector3f::getGlobalUp(), PI), Vector3f(1, 1, 1)));
-	testModel = Model_OBJ::loadModel(testModelCube);
+	testModel = Model_OBJ::loadModel(testModelCubeStr);
 	testMesh = new Mesh(*testModel);
 	testShader = new ShaderProgram();
+	testTexture = new Texture2D();
+
+	int testTextureWidth = 0;
+	int testTextureHeight = 0;
+	unsigned char* testTextureData = readImageToUChar(
+		testTextureStr, testTextureWidth, testTextureHeight);
+	testTexture->setImageData(testTextureData, GL_RGB, GL_RGB, testTextureWidth,
+		testTextureHeight);
+	//testTexture->setTextureFiltering(GL_NEAREST, GL_NEAREST);
+	testTexture->genMipMap();
 
 	testTransform->setTranslation(Vector3f(0, 0, -10));
 
-	testShader->addShader(vertexShader, GL_VERTEX_SHADER);
-	testShader->addShader(fragShader, GL_FRAGMENT_SHADER);
+	testShader->addShader(vertexShaderStr, GL_VERTEX_SHADER);
+	testShader->addShader(fragShaderStr, GL_FRAGMENT_SHADER);
 	testShader->finalizeShaderProgram();
 
 	testShader->addUniform("camProjection");

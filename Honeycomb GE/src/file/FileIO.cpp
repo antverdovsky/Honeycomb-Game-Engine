@@ -1,10 +1,17 @@
 #include "..\..\include\file\FileIO.h"
 
+#include <SOIL.h>
+
 #include <iostream>
 #include <fstream>
 #include <string>
 
 namespace Honeycomb::File {
+	unsigned char* readImageToUChar(std::string img, int &w, int &h) {
+		// Use the SOIL library to load in the image and return its data
+		return SOIL_load_image(img.c_str(), &w, &h, 0, SOIL_LOAD_AUTO);
+	}
+
 	std::string readFileToStr(std::string file) {
 		// Variable to store the content and a stream to read it in
 		std::string content = "";

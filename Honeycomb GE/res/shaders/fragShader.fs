@@ -1,11 +1,16 @@
 //
-// Sets the color of the object to White.
+// Sets the color of the fragment to the color indicated by the Texture.
 //
 
 #version 330 core
 
-out vec3 color; // The output color
+in vec2 out_vs_texCoord; // Take in texture coordinate outputted by VS
+
+uniform sampler2D textureSampler; // Texture Sampler2D
+
+out vec4 out_fs_color; // The output color
 
 void main() {
-    color = vec3(0.0, 0.0, 1.0); // Set the color to White.
+	// Set the color to the color provided by the Texture
+	out_fs_color = texture(textureSampler, out_vs_texCoord);
 }
