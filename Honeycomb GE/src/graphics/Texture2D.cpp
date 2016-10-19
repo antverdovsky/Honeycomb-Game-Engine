@@ -37,7 +37,7 @@ namespace Honeycomb::Graphics {
 		int width, height;
 		unsigned char *data = File::readImageToUChar(file, width, height);
 
-		this->setImageData(data, GL_RGBA, GL_BGRA, width, height);
+		this->setImageData(data, GL_RGBA, GL_RGBA, width, height);
 		delete data;
 	}
 
@@ -58,6 +58,15 @@ namespace Honeycomb::Graphics {
 		// Set the minifying and magnifying filter parameters
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag);
+
+		this->unbind();
+	}
+
+	void Texture2D::setTextureWrap(int s, int t) {
+		this->bind();
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, s);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, t);
 
 		this->unbind();
 	}

@@ -284,8 +284,9 @@ paket-files/
 __pycache__/
 *.pyc
 
-# Models & Material Files
+# Resource Files
 Honeycomb GE/res/models
+Honeycomb GE/res/textures
 
 # Builds Folder
 Honeycomb GE/Builds

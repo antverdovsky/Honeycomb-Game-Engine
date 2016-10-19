@@ -7,22 +7,23 @@
 
 namespace Honeycomb::Base::BaseMain {
 	bool isGameRunning = false; // Is the game loop running?
-	bool drawBackFaces = true; // Draw back faces?
+	bool drawBackFaces = false; // Draw back faces?
 
 	BaseGame *game;
 	
 	void initializeOpenGL() {
 		glClearColor(0.0F, 0.0F, 0.0F, 0.0F); // Set clear color to black
 		
-		/// TODO: Not currently working...
 		if (!drawBackFaces) { // Should back faces be drawn?
-			glFrontFace(GL_CW); // Every face drawn in clockwise is the front
-			glCullFace(GL_BACK); // Do not draw the back face (CCW)
+			glCullFace(GL_BACK); // Do not draw the back face (CW)
 			glEnable(GL_CULL_FACE); // Disable rendering unseen back faces
 		}
 
+		glEnable(GL_TEXTURE_2D);
+
 		glEnable(GL_DEPTH_TEST); // Enable depth perception for drawing order
-		glEnable(GL_FRAMEBUFFER_SRGB); // Gamma correction
+//		glEnable(GL_FRAMEBUFFER_SRGB); // Gamma correction
+//		TODO: [DISABLED, CAUSES TEXTURES TO APPEAR WASHED OUT].
 	}
 
 	void render() {

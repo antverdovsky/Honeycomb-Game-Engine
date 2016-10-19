@@ -34,7 +34,7 @@ private:
 	std::string testModelCubeStr =
 		"..\\Honeycomb GE\\res\\models\\test1\\testCubeTex.obj";
 	std::string testTextureStr =
-		"..\\Honeycomb GE\\res\\models\\test1\\TestTexture1.bmp";
+		"..\\Honeycomb GE\\res\\textures\\RainbowTexture.bmp";
 
 	Honeycomb::Render::Camera* testCamera;
 	Honeycomb::Object::Transform* testTransform;

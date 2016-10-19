@@ -185,6 +185,7 @@ void TestGame::input() {
 }
 
 void TestGame::render() {
+	testShader->bindShaderProgram();
 	testTexture->bind();
 	testMesh->draw();
 	//testShader->unbindShaderProgram();
@@ -209,10 +210,11 @@ void TestGame::start() {
 		testTextureStr, testTextureWidth, testTextureHeight);
 	testTexture->setImageData(testTextureData, GL_RGB, GL_RGB, testTextureWidth,
 		testTextureHeight);
-	//testTexture->setTextureFiltering(GL_NEAREST, GL_NEAREST);
+	testTexture->setTextureFiltering(GL_NEAREST, GL_NEAREST);
+	testTexture->setTextureWrap(GL_REPEAT, GL_REPEAT);
 	testTexture->genMipMap();
 
-	testTransform->setTranslation(Vector3f(0, 0, -10));
+	testTransform->setTranslation(Vector3f(0, 0, -5));
 
 	testShader->addShader(vertexShaderStr, GL_VERTEX_SHADER);
 	testShader->addShader(fragShaderStr, GL_FRAGMENT_SHADER);

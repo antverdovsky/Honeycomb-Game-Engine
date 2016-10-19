@@ -38,6 +38,11 @@ namespace Honeycomb::Graphics {
 		/// int mag : The filtering for the texture when magnifying.
 		void setTextureFiltering(int min, int mag);
 
+		/// Sets the texture wrapping on the s and t coordinate axes.
+		/// int s : The wrapping for the texture on the s coordinate axis.
+		/// int t : The wrapping for the texture on the t coordinate axis.
+		void setTextureWrap(int s, int t);
+
 		/// Unbinds this (and any other) texture from OpenGL.
 		static void unbind();
 	private:
