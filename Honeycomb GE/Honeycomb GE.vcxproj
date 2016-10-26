@@ -211,7 +211,10 @@
     <ClCompile Include="src\mesh\importer\Model.cpp" />
     <ClCompile Include="src\mesh\importer\Model_OBJ.cpp" />
     <ClCompile Include="src\mesh\Mesh.cpp" />
+    <ClCompile Include="src\mesh\MeshRenderer.cpp" />
     <ClCompile Include="src\mesh\Vertex.cpp" />
+    <ClCompile Include="src\object\Component.cpp" />
+    <ClCompile Include="src\object\Object.cpp" />
     <ClCompile Include="src\object\Transform.cpp" />
     <ClCompile Include="src\render\Camera.cpp" />
     <ClCompile Include="src\shader\ShaderProgram.cpp" />
@@ -232,7 +235,10 @@
     <ClInclude Include="include\mesh\importer\Model.h" />
     <ClInclude Include="include\mesh\importer\Model_OBJ.h" />
     <ClInclude Include="include\mesh\Mesh.h" />
+    <ClInclude Include="include\mesh\MeshRenderer.h" />
     <ClInclude Include="include\mesh\Vertex.h" />
+    <ClInclude Include="include\object\Component.h" />
+    <ClInclude Include="include\object\Object.h" />
     <ClInclude Include="include\object\Transform.h" />
     <ClInclude Include="include\render\Camera.h" />
     <ClInclude Include="include\shader\ShaderProgram.h" />

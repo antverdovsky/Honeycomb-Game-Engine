@@ -3,13 +3,14 @@
 #define CAMERA_H
 
 #include "..\..\include\math\Matrix4f.h"
+#include "..\..\include\object\Component.h"
 #include "..\..\include\object\Transform.h"
 
 namespace Honeycomb::Math { class Matrix4f; }
 namespace Honeycomb::Object { class Transform; }
 
 namespace Honeycomb::Render {
-	class Camera {
+	class Camera : public Honeycomb::Object::Component {
 	public:
 		enum CameraType { // The type of camera (Orthographic or Perspective)
 			ORTHOGRAPHIC,
@@ -62,6 +63,18 @@ namespace Honeycomb::Render {
 		/// return : The projection height.
 		float getProjectionHeight();
 
+		/// Gets the projection orientation matrix for this camera. This method
+		/// should be used instead of the Transformation's orientation method
+		/// for projection matricies, as this matrix is correctly negated.
+		/// return : The projection orientation matrix.
+		Honeycomb::Math::Matrix4f getProjectionOrientation();
+
+		/// Gets the projection translation matrix for this camera. This method
+		/// should be used instead of the Transformation's translation method
+		/// for projection matricies, as this matrix is correctly negated.
+		/// return : The projection translation matrix.
+		Honeycomb::Math::Matrix4f getProjectionTranslation();
+
 		/// Gets the projection width for this camera.
 		/// return : The projection width.
 		float getProjectionWidth();
@@ -81,11 +94,21 @@ namespace Honeycomb::Render {
 		Honeycomb::Math::Matrix4f projection; // Stores the projection
 		Honeycomb::Object::Transform transform; // Stores the transform
 
+		Honeycomb::Math::Matrix4f projectionOrien; // Orientation Projection
+		Honeycomb::Math::Matrix4f projectionTrans; // Translation Projection
+
 		/// Calculates (or recalculates) either the perspective or the
 		/// orthographic projection matrix for this camera, depending on its
 		/// type.
 		/// return : The projection matrix.
 		Honeycomb::Math::Matrix4f calcProjection();
+
+		/// Calculates (or recalculates) the orientation projection for this
+		/// camera. This corrects the transformation orientation projection
+		/// matrix by negating quantities which cause the world to rotate 
+		/// opposite of the camera, creating the illusion that the camera is
+		/// rotating.
+		Honeycomb::Math::Matrix4f calcProjectionOrientation();
 
 		/// Calculates (or recalculates) the orthographic projection matrix for
 		/// this camera, and stores it into the projection matrix variable.
@@ -96,6 +119,13 @@ namespace Honeycomb::Render {
 		/// this camera, and stores it into the projection matrix variable.
 		/// return : The projection matrix.
 		Honeycomb::Math::Matrix4f calcProjectionPerspective();
+
+		/// Calculates (or recalculates) the translation projection for this
+		/// camera. This corrects the transformation translation projection
+		/// matrix by negating quantities which cause the world to move 
+		/// opposite of the camera, creating the illusion that the camera is
+		/// moving.
+		Honeycomb::Math::Matrix4f calcProjectionTranslation();
 	};
 }
 

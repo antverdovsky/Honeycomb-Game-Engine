@@ -2,12 +2,13 @@
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
+#include "Component.h"
 #include "..\..\include\math\Vector3f.h"
 #include "..\..\include\math\Matrix4f.h"
 #include "..\..\include\math\Quaternion.h"
 
 namespace Honeycomb::Object {
-	class Transform {
+	class Transform : public Component {
 	public:
 		/// Default constructor which initializes the position, rotation and
 		/// scale of the transform to default values.

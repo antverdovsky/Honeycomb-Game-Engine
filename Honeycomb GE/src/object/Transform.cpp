@@ -18,7 +18,8 @@ namespace Honeycomb::Object {
 
 	}
 
-	Transform::Transform(Vector3f pos, Quaternion rot, Vector3f scl) {
+	Transform::Transform(Vector3f pos, Quaternion rot, Vector3f scl)
+			: Component("Transform") {
 		this->setTranslation(pos);
 		this->setRotation(rot);
 		this->setScale(scl);

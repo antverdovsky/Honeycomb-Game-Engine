@@ -1,5 +1,7 @@
 #include "..\..\include\graphics\Texture2D.h"
 
+#include <iostream>
+
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 

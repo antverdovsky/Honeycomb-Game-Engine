@@ -6,6 +6,9 @@
 
 #include "..\..\Honeycomb GE\include\base\BaseGame.h"
 
+#include "..\..\Honeycomb GE\include\object\Object.h"
+#include "..\..\Honeycomb GE\include\object\Component.h"
+
 namespace Honeycomb::Object { class Transform; }
 namespace Honeycomb::Mesh::Importer { class Model; }
 namespace Honeycomb::Mesh { class Mesh; }
@@ -34,14 +37,19 @@ private:
 	std::string testModelCubeStr =
 		"..\\Honeycomb GE\\res\\models\\test1\\testCubeTex.obj";
 	std::string testTextureStr =
-		"..\\Honeycomb GE\\res\\textures\\RainbowTexture.bmp";
+		"..\\Honeycomb GE\\res\\textures\\DogTest.bmp";
 
+	/*
 	Honeycomb::Render::Camera* testCamera;
 	Honeycomb::Object::Transform* testTransform;
 	Honeycomb::Graphics::Texture2D* testTexture;
 	Honeycomb::Mesh::Importer::Model* testModel;
 	Honeycomb::Mesh::Mesh* testMesh;
 	Honeycomb::Shader::ShaderProgram* testShader;
+	*/
+
+	Honeycomb::Object::Object* cameraObject;
+	Honeycomb::Object::Object* cubeObject;
 };
 
 #endif

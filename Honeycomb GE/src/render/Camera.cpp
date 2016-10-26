@@ -10,7 +10,7 @@ using namespace Honeycomb::Math::Utils;
 
 namespace Honeycomb::Render {
 	Camera::Camera(CameraType cT, float clF, float clN, float cTP, float projH,
-			float projW, Transform trans) {
+			float projW, Transform trans) : Component("Camera") {
 		this->type = cT;
 		this->clipFar = clF;
 		this->clipNear = clN;
@@ -54,6 +54,16 @@ namespace Honeycomb::Render {
 		return this->projectionHeight;
 	}
 
+	Honeycomb::Math::Matrix4f Camera::getProjectionOrientation() {
+		return this->calcProjectionOrientation();
+		// return this->projectionOrien; // TODO: Don't recalculate each time!!!
+	}
+
+	Honeycomb::Math::Matrix4f Camera::getProjectionTranslation() {
+		return this->calcProjectionTranslation();
+		// return this->projectionTrans; // TODO: Don't recalculate each time!!!
+	}
+
 	float Camera::getProjectionWidth() {
 		return this->projectionWidth;
 	}
@@ -77,6 +87,18 @@ namespace Honeycomb::Render {
 		default:
 			return this->getProjection();
 		}
+	}
+
+	Matrix4f Camera::calcProjectionOrientation() {
+		this->projectionOrien = this->transform.getOrientationMatrix();
+
+		// Negate the local forwards of the camera since the camera faces the
+		// opposite direction as the objects when rendering them.
+		this->projectionOrien.setAt(2, 0, -this->projectionOrien.getAt(2, 0));
+		this->projectionOrien.setAt(2, 1, -this->projectionOrien.getAt(2, 1));
+		this->projectionOrien.setAt(2, 2, -this->projectionOrien.getAt(2, 2));
+
+		return this->projectionOrien;
 	}
 
 	Matrix4f Camera::calcProjectionOrthographic() {
@@ -138,5 +160,17 @@ namespace Honeycomb::Render {
 		this->projection.setAt(3, 3, 0.0F);
 
 		return this->projection;
+	}
+
+	Matrix4f Camera::calcProjectionTranslation() {
+		this->projectionTrans = this->transform.getTranslationMatrix();
+
+		// Negate the local forwards of the camera since the camera faces the
+		// opposite direction as the objects when rendering them.
+		this->projectionTrans.setAt(0, 3, -this->projectionTrans.getAt(0, 3));
+		this->projectionTrans.setAt(1, 3, -this->projectionTrans.getAt(1, 3));
+		this->projectionTrans.setAt(2, 3, -this->projectionTrans.getAt(2, 3));
+
+		return this->projectionTrans;
 	}
 }
