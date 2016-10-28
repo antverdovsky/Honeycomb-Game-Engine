@@ -18,7 +18,7 @@ namespace Honeycomb::Mesh {
 		/// Model m : The model to be used to initialize the Mesh.
 		Mesh(Honeycomb::Mesh::Importer::Model m);
 
-		/// Default Destructor.
+		/// Destroys the mesh and the buffers and data associated with it.
 		~Mesh();
 
 		/// Adds the vertex data for this mesh.

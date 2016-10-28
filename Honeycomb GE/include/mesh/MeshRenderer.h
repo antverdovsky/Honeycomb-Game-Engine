@@ -32,8 +32,8 @@ namespace Honeycomb::Mesh {
 		void render();
 	private:
 		// All objects are declared with pointers, for lazy initialization.
-		Mesh *mesh;
-		Honeycomb::Shader::ShaderProgram *shader;
-		Honeycomb::Graphics::Texture2D *texture;
+		Mesh mesh;
+		Honeycomb::Shader::ShaderProgram shader;
+		Honeycomb::Graphics::Texture2D texture;
 	};
 }

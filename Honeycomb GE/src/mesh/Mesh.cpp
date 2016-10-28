@@ -42,7 +42,11 @@ namespace Honeycomb::Mesh {
 	}
 
 	Mesh::~Mesh() {
-
+		GLuint ibo = this->indexBufferObj;
+		glDeleteBuffers(1, &ibo);
+		
+		GLuint vbo = this->vertexBufferObj;
+		glDeleteBuffers(1, &vbo);
 	}
 
 	void Mesh::addVertexData(Vertex vert[], int vertCount, int index[],
