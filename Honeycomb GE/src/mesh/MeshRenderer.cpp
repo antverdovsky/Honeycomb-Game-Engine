@@ -13,30 +13,34 @@ using Honeycomb::Graphics::Texture2D;
 using namespace Honeycomb::File;
 
 namespace Honeycomb::Mesh {
-	MeshRenderer::MeshRenderer(Mesh mesh, ShaderProgram shad, Texture2D *tex)
+	MeshRenderer::MeshRenderer(Mesh &mesh, ShaderProgram &shad, Texture2D &tex)
 			: Component("MeshRenderer") {
-		this->mesh = mesh;
-		this->shader = shad;
-		this->texture = tex;
+		this->mesh = &mesh;
+		this->shader = &shad;
+		this->texture = &tex;
 	}
 
 	MeshRenderer::~MeshRenderer() {
 
 	}
 
-	ShaderProgram& MeshRenderer::getShader() {
-		return this->shader;
+	Mesh& MeshRenderer::getMesh() {
+		return *this->mesh;
 	}
 
-	Texture2D* MeshRenderer::getTexture() {
-		return this->texture;
+	ShaderProgram& MeshRenderer::getShader() {
+		return *this->shader;
+	}
+
+	Texture2D& MeshRenderer::getTexture() {
+		return *this->texture;
 	}
 
 	void MeshRenderer::render() {
 		// Bind the shader & texture and then draw the Mesh.
-		this->shader.bindShaderProgram();
+		this->shader->bindShaderProgram();
 		this->texture->bind();
-		this->mesh.draw();
+		this->mesh->draw();
 		//this->texture.unbind();
 		//this->shader.unbindShaderProgram(); Won't be able to write to uniforms then... TODO
 	}

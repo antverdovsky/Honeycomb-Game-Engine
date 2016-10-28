@@ -217,6 +217,7 @@
     <ClCompile Include="src\object\Object.cpp" />
     <ClCompile Include="src\object\Transform.cpp" />
     <ClCompile Include="src\render\Camera.cpp" />
+    <ClCompile Include="src\shader\default\SimpleShader.cpp" />
     <ClCompile Include="src\shader\ShaderProgram.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -241,6 +242,7 @@
     <ClInclude Include="include\object\Object.h" />
     <ClInclude Include="include\object\Transform.h" />
     <ClInclude Include="include\render\Camera.h" />
+    <ClInclude Include="include\shader\default\SimpleShader.h" />
     <ClInclude Include="include\shader\ShaderProgram.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -26,6 +26,7 @@
 #include "..\..\Honeycomb GE\include\base\GameWindow.h"
 #include "..\..\Honeycomb GE\include\math\MathUtils.h"
 #include "..\..\Honeycomb GE\include\graphics\Texture2D.h"
+#include "..\..\Honeycomb GE\include\shader\default\SimpleShader.h"
 
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
@@ -39,6 +40,7 @@ using Honeycomb::Mesh::Importer::Model_OBJ;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Object::Transform;
 using Honeycomb::Render::Camera;
+using Honeycomb::Shader::Default::SimpleShader;
 
 using namespace Honeycomb::File;
 using namespace Honeycomb::Base::Time;
@@ -225,7 +227,12 @@ void TestGame::start() {
 	float camW = GameWindow::getGameWindow()->getWindowWidth();
 	float camH = GameWindow::getGameWindow()->getWindowHeight();
 
-	Mesh cubeMesh = Mesh(*Model_OBJ::loadModel(testModelCubeStr)); // todo delete model
+	Mesh *cubeMesh = new Mesh(*Model_OBJ::loadModel(testModelCubeStr)); // todo delete model
+	
+	ShaderProgram *cubeShader = SimpleShader::getSimpleShader();
+	//cubeShader.bindShaderProgram();
+
+	/*
 	ShaderProgram cubeShader = ShaderProgram();
 	
 	cubeShader.addShader(vertexShaderStr, GL_VERTEX_SHADER);
@@ -236,7 +243,7 @@ void TestGame::start() {
 	cubeShader.addUniform("camOrientation");
 	cubeShader.addUniform("camTranslation");
 	cubeShader.addUniform("objTransform");
-	cubeShader.bindShaderProgram();
+	cubeShader.bindShaderProgram();*/
 
 	//cubeShader.setUniform_mat4("camProjection",
 	//	testCamera->getProjection()); // todo
@@ -255,7 +262,7 @@ void TestGame::start() {
 	cubeTexture->genMipMap();
 	
 	Honeycomb::Object::Component *cubeRenderer =
-		new Honeycomb::Mesh::MeshRenderer(cubeMesh, cubeShader, cubeTexture);
+		new Honeycomb::Mesh::MeshRenderer(*cubeMesh, *cubeShader, *cubeTexture);
 	Honeycomb::Object::Component* cubeTransform =
 		new Honeycomb::Object::Transform(Vector3f(0.0F, 0.0F, -10.0F), 
 			Quaternion(), Vector3f(1.0F, 1.0F, 1.0F));

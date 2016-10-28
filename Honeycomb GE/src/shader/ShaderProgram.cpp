@@ -18,13 +18,19 @@ namespace Honeycomb::Shader {
 	ShaderProgram::ShaderProgram() {
 		// Create a pointer to the program ID for the shader
 		this->programID = glCreateProgram();
+
+		this->bindShaderProgram();
 	}
 
 	ShaderProgram::~ShaderProgram() {
 		glDeleteProgram(this->programID);
+
+		this->unbindShaderProgram();
 	}
 
 	void ShaderProgram::addShader(std::string file, int type) {
+		this->bindShaderProgram();
+
 		// Read in the source from the file provided and get a pointer to it
 		std::string src = readFileToStr(file);
 		const char *srcPtr = src.c_str();
@@ -58,6 +64,8 @@ namespace Honeycomb::Shader {
 	}
 
 	void ShaderProgram::addUniform(std::string uni) {
+		this->bindShaderProgram();
+
 		// Create the uniform on the GPU & get its location
 		int uniformLoc = glGetUniformLocation(this->programID, uni.c_str());
 
@@ -79,6 +87,8 @@ namespace Honeycomb::Shader {
 	}
 
 	void ShaderProgram::finalizeShaderProgram() {
+		this->bindShaderProgram();
+
 		glLinkProgram(this->programID); // Link the Program
 
 		// Check to the make sure that the link was done correctly
@@ -123,21 +133,28 @@ namespace Honeycomb::Shader {
 	}
 
 	void ShaderProgram::setUniform_f(std::string uni, float val) {
+		this->bindShaderProgram();
+
 		int loc = getUniformLocation(uni); // Get uniform location
 		glUniform1f(loc, val); // Write the value to the location
 	}
 
 	void ShaderProgram::setUniform_i(std::string uni, int val) {
+		this->bindShaderProgram();
+
 		int loc = getUniformLocation(uni);
 		glUniform1i(loc, val);
 	}
 	
 	void ShaderProgram::setUniform_vec3(std::string uni, Vector3f val) {
+		this->bindShaderProgram();
+
 		int loc = getUniformLocation(uni);
 		glUniform3f(loc, val.getX(), val.getY(), val.getZ());
 	}
 
 	void ShaderProgram::setUniform_mat4(std::string uni, Matrix4f val) {
+		this->bindShaderProgram();
 		int loc = getUniformLocation(uni);
 		
 		float *matPtr = &val.get()[0];

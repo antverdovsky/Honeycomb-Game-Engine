@@ -31,13 +31,13 @@ public:
 	void update();
 private:
 	std::string vertexShaderStr =
-		"..\\Honeycomb GE\\res\\shaders\\vertexShader.vs";
+		"..\\Honeycomb GE\\res\\shaders\\default\\vertexShader.vs";
 	std::string fragShaderStr =
-		"..\\Honeycomb GE\\res\\shaders\\fragShader.fs";
+		"..\\Honeycomb GE\\res\\shaders\\default\\fragShader.fs";
 	std::string testModelCubeStr =
-		"..\\Honeycomb GE\\res\\models\\test1\\testCubeTex.obj";
+		"..\\Honeycomb GE\\res\\models\\default\\cube.obj";
 	std::string testTextureStr =
-		"..\\Honeycomb GE\\res\\textures\\DogTest.bmp";
+		"..\\Honeycomb GE\\res\\textures\\default\\Checkerboard.bmp";
 
 	/*
 	Honeycomb::Render::Camera* testCamera;

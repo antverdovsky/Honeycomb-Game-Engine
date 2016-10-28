@@ -10,11 +10,15 @@ namespace Honeycomb::Mesh {
 	public:
 		/// Creates a Mesh Renderer component given the specified mesh, shader
 		/// and texture.
-		MeshRenderer(Mesh mesh, Honeycomb::Shader::ShaderProgram shad, 
-			Honeycomb::Graphics::Texture2D *tex);
+		MeshRenderer(Mesh &mesh, Honeycomb::Shader::ShaderProgram &shad, 
+			Honeycomb::Graphics::Texture2D &tex);
 
 		/// Deletes this Mesh Renderer component.
 		~MeshRenderer();
+
+		/// Returns the reference to the mesh of this Mesh Renderer.
+		/// return : The mesh reference.
+		Mesh& getMesh();
 
 		/// Returns the reference to the shader of this Mesh Renderer.
 		/// return : The shader reference.
@@ -22,13 +26,14 @@ namespace Honeycomb::Mesh {
 
 		/// Returns the reference to the texture of this Mesh Renderer.
 		/// return : The texture reference.
-		Honeycomb::Graphics::Texture2D* getTexture();
+		Honeycomb::Graphics::Texture2D& getTexture();
 
 		/// Renders the mesh stored to the screen.
 		void render();
 	private:
-		Mesh mesh;
-		Honeycomb::Shader::ShaderProgram shader;
-		Honeycomb::Graphics::Texture2D *texture; // TODO : Should not be ptr!!
+		// All objects are declared with pointers, for lazy initialization.
+		Mesh *mesh;
+		Honeycomb::Shader::ShaderProgram *shader;
+		Honeycomb::Graphics::Texture2D *texture;
 	};
 }
