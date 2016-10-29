@@ -23,13 +23,11 @@ namespace Honeycomb::Object {
 		///			   own risk).
 		Object(std::string n, Object *p = root);
 
-		/// Deletes the Game Object.
+		/// Deletes this Game Object, its children and its components.
 		~Object();
 
-		/// Gets the child with the specified name. If such a child cannot be
-		/// found, then a new object will be returned with no name. The object
-		/// is not parented to this object, and is merely used to indicate that
-		/// the search has failed.
+		/// Gets the child with the specified name, or NULL if no such child
+		/// exists.
 		/// string name : The name of the child.
 		/// return : The child object.
 		Object* getChild(std::string name);
@@ -38,24 +36,52 @@ namespace Honeycomb::Object {
 		/// return : The list containing the children game objects.
 		std::vector<Object*>& getChildren();
 
-		/// Gets the component with the specified name.
+		/// Gets the component with the specified name, or NULL if no such
+		/// component exists.
 		/// string name : The name of the component.
 		/// return : The component object.
 		Component* getComponent(std::string name);
+
+		/// Gets the component with the specified name, downcast to the
+		/// specific type of component.
+		/// class Type : The type of the component.
+		/// string name : The name of the component.
+		/// return : The component object.
+		template<class Type>
+		inline Type* getComponentOfType(std::string name) {
+			Component *comp = this->getComponent(name); // Get component
+
+			// If the component does not exist -> Return NULL.
+			// Otherwise, return the component, cast down to its specific type.
+			if (comp == NULL) return NULL;
+			else return dynamic_cast<Type*>(this->getComponent(name));
+		}
 
 		/// Gets all the components of this game object.
 		/// return : The list containing the components.
 		std::vector<Component*>& getComponents();
 
+		/// Gets the name of this game object.
+		std::string getName();
+
 		/// Returns the Root game object.
 		/// return : The Root object.
 		static Object* getRoot();
 
-		/// Renders this Game Object and its children game objects.
-		void render();
+		/// Handles any input events for this component, if necessary.
+		virtual void input();
 
-		/// Updates this Game Object and its children game objects.
-		void update();
+		/// Handles any render events for this component, if necessary.
+		virtual void render();
+
+		/// Handles any starting events for this component, if necessary.
+		virtual void start();
+
+		/// Handles any stopping events for this component, if necessary.
+		virtual void stop();
+
+		/// Handles any update events for this component, if necessary.
+		virtual void update();
 	private:
 		static Object *root; // The root object of the game scene
 

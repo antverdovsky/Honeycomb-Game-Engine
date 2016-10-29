@@ -17,7 +17,19 @@ namespace Honeycomb::Object {
 		return this->name;
 	}
 
+	void Component::input() {
+
+	}
+
 	void Component::render() {
+
+	}
+
+	void Component::start() {
+
+	}
+
+	void Component::stop() {
 
 	}
 	

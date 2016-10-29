@@ -40,7 +40,7 @@ namespace Honeycomb::Mesh {
 		this->shader.bindShaderProgram();
 		this->texture.bind();
 		this->mesh.draw();
-		//this->texture.unbind();
-		//this->shader.unbindShaderProgram(); Won't be able to write to uniforms then... TODO
+		this->texture.unbind();
+		this->shader.unbindShaderProgram();
 	}
 }

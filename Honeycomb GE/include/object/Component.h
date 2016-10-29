@@ -20,8 +20,17 @@ namespace Honeycomb::Object {
 		/// Returns the name of this component.
 		virtual std::string getName();
 
+		/// Handles any input events for this component, if necessary.
+		virtual void input();
+
 		/// Handles any render events for this component, if necessary.
 		virtual void render();
+
+		/// Handles any starting events for this component, if necessary.
+		virtual void start();
+
+		/// Handles any stopping events for this component, if necessary.
+		virtual void stop();
 
 		/// Handles any update events for this component, if necessary.
 		virtual void update();

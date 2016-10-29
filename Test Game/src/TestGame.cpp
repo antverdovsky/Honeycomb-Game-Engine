@@ -61,16 +61,11 @@ bool wireframe = false;
 void TestGame::input() {
 	float speed = 0.0025F;
 
-	std::vector<Honeycomb::Object::Component*> allComponentsCube =
-		cubeObject->getComponents();
-	Honeycomb::Object::Component* compFound2 = cubeObject->getComponents().at(1);
-	Honeycomb::Object::Component* compFound = cubeObject->getComponent("Transform");
-
 	Honeycomb::Object::Transform& cubeObjectTransform =
-		dynamic_cast<Honeycomb::Object::Transform&>(*compFound);
+		*cubeObject->getComponentOfType<Honeycomb::Object::Transform>("Transform");
 
 	Honeycomb::Render::Camera& cameraObjectCamera =
-		dynamic_cast<Honeycomb::Render::Camera&>(*cameraObject->getComponent("Camera"));
+		*cameraObject->getComponentOfType<Honeycomb::Render::Camera>("Camera");
 
 
 	if (GameInput::getGameInput()->getKeyReleased(GLFW_KEY_P)) { // wireframe
@@ -204,6 +199,26 @@ void TestGame::render() {
 } 
 
 void TestGame::start() {
+	bool objectMemoryLeakTest = false;
+	while (objectMemoryLeakTest) {
+		Honeycomb::Object::Object *superObject = new Honeycomb::Object::Object("Super");
+		
+		Honeycomb::Object::Object *myChildObject1 = new Honeycomb::Object::Object("Child Super-1");
+		Honeycomb::Object::Object *myChildObject2 = new Honeycomb::Object::Object("Child Super-2");
+		Honeycomb::Object::Object *mySubchildObject1 = new Honeycomb::Object::Object("Subchild 1-1");
+
+		superObject->getChildren().push_back(myChildObject1);
+		superObject->getChildren().push_back(myChildObject2);
+		myChildObject1->getChildren().push_back(mySubchildObject1);
+		
+		Honeycomb::Object::Component *myComponent1 = new Honeycomb::Object::Component("Component Super-1");
+		Honeycomb::Object::Component *myComponent2 = new Honeycomb::Object::Component("Component Super-2");
+		superObject->getComponents().push_back(myComponent1);
+		superObject->getComponents().push_back(myComponent2);
+
+		delete superObject;
+	}
+
 	///
 	/// Now Entering Trigger Free Zone
 	/// 
@@ -372,10 +387,10 @@ void TestGame::update() {
 
 	*/
 
-	Honeycomb::Mesh::MeshRenderer& cubeObjectMeshRenderer = 
-		dynamic_cast<Honeycomb::Mesh::MeshRenderer&>(*cubeObject->getComponent("MeshRenderer"));
+	Honeycomb::Mesh::MeshRenderer& cubeObjectMeshRenderer =
+		*cubeObject->getComponentOfType<Honeycomb::Mesh::MeshRenderer>("MeshRenderer");
 	Honeycomb::Object::Transform& cubeObjectTransform =
-		dynamic_cast<Honeycomb::Object::Transform&>(*cubeObject->getComponent("Transform"));
+		*cubeObject->getComponentOfType<Honeycomb::Object::Transform>("Transform");
 
 	Honeycomb::Render::Camera& cameraObjectCamera =
 		dynamic_cast<Honeycomb::Render::Camera&>(*cameraObject->getComponent("Camera"));
