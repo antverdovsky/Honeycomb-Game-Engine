@@ -13,6 +13,10 @@ namespace Honeycomb::Object {
 
 	}
 
+	Object* Component::getAttached() {
+		return this->attached;
+	}
+
 	std::string Component::getName() {
 		return this->name;
 	}
@@ -23,6 +27,10 @@ namespace Honeycomb::Object {
 
 	void Component::render() {
 
+	}
+
+	void Component::setAttached(Object &o) {
+		this->attached = &o;
 	}
 
 	void Component::start() {

@@ -59,13 +59,15 @@ TestGame::~TestGame() {
 
 bool wireframe = false;
 void TestGame::input() {
-	float speed = 0.0025F;
+	float speed = 0.0025F * Honeycomb::Base::Time::deltaTime;
 
 	Honeycomb::Object::Transform& cubeObjectTransform =
 		*cubeObject->getComponentOfType<Honeycomb::Object::Transform>("Transform");
 
 	Honeycomb::Render::Camera& cameraObjectCamera =
 		*cameraObject->getComponentOfType<Honeycomb::Render::Camera>("Camera");
+	Honeycomb::Object::Transform& cameraObjectTransform =
+		*cameraObject->getComponentOfType<Honeycomb::Object::Transform>("Transform");
 
 
 	if (GameInput::getGameInput()->getKeyReleased(GLFW_KEY_P)) { // wireframe
@@ -101,81 +103,69 @@ void TestGame::input() {
 	}
 
 	if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_W)) { // move forward
-		cameraObjectCamera.getTransform().translate(
-			cameraObjectCamera.getTransform().getLocalForward() * speed * 
-				Honeycomb::Base::Time::deltaTime
-		);
+		cameraObjectTransform.translate(cameraObjectTransform.getLocalForward()
+			* speed);
 	}
 
 	if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_S)) { // move back
-		cameraObjectCamera.getTransform().translate(
-			-cameraObjectCamera.getTransform().getLocalForward() * speed * 
-			Honeycomb::Base::Time::deltaTime
-		);
+		cameraObjectTransform.translate(-cameraObjectTransform.getLocalForward()
+			* speed);
 	}
 
 	if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_A)) { // move left
-		cameraObjectCamera.getTransform().translate(
-			-cameraObjectCamera.getTransform().getLocalRight() * speed * 
-			Honeycomb::Base::Time::deltaTime
-		);
+		cameraObjectTransform.translate(-cameraObjectTransform.getLocalRight()
+			* speed);
 	}
 
 	if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_D)) { // move right
-		cameraObjectCamera.getTransform().translate(
-			cameraObjectCamera.getTransform().getLocalRight() * speed * 
-			Honeycomb::Base::Time::deltaTime
-		);
+		cameraObjectTransform.translate(cameraObjectTransform.getLocalRight()
+			* speed);
 	}
 
 	if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_UP)) { // move up
-		cameraObjectCamera.getTransform().translate(
-			cameraObjectCamera.getTransform().getLocalUp() * speed * 
-			Honeycomb::Base::Time::deltaTime
-		);
+		cameraObjectTransform.translate(cameraObjectTransform.getLocalUp()
+			* speed);
 	}
 
 	if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_DOWN)) { // move down
-		cameraObjectCamera.getTransform().translate(
-			-cameraObjectCamera.getTransform().getLocalUp() * speed * 
-			Honeycomb::Base::Time::deltaTime
-		);
+		cameraObjectTransform.translate(-cameraObjectTransform.getLocalUp()
+			* speed);
 	}
 
 
 	if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_J)) { // rotate left
-		cameraObjectCamera.getTransform().rotate(
-			cameraObjectCamera.getTransform().getLocalUp(), speed * Honeycomb::Base::Time::deltaTime
+		cameraObjectTransform.rotate(
+			cameraObjectTransform.getLocalUp(), speed
 		);
 	}
 
 	if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_K)) { // rotate right
-		cameraObjectCamera.getTransform().rotate(
-			-cameraObjectCamera.getTransform().getLocalUp(), speed * Honeycomb::Base::Time::deltaTime
+		cameraObjectTransform.rotate(
+			-cameraObjectTransform.getLocalUp(), speed
 		);
 	}
 
 	if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_U)) { // rotate up
-		cameraObjectCamera.getTransform().rotate(
-			cameraObjectCamera.getTransform().getLocalRight(), speed * Honeycomb::Base::Time::deltaTime
+		cameraObjectTransform.rotate(
+			cameraObjectTransform.getLocalRight(), speed
 		);
 	}
 
 	if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_I)) { // rotate down
-		cameraObjectCamera.getTransform().rotate(
-			-cameraObjectCamera.getTransform().getLocalRight(), speed * Honeycomb::Base::Time::deltaTime
+		cameraObjectTransform.rotate(
+			-cameraObjectTransform.getLocalRight(), speed
 		);
 	}
 
 	if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_N)) { // tilt left
-		cameraObjectCamera.getTransform().rotate(
-			cameraObjectCamera.getTransform().getLocalForward(), speed * Honeycomb::Base::Time::deltaTime
+		cameraObjectTransform.rotate(
+			cameraObjectTransform.getLocalForward(), speed
 		);
 	}
 
 	if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_M)) { // tilt right
-		cameraObjectCamera.getTransform().rotate(
-			-cameraObjectCamera.getTransform().getLocalForward(), speed * Honeycomb::Base::Time::deltaTime
+		cameraObjectTransform.rotate(
+			-cameraObjectTransform.getLocalForward(), speed
 		);
 	}
 
@@ -184,11 +174,11 @@ void TestGame::input() {
 			Quaternion()
 		);
 
-		cameraObjectCamera.getTransform().setTranslation(
+		cameraObjectTransform.setTranslation(
 			Vector3f()
 		);
 
-		cameraObjectCamera.getTransform().setRotation(Quaternion(Vector3f::getGlobalUp(), PI));
+		cameraObjectTransform.setRotation(Quaternion(Vector3f::getGlobalUp(), PI));
 	}
 
 	GameInput::getGameInput()->clear();
@@ -283,15 +273,23 @@ void TestGame::start() {
 			Quaternion(), Vector3f(1.0F, 1.0F, 1.0F));
 	Honeycomb::Object::Component* cameraController =
 		new Honeycomb::Render::Camera(Camera::CameraType::PERSPECTIVE, 100.0F, 0.3F,
-			60, camH, camW, Transform(Vector3f(),
-				Quaternion(Vector3f::getGlobalUp(), PI), Vector3f(1, 1, 1)));
+			60, camH, camW);
+	Honeycomb::Object::Component* cameraTransform =
+		new Honeycomb::Object::Transform(Vector3f(), Quaternion(Vector3f::getGlobalUp(), PI),
+			Vector3f(1, 1, 1));
 
 	cubeObject = new Honeycomb::Object::Object("Cube");
-	cubeObject->getComponents().push_back(cubeRenderer);
-	cubeObject->getComponents().push_back(cubeTransform);
+	cubeObject->addComponent(*cubeRenderer);
+	cubeObject->addComponent(*cubeTransform);
+	//cubeObject->getComponents().push_back(cubeRenderer);
+	//cubeObject->getComponents().push_back(cubeTransform);
 
 	cameraObject = new Honeycomb::Object::Object("Camera");
-	cameraObject->getComponents().push_back(cameraController);
+	cameraObject->addComponent(*cameraController);
+	cameraObject->addComponent(*cameraTransform);
+	//cameraObject->getComponents().push_back(cameraController);
+
+	cameraController->start();
 
 	/*
 	testTransform = new Transform(Vector3f(), Quaternion(), Vector3f(1, 1, 1));
@@ -393,7 +391,9 @@ void TestGame::update() {
 		*cubeObject->getComponentOfType<Honeycomb::Object::Transform>("Transform");
 
 	Honeycomb::Render::Camera& cameraObjectCamera =
-		dynamic_cast<Honeycomb::Render::Camera&>(*cameraObject->getComponent("Camera"));
+		*cameraObject->getComponentOfType<Camera>("Camera");
+	Honeycomb::Object::Transform& cameraObjectTransform =
+		*cameraObject->getComponentOfType<Honeycomb::Object::Transform>("Transform");
 
 	cubeObjectMeshRenderer.getShader().setUniform_mat4("objTransform", cubeObjectTransform.getTransformationMatrix());
 	cubeObjectMeshRenderer.getShader().setUniform_mat4("camOrientation", cameraObjectCamera.getProjectionOrientation());
@@ -410,13 +410,13 @@ void TestGame::update() {
 		Vector3f transU = cubeObjectTransform.getLocalUp();
 		std::cout << "TRS UP: " << transU.getX() << ", " << transU.getY() << ", " << transU.getZ() << std::endl;
 
-		Vector3f camF = cameraObjectCamera.getTransform().getLocalForward();
+		Vector3f camF = cameraObjectTransform.getLocalForward();
 		std::cout << "CAM FOR: " << camF.getX() << ", " << camF.getY() << ", " << camF.getZ() << std::endl;
 
-		Vector3f camR = cameraObjectCamera.getTransform().getLocalRight();
+		Vector3f camR = cameraObjectTransform.getLocalRight();
 		std::cout << "CAM RIGHT: " << camR.getX() << ", " << camR.getY() << ", " << camR.getZ() << std::endl;
 
-		Vector3f camU = cameraObjectCamera.getTransform().getLocalUp();
+		Vector3f camU = cameraObjectTransform.getLocalUp();
 		std::cout << "CAM UP: " << camU.getX() << ", " << camU.getY() << ", " << camU.getZ() << std::endl;
 
 		Quaternion q = cubeObjectTransform.getRotation();
@@ -424,10 +424,18 @@ void TestGame::update() {
 		std::cout << q.getX() << ", " << q.getY() << ", " << q.getZ() << ", "
 			<< q.getW() << std::endl;
 
-		q = cameraObjectCamera.getTransform().getRotation();
+		q = cameraObjectTransform.getRotation();
 		std::cout << "CAM ROT: ";
 		std::cout << q.getX() << ", " << q.getY() << ", " << q.getZ() << ", "
 			<< q.getW() << std::endl;
+
+		Vector3f pos = cubeObjectTransform.getTranslation();
+		std::cout << "CUBE POS: ";
+		std::cout << pos.getX() << ", " << pos.getY() << ", " << pos.getZ() << std::endl;
+
+		pos = cameraObjectTransform.getTranslation();
+		std::cout << "CAMERA POS: ";
+		std::cout << pos.getX() << ", " << pos.getY() << ", " << pos.getZ() << std::endl;
 	}
 
 //	testShader->setUniform_mat4("objTransform", objTransf);

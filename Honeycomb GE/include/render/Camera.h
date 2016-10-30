@@ -4,6 +4,7 @@
 
 #include "..\..\include\math\Matrix4f.h"
 #include "..\..\include\object\Component.h"
+#include "..\..\include\object\Object.h"
 #include "..\..\include\object\Transform.h"
 
 namespace Honeycomb::Math { class Matrix4f; }
@@ -26,9 +27,8 @@ namespace Honeycomb::Render {
 		///				to orthographic, this is the orthographic size.
 		/// float projH : The camera projection height.
 		/// float projW : The camera projection width.
-		/// Transform trans : The transform of the Camera.
 		Camera(CameraType cT, float clF, float clN, float cTP, float projH, 
-			float projW, Honeycomb::Object::Transform trans);
+			float projW);
 
 		/// Destroys this Camera instance.
 		~Camera();
@@ -44,10 +44,6 @@ namespace Honeycomb::Render {
 		/// Gets the near clipping plane for this camera.
 		/// return : The near clipping plane.
 		float getClipNear();
-
-		/// Gets the reference to the transform of this camera instance.
-		/// return : The transform.
-		Honeycomb::Object::Transform& getTransform();
 
 		/// Gets the type parameter for the camera. If this is a perspective
 		/// camera, the parameter is equal to the FOV (in degrees). Otherwise,
@@ -83,6 +79,9 @@ namespace Honeycomb::Render {
 		/// int h : The new height of the projection size.
 		/// int w : The new width of the projection size.
 		void setProjectionSize(int h, int w);
+		
+		/// Starts this camera component.
+		void start();
 	private:
 		CameraType type = PERSPECTIVE; // The type of Camera (Persp / Ortho)
 		float clipFar = 1000.0F; // The far clipping plane
@@ -92,7 +91,6 @@ namespace Honeycomb::Render {
 		float projectionWidth = 1.0F; // The projection width
 
 		Honeycomb::Math::Matrix4f projection; // Stores the projection
-		Honeycomb::Object::Transform transform; // Stores the transform
 
 		Honeycomb::Math::Matrix4f projectionOrien; // Orientation Projection
 		Honeycomb::Math::Matrix4f projectionTrans; // Translation Projection

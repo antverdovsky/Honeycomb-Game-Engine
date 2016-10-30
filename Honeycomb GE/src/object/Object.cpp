@@ -11,7 +11,7 @@ namespace Honeycomb::Object {
 		this->name = n;
 
 		// If parent is provided -> Parent this to specified object
-		if (p != NULL) p->getChildren().push_back(this);
+		if (p != NULL) p->addChild(*this);
 	}
 
 	Object::~Object() {
@@ -20,6 +20,18 @@ namespace Honeycomb::Object {
 			delete this->children.at(i);
 		for (int i = 0; i < this->components.size(); i++)
 			delete this->components.at(i);
+	}
+
+	void Object::addChild(Object &o) {
+		this->children.push_back(&o);
+
+		o.setParent(*this);
+	}
+
+	void Object::addComponent(Component &c) {
+		this->components.push_back(&c);
+
+		c.setAttached(*this);
 	}
 
 	Object* Object::getChild(std::string name) {
@@ -57,6 +69,10 @@ namespace Honeycomb::Object {
 	std::string Object::getName() {
 		return this->name;
 	}
+
+	Object* Object::getParent() {
+		return this->parent;
+	}
 	
 	Object* Object::getRoot() {
 		return Object::root;
@@ -76,6 +92,10 @@ namespace Honeycomb::Object {
 			this->children.at(i)->render();
 		for (int i = 0; i < this->components.size(); i++)
 			this->components.at(i)->render();
+	}
+
+	void Object::setParent(Object &o) {
+		this->parent = &o;
 	}
 
 	void Object::start() {

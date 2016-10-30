@@ -4,6 +4,8 @@
 
 #include <string>
 
+namespace Honeycomb::Object { class Object; }
+
 namespace Honeycomb::Object {
 	class Component {
 	public:
@@ -17,6 +19,10 @@ namespace Honeycomb::Object {
 		/// Deletes this Component.
 		~Component();
 
+		/// Returns the object to which this component is attached to.
+		/// return : The pointer to the object.
+		Object* getAttached();
+
 		/// Returns the name of this component.
 		virtual std::string getName();
 
@@ -25,6 +31,10 @@ namespace Honeycomb::Object {
 
 		/// Handles any render events for this component, if necessary.
 		virtual void render();
+
+		/// Sets the object to which this component is attached to.
+		/// Object &o : The object to which to attach this component.
+		void setAttached(Object &o);
 
 		/// Handles any starting events for this component, if necessary.
 		virtual void start();
@@ -35,6 +45,7 @@ namespace Honeycomb::Object {
 		/// Handles any update events for this component, if necessary.
 		virtual void update();
 	private:
+		Object* attached; // The object to which this component is attached
 		std::string name; // The name of this component
 	};
 }

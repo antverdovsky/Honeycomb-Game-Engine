@@ -26,6 +26,14 @@ namespace Honeycomb::Object {
 		/// Deletes this Game Object, its children and its components.
 		~Object();
 
+		/// Adds the specified object as a child to this game object.
+		/// Object &o : The object to be parented to this game object.
+		void addChild(Object &o);
+
+		/// Adds the specified component to this game object.
+		/// Component &c : The component to be parented to this game object.
+		void addComponent(Component &c);
+
 		/// Gets the child with the specified name, or NULL if no such child
 		/// exists.
 		/// string name : The name of the child.
@@ -64,6 +72,10 @@ namespace Honeycomb::Object {
 		/// Gets the name of this game object.
 		std::string getName();
 
+		/// Returns the parent of this Game Object.
+		/// return : The pointer to the parent.
+		Object* getParent();
+
 		/// Returns the Root game object.
 		/// return : The Root object.
 		static Object* getRoot();
@@ -73,6 +85,10 @@ namespace Honeycomb::Object {
 
 		/// Handles any render events for this component, if necessary.
 		virtual void render();
+
+		/// Sets the parent of this game object to the specified game object.
+		/// Object &o : The new parent of this game object.
+		void setParent(Object &o);
 
 		/// Handles any starting events for this component, if necessary.
 		virtual void start();
@@ -85,6 +101,7 @@ namespace Honeycomb::Object {
 	private:
 		static Object *root; // The root object of the game scene
 
+		Object* parent; // The parent of this Game Object
 		std::string name; // Name of this Game Object
 		std::vector<Object*> children; // Children of this Game Object
 		std::vector<Component*> components; // Components of this Game Object

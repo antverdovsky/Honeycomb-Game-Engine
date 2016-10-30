@@ -10,16 +10,13 @@ using namespace Honeycomb::Math::Utils;
 
 namespace Honeycomb::Render {
 	Camera::Camera(CameraType cT, float clF, float clN, float cTP, float projH,
-			float projW, Transform trans) : Component("Camera") {
+			float projW) : Component("Camera") {
 		this->type = cT;
 		this->clipFar = clF;
 		this->clipNear = clN;
 		this->typeParameter = cTP;
 		this->projectionHeight = projH;
 		this->projectionWidth = projW;
-		this->transform = trans;
-
-		this->calcProjection();
 	}
 
 	Camera::~Camera() {
@@ -36,10 +33,6 @@ namespace Honeycomb::Render {
 
 	float Camera::getClipNear() {
 		return this->clipNear;
-	}
-
-	Transform& Camera::getTransform() {
-		return this->transform;
 	}
 
 	float Camera::getTypeParameter() {
@@ -76,6 +69,12 @@ namespace Honeycomb::Render {
 		this->calcProjection(); // Recalculate the Projection
 	}
 
+	void Camera::start() {
+		this->calcProjection();
+		this->calcProjectionOrientation();
+		this->calcProjectionTranslation();
+	}
+
 	Matrix4f Camera::calcProjection() {
 		// Call the appropriate matrix projection calculation method according
 		// to the type of Camera.
@@ -90,7 +89,8 @@ namespace Honeycomb::Render {
 	}
 
 	Matrix4f Camera::calcProjectionOrientation() {
-		this->projectionOrien = this->transform.getOrientationMatrix();
+		this->projectionOrien = this->getAttached()->
+			getComponentOfType<Transform>("Transform")->getOrientationMatrix();
 
 		// Negate the local forwards of the camera since the camera faces the
 		// opposite direction as the objects when rendering them.
@@ -163,7 +163,8 @@ namespace Honeycomb::Render {
 	}
 
 	Matrix4f Camera::calcProjectionTranslation() {
-		this->projectionTrans = this->transform.getTranslationMatrix();
+		this->projectionTrans = this->getAttached()->
+			getComponentOfType<Transform>("Transform")->getTranslationMatrix();
 
 		// Negate the local forwards of the camera since the camera faces the
 		// opposite direction as the objects when rendering them.
