@@ -34,6 +34,10 @@ namespace Honeycomb::Object {
 		/// Component &c : The component to be parented to this game object.
 		void addComponent(Component &c);
 
+		/// Deparents this object from whatever parent it may currently have
+		/// so that its new parent becomes NULL.
+		void deparent();
+
 		/// Gets the child with the specified name, or NULL if no such child
 		/// exists.
 		/// string name : The name of the child.
@@ -83,12 +87,24 @@ namespace Honeycomb::Object {
 		/// Handles any input events for this component, if necessary.
 		virtual void input();
 
+		/// Removes the specified child from the children of this object, if
+		/// it exists as a child. Once the child is removed, its new parent
+		/// will be the root object.
+		/// Object *o : The object to be removed.
+		void removeChild(Object *o);
+
+		/// Removes the component from the components of this object, if it
+		/// exists as an attached component. Once the component is removed, it
+		/// will be "attached" to NULL.
+		/// Component *c : The component to be removed.
+		void removeComponent(Component *c);
+
 		/// Handles any render events for this component, if necessary.
 		virtual void render();
 
 		/// Sets the parent of this game object to the specified game object.
-		/// Object &o : The new parent of this game object.
-		void setParent(Object &o);
+		/// Object *o : The new parent of this game object.
+		void setParent(Object *o);
 
 		/// Handles any starting events for this component, if necessary.
 		virtual void start();

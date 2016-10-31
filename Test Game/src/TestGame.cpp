@@ -189,25 +189,41 @@ void TestGame::render() {
 } 
 
 void TestGame::start() {
-	bool objectMemoryLeakTest = false;
-	while (objectMemoryLeakTest) {
+	std::vector<Honeycomb::Object::Object*> objects;
+	for (int i = 0; i <= 10000; i++) {
+		Honeycomb::Object::Object *root = Honeycomb::Object::Object::getRoot();
 		Honeycomb::Object::Object *superObject = new Honeycomb::Object::Object("Super");
 		
-		Honeycomb::Object::Object *myChildObject1 = new Honeycomb::Object::Object("Child Super-1");
 		Honeycomb::Object::Object *myChildObject2 = new Honeycomb::Object::Object("Child Super-2");
-		Honeycomb::Object::Object *mySubchildObject1 = new Honeycomb::Object::Object("Subchild 1-1");
+		Honeycomb::Object::Object *myChildObject1 = new Honeycomb::Object::Object("Child Super-1");
+		Honeycomb::Object::Object *mySubchildObject1 = new Honeycomb::Object::Object("Subchild Super-1-1");
 
-		superObject->getChildren().push_back(myChildObject1);
-		superObject->getChildren().push_back(myChildObject2);
-		myChildObject1->getChildren().push_back(mySubchildObject1);
+		superObject->addChild(*myChildObject2);
+		superObject->addChild(*myChildObject1);
+		myChildObject1->addChild(*mySubchildObject1);
 		
 		Honeycomb::Object::Component *myComponent1 = new Honeycomb::Object::Component("Component Super-1");
-		Honeycomb::Object::Component *myComponent2 = new Honeycomb::Object::Component("Component Super-2");
-		superObject->getComponents().push_back(myComponent1);
-		superObject->getComponents().push_back(myComponent2);
+		Honeycomb::Object::Component *child1Component = new Honeycomb::Object::Component("Component Super-1-1");
+		superObject->addComponent(*myComponent1);
+		myChildObject1->addComponent(*child1Component);
 
-		delete superObject;
+		objects.push_back(superObject);
 	}
+	std::cout << objects.size() << std::endl;
+	int objDel = 0;
+	for (int i = 0; i < objects.size(); i++) {
+		//std::cout << "Will delete " << objDel << " object." << std::endl;
+		delete objects.at(i);
+		//std::cout << "Deleted " << ++objDel << " objects." << std::endl;
+	}
+	//while (objects.size() > 0)
+	//	delete objects.at(0);
+
+	std::cout << "Root Child Size: " << Honeycomb::Object::Object::getRoot()->getChildren().size() << std::endl;
+	//for (int i = 0; i < objects.size(); i++) delete objects.at(i); 
+	//objects.clear();
+	std::cout << "Root Child Size: " << Honeycomb::Object::Object::getRoot()->getChildren().size() << std::endl;
+	
 
 	///
 	/// Now Entering Trigger Free Zone
@@ -306,6 +322,7 @@ void TestGame::start() {
 
 //	delete testModel;
 	GameInput::getGameInput()->clear();
+	std::cout << "Root Child Size: " << Honeycomb::Object::Object::getRoot()->getChildren().size() << std::endl;
 }
 	
 float uni_scale = 0;

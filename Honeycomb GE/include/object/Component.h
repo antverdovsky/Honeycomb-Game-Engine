@@ -19,6 +19,10 @@ namespace Honeycomb::Object {
 		/// Deletes this Component.
 		~Component();
 
+		/// Detaches this Component from its current object, and sets the
+		/// current object to which it is attached to NULL.
+		void detach();
+
 		/// Returns the object to which this component is attached to.
 		/// return : The pointer to the object.
 		Object* getAttached();
@@ -33,8 +37,8 @@ namespace Honeycomb::Object {
 		virtual void render();
 
 		/// Sets the object to which this component is attached to.
-		/// Object &o : The object to which to attach this component.
-		void setAttached(Object &o);
+		/// Object *o : The object to which to attach this component.
+		void setAttached(Object *o);
 
 		/// Handles any starting events for this component, if necessary.
 		virtual void start();

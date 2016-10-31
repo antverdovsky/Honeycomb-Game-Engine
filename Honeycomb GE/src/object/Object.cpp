@@ -1,7 +1,10 @@
 #include "..\..\include\object\Object.h"
 
+#include <algorithm>
+#include <iostream>
+
 namespace Honeycomb::Object {
-	Object *Object::root = new Object("Root", NULL); // Initialize Root
+	Object *Object::root = new Object("Root", nullptr); // Initialize Root
 
 	Object::Object() : Object("GameObject") {
 		
@@ -11,27 +14,40 @@ namespace Honeycomb::Object {
 		this->name = n;
 
 		// If parent is provided -> Parent this to specified object
-		if (p != NULL) p->addChild(*this);
+		if (p != nullptr) p->addChild(*this);
+		else this->parent = nullptr;
 	}
 
 	Object::~Object() {
 		// Delete all of the children and components
-		for (int i = 0; i < this->children.size(); i++)
-			delete this->children.at(i);
-		for (int i = 0; i < this->components.size(); i++)
-			delete this->components.at(i);
+		while (this->children.size() != 0)
+			delete this->children.at(0);
+		while (this->components.size() != 0)
+			delete this->components.at(0);
+
+		// Notify parent that I am no longer a child
+		this->deparent();
 	}
 
 	void Object::addChild(Object &o) {
 		this->children.push_back(&o);
-
-		o.setParent(*this);
+		
+		if (o.parent != nullptr) o.parent->removeChild(&o);
+		o.setParent(this);
 	}
 
 	void Object::addComponent(Component &c) {
 		this->components.push_back(&c);
+		
+		if (c.getAttached()) c.getAttached()->removeComponent(&c);
+		c.setAttached(this);
+	}
 
-		c.setAttached(*this);
+	void Object::deparent() {
+		// Remove this object from its parents' children and set the parent of
+		// this object to nothing.
+		if (this->parent != nullptr) this->parent->removeChild(this);
+		this->setParent(nullptr);
 	}
 
 	Object* Object::getChild(std::string name) {
@@ -86,6 +102,19 @@ namespace Honeycomb::Object {
 			this->components.at(i)->input();
 	}
 
+	void Object::removeChild(Object *o) {
+		children.erase( // Erase object from my children
+			std::remove(children.begin(), children.end(), o), children.end());
+
+		int i;
+	}
+
+	void Object::removeComponent(Component *c) {
+		components.erase( // Erase component from my components
+			std::remove(components.begin(), components.end(), c), 
+			components.end());
+	}
+
 	void Object::render() {
 		// Handle rendering for all children and components
 		for (int i = 0; i < this->children.size(); i++) 
@@ -94,8 +123,8 @@ namespace Honeycomb::Object {
 			this->components.at(i)->render();
 	}
 
-	void Object::setParent(Object &o) {
-		this->parent = &o;
+	void Object::setParent(Object *o) {
+		this->parent = o;
 	}
 
 	void Object::start() {

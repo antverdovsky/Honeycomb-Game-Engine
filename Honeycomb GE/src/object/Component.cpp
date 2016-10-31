@@ -1,5 +1,7 @@
 #include "..\..\include\object\Component.h"
 
+#include "..\..\include\object\Object.h"
+
 namespace Honeycomb::Object {
 	Component::Component() : Component("Component") {
 
@@ -7,10 +9,17 @@ namespace Honeycomb::Object {
 
 	Component::Component(std::string name) {
 		this->name = name;
+		this->attached = nullptr;
 	}
 
 	Component::~Component() {
+		// Notify object that I am no longer attached
+		this->detach();
+	}
 
+	void Component::detach() {
+		if (this->attached != nullptr) this->attached->removeComponent(this);
+		this->setAttached(nullptr); // Set NULL as the new attached object
 	}
 
 	Object* Component::getAttached() {
@@ -29,8 +38,8 @@ namespace Honeycomb::Object {
 
 	}
 
-	void Component::setAttached(Object &o) {
-		this->attached = &o;
+	void Component::setAttached(Object *o) {
+		this->attached = o;
 	}
 
 	void Component::start() {
