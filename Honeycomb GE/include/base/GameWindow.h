@@ -5,7 +5,7 @@
 #include <string>
 #include <GLFW\glfw3.h>
 
-#include "..\..\include\render\Camera.h"
+#include "..\..\include\component\default\render\CameraController.h"
 
 struct GLFWwindow;
 

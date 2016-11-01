@@ -1,4 +1,4 @@
-#include "..\..\include\mesh\Mesh.h"
+#include "..\..\include\geometry\Mesh.h"
 
 #include <iostream>
 #include <sstream>
@@ -9,14 +9,14 @@
 
 #include "..\..\include\file\FileIO.h"
 #include "..\..\include\math\Vector3f.h"
-#include "..\..\include\mesh\importer\Model.h"
-#include "..\..\include\mesh\Vertex.h"
+#include "..\..\include\geometry\importer\Model.h"
+#include "..\..\include\geometry\Vertex.h"
 
+using Honeycomb::Geometry::Vertex;
+using Honeycomb::Geometry::Importer::Model;
 using Honeycomb::Math::Vector3f;
-using Honeycomb::Mesh::Vertex;
-using Honeycomb::Mesh::Importer::Model;
 
-namespace Honeycomb::Mesh {
+namespace Honeycomb::Geometry {
 	Mesh::Mesh() {
 		// Initialize a Vertex Buffer Object and store it
 		GLuint vbo = 0;

@@ -1,24 +1,25 @@
-#include "..\..\include\mesh\MeshRenderer.h"
+#include "..\..\..\..\include\component\default\render\MeshRenderer.h";
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
 #include <iostream>
 
-#include "..\..\include\file\FileIO.h"
-#include "..\..\include\object\Transform.h"
-#include "..\..\include\object\Object.h"
-#include "..\..\include\render\Camera.h"
+#include "..\..\..\..\include\file\FileIO.h"
+#include "..\..\..\..\include\component\default\physics\Transform.h"
+#include "..\..\..\..\include\component\default\render\CameraController.h"
+#include "..\..\..\..\include\object\GameObject.h"
 
+using Honeycomb::Component::Default::Render::CameraController;
+using Honeycomb::Component::Default::Physics::Transform;
+using Honeycomb::Geometry::Mesh;
 using Honeycomb::Graphics::Texture2D;
-using Honeycomb::Object::Transform;
-using Honeycomb::Render::Camera;
 using Honeycomb::Shader::ShaderProgram;
 using namespace Honeycomb::File;
 
-namespace Honeycomb::Mesh {
+namespace Honeycomb::Component::Default::Render {
 	MeshRenderer::MeshRenderer(Mesh &mes, ShaderProgram &shad, Texture2D &tex)
-			: Component("MeshRenderer"), mesh(mes), shader(shad), 
+			: GameComponent("MeshRenderer"), mesh(mes), shader(shad),
 			  texture(tex) {
 
 	}

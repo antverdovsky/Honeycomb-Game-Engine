@@ -5,13 +5,13 @@
 #include <string>
 #include <vector>
 
-#include "..\..\mesh\Vertex.h"
+#include "..\..\geometry\Vertex.h"
 
 namespace Honeycomb::Math { class Vector2f; }
 namespace Honeycomb::Math { class Vector3f; }
 namespace Honeycomb::Mesh { class Vertex; }
 
-namespace Honeycomb::Mesh::Importer {
+namespace Honeycomb::Geometry::Importer {
 	class Model {
 	public:
 		/// Initializes an Empty Model.

@@ -2,13 +2,13 @@
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
-#include "Component.h"
-#include "..\..\include\math\Vector3f.h"
-#include "..\..\include\math\Matrix4f.h"
-#include "..\..\include\math\Quaternion.h"
+#include "..\..\..\..\include\component\GameComponent.h"
+#include "..\..\..\..\include\math\Vector3f.h"
+#include "..\..\..\..\include\math\Matrix4f.h"
+#include "..\..\..\..\include\math\Quaternion.h"
 
-namespace Honeycomb::Object {
-	class Transform : public Component {
+namespace Honeycomb::Component::Default::Physics {
+	class Transform : public GameComponent {
 	public:
 		/// Default constructor which initializes the position, rotation and
 		/// scale of the transform to default values.

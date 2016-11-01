@@ -6,8 +6,8 @@
 
 #include "..\..\Honeycomb GE\include\base\BaseGame.h"
 
-#include "..\..\Honeycomb GE\include\object\Object.h"
-#include "..\..\Honeycomb GE\include\object\Component.h"
+#include "..\..\Honeycomb GE\include\object\GameObject.h"
+#include "..\..\Honeycomb GE\include\component\GameComponent.h"
 
 namespace Honeycomb::Object { class Transform; }
 namespace Honeycomb::Mesh::Importer { class Model; }
@@ -48,7 +48,7 @@ private:
 	Honeycomb::Shader::ShaderProgram* testShader;
 	*/
 
-	Honeycomb::Object::Object* cameraObject;
+	Honeycomb::Object::GameObject* cameraObject;
 	//Honeycomb::Object::Object* cubeObject;
 };
 

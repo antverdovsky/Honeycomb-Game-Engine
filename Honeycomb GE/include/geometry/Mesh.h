@@ -4,11 +4,11 @@
 
 #include <string>
 
-namespace Honeycomb::Mesh { class Vertex; }
+namespace Honeycomb::Geometry { class Vertex; }
+namespace Honeycomb::Geometry::Importer { class Model; }
 namespace Honeycomb::Math { class Vector3f; }
-namespace Honeycomb::Mesh::Importer { class Model; }
 
-namespace Honeycomb::Mesh {
+namespace Honeycomb::Geometry {
 	class Mesh {
 	public:
 		/// Initializes an empty mesh.
@@ -16,7 +16,7 @@ namespace Honeycomb::Mesh {
 
 		/// Initializes a mesh from the model.
 		/// Model m : The model to be used to initialize the Mesh.
-		Mesh(Honeycomb::Mesh::Importer::Model m);
+		Mesh(Honeycomb::Geometry::Importer::Model m);
 
 		/// Destroys the mesh and the buffers and data associated with it.
 		~Mesh();
@@ -26,7 +26,7 @@ namespace Honeycomb::Mesh {
 		/// int vertCount : The number of verticies which are passed in.
 		/// int index[] : The indices data.
 		/// int indxCount : The number of indices.
-		void addVertexData(Honeycomb::Mesh::Vertex vert[], int vertCount,
+		void addVertexData(Honeycomb::Geometry::Vertex vert[], int vertCount,
 				int index[], int intxCount);
 
 		/// Draws this Mesh to the screen using the vertex data.

@@ -1,14 +1,14 @@
-#include "..\..\..\include\mesh\importer\Model.h"
+#include "..\..\..\include\geometry\importer\Model.h"
 
 #include "..\..\..\include\math\Vector2f.h"
 #include "..\..\..\include\math\Vector3f.h"
-#include "..\..\..\include\mesh\Vertex.h"
+#include "..\..\..\include\geometry\Vertex.h"
 
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Mesh::Vertex;
 
-namespace Honeycomb::Mesh::Importer {
+namespace Honeycomb::Geometry::Importer {
 	Model::~Model() {
 
 	}

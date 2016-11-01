@@ -4,7 +4,7 @@
 
 #include "Model.h"
 
-namespace Honeycomb::Mesh::Importer {
+namespace Honeycomb::Geometry::Importer {
 	class Model_OBJ : public Model {
 	public:
 		/// Loads in a Wavefront (.obj) Model from the specified file. The 

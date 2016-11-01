@@ -2,16 +2,16 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "..\..\include\math\Matrix4f.h"
-#include "..\..\include\object\Component.h"
-#include "..\..\include\object\Object.h"
-#include "..\..\include\object\Transform.h"
+#include "..\..\..\..\include\math\Matrix4f.h"
+#include "..\..\..\..\include\component\GameComponent.h"
+#include "..\..\..\..\include\object\GameObject.h"
+#include "..\..\..\..\include\component\default\physics\Transform.h"
 
 namespace Honeycomb::Math { class Matrix4f; }
 namespace Honeycomb::Object { class Transform; }
 
-namespace Honeycomb::Render {
-	class Camera : public Honeycomb::Object::Component {
+namespace Honeycomb::Component::Default::Render {
+	class CameraController : public GameComponent {
 	public:
 		enum CameraType { // The type of camera (Orthographic or Perspective)
 			ORTHOGRAPHIC,
@@ -27,14 +27,14 @@ namespace Honeycomb::Render {
 		///				to orthographic, this is the orthographic size.
 		/// float projH : The camera projection height.
 		/// float projW : The camera projection width.
-		Camera(CameraType cT, float clF, float clN, float cTP, float projH, 
-			float projW);
+		CameraController(CameraType cT, float clF, float clN, float cTP, 
+			float projH, float projW);
 
 		/// Destroys this Camera instance.
-		~Camera();
+		~CameraController();
 
 		/// Gets the current active camera instance.
-		static Camera* getActiveCamera();
+		static CameraController* getActiveCamera();
 
 		/// Gets the camera type (Ortho / Persp).
 		/// return : The camera type.
@@ -95,7 +95,7 @@ namespace Honeycomb::Render {
 		/// Updates this camera instance.
 		void update();
 	private:
-		static Camera *activeCamera; // The active camera
+		static CameraController *activeCamera; // The active camera
 
 		CameraType type = PERSPECTIVE; // The type of Camera (Persp / Ortho)
 		float clipFar = 1000.0F; // The far clipping plane

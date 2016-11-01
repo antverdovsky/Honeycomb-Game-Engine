@@ -1,4 +1,4 @@
-#include "..\..\..\include\mesh\importer\Model_OBJ.h"
+#include "..\..\..\include\geometry\importer\Model_OBJ.h"
 
 #include <sstream>
 #include <cstdio>
@@ -8,14 +8,14 @@
 #include "..\..\..\include\file\FileIO.h"
 #include "..\..\..\include\math\Vector2f.h"
 #include "..\..\..\include\math\Vector3f.h"
-#include "..\..\..\include\mesh\Vertex.h"
+#include "..\..\..\include\geometry\Vertex.h"
 
 using namespace Honeycomb::File;
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Mesh::Vertex;
 
-namespace Honeycomb::Mesh::Importer {
+namespace Honeycomb::Geometry::Importer {
 	Model* Model_OBJ::loadModel(std::string file) {
 		// Create variables to store the contents and stream each line
 		std::string contents = File::readFileToStr(file);

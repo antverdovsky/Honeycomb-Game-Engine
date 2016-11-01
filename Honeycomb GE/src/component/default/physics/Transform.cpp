@@ -1,25 +1,25 @@
-#include "..\..\include\object\Transform.h"
+#include "..\..\..\..\include\component\default\physics\Transform.h";
 
 #include <math.h>
 
-#include "..\..\include\math\Matrix4f.h"
-#include "..\..\include\math\Vector3f.h"
-#include "..\..\include\math\Quaternion.h"
-#include "..\..\include\math\MathUtils.h"
+#include "..\..\..\..\include\math\Matrix4f.h"
+#include "..\..\..\..\include\math\Vector3f.h"
+#include "..\..\..\..\include\math\Quaternion.h"
+#include "..\..\..\..\include\math\MathUtils.h"
 
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Matrix4f;
 using Honeycomb::Math::Quaternion;
 using namespace Honeycomb::Math::Utils;
 
-namespace Honeycomb::Object {
+namespace Honeycomb::Component::Default::Physics {
 	Transform::Transform() : 
 			Transform(Vector3f(), Quaternion(), Vector3f(1, 1, 1)) {
 
 	}
 
 	Transform::Transform(Vector3f pos, Quaternion rot, Vector3f scl)
-			: Component("Transform") {
+			: GameComponent("Transform") {
 		this->setTranslation(pos);
 		this->setRotation(rot);
 		this->setScale(scl);

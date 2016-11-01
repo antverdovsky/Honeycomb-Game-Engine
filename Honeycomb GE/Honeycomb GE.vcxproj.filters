@@ -27,9 +27,6 @@
     <ClCompile Include="src\math\Quaternion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\Mesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\file\FileIO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -45,12 +42,6 @@
     <ClCompile Include="src\shader\ShaderProgram.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\object\Transform.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\math\MathUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -60,28 +51,37 @@
     <ClCompile Include="src\base\BaseMain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\importer\Model.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mesh\importer\Model_OBJ.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mesh\Vertex.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\graphics\Texture2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\object\Object.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\object\Component.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\mesh\MeshRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\shader\default\SimpleShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geometry\importer\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geometry\importer\Model_OBJ.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geometry\Mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\geometry\Vertex.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\GameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\GameComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\default\render\CameraController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\default\render\MeshRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\default\physics\Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -96,9 +96,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\math\Quaternion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\mesh\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\file\FileIO.h">
@@ -116,12 +113,6 @@
     <ClInclude Include="include\shader\ShaderProgram.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\object\Transform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\render\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\math\MathUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -131,28 +122,37 @@
     <ClInclude Include="include\base\BaseMain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\mesh\importer\Model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\mesh\importer\Model_OBJ.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\mesh\Vertex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\graphics\Texture2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\object\Object.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\object\Component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\mesh\MeshRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\shader\default\SimpleShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\geometry\importer\Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\geometry\importer\Model_OBJ.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\geometry\Mesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\geometry\Vertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\object\GameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\component\GameComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\component\default\render\CameraController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\component\default\render\MeshRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\component\default\physics\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

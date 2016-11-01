@@ -1,16 +1,23 @@
 #pragma once
+#ifndef MESH_RENDERER_H
+#define MESH_RENDERER_H
 
-#include "Mesh.h"
-#include "..\graphics\Texture2D.h"
-#include "..\object\Component.h"
-#include "..\shader\ShaderProgram.h"
+#include "..\..\..\..\include\geometry\Mesh.h"
+#include "..\..\..\..\include\graphics\Texture2D.h"
+#include "..\..\..\..\include\component\GameComponent.h"
+#include "..\..\..\..\include\shader\ShaderProgram.h"
 
-namespace Honeycomb::Mesh {
-	class MeshRenderer : public Honeycomb::Object::Component {
+namespace Honeycomb::Geometry { class Mesh; }
+namespace Honeycomb::Shader { class ShaderProgram; }
+namespace Honeycomb::Graphics { class Texture2D; }
+
+namespace Honeycomb::Component::Default::Render {
+	class MeshRenderer : public GameComponent {
 	public:
 		/// Creates a Mesh Renderer component given the specified mesh, shader
 		/// and texture.
-		MeshRenderer(Mesh &mesh, Honeycomb::Shader::ShaderProgram &shad, 
+		MeshRenderer(Honeycomb::Geometry::Mesh &mesh, 
+			Honeycomb::Shader::ShaderProgram &shad, 
 			Honeycomb::Graphics::Texture2D &tex);
 
 		/// Deletes this Mesh Renderer component.
@@ -18,7 +25,7 @@ namespace Honeycomb::Mesh {
 
 		/// Returns the reference to the mesh of this Mesh Renderer.
 		/// return : The mesh reference.
-		Mesh& getMesh();
+		Honeycomb::Geometry::Mesh& getMesh();
 
 		/// Returns the reference to the shader of this Mesh Renderer.
 		/// return : The shader reference.
@@ -35,8 +42,10 @@ namespace Honeycomb::Mesh {
 		void update();
 	private:
 		// All objects are declared with pointers, for lazy initialization.
-		Mesh mesh;
+		Honeycomb::Geometry::Mesh mesh;
 		Honeycomb::Shader::ShaderProgram shader;
 		Honeycomb::Graphics::Texture2D texture;
 	};
 }
+
+#endif

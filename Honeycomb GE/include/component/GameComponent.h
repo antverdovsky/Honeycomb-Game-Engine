@@ -4,20 +4,20 @@
 
 #include <string>
 
-namespace Honeycomb::Object { class Object; }
+namespace Honeycomb::Object { class GameObject; }
 
-namespace Honeycomb::Object {
-	class Component {
+namespace Honeycomb::Component {
+	class GameComponent {
 	public:
 		/// Creates a Component instance with the "Component" name.
-		Component();
+		GameComponent();
 
 		/// Creates a Component instance with the specified name.
 		/// string name : The name of this Component.
-		Component(std::string name);
+		GameComponent(std::string name);
 		
 		/// Deletes this Component.
-		~Component();
+		~GameComponent();
 
 		/// Detaches this Component from its current object, and sets the
 		/// current object to which it is attached to NULL.
@@ -25,7 +25,7 @@ namespace Honeycomb::Object {
 
 		/// Returns the object to which this component is attached to.
 		/// return : The pointer to the object.
-		Object* getAttached();
+		Honeycomb::Object::GameObject* getAttached();
 
 		/// Gets a boolean representing whether this game object is active
 		/// or not.
@@ -45,7 +45,7 @@ namespace Honeycomb::Object {
 
 		/// Sets the object to which this component is attached to.
 		/// Object *o : The object to which to attach this component.
-		void setAttached(Object *o);
+		void setAttached(Honeycomb::Object::GameObject *o);
 
 		/// Handles any starting events for this component, if necessary.
 		/// Additionally, this method will make this component active when
@@ -61,8 +61,10 @@ namespace Honeycomb::Object {
 		/// method will only do something if the object is active.
 		virtual void update();
 	protected:
+		// Object to which the component is attached to
+		Honeycomb::Object::GameObject* attached;
+
 		bool isActive; // Is this game component active?
-		Object* attached; // The object to which this component is attached
 		std::string name; // The name of this component
 	};
 }

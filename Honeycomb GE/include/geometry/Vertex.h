@@ -8,7 +8,7 @@
 namespace Honeycomb::Math { class Vector2f; }
 namespace Honeycomb::Math { class Vector3f; }
 
-namespace Honeycomb::Mesh {
+namespace Honeycomb::Geometry {
 	class Vertex {
 	public:
 		/// Creates an empty vertex, with the position, texture coordinates and

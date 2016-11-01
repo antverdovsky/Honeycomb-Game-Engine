@@ -1,11 +1,11 @@
-#include "..\..\include\mesh\Vertex.h"
+#include "..\..\include\geometry\Vertex.h"
 
 #include <iostream>
 
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
 
-namespace Honeycomb::Mesh {
+namespace Honeycomb::Geometry {
 	Vertex::Vertex() {
 		this->normal = Vector3f();
 		this->position = Vector3f();

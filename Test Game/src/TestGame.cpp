@@ -9,8 +9,8 @@
 #include <cstdlib>
 #include <time.h>
 
-#include "..\..\Honeycomb GE\include\mesh\MeshRenderer.h"
-#include "..\..\Honeycomb GE\include\object\Object.h"
+#include "..\..\Honeycomb GE\include\component\default\render\MeshRenderer.h"
+#include "..\..\Honeycomb GE\include\object\GameObject.h"
 #include "..\..\Honeycomb GE\include\base\BaseGame.h"
 #include "..\..\Honeycomb GE\include\base\GameInput.h"
 #include "..\..\Honeycomb GE\include\base\GameTime.h"
@@ -20,12 +20,13 @@
 #include "..\..\Honeycomb GE\include\math\Vector2f.h"
 #include "..\..\Honeycomb GE\include\math\Vector3f.h"
 #include "..\..\Honeycomb GE\include\math\Quaternion.h"
-#include "..\..\Honeycomb GE\include\render\Camera.h"
-#include "..\..\Honeycomb GE\include\object\Transform.h"
-#include "..\..\Honeycomb GE\include\mesh\Mesh.h"
-#include "..\..\Honeycomb GE\include\mesh\Vertex.h"
-#include "..\..\Honeycomb GE\include\mesh\importer\Model.h"
-#include "..\..\Honeycomb GE\include\mesh\importer\Model_OBJ.h"
+#include "..\..\Honeycomb GE\include\component\GameComponent.h"
+#include "..\..\Honeycomb GE\include\component\default\render\CameraController.h"
+#include "..\..\Honeycomb GE\include\component\default\physics\Transform.h"
+#include "..\..\Honeycomb GE\include\geometry\Mesh.h"
+#include "..\..\Honeycomb GE\include\geometry\Vertex.h"
+#include "..\..\Honeycomb GE\include\geometry\importer\Model.h"
+#include "..\..\Honeycomb GE\include\geometry\importer\Model_OBJ.h"
 #include "..\..\Honeycomb GE\include\shader\ShaderProgram.h"
 #include "..\..\Honeycomb GE\include\base\GameWindow.h"
 #include "..\..\Honeycomb GE\include\math\MathUtils.h"
@@ -38,12 +39,13 @@ using Honeycomb::Math::Matrix4f;
 using Honeycomb::Mesh::Vertex;
 using Honeycomb::Math::Quaternion;
 using Honeycomb::Graphics::Texture2D;
-using Honeycomb::Mesh::Mesh;
-using Honeycomb::Mesh::Importer::Model;
-using Honeycomb::Mesh::Importer::Model_OBJ;
+using Honeycomb::Geometry::Mesh;
+using Honeycomb::Geometry::Importer::Model;
+using Honeycomb::Geometry::Importer::Model_OBJ;
 using Honeycomb::Shader::ShaderProgram;
-using Honeycomb::Object::Transform;
-using Honeycomb::Render::Camera;
+using Honeycomb::Component::Default::Physics::Transform;
+using Honeycomb::Component::Default::Render::MeshRenderer;
+using Honeycomb::Component::Default::Render::CameraController;
 using Honeycomb::Shader::Default::SimpleShader;
 
 using namespace Honeycomb::File;
@@ -70,10 +72,10 @@ void TestGame::input() {
 		*cubeObject->getComponentOfType<Honeycomb::Object::Transform>("Transform");
 	*/
 
-	Honeycomb::Render::Camera& cameraObjectCamera =
-		*cameraObject->getComponentOfType<Honeycomb::Render::Camera>("Camera");
-	Honeycomb::Object::Transform& cameraObjectTransform =
-		*cameraObject->getComponentOfType<Honeycomb::Object::Transform>("Transform");
+	CameraController& cameraObjectCamera =
+		*cameraObject->getComponentOfType<CameraController>("Camera");
+	Transform& cameraObjectTransform =
+		*cameraObject->getComponentOfType<Transform>("Transform");
 
 
 	if (GameInput::getGameInput()->getKeyReleased(GLFW_KEY_P)) { // wireframe
@@ -192,7 +194,7 @@ void TestGame::input() {
 }
 
 void TestGame::render() {
-	Honeycomb::Object::Object::getRoot()->render();
+	Honeycomb::Object::GameObject::getRoot()->render();
 } 
 
 ShaderProgram *cubeShader;
@@ -203,12 +205,13 @@ Texture2D *cubeTexture;
 /// shad : shader of cube
 /// tex : texture of cube
 void makeCube(Mesh &mes, ShaderProgram &shad, Texture2D &tex) {
-	Honeycomb::Object::Object *cube = new Honeycomb::Object::Object("Cube");
+	Honeycomb::Object::GameObject *cube = 
+		new Honeycomb::Object::GameObject("Cube");
 
-	Honeycomb::Object::Component *cubeRenderer =
-		new Honeycomb::Mesh::MeshRenderer(mes, shad, tex);
-	Honeycomb::Object::Component* cubeTransform =
-		new Honeycomb::Object::Transform(
+	Honeycomb::Component::GameComponent *cubeRenderer =
+		new Honeycomb::Component::Default::Render::MeshRenderer(mes, shad, tex);
+	Honeycomb::Component::GameComponent* cubeTransform =
+		new Honeycomb::Component::Default::Physics::Transform(
 			Vector3f(rand() % 5 - 5, rand() % 5 - 5, rand() % 10 - 10),
 			Quaternion(), 
 			Vector3f(1.0F, 1.0F, 1.0F));
@@ -221,7 +224,7 @@ void makeCube(Mesh &mes, ShaderProgram &shad, Texture2D &tex) {
 
 void TestGame::start() {
 	srand(time(NULL)); // TODO
-	Honeycomb::Object::Object::getRoot()->start();
+	Honeycomb::Object::GameObject::getRoot()->start();
 
 	/*
 	std::vector<Honeycomb::Object::Object*> objects;
@@ -325,11 +328,11 @@ void TestGame::start() {
 			Quaternion(), Vector3f(1.0F, 1.0F, 1.0F));
 	*/
 
-	Honeycomb::Object::Component* cameraController =
-		new Honeycomb::Render::Camera(Camera::CameraType::PERSPECTIVE, 100.0F, 0.3F,
+	Honeycomb::Component::GameComponent* cameraController =
+		new CameraController(CameraController::CameraType::PERSPECTIVE, 100.0F, 0.3F,
 			60, camH, camW);
-	Honeycomb::Object::Component* cameraTransform =
-		new Honeycomb::Object::Transform(Vector3f(), Quaternion(Vector3f::getGlobalUp(), PI),
+	Honeycomb::Component::GameComponent* cameraTransform =
+		new Honeycomb::Component::Default::Physics::Transform(Vector3f(), Quaternion(Vector3f::getGlobalUp(), PI),
 			Vector3f(1, 1, 1));
 
 	/*
@@ -340,7 +343,7 @@ void TestGame::start() {
 	//cubeObject->getComponents().push_back(cubeTransform);
 	*/
 
-	cameraObject = new Honeycomb::Object::Object("Camera");
+	cameraObject = new Honeycomb::Object::GameObject("Camera");
 	cameraObject->addComponent(*cameraController);
 	cameraObject->addComponent(*cameraTransform);
 	//cameraObject->getComponents().push_back(cameraController);
@@ -363,7 +366,7 @@ void TestGame::start() {
 
 //	delete testModel;
 	GameInput::getGameInput()->clear();
-	std::cout << "Root Child Size: " << Honeycomb::Object::Object::getRoot()->getChildren().size() << std::endl;
+	std::cout << "Root Child Size: " << Honeycomb::Object::GameObject::getRoot()->getChildren().size() << std::endl;
 }
 	
 float uni_scale = 0;
@@ -376,7 +379,7 @@ void TestGame::update() {
 		makeCube(*cubeMesh, *cubeShader, *cubeTexture);
 	}
 
-	Honeycomb::Object::Object::getRoot()->update();
+	Honeycomb::Object::GameObject::getRoot()->update();
 
 	//testTransform->translate(testTransform->getLocalForward() * 0.005F);
 
@@ -454,10 +457,10 @@ void TestGame::update() {
 	Honeycomb::Object::Transform& cubeObjectTransform =
 		*cubeObject->getComponentOfType<Honeycomb::Object::Transform>("Transform");
 		*/
-	Honeycomb::Render::Camera& cameraObjectCamera =
-		*cameraObject->getComponentOfType<Camera>("Camera");
-	Honeycomb::Object::Transform& cameraObjectTransform =
-		*cameraObject->getComponentOfType<Honeycomb::Object::Transform>("Transform");
+	CameraController& cameraObjectCamera =
+		*cameraObject->getComponentOfType<CameraController>("Camera");
+	Transform& cameraObjectTransform =
+		*cameraObject->getComponentOfType<Transform>("Transform");
 
 	// cubeObjectMeshRenderer.getShader().setUniform_mat4("objTransform", cubeObjectTransform.getTransformationMatrix());
 	//cubeObjectMeshRenderer.getShader().setUniform_mat4("camOrientation", cameraObjectCamera.getProjectionOrientation());

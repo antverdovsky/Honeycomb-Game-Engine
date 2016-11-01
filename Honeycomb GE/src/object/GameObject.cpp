@@ -1,16 +1,18 @@
-#include "..\..\include\object\Object.h"
+#include "..\..\include\object\GameObject.h"
 
 #include <algorithm>
 #include <iostream>
 
-namespace Honeycomb::Object {
-	Object *Object::root = new Object("Root", nullptr); // Initialize Root
+using Honeycomb::Component::GameComponent;
 
-	Object::Object() : Object("GameObject") {
+namespace Honeycomb::Object {
+	GameObject *GameObject::root = new GameObject("Root", nullptr); // Root
+
+	GameObject::GameObject() : GameObject("GameObject") {
 		
 	}
 
-	Object::Object(std::string n, Object *p) {
+	GameObject::GameObject(std::string n, GameObject *p) {
 		this->name = n;
 		this->isActive = false;
 
@@ -19,7 +21,7 @@ namespace Honeycomb::Object {
 		else this->parent = nullptr;
 	}
 
-	Object::~Object() {
+	GameObject::~GameObject() {
 		// Delete all of the children and components
 		while (this->children.size() != 0)
 			delete this->children.at(0);
@@ -30,28 +32,28 @@ namespace Honeycomb::Object {
 		this->deparent();
 	}
 
-	void Object::addChild(Object &o) {
+	void GameObject::addChild(GameObject &o) {
 		this->children.push_back(&o);
 		
 		if (o.parent != nullptr) o.parent->removeChild(&o);
 		o.setParent(this);
 	}
 
-	void Object::addComponent(Component &c) {
+	void GameObject::addComponent(GameComponent &c) {
 		this->components.push_back(&c);
 		
 		if (c.getAttached()) c.getAttached()->removeComponent(&c);
 		c.setAttached(this);
 	}
 
-	void Object::deparent() {
+	void GameObject::deparent() {
 		// Remove this object from its parents' children and set the parent of
 		// this object to nothing.
 		if (this->parent != nullptr) this->parent->removeChild(this);
 		this->setParent(nullptr);
 	}
 
-	Object* Object::getChild(std::string name) {
+	GameObject* GameObject::getChild(std::string name) {
 		// Go through all components and try to find one whose name matches
 		for (int i = 0; i < this->children.size(); i++) {
 			if (this->children.at(i)->getName() == name) {
@@ -63,11 +65,11 @@ namespace Honeycomb::Object {
 		return NULL;
 	}
 
-	std::vector<Object*>& Object::getChildren() {
+	std::vector<GameObject*>& GameObject::getChildren() {
 		return this->children;
 	}
 
-	Component* Object::getComponent(std::string name) {
+	GameComponent* GameObject::getComponent(std::string name) {
 		// Go through all components and try to find one whose name matches
 		for (int i = 0; i < this->components.size(); i++) {
 			if (this->components.at(i)->getName() == name) {
@@ -79,27 +81,27 @@ namespace Honeycomb::Object {
 		return NULL;
 	}
 
-	std::vector<Component*>& Object::getComponents() {
+	std::vector<GameComponent*>& GameObject::getComponents() {
 		return this->components;
 	}
 
-	bool& Object::getIsActive() {
+	bool& GameObject::getIsActive() {
 		return this->isActive;
 	}
 
-	std::string Object::getName() {
+	std::string GameObject::getName() {
 		return this->name;
 	}
 
-	Object* Object::getParent() {
+	GameObject* GameObject::getParent() {
 		return this->parent;
 	}
 	
-	Object* Object::getRoot() {
-		return Object::root;
+	GameObject* GameObject::getRoot() {
+		return GameObject::root;
 	}
 
-	void Object::input() {
+	void GameObject::input() {
 		if (!this->isActive) return; // If not active -> It should not update!
 
 		// Handle input for all children and components
@@ -109,18 +111,18 @@ namespace Honeycomb::Object {
 			this->components.at(i)->input();
 	}
 
-	void Object::removeChild(Object *o) {
+	void GameObject::removeChild(GameObject *o) {
 		children.erase( // Erase object from my children
 			std::remove(children.begin(), children.end(), o), children.end());
 	}
 
-	void Object::removeComponent(Component *c) {
+	void GameObject::removeComponent(GameComponent *c) {
 		components.erase( // Erase component from my components
 			std::remove(components.begin(), components.end(), c), 
 			components.end());
 	}
 
-	void Object::render() {
+	void GameObject::render() {
 		if (!this->isActive) return;
 
 		// Handle rendering for all children and components
@@ -130,11 +132,11 @@ namespace Honeycomb::Object {
 			this->components.at(i)->render();
 	}
 
-	void Object::setParent(Object *o) {
+	void GameObject::setParent(GameObject *o) {
 		this->parent = o;
 	}
 
-	void Object::start() {
+	void GameObject::start() {
 		if (this->isActive) return;
 		this->isActive = true;
 
@@ -145,7 +147,7 @@ namespace Honeycomb::Object {
 			this->components.at(i)->start();
 	}
 
-	void Object::stop() {
+	void GameObject::stop() {
 		if (!this->isActive) return;
 		this->isActive = false;
 
@@ -156,7 +158,7 @@ namespace Honeycomb::Object {
 			this->components.at(i)->stop();
 	}
 
-	void Object::update() {
+	void GameObject::update() {
 		if (!this->isActive) return;
 
 		// Handle updating for all children and components
