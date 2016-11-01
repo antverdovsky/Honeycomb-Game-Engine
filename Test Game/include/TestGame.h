@@ -49,7 +49,7 @@ private:
 	*/
 
 	Honeycomb::Object::Object* cameraObject;
-	Honeycomb::Object::Object* cubeObject;
+	//Honeycomb::Object::Object* cubeObject;
 };
 
 #endif

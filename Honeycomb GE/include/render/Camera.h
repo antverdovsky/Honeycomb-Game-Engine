@@ -33,6 +33,9 @@ namespace Honeycomb::Render {
 		/// Destroys this Camera instance.
 		~Camera();
 
+		/// Gets the current active camera instance.
+		static Camera* getActiveCamera();
+
 		/// Gets the camera type (Ortho / Persp).
 		/// return : The camera type.
 		CameraType getCameraType();
@@ -75,14 +78,25 @@ namespace Honeycomb::Render {
 		/// return : The projection width.
 		float getProjectionWidth();
 
+		/// Sets this camera as the active world camera. There can only be one
+		/// active world camera, so this camera will replace the existing
+		/// active camera as the new active camera.
+		void setActive();
+
 		/// Sets the projection width and height for the Camera.
 		/// int h : The new height of the projection size.
 		/// int w : The new width of the projection size.
 		void setProjectionSize(int h, int w);
 		
-		/// Starts this camera component.
+		/// Starts this camera component. When started, this camera will become
+		/// the active world camera.
 		void start();
+		
+		/// Updates this camera instance.
+		void update();
 	private:
+		static Camera *activeCamera; // The active camera
+
 		CameraType type = PERSPECTIVE; // The type of Camera (Persp / Ortho)
 		float clipFar = 1000.0F; // The far clipping plane
 		float clipNear = 0.1F; // The near clipping plane

@@ -4,11 +4,17 @@
 #include <math.h>
 #include <iostream>
 
+// TEMP
+#include "..\..\include\shader\default\SimpleShader.h"
+using Honeycomb::Shader::Default::SimpleShader;
+
 using Honeycomb::Math::Matrix4f;
 using Honeycomb::Object::Transform;
 using namespace Honeycomb::Math::Utils;
 
 namespace Honeycomb::Render {
+	Camera *Camera::activeCamera = nullptr; // Null camera at first
+
 	Camera::Camera(CameraType cT, float clF, float clN, float cTP, float projH,
 			float projW) : Component("Camera") {
 		this->type = cT;
@@ -21,6 +27,10 @@ namespace Honeycomb::Render {
 
 	Camera::~Camera() {
 
+	}
+
+	Camera* Camera::getActiveCamera() {
+		return activeCamera;
 	}
 
 	Camera::CameraType Camera::getCameraType() {
@@ -61,6 +71,13 @@ namespace Honeycomb::Render {
 		return this->projectionWidth;
 	}
 
+	void Camera::setActive() {
+		this->isActive = true;
+		
+		if (Camera::activeCamera != nullptr) Camera::activeCamera->stop();
+		Camera::activeCamera = this;
+	}
+
 	void Camera::setProjectionSize(int h, int w) {
 		// Write the new values into the Camera instance
 		this->projectionHeight = h;
@@ -73,8 +90,24 @@ namespace Honeycomb::Render {
 		this->calcProjection();
 		this->calcProjectionOrientation();
 		this->calcProjectionTranslation();
+
+		this->setActive();
+
+		// TODO: Find the active shader?
+		SimpleShader::getSimpleShader()->setUniform_mat4("camProjection",
+			this->getProjection());
 	}
 
+	void Camera::update() {
+		if (!this->isActive) return;
+
+		// TODO: Find the active shader?
+		SimpleShader::getSimpleShader()->setUniform_mat4("camOrientation",
+			this->getProjectionOrientation());
+		SimpleShader::getSimpleShader()->setUniform_mat4("camTranslation",
+			this->getProjectionTranslation());
+	}
+	
 	Matrix4f Camera::calcProjection() {
 		// Call the appropriate matrix projection calculation method according
 		// to the type of Camera.

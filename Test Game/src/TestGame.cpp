@@ -5,6 +5,10 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
+// TEMP [ remove soon :) ] TODO:
+#include <cstdlib>
+#include <time.h>
+
 #include "..\..\Honeycomb GE\include\mesh\MeshRenderer.h"
 #include "..\..\Honeycomb GE\include\object\Object.h"
 #include "..\..\Honeycomb GE\include\base\BaseGame.h"
@@ -61,8 +65,10 @@ bool wireframe = false;
 void TestGame::input() {
 	float speed = 0.0025F * Honeycomb::Base::Time::deltaTime;
 
+	/*
 	Honeycomb::Object::Transform& cubeObjectTransform =
 		*cubeObject->getComponentOfType<Honeycomb::Object::Transform>("Transform");
+	*/
 
 	Honeycomb::Render::Camera& cameraObjectCamera =
 		*cameraObject->getComponentOfType<Honeycomb::Render::Camera>("Camera");
@@ -76,7 +82,7 @@ void TestGame::input() {
 		if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
-
+	/*
 	if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_Z)) { // rot transform
 		cubeObjectTransform.rotate(cubeObjectTransform.getLocalUp(),
 			0.075F);
@@ -101,6 +107,7 @@ void TestGame::input() {
 		 cubeObjectTransform.translate( cubeObjectTransform.getLocalRight()
 			* 0.075F);
 	}
+	*/
 
 	if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_W)) { // move forward
 		cameraObjectTransform.translate(cameraObjectTransform.getLocalForward()
@@ -170,9 +177,9 @@ void TestGame::input() {
 	}
 
 	if (GameInput::getGameInput()->getKeyDown(GLFW_KEY_R)) { // reset cam
-		 cubeObjectTransform.setRotation(
-			Quaternion()
-		);
+		// cubeObjectTransform.setRotation(
+		//	Quaternion()
+		//);
 
 		cameraObjectTransform.setTranslation(
 			Vector3f()
@@ -188,9 +195,37 @@ void TestGame::render() {
 	Honeycomb::Object::Object::getRoot()->render();
 } 
 
+ShaderProgram *cubeShader;
+Mesh *cubeMesh;
+Texture2D *cubeTexture;
+/// makes a quick cube at a random position
+/// mes : mesh of cube
+/// shad : shader of cube
+/// tex : texture of cube
+void makeCube(Mesh &mes, ShaderProgram &shad, Texture2D &tex) {
+	Honeycomb::Object::Object *cube = new Honeycomb::Object::Object("Cube");
+
+	Honeycomb::Object::Component *cubeRenderer =
+		new Honeycomb::Mesh::MeshRenderer(mes, shad, tex);
+	Honeycomb::Object::Component* cubeTransform =
+		new Honeycomb::Object::Transform(
+			Vector3f(rand() % 5 - 5, rand() % 5 - 5, rand() % 10 - 10),
+			Quaternion(), 
+			Vector3f(1.0F, 1.0F, 1.0F));
+
+	cube->addComponent(*cubeRenderer);
+	cube->addComponent(*cubeTransform);
+
+	cube->start();
+}
+
 void TestGame::start() {
+	srand(time(NULL)); // TODO
+	Honeycomb::Object::Object::getRoot()->start();
+
+	/*
 	std::vector<Honeycomb::Object::Object*> objects;
-	for (int i = 0; i <= 10000; i++) {
+	for (int i = 0; i <= -1; i++) {
 		Honeycomb::Object::Object *root = Honeycomb::Object::Object::getRoot();
 		Honeycomb::Object::Object *superObject = new Honeycomb::Object::Object("Super");
 		
@@ -224,7 +259,7 @@ void TestGame::start() {
 	//objects.clear();
 	std::cout << "Root Child Size: " << Honeycomb::Object::Object::getRoot()->getChildren().size() << std::endl;
 	
-
+	*/
 	///
 	/// Now Entering Trigger Free Zone
 	/// 
@@ -248,9 +283,9 @@ void TestGame::start() {
 	float camW = GameWindow::getGameWindow()->getWindowWidth();
 	float camH = GameWindow::getGameWindow()->getWindowHeight();
 
-	Mesh *cubeMesh = new Mesh(*Model_OBJ::loadModel(testModelCubeStr)); // todo delete model
+	cubeMesh = new Mesh(*Model_OBJ::loadModel(testModelCubeStr)); // todo delete model
 	
-	ShaderProgram *cubeShader = SimpleShader::getSimpleShader();
+	cubeShader = SimpleShader::getSimpleShader();
 	//cubeShader.bindShaderProgram();
 
 	/*
@@ -271,7 +306,7 @@ void TestGame::start() {
 	
 	// TODO: Find way to not make the cube texture a pointer, like the shader
 	// program.
-	Texture2D *cubeTexture = new Texture2D();
+	cubeTexture = new Texture2D();
 	int testTextureWidth = 0;
 	int testTextureHeight = 0;
 	unsigned char* cubeTextureData = readImageToUChar(
@@ -282,11 +317,14 @@ void TestGame::start() {
 	cubeTexture->setTextureWrap(GL_REPEAT, GL_REPEAT);
 	cubeTexture->genMipMap();
 	
+	/*
 	Honeycomb::Object::Component *cubeRenderer =
 		new Honeycomb::Mesh::MeshRenderer(*cubeMesh, *cubeShader, *cubeTexture);
 	Honeycomb::Object::Component* cubeTransform =
 		new Honeycomb::Object::Transform(Vector3f(0.0F, 0.0F, -10.0F), 
 			Quaternion(), Vector3f(1.0F, 1.0F, 1.0F));
+	*/
+
 	Honeycomb::Object::Component* cameraController =
 		new Honeycomb::Render::Camera(Camera::CameraType::PERSPECTIVE, 100.0F, 0.3F,
 			60, camH, camW);
@@ -294,18 +332,21 @@ void TestGame::start() {
 		new Honeycomb::Object::Transform(Vector3f(), Quaternion(Vector3f::getGlobalUp(), PI),
 			Vector3f(1, 1, 1));
 
+	/*
 	cubeObject = new Honeycomb::Object::Object("Cube");
 	cubeObject->addComponent(*cubeRenderer);
 	cubeObject->addComponent(*cubeTransform);
 	//cubeObject->getComponents().push_back(cubeRenderer);
 	//cubeObject->getComponents().push_back(cubeTransform);
+	*/
 
 	cameraObject = new Honeycomb::Object::Object("Camera");
 	cameraObject->addComponent(*cameraController);
 	cameraObject->addComponent(*cameraTransform);
 	//cameraObject->getComponents().push_back(cameraController);
 
-	cameraController->start();
+	//cubeObject->start();
+	cameraObject->start();
 
 	/*
 	testTransform = new Transform(Vector3f(), Quaternion(), Vector3f(1, 1, 1));
@@ -329,6 +370,11 @@ float uni_scale = 0;
 int counter = 0;
 void TestGame::update() {
 	counter++;
+
+	if (counter % 30 == 0) {
+		std::cout << "Created a CUBE!!!" << std::endl;
+		makeCube(*cubeMesh, *cubeShader, *cubeTexture);
+	}
 
 	Honeycomb::Object::Object::getRoot()->update();
 
@@ -402,22 +448,24 @@ void TestGame::update() {
 
 	*/
 
+	/*
 	Honeycomb::Mesh::MeshRenderer& cubeObjectMeshRenderer =
 		*cubeObject->getComponentOfType<Honeycomb::Mesh::MeshRenderer>("MeshRenderer");
 	Honeycomb::Object::Transform& cubeObjectTransform =
 		*cubeObject->getComponentOfType<Honeycomb::Object::Transform>("Transform");
-
+		*/
 	Honeycomb::Render::Camera& cameraObjectCamera =
 		*cameraObject->getComponentOfType<Camera>("Camera");
 	Honeycomb::Object::Transform& cameraObjectTransform =
 		*cameraObject->getComponentOfType<Honeycomb::Object::Transform>("Transform");
 
-	cubeObjectMeshRenderer.getShader().setUniform_mat4("objTransform", cubeObjectTransform.getTransformationMatrix());
-	cubeObjectMeshRenderer.getShader().setUniform_mat4("camOrientation", cameraObjectCamera.getProjectionOrientation());
-	cubeObjectMeshRenderer.getShader().setUniform_mat4("camTranslation", cameraObjectCamera.getProjectionTranslation());
-	cubeObjectMeshRenderer.getShader().setUniform_mat4("camProjection", cameraObjectCamera.getProjection());
+	// cubeObjectMeshRenderer.getShader().setUniform_mat4("objTransform", cubeObjectTransform.getTransformationMatrix());
+	//cubeObjectMeshRenderer.getShader().setUniform_mat4("camOrientation", cameraObjectCamera.getProjectionOrientation());
+	//cubeObjectMeshRenderer.getShader().setUniform_mat4("camTranslation", cameraObjectCamera.getProjectionTranslation());
+	//cubeObjectMeshRenderer.getShader().setUniform_mat4("camProjection", cameraObjectCamera.getProjection());
 
 	if (counter % 60 == 0) {
+		/*
 		Vector3f transF = cubeObjectTransform.getLocalForward();
 		std::cout << "TRS FORW: " << transF.getX() << ", " << transF.getY() << ", " << transF.getZ() << std::endl;
 
@@ -426,6 +474,7 @@ void TestGame::update() {
 
 		Vector3f transU = cubeObjectTransform.getLocalUp();
 		std::cout << "TRS UP: " << transU.getX() << ", " << transU.getY() << ", " << transU.getZ() << std::endl;
+		*/
 
 		Vector3f camF = cameraObjectTransform.getLocalForward();
 		std::cout << "CAM FOR: " << camF.getX() << ", " << camF.getY() << ", " << camF.getZ() << std::endl;
@@ -436,21 +485,24 @@ void TestGame::update() {
 		Vector3f camU = cameraObjectTransform.getLocalUp();
 		std::cout << "CAM UP: " << camU.getX() << ", " << camU.getY() << ", " << camU.getZ() << std::endl;
 
+		/*
 		Quaternion q = cubeObjectTransform.getRotation();
 		std::cout << "TRANS ROT: ";
 		std::cout << q.getX() << ", " << q.getY() << ", " << q.getZ() << ", "
 			<< q.getW() << std::endl;
-
-		q = cameraObjectTransform.getRotation();
+			*/
+		Quaternion q = cameraObjectTransform.getRotation();
 		std::cout << "CAM ROT: ";
 		std::cout << q.getX() << ", " << q.getY() << ", " << q.getZ() << ", "
 			<< q.getW() << std::endl;
 
+		/*
 		Vector3f pos = cubeObjectTransform.getTranslation();
 		std::cout << "CUBE POS: ";
 		std::cout << pos.getX() << ", " << pos.getY() << ", " << pos.getZ() << std::endl;
+		*/
 
-		pos = cameraObjectTransform.getTranslation();
+		Vector3f pos = cameraObjectTransform.getTranslation();
 		std::cout << "CAMERA POS: ";
 		std::cout << pos.getX() << ", " << pos.getY() << ", " << pos.getZ() << std::endl;
 	}

@@ -73,6 +73,11 @@ namespace Honeycomb::Object {
 		/// return : The list containing the components.
 		std::vector<Component*>& getComponents();
 
+		/// Gets a boolean representing whether this game object is active
+		/// or not.
+		/// return : A boolean representing whether the game object is active.
+		bool& getIsActive();
+
 		/// Gets the name of this game object.
 		std::string getName();
 
@@ -84,7 +89,8 @@ namespace Honeycomb::Object {
 		/// return : The Root object.
 		static Object* getRoot();
 
-		/// Handles any input events for this component, if necessary.
+		/// Handles any input events for this component, if necessary. This 
+		/// method will only do something if the object is active.
 		virtual void input();
 
 		/// Removes the specified child from the children of this object, if
@@ -99,7 +105,8 @@ namespace Honeycomb::Object {
 		/// Component *c : The component to be removed.
 		void removeComponent(Component *c);
 
-		/// Handles any render events for this component, if necessary.
+		/// Handles any render events for this component, if necessary. This 
+		/// method will only do something if the object is active.
 		virtual void render();
 
 		/// Sets the parent of this game object to the specified game object.
@@ -107,16 +114,22 @@ namespace Honeycomb::Object {
 		void setParent(Object *o);
 
 		/// Handles any starting events for this component, if necessary.
+		/// Additionally, this method will make this object active when
+		/// called.
 		virtual void start();
 
 		/// Handles any stopping events for this component, if necessary.
+		/// Additionally, this method will make this object inactive when
+		/// called.
 		virtual void stop();
 
-		/// Handles any update events for this component, if necessary.
+		/// Handles any update events for this component, if necessary. This 
+		/// method will only do something if the object is active.
 		virtual void update();
 	private:
 		static Object *root; // The root object of the game scene
 
+		bool isActive; // Is this object active?
 		Object* parent; // The parent of this Game Object
 		std::string name; // Name of this Game Object
 		std::vector<Object*> children; // Children of this Game Object

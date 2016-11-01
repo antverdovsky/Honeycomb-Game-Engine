@@ -9,6 +9,7 @@ namespace Honeycomb::Object {
 
 	Component::Component(std::string name) {
 		this->name = name;
+		this->isActive = false;
 		this->attached = nullptr;
 	}
 
@@ -24,6 +25,10 @@ namespace Honeycomb::Object {
 
 	Object* Component::getAttached() {
 		return this->attached;
+	}
+
+	bool& Component::getIsActive() {
+		return this->isActive;
 	}
 
 	std::string Component::getName() {
@@ -43,11 +48,11 @@ namespace Honeycomb::Object {
 	}
 
 	void Component::start() {
-
+		this->isActive = true;
 	}
 
 	void Component::stop() {
-
+		this->isActive = false;
 	}
 	
 	void Component::update() {

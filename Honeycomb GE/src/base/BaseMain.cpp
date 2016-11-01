@@ -56,7 +56,7 @@ namespace Honeycomb::Base::BaseMain {
 			// If the time between this iteration and last iteration exceeds
 			// the minimum amount of time between frames -> Render & update.
 			if (deltaTime >= msPerFrame) {
-				update(); // Update the game->
+				update(); // Update the game
 				render(); // Render the game & the game window.
 
 				// Time spent rendering frames is to increase by how long it 

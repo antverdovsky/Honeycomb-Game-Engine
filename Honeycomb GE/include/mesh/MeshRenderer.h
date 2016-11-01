@@ -30,6 +30,9 @@ namespace Honeycomb::Mesh {
 
 		/// Renders the mesh stored to the screen.
 		void render();
+
+		/// Updates the mesh transformation for the Shader.
+		void update();
 	private:
 		// All objects are declared with pointers, for lazy initialization.
 		Mesh mesh;

@@ -12,6 +12,7 @@ namespace Honeycomb::Object {
 
 	Object::Object(std::string n, Object *p) {
 		this->name = n;
+		this->isActive = false;
 
 		// If parent is provided -> Parent this to specified object
 		if (p != nullptr) p->addChild(*this);
@@ -82,6 +83,10 @@ namespace Honeycomb::Object {
 		return this->components;
 	}
 
+	bool& Object::getIsActive() {
+		return this->isActive;
+	}
+
 	std::string Object::getName() {
 		return this->name;
 	}
@@ -95,6 +100,8 @@ namespace Honeycomb::Object {
 	}
 
 	void Object::input() {
+		if (!this->isActive) return; // If not active -> It should not update!
+
 		// Handle input for all children and components
 		for (int i = 0; i < this->children.size(); i++)
 			this->children.at(i)->input();
@@ -105,8 +112,6 @@ namespace Honeycomb::Object {
 	void Object::removeChild(Object *o) {
 		children.erase( // Erase object from my children
 			std::remove(children.begin(), children.end(), o), children.end());
-
-		int i;
 	}
 
 	void Object::removeComponent(Component *c) {
@@ -116,6 +121,8 @@ namespace Honeycomb::Object {
 	}
 
 	void Object::render() {
+		if (!this->isActive) return;
+
 		// Handle rendering for all children and components
 		for (int i = 0; i < this->children.size(); i++) 
 			this->children.at(i)->render();
@@ -128,6 +135,9 @@ namespace Honeycomb::Object {
 	}
 
 	void Object::start() {
+		if (this->isActive) return;
+		this->isActive = true;
+
 		// Handle starting for all children and components
 		for (int i = 0; i < this->children.size(); i++)
 			this->children.at(i)->start();
@@ -136,6 +146,9 @@ namespace Honeycomb::Object {
 	}
 
 	void Object::stop() {
+		if (!this->isActive) return;
+		this->isActive = false;
+
 		// Handle starting for all children and components
 		for (int i = 0; i < this->children.size(); i++)
 			this->children.at(i)->stop();
@@ -144,6 +157,8 @@ namespace Honeycomb::Object {
 	}
 
 	void Object::update() {
+		if (!this->isActive) return;
+
 		// Handle updating for all children and components
 		for (int i = 0; i < this->children.size(); i++)
 			this->children.at(i)->update();
