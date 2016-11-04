@@ -5,8 +5,8 @@
 #include <vector>
 #include <unordered_map>
 
-namespace Honeycomb::Math { class Matrix4f; }
-namespace Honeycomb::Math { class Vector3f; }
+#include "..\math\Vector3f.h"
+#include "..\math\Matrix4f.h"
 
 namespace Honeycomb::Shader {
 	class ShaderProgram {

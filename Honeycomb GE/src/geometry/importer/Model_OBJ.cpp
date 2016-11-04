@@ -10,10 +10,11 @@
 #include "..\..\..\include\math\Vector3f.h"
 #include "..\..\..\include\geometry\Vertex.h"
 
-using namespace Honeycomb::File;
+using Honeycomb::Geometry::Vertex;
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
-using Honeycomb::Mesh::Vertex;
+
+using namespace Honeycomb::File;
 
 namespace Honeycomb::Geometry::Importer {
 	Model* Model_OBJ::loadModel(std::string file) {

@@ -3,8 +3,7 @@
 #define QUATERNION_H
 
 #include "..\..\include\math\Matrix4f.h"
-
-namespace Honeycomb::Math { class Vector3f; }
+#include "..\..\include\math\Vector3f.h"
 
 namespace Honeycomb::Math {
 	class Quaternion {

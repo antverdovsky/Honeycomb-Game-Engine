@@ -4,7 +4,7 @@
 
 #include "..\ShaderProgram.h"
 
-namespace Honeycomb::Shader::Default {
+namespace Honeycomb::Shader::Simple {
 	// File locations of the vertex and fragment shaders.
 	extern std::string VERTEX_SHADER_LOC;
 	extern std::string FRAGMENT_SHADER_LOC;

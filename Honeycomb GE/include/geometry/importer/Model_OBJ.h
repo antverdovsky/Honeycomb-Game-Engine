@@ -18,7 +18,8 @@ namespace Honeycomb::Geometry::Importer {
 		/// and vertices.
 		/// vector<int> indx : The indices.
 		/// vector<Vertex> vert : The vertices.
-		Model_OBJ(std::vector<int> indx, std::vector<Vertex> vert);
+		Model_OBJ(std::vector<int> indx, 
+			std::vector<Honeycomb::Geometry::Vertex> vert);
 
 		/// Default Destructor.
 		~Model_OBJ();

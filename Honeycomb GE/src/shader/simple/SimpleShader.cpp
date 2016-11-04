@@ -1,9 +1,9 @@
-#include "..\..\..\include\shader\default\SimpleShader.h"
+#include "..\..\..\include\shader\simple\SimpleShader.h"
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
-namespace Honeycomb::Shader::Default {
+namespace Honeycomb::Shader::Simple {
 	SimpleShader *SimpleShader::instance = NULL; // Null instance at first
 
 	std::string VERTEX_SHADER_LOC = 

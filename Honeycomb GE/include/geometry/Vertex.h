@@ -5,9 +5,6 @@
 #include "..\..\include\math\Vector2f.h"
 #include "..\..\include\math\Vector3f.h"
 
-namespace Honeycomb::Math { class Vector2f; }
-namespace Honeycomb::Math { class Vector3f; }
-
 namespace Honeycomb::Geometry {
 	class Vertex {
 	public:

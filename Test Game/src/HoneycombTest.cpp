@@ -11,13 +11,13 @@
 #include "..\..\Honeycomb GE\include\geometry\Mesh.h"
 #include "..\..\Honeycomb GE\include\graphics\Texture2D.h"
 #include "..\..\Honeycomb GE\include\shader\ShaderProgram.h"
-#include "..\..\Honeycomb GE\include\shader\default\SimpleShader.h"
+#include "..\..\Honeycomb GE\include\shader\simple\SimpleShader.h"
 
 #include "..\include\components\InputTransformable.h"
 #include "..\..\Honeycomb GE\include\component\GameComponent.h"
-#include "..\..\Honeycomb GE\include\component\default\physics\Transform.h"
-#include "..\..\Honeycomb GE\include\component\default\render\CameraController.h"
-#include "..\..\Honeycomb GE\include\component\default\render\MeshRenderer.h"
+#include "..\..\Honeycomb GE\include\component\physics\Transform.h"
+#include "..\..\Honeycomb GE\include\component\render\CameraController.h"
+#include "..\..\Honeycomb GE\include\component\render\MeshRenderer.h"
 #include "..\..\Honeycomb GE\include\object\GameObject.h"
 
 #include "..\..\Honeycomb GE\include\math\Vector3f.h"
@@ -31,12 +31,12 @@ using Honeycomb::Geometry::Importer::Model_OBJ;
 using Honeycomb::Geometry::Mesh;
 using Honeycomb::Graphics::Texture2D;
 using Honeycomb::Shader::ShaderProgram;
-using Honeycomb::Shader::Default::SimpleShader;
+using Honeycomb::Shader::Simple::SimpleShader;
 
 using Honeycomb::Component::GameComponent;
-using Honeycomb::Component::Default::Physics::Transform;
-using Honeycomb::Component::Default::Render::CameraController;
-using Honeycomb::Component::Default::Render::MeshRenderer;
+using Honeycomb::Component::Physics::Transform;
+using Honeycomb::Component::Render::CameraController;
+using Honeycomb::Component::Render::MeshRenderer;
 using Honeycomb::Object::GameObject;
 
 using Honeycomb::Math::Vector3f;
@@ -52,8 +52,6 @@ namespace HoneycombTest {
 
 	void TestGame::input() {
 		GameObject::getRoot()->input();
-
-		GameInput::getGameInput()->clear();
 	}
 
 	void TestGame::render() {
@@ -83,9 +81,18 @@ namespace HoneycombTest {
 		Transform *cubeTransform =
 			new Transform(Vector3f(0.0F, 0.0F, -5.0F), Quaternion(), 
 				Vector3f(1.0F, 1.0F, 1.0F));
+		InputTransformable *cubeInputTransformable = new InputTransformable(
+			GameInput::KEY_CODE_UP, GameInput::KEY_CODE_DOWN,
+			GameInput::KEY_CODE_LEFT, GameInput::KEY_CODE_RIGHT,
+			GameInput::KEY_CODE_COMMA, GameInput::KEY_CODE_PERIOD,
+			GameInput::KEY_CODE_R, GameInput::KEY_CODE_T,
+			GameInput::KEY_CODE_F, GameInput::KEY_CODE_G,
+			GameInput::KEY_CODE_V, GameInput::KEY_CODE_B,
+			0.05F, 0.05F);
 		this->cubeObject = new GameObject("Cube");
 		this->cubeObject->addComponent(*cubeRenderer);
 		this->cubeObject->addComponent(*cubeTransform);
+		this->cubeObject->addComponent(*cubeInputTransformable);
 
 		// Create Camera Components & Camera Object
 		CameraController *cameraController =

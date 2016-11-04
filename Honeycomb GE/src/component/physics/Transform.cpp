@@ -1,18 +1,18 @@
-#include "..\..\..\..\include\component\default\physics\Transform.h";
+#include "..\..\..\include\component\physics\Transform.h";
 
 #include <math.h>
 
-#include "..\..\..\..\include\math\Matrix4f.h"
-#include "..\..\..\..\include\math\Vector3f.h"
-#include "..\..\..\..\include\math\Quaternion.h"
-#include "..\..\..\..\include\math\MathUtils.h"
+#include "..\..\..\include\math\Matrix4f.h"
+#include "..\..\..\include\math\Vector3f.h"
+#include "..\..\..\include\math\Quaternion.h"
+#include "..\..\..\include\math\MathUtils.h"
 
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Matrix4f;
 using Honeycomb::Math::Quaternion;
 using namespace Honeycomb::Math::Utils;
 
-namespace Honeycomb::Component::Default::Physics {
+namespace Honeycomb::Component::Physics {
 	Transform::Transform() : 
 			Transform(Vector3f(), Quaternion(), Vector3f(1, 1, 1)) {
 
@@ -27,12 +27,6 @@ namespace Honeycomb::Component::Default::Physics {
 		this->localForward = Vector3f::getGlobalForward();
 		this->localRight = Vector3f::getGlobalRight();
 		this->localUp = Vector3f::getGlobalUp();
-
-		this->calculateOrientationMatrix();
-		this->calculateTranslationMatrix();
-		this->calculateRotationMatrix();
-		this->calculateScaleMatrix();
-		this->calculateTransformationMatrix();
 	}
 
 	Vector3f Transform::getLocalForward() {
@@ -77,6 +71,14 @@ namespace Honeycomb::Component::Default::Physics {
 
 	Vector3f Transform::getTranslation() {
 		return this->translation;
+	}
+	
+	void Transform::start() {
+		this->calculateOrientationMatrix();
+		this->calculateTranslationMatrix();
+		this->calculateRotationMatrix();
+		this->calculateScaleMatrix();
+		this->calculateTransformationMatrix();
 	}
 
 	void Transform::setRotation(Quaternion quat) {
@@ -151,11 +153,7 @@ namespace Honeycomb::Component::Default::Physics {
 	}
 
 	Matrix4f Transform::calculateRotationMatrix() {
-		this->rotationMatrix = Matrix4f::identity();
-
-		//todo
 		this->rotationMatrix = this->rotation.toRotationMatrix4f();
-		return this->rotationMatrix;
 
 		return this->rotationMatrix;
 	}

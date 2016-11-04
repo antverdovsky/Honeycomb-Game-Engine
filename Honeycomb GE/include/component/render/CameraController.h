@@ -2,15 +2,15 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "..\..\..\..\include\math\Matrix4f.h"
-#include "..\..\..\..\include\component\GameComponent.h"
-#include "..\..\..\..\include\object\GameObject.h"
-#include "..\..\..\..\include\component\default\physics\Transform.h"
+#include "..\GameComponent.h"
+#include "..\..\..\include\component\physics\Transform.h"
+#include "..\..\..\include\math\Matrix4f.h"
+#include "..\..\..\include\object\GameObject.h"
 
 namespace Honeycomb::Math { class Matrix4f; }
 namespace Honeycomb::Object { class Transform; }
 
-namespace Honeycomb::Component::Default::Render {
+namespace Honeycomb::Component::Render {
 	class CameraController : public GameComponent {
 	public:
 		enum CameraType { // The type of camera (Orthographic or Perspective)

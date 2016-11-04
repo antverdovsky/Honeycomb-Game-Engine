@@ -1,10 +1,11 @@
+#include "..\..\include\math\Quaternion.h"
+
 #include <math.h>
 
-#include "..\..\include\math\Quaternion.h"
 #include "..\..\include\math\Vector3f.h"
 
-using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Matrix4f;
+using Honeycomb::Math::Vector3f;
 
 namespace Honeycomb::Math {
 	Quaternion::Quaternion() : Quaternion(0.0F, 0.0F, 0.0F, 1.0F) {

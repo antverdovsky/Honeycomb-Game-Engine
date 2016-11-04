@@ -7,8 +7,6 @@
 #include <GLFW\glfw3.h>
 
 #include "..\..\include\file\FileIO.h"
-#include "..\..\include\math\Vector3f.h"
-#include "..\..\include\math\Matrix4f.h"
 
 using namespace Honeycomb::File;
 using Honeycomb::Math::Vector3f;

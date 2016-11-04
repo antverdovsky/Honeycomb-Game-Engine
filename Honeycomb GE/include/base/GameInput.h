@@ -6,8 +6,9 @@
 
 #include <vector>
 
-namespace Honeycomb::Math { class Vector2f; }
-class GLFWWindow;
+#include "..\math\Vector2f.h"
+
+struct GLFWWindow;
 
 namespace Honeycomb::Base {
 	class GameInput {
@@ -69,6 +70,7 @@ namespace Honeycomb::Base {
 		const static int KEY_CODE_DELETE = GLFW_KEY_DELETE;
 		const static int KEY_CODE_RIGHT = GLFW_KEY_RIGHT;
 		const static int KEY_CODE_LEFT = GLFW_KEY_LEFT;
+		const static int KEY_CODE_DOWN = GLFW_KEY_DOWN;
 		const static int KEY_CODE_UP = GLFW_KEY_UP;
 		const static int KEY_CODE_PAGE_UP = GLFW_KEY_PAGE_UP;
 		const static int KEY_CODE_PAGE_DOWN = GLFW_KEY_PAGE_DOWN;
@@ -174,8 +176,7 @@ namespace Honeycomb::Base {
 		// These logical arrays store a boolean representing whether a 
 		// specified key is up or down. A key which is considered to be down is
 		// any key which is currently being pressed down. A key which is 
-		// considered to be up is any key which was just released. A pressed 
-		// key is a key which is being held down continously.
+		// considered to be up is any key which was just released.
 		bool keysDown[MAX_NUM_KEYS];
 		bool keysReleased[MAX_NUM_KEYS];
 

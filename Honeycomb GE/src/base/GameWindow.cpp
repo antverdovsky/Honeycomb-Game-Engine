@@ -2,8 +2,6 @@
 
 #include "..\..\include\base\GameWindow.h"
 
-using Honeycomb::Render::Camera;
-
 namespace Honeycomb::Base {
 	// Set the initial Game Window value to NULL, as it is not created until
 	// the getGameWindow() creates it.

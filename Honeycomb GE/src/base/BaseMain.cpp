@@ -102,6 +102,7 @@ namespace Honeycomb::Base::BaseMain {
 	void stop() {
 		if (!isGameRunning) return; // If already stopped -> No need to stop!
 
+		game->stop();
 		glfwTerminate(); // Terminate GLFW
 	}
 

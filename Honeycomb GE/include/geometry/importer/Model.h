@@ -7,10 +7,6 @@
 
 #include "..\..\geometry\Vertex.h"
 
-namespace Honeycomb::Math { class Vector2f; }
-namespace Honeycomb::Math { class Vector3f; }
-namespace Honeycomb::Mesh { class Vertex; }
-
 namespace Honeycomb::Geometry::Importer {
 	class Model {
 	public:
@@ -26,7 +22,7 @@ namespace Honeycomb::Geometry::Importer {
 
 		/// Gets a reference to the verticies of the model.
 		/// return : The references to the verticies.
-		virtual std::vector<Vertex>& getVerticies();
+		virtual std::vector<Honeycomb::Geometry::Vertex>& getVerticies();
 	
 		/// Loads in the model from the specified file.
 		/// std::string : The file from which to load in the model.
@@ -36,10 +32,11 @@ namespace Honeycomb::Geometry::Importer {
 		/// Creates a Model instance initialized to the indices and vertices.
 		/// std::vector<int> indx : The list of indices for the model.
 		/// std::vector<Vertex> vert : The list of vertices for the model.
-		Model(std::vector<int> indx, std::vector<Vertex> vert);
+		Model(std::vector<int> indx, 
+			std::vector<Honeycomb::Geometry::Vertex> vert);
 	private:
 		std::vector<int> indices;
-		std::vector<Vertex> vertices;
+		std::vector<Honeycomb::Geometry::Vertex> vertices;
 	};
 }
 

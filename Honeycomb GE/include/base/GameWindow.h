@@ -5,11 +5,7 @@
 #include <string>
 #include <GLFW\glfw3.h>
 
-#include "..\..\include\component\default\render\CameraController.h"
-
 struct GLFWwindow;
-
-namespace Honeycomb::Render { class Camera; }
 
 namespace Honeycomb::Base {
 	class GameWindow {

@@ -1,19 +1,21 @@
-#include "..\..\..\..\include\component\default\render\CameraController.h";
-
-#include "..\..\..\..\include\math\MathUtils.h"
+#include "..\..\..\include\component\render\CameraController.h";
 
 #include <math.h>
 #include <iostream>
 
-// TEMP
-#include "..\..\..\..\include\shader\default\SimpleShader.h"
-using Honeycomb::Shader::Default::SimpleShader;
+#include "..\..\..\include\math\MathUtils.h"
 
+//////////////////////////////////////////////////////// TEMP
+#include "..\..\..\include\shader\simple\SimpleShader.h"
+using Honeycomb::Shader::Simple::SimpleShader;
+////////////////////////////////////////////////////////
+
+using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Matrix4f;
-using Honeycomb::Component::Default::Physics::Transform;
+
 using namespace Honeycomb::Math::Utils;
 
-namespace Honeycomb::Component::Default::Render {
+namespace Honeycomb::Component::Render {
 	CameraController *CameraController::activeCamera = nullptr;
 
 	CameraController::CameraController(CameraType cT, float clF, float clN, 
@@ -160,7 +162,6 @@ namespace Honeycomb::Component::Default::Render {
 		this->projection.setAt(1, 1, pmB);		// [ 0  B  0  0 ]
 		this->projection.setAt(2, 2, pmC);		// [ 0  0  C  D ]
 		this->projection.setAt(2, 3, pmD);		// [ 0  0  0  1 ]
-		this->projection.setAt(3, 3, 1.0F);
 
 		return this->projection;
 	}
@@ -175,8 +176,8 @@ namespace Honeycomb::Component::Default::Render {
 			tan(degToRad(typeParameter / 2));
 		
 		// Calculate the "top" section of the projection. Since the projection
-		// is symmetric (top == -bot, left == -right), there is no need for the
-		// other sections of the projection.
+		// is symmetric (top == -bot), there is no need for the other sections 
+		// of the projection.
 		float top = tanHalfFOV * clipNear;
 
 		// Variables which will go inside of the Camera Projection Matrix.

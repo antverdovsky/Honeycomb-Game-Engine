@@ -2,16 +2,12 @@
 #ifndef MESH_RENDERER_H
 #define MESH_RENDERER_H
 
-#include "..\..\..\..\include\geometry\Mesh.h"
-#include "..\..\..\..\include\graphics\Texture2D.h"
-#include "..\..\..\..\include\component\GameComponent.h"
-#include "..\..\..\..\include\shader\ShaderProgram.h"
+#include "..\GameComponent.h"
+#include "..\..\..\include\geometry\Mesh.h"
+#include "..\..\..\include\graphics\Texture2D.h"
+#include "..\..\..\include\shader\ShaderProgram.h"
 
-namespace Honeycomb::Geometry { class Mesh; }
-namespace Honeycomb::Shader { class ShaderProgram; }
-namespace Honeycomb::Graphics { class Texture2D; }
-
-namespace Honeycomb::Component::Default::Render {
+namespace Honeycomb::Component::Render {
 	class MeshRenderer : public GameComponent {
 	public:
 		/// Creates a Mesh Renderer component given the specified mesh, shader

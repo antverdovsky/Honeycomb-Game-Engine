@@ -16,6 +16,9 @@ namespace Honeycomb::Base {
 		/// processing resources and for initializing game components only.
 		virtual void start();
 
+		/// Stops the game.
+		virtual void stop();
+
 		/// Updates the game (every frame).
 		virtual void update();
 	private:

@@ -6,7 +6,7 @@
 
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
-using Honeycomb::Mesh::Vertex;
+using Honeycomb::Geometry::Vertex;
 
 namespace Honeycomb::Geometry::Importer {
 	Model::~Model() {

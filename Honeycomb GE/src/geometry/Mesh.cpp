@@ -51,32 +51,8 @@ namespace Honeycomb::Geometry {
 
 	void Mesh::addVertexData(Vertex vert[], int vertCount, int index[],
 			int indxCount) {
-		std::cout << "All Verticies: " << std::endl;
-		for (int i = 0; i < vertCount; i++) {
-			Vertex v = vert[i];
-
-			std::cout << v.getPosition().getX() << ", " <<
-				v.getPosition().getY() << ", " <<
-				v.getPosition().getZ() << " | " <<
-				v.getUV().getX() << ", " <<
-				v.getUV().getY() << ", " << " | " <<
-				v.getNormal().getX() << ", " <<
-				v.getNormal().getY() << ", " <<
-				v.getNormal().getZ() << "." << std::endl;
-		}
-
-		std::cout << "All Indices: " << std::endl;
-		for (int i = 0; i < indxCount; i++) {
-			std::cout << index[i] << ", ";
-		}
-
 		// Convert the verticies into floats which OpenGL understands
 		GLfloat *vertFloats = Vertex::toFloatBuffer(vert, vertCount);
-
-		std::cout << "All Vertex Floats Data: " << std::endl;
-		for (int i = 0; i < vertCount * 8; i++) {
-			std::cout << vertFloats[i] << ", ";
-		}std::cout << std::endl;
 
 		// Get the count of the verticies and the memory size (in bytes) of the
 		// verticies (each vertex has 8 floats (3 for positions, 2 for texture

@@ -4,9 +4,7 @@
 
 #include <string>
 
-namespace Honeycomb::Geometry { class Vertex; }
-namespace Honeycomb::Geometry::Importer { class Model; }
-namespace Honeycomb::Math { class Vector3f; }
+#include "..\..\include\geometry\importer\Model.h"
 
 namespace Honeycomb::Geometry {
 	class Mesh {

@@ -4,7 +4,7 @@
 #include "..\..\..\Honeycomb GE\include\math\Vector3f.h"
 
 using Honeycomb::Base::GameInput;
-using Honeycomb::Component::Default::Physics::Transform;
+using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Vector3f;
 
 namespace HoneycombTest::Components {

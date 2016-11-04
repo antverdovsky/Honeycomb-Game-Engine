@@ -2,12 +2,12 @@
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
-#include "..\..\..\..\include\component\GameComponent.h"
-#include "..\..\..\..\include\math\Vector3f.h"
-#include "..\..\..\..\include\math\Matrix4f.h"
-#include "..\..\..\..\include\math\Quaternion.h"
+#include "..\GameComponent.h"
+#include "..\..\..\include\math\Vector3f.h"
+#include "..\..\..\include\math\Matrix4f.h"
+#include "..\..\..\include\math\Quaternion.h"
 
-namespace Honeycomb::Component::Default::Physics {
+namespace Honeycomb::Component::Physics {
 	class Transform : public GameComponent {
 	public:
 		/// Default constructor which initializes the position, rotation and
@@ -37,7 +37,8 @@ namespace Honeycomb::Component::Default::Physics {
 		/// return : The local up vector.
 		Honeycomb::Math::Vector3f getLocalUp();
 
-		/// todo
+		/// Gets the orientation matrix for this transform.
+		/// return : The orientation matrix.
 		Honeycomb::Math::Matrix4f getOrientationMatrix();
 
 		/// Gets the rotation quaternion of this transform.
@@ -67,6 +68,9 @@ namespace Honeycomb::Component::Default::Physics {
 		/// Gets the current translation matrix for this transform.
 		/// return : The translation matrix.
 		Honeycomb::Math::Matrix4f getTranslationMatrix();
+
+		/// Starts this Transform instance.
+		void start();
 
 		/// Sets the rotation vector of this transform.
 		/// Quaternion quat : The new rotation quaternion.
@@ -107,7 +111,9 @@ namespace Honeycomb::Component::Default::Physics {
 		Honeycomb::Math::Matrix4f scaleMatrix; // Scale Mat
 		Honeycomb::Math::Matrix4f orientationMatrix; // Orientation Mat
 
-		//todo
+		/// Calculates the orientation matrix from the forward, up and right of
+		/// this transform.
+		/// return : The orientation matrix.
 		Honeycomb::Math::Matrix4f calculateOrientationMatrix();
 
 		/// Constructs a rotation matrix from the rotation vector of this

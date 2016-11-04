@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "..\..\include\math\Matrix4f.h"
 
 namespace Honeycomb::Math {

@@ -211,13 +211,13 @@
     <ClCompile Include="src\geometry\importer\Model.cpp" />
     <ClCompile Include="src\geometry\importer\Model_OBJ.cpp" />
     <ClCompile Include="src\geometry\Mesh.cpp" />
-    <ClCompile Include="src\component\default\render\MeshRenderer.cpp" />
+    <ClCompile Include="src\component\render\MeshRenderer.cpp" />
     <ClCompile Include="src\geometry\Vertex.cpp" />
     <ClCompile Include="src\component\GameComponent.cpp" />
     <ClCompile Include="src\object\GameObject.cpp" />
-    <ClCompile Include="src\component\default\physics\Transform.cpp" />
-    <ClCompile Include="src\component\default\render\CameraController.cpp" />
-    <ClCompile Include="src\shader\default\SimpleShader.cpp" />
+    <ClCompile Include="src\component\physics\Transform.cpp" />
+    <ClCompile Include="src\component\render\CameraController.cpp" />
+    <ClCompile Include="src\shader\simple\SimpleShader.cpp" />
     <ClCompile Include="src\shader\ShaderProgram.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -236,13 +236,13 @@
     <ClInclude Include="include\geometry\importer\Model.h" />
     <ClInclude Include="include\geometry\importer\Model_OBJ.h" />
     <ClInclude Include="include\geometry\Mesh.h" />
-    <ClInclude Include="include\component\default\render\MeshRenderer.h" />
+    <ClInclude Include="include\component\render\MeshRenderer.h" />
     <ClInclude Include="include\geometry\Vertex.h" />
     <ClInclude Include="include\component\GameComponent.h" />
     <ClInclude Include="include\object\GameObject.h" />
-    <ClInclude Include="include\component\default\physics\Transform.h" />
-    <ClInclude Include="include\component\default\render\CameraController.h" />
-    <ClInclude Include="include\shader\default\SimpleShader.h" />
+    <ClInclude Include="include\component\physics\Transform.h" />
+    <ClInclude Include="include\component\render\CameraController.h" />
+    <ClInclude Include="include\shader\Simple\SimpleShader.h" />
     <ClInclude Include="include\shader\ShaderProgram.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
