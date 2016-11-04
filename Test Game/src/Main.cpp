@@ -4,10 +4,12 @@
 #include <iostream>
 
 #include "..\..\Honeycomb GE\include\base\BaseMain.h"
-#include "..\include\TestGame.h"
+#include "..\include\HoneycombTest.h"
 
 using namespace Honeycomb::Base::BaseMain;
 using Honeycomb::Base::BaseGame;
+
+using HoneycombTest::TestGame;
 
 int main(int argc, char** argv) {
 	TestGame *game = new TestGame(); // Initialize a test game to run

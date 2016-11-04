@@ -22,7 +22,9 @@ namespace Honeycomb::Graphics {
 		/// Gets the image data from the specified image file and passes it to
 		/// OpenGL.
 		/// string file : The file path to the image file.
-		void setImageData(std::string file);
+		/// int inForm : The internal format with which to store the image.
+		/// int exForm : The external format with which the data is passed in.
+		void setImageData(std::string file, int inForm, int exForm);
 
 		/// Passes the specified image data to OpenGL.
 		/// unsigned char *data : The image data to be sent to OpenGL.

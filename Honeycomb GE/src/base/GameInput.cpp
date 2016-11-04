@@ -1,7 +1,5 @@
 #include <iostream>
 
-#include <GLFW\glfw3.h>
-
 #include "..\..\include\base\GameInput.h"
 #include "..\..\include\base\GameWindow.h"
 #include "..\..\include\base\BaseMain.h"

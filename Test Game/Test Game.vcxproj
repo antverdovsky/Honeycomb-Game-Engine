@@ -142,11 +142,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\components\InputTransformable.cpp" />
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\TestGame.cpp" />
+    <ClCompile Include="src\HoneycombTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\TestGame.h" />
+    <ClInclude Include="include\HoneycombTest.h" />
+    <ClInclude Include="include\components\InputTransformable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

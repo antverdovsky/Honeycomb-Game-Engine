@@ -7,7 +7,7 @@
 
 namespace Honeycomb::Base::BaseMain {
 	bool isGameRunning = false; // Is the game loop running?
-	bool drawBackFaces = true; // Draw back faces?
+	bool drawBackFaces = false; // Draw back faces?
 
 	BaseGame *game;
 	

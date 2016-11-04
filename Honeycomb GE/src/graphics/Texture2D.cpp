@@ -34,12 +34,12 @@ namespace Honeycomb::Graphics {
 		this->unbind();
 	}
 
-	void Texture2D::setImageData(std::string file) {
+	void Texture2D::setImageData(std::string file, int inForm, int exForm) {
 		// Store the width, height and image data.
 		int width, height;
 		unsigned char *data = File::readImageToUChar(file, width, height);
 
-		this->setImageData(data, GL_RGBA, GL_RGBA, width, height);
+		this->setImageData(data, inForm, exForm, width, height);
 		delete data;
 	}
 
