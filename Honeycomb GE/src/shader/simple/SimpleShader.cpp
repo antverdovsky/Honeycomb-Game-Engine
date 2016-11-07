@@ -7,9 +7,9 @@ namespace Honeycomb::Shader::Simple {
 	SimpleShader *SimpleShader::instance = NULL; // Null instance at first
 
 	std::string VERTEX_SHADER_LOC = 
-		"..\\Honeycomb GE\\res\\shaders\\default\\vertexShader.vs";
+		"..\\Honeycomb GE\\res\\shaders\\simple\\vertexShader.glsl";
 	std::string FRAGMENT_SHADER_LOC =
-		"..\\Honeycomb GE\\res\\shaders\\default\\fragShader.fs";
+		"..\\Honeycomb GE\\res\\shaders\\simple\\fragShader.glsl";
 
 	SimpleShader::~SimpleShader() {
 

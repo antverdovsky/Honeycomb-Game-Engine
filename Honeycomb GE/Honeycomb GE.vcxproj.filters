@@ -84,6 +84,9 @@
     <ClCompile Include="src\shader\simple\SimpleShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\shader\phong\PhongShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\math\Vector2f.h">
@@ -155,5 +158,14 @@
     <ClInclude Include="include\shader\Simple\SimpleShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\shader\phong\PhongShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\phong\fragShader.glsl" />
+    <None Include="res\shaders\phong\vertexShader.glsl" />
+    <None Include="res\shaders\simple\fragShader.glsl" />
+    <None Include="res\shaders\simple\vertexShader.glsl" />
   </ItemGroup>
 </Project>

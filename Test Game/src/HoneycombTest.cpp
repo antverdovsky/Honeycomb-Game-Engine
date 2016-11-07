@@ -12,6 +12,7 @@
 #include "..\..\Honeycomb GE\include\graphics\Texture2D.h"
 #include "..\..\Honeycomb GE\include\shader\ShaderProgram.h"
 #include "..\..\Honeycomb GE\include\shader\simple\SimpleShader.h"
+#include "..\..\Honeycomb GE\include\shader\phong\PhongShader.h"
 
 #include "..\include\components\InputTransformable.h"
 #include "..\..\Honeycomb GE\include\component\GameComponent.h"
@@ -32,6 +33,7 @@ using Honeycomb::Geometry::Mesh;
 using Honeycomb::Graphics::Texture2D;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Shader::Simple::SimpleShader;
+using Honeycomb::Shader::Phong::PhongShader;
 
 using Honeycomb::Component::GameComponent;
 using Honeycomb::Component::Physics::Transform;
@@ -64,7 +66,7 @@ namespace HoneycombTest {
 
 		// Initialize the Cube Mesh, Shader and Texture
 		Mesh *cubeMesh = new Mesh(*cubeModel);
-		ShaderProgram *cubeShader = SimpleShader::getSimpleShader();
+		ShaderProgram *cubeShader = PhongShader::getPhongShader();
 		Texture2D *cubeTexture = new Texture2D();
 
 		// Initialize the Texture

@@ -4,14 +4,11 @@
 #include <iostream>
 
 #include "..\..\..\include\math\MathUtils.h"
-
-//////////////////////////////////////////////////////// TEMP
-#include "..\..\..\include\shader\simple\SimpleShader.h"
-using Honeycomb::Shader::Simple::SimpleShader;
-////////////////////////////////////////////////////////
+#include "..\..\..\include\shader\ShaderProgram.h"
 
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Matrix4f;
+using Honeycomb::Shader::ShaderProgram;
 
 using namespace Honeycomb::Math::Utils;
 
@@ -98,7 +95,7 @@ namespace Honeycomb::Component::Render {
 		this->setActive();
 
 		// TODO: Find the active shader?
-		SimpleShader::getSimpleShader()->setUniform_mat4("camProjection",
+		ShaderProgram::getActiveShader()->setUniform_mat4("camProjection",
 			this->getProjection());
 	}
 
@@ -106,9 +103,9 @@ namespace Honeycomb::Component::Render {
 		if (!this->isActive) return;
 
 		// TODO: Find the active shader?
-		SimpleShader::getSimpleShader()->setUniform_mat4("camOrientation",
+		ShaderProgram::getActiveShader()->setUniform_mat4("camOrientation",
 			this->getProjectionOrientation());
-		SimpleShader::getSimpleShader()->setUniform_mat4("camTranslation",
+		ShaderProgram::getActiveShader()->setUniform_mat4("camTranslation",
 			this->getProjectionTranslation());
 	}
 	
