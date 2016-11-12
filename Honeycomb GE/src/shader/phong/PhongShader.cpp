@@ -5,6 +5,11 @@
 
 #include "..\..\..\include\math\Vector3f.h"
 
+// TEMP
+using Honeycomb::Light::AmbientLight;
+using Honeycomb::Light::BaseLight;
+using Honeycomb::Light::DirectionalLight;
+
 using Honeycomb::Math::Vector3f;
 
 namespace Honeycomb::Shader::Phong {
@@ -26,7 +31,8 @@ namespace Honeycomb::Shader::Phong {
 		return instance;
 	}
 
-	PhongShader::PhongShader() : ShaderProgram() {
+	PhongShader::PhongShader() : ShaderProgram(), 
+			ambLight(BaseLight(0.25, Vector3f(1, 1, 1))) {
 		// Add Shaders & Compile
 		addShader(VERTEX_SHADER_LOC, GL_VERTEX_SHADER);
 		addShader(FRAGMENT_SHADER_LOC, GL_FRAGMENT_SHADER);
@@ -38,12 +44,34 @@ namespace Honeycomb::Shader::Phong {
 		addUniform("camTranslation");
 		addUniform("objTransform");
 
-		// Add Fragment Shader Uniforms
-		addUniform("ambientLightStrength");
-		addUniform("ambientLightColor");
+		// Add Ambient Light
+		addUniform("ambientLight.base.color");
+		addUniform("ambientLight.base.intensity");
+
+		// Add Directional Light
+		// TODO: Allow for more lights (duh)
+		addUniform("directionalLight.base.color");
+		addUniform("directionalLight.base.intensity");
+		addUniform("directionalLight.direction");
 
 		// TODO [MOVE SOMEWHERE ELSE]
-		setUniform_f("ambientLightStrength", 0.25F);
-		setUniform_vec3("ambientLightColor", Vector3f(1, 1, 1));
+		setUniform_AmbientLight("ambientLight", this->ambLight);
+		setUniform_DirectionalLight("directionalLight", this->dirLight);
+	}
+
+	void PhongShader::setUniform_AmbientLight(std::string name, 
+			AmbientLight aL) {
+		setUniform_BaseLight(name + ".base", aL.getBase());
+	}
+
+	void PhongShader::setUniform_BaseLight(std::string name, BaseLight bL) {
+		setUniform_vec3(name + ".color", bL.getColor());
+		setUniform_f(name + ".intensity", bL.getIntensity());
+	}
+
+	void PhongShader::setUniform_DirectionalLight(std::string name,
+			DirectionalLight dL) {
+		setUniform_BaseLight(name + ".base", dL.getBase());
+		setUniform_vec3(name + ".direction", dL.getDirection());
 	}
 }
