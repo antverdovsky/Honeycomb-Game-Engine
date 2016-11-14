@@ -2,6 +2,8 @@
 
 #include "..\..\include\base\GameWindow.h"
 
+using Honeycomb::Conjuncture::Event;
+
 namespace Honeycomb::Base {
 	// Set the initial Game Window value to NULL, as it is not created until
 	// the getGameWindow() creates it.
@@ -12,13 +14,8 @@ namespace Honeycomb::Base {
 	}
 
 	void GameWindow::callbackFrameBuffersize(GLFWwindow *window, int width,
-		int height) {
-		// Write the new window width & height to the singleton instance
-		getGameWindow()->width = width;
-		getGameWindow()->height = height;
-
-		// Tell OpenGL of the frame buffer size change
-		glViewport(0, 0, width, height);
+			int height) {
+		getGameWindow()->setWindowSize(width, height);
 	}
 
 	void GameWindow::clear() {
@@ -35,6 +32,10 @@ namespace Honeycomb::Base {
 
 	GLFWwindow* GameWindow::getGLFWwindow() {
 		return this->glfwWindow;
+	}
+
+	Event& GameWindow::getResizeEvent() {
+		return this->resizeEvent;
 	}
 
 	int GameWindow::getWindowHeight() {
@@ -54,6 +55,17 @@ namespace Honeycomb::Base {
 	void GameWindow::refresh() {
 		glfwPollEvents(); // Update window input
 		glfwSwapBuffers(this->glfwWindow); // Swap the two buffers
+	}
+
+	void GameWindow::setWindowSize(int w, int h) {
+		// Write the new window width & height to the singleton instance
+		this->width = w;
+		this->height = h;
+
+		// Tell OpenGL of the frame buffer size change
+		glViewport(0, 0, this->width, this->height);
+
+		this->resizeEvent.onEvent(); // Notify everyone that window has resized
 	}
 
 	GameWindow::GameWindow() {

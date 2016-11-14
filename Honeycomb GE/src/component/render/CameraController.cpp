@@ -3,10 +3,13 @@
 #include <math.h>
 #include <iostream>
 
+#include "..\..\..\include\base\GameWindow.h"
 #include "..\..\..\include\math\MathUtils.h"
 #include "..\..\..\include\shader\ShaderProgram.h"
 
+using Honeycomb::Base::GameWindow;
 using Honeycomb::Component::Physics::Transform;
+using Honeycomb::Conjuncture::EventHandler;
 using Honeycomb::Math::Matrix4f;
 using Honeycomb::Shader::ShaderProgram;
 
@@ -15,7 +18,7 @@ using namespace Honeycomb::Math::Utils;
 namespace Honeycomb::Component::Render {
 	CameraController *CameraController::activeCamera = nullptr;
 
-	CameraController::CameraController(CameraType cT, float clF, float clN, 
+	CameraController::CameraController(CameraType cT, float clF, float clN,
 			float cTP, float projH, float projW) : GameComponent("Camera") {
 		this->type = cT;
 		this->clipFar = clF;
@@ -23,6 +26,11 @@ namespace Honeycomb::Component::Render {
 		this->typeParameter = cTP;
 		this->projectionHeight = projH;
 		this->projectionWidth = projW;
+
+		this->windowResizeHandler.addAction(
+			std::bind(&CameraController::setProjectionSizeToWindow, this));
+		GameWindow::getGameWindow()->getResizeEvent().addEventHandler(
+			&this->windowResizeHandler);
 	}
 
 	CameraController::~CameraController() {
@@ -73,8 +81,8 @@ namespace Honeycomb::Component::Render {
 
 	void CameraController::setActive() {
 		this->isActive = true;
-		
-		if (CameraController::activeCamera != nullptr) 
+
+		if (CameraController::activeCamera != nullptr)
 			CameraController::activeCamera->stop();
 		CameraController::activeCamera = this;
 	}
@@ -83,8 +91,13 @@ namespace Honeycomb::Component::Render {
 		// Write the new values into the Camera instance
 		this->projectionHeight = h;
 		this->projectionWidth = w;
-		
+
 		this->calcProjection(); // Recalculate the Projection
+	}
+
+	void CameraController::setProjectionSizeToWindow() {
+		this->setProjectionSize(GameWindow::getGameWindow()->getWindowHeight(),
+			GameWindow::getGameWindow()->getWindowWidth());
 	}
 
 	void CameraController::start() {
@@ -93,10 +106,6 @@ namespace Honeycomb::Component::Render {
 		this->calcProjectionTranslation();
 
 		this->setActive();
-
-		// TODO: Find the active shader?
-		ShaderProgram::getActiveShader()->setUniform_mat4("camProjection",
-			this->getProjection());
 	}
 
 	void CameraController::update() {
@@ -108,18 +117,23 @@ namespace Honeycomb::Component::Render {
 		ShaderProgram::getActiveShader()->setUniform_mat4("camTranslation",
 			this->getProjectionTranslation());
 	}
-	
+
 	Matrix4f CameraController::calcProjection() {
 		// Call the appropriate matrix projection calculation method according
 		// to the type of Camera.
 		switch (this->type) {
 		case CameraType::PERSPECTIVE:
-			return this->calcProjectionPerspective();
+			this->calcProjectionPerspective();
+			break;
 		case CameraType::ORTHOGRAPHIC:
-			return this->calcProjectionOrthographic();
-		default:
-			return this->getProjection();
+			this->calcProjectionOrthographic();
+			break;
 		}
+		
+		ShaderProgram::getActiveShader()->setUniform_mat4("camProjection",
+			this->getProjection());
+
+		return this->getProjection();
 	}
 
 	Matrix4f CameraController::calcProjectionOrientation() {
@@ -171,7 +185,7 @@ namespace Honeycomb::Component::Render {
 		float aR = projectionWidth / projectionHeight; // Aspect Ratio
 		float tanHalfFOV = // Tangent of the Field of View Halved
 			tan(degToRad(typeParameter / 2));
-		
+
 		// Calculate the "top" section of the projection. Since the projection
 		// is symmetric (top == -bot), there is no need for the other sections 
 		// of the projection.

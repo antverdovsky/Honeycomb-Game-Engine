@@ -4,6 +4,7 @@
 
 #include "..\GameComponent.h"
 #include "..\..\..\include\component\physics\Transform.h"
+#include "..\..\..\include\conjuncture\EventHandler.h"
 #include "..\..\..\include\math\Matrix4f.h"
 #include "..\..\..\include\object\GameObject.h"
 
@@ -27,7 +28,7 @@ namespace Honeycomb::Component::Render {
 		///				to orthographic, this is the orthographic size.
 		/// float projH : The camera projection height.
 		/// float projW : The camera projection width.
-		CameraController(CameraType cT, float clF, float clN, float cTP, 
+		CameraController(CameraType cT, float clF, float clN, float cTP,
 			float projH, float projW);
 
 		/// Destroys this Camera instance.
@@ -87,11 +88,15 @@ namespace Honeycomb::Component::Render {
 		/// int h : The new height of the projection size.
 		/// int w : The new width of the projection size.
 		void setProjectionSize(int h, int w);
-		
+
+		/// Sets the projection width and height for the Camera to the current
+		/// window width and height.
+		void setProjectionSizeToWindow();
+
 		/// Starts this camera component. When started, this camera will become
 		/// the active world camera.
 		void start();
-		
+
 		/// Updates this camera instance.
 		void update();
 	private:
@@ -103,6 +108,9 @@ namespace Honeycomb::Component::Render {
 		float typeParameter = 75.0F; // The Camera Type parameter (FOV / Ortho)
 		float projectionHeight = 1.0F; // The projection height
 		float projectionWidth = 1.0F; // The projection width
+
+		// Handles the window resize event for all cameras
+		Honeycomb::Conjuncture::EventHandler windowResizeHandler;
 
 		Honeycomb::Math::Matrix4f projection; // Stores the projection
 

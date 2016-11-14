@@ -5,6 +5,8 @@
 #include <string>
 #include <GLFW\glfw3.h>
 
+#include "..\conjuncture\Event.h"
+
 struct GLFWwindow;
 
 namespace Honeycomb::Base {
@@ -33,6 +35,10 @@ namespace Honeycomb::Base {
 		/// return : The GLFW Window instance.
 		GLFWwindow *getGLFWwindow();
 
+		/// Returns the resize event for this window.
+		/// return : The window resize event.
+		Honeycomb::Conjuncture::Event& getResizeEvent();
+
 		/// Gets the height of this window (in pixels).
 		/// return : The height.
 		int getWindowHeight();
@@ -48,10 +54,16 @@ namespace Honeycomb::Base {
 
 		/// Refreshes the game window.
 		void refresh();
+
+		/// Sets the size of the window.
+		/// int w : The width of the window.
+		/// int h : The height of the window.
+		void setWindowSize(int w, int h);
 	private:
 		static GameWindow *gameWindow; // Instance stored by the singleton
 
 		GLFWwindow *glfwWindow; // Stores the reference to the GLFW window
+		Honeycomb::Conjuncture::Event resizeEvent; // Called on window resize
 
 		int width = 1024; // The width of the window.
 		int height = 768; // The height of the window.
