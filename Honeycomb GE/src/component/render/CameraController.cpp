@@ -26,11 +26,6 @@ namespace Honeycomb::Component::Render {
 		this->typeParameter = cTP;
 		this->projectionHeight = projH;
 		this->projectionWidth = projW;
-
-		this->windowResizeHandler.addAction(
-			std::bind(&CameraController::setProjectionSizeToWindow, this));
-		GameWindow::getGameWindow()->getResizeEvent().addEventHandler(
-			&this->windowResizeHandler);
 	}
 
 	CameraController::~CameraController() {
@@ -66,13 +61,11 @@ namespace Honeycomb::Component::Render {
 	}
 
 	Honeycomb::Math::Matrix4f CameraController::getProjectionOrientation() {
-		return this->calcProjectionOrientation();
-		// return this->projectionOrien; // TODO: Don't recalculate each time!!!
+		return this->projectionOrien;
 	}
 
 	Honeycomb::Math::Matrix4f CameraController::getProjectionTranslation() {
-		return this->calcProjectionTranslation();
-		// return this->projectionTrans; // TODO: Don't recalculate each time!!!
+		return this->projectionTrans;
 	}
 
 	float CameraController::getProjectionWidth() {
@@ -101,21 +94,30 @@ namespace Honeycomb::Component::Render {
 	}
 
 	void CameraController::start() {
+		this->transform = this->getAttached()->
+			getComponentOfType<Transform>("Transform");
+
 		this->calcProjection();
 		this->calcProjectionOrientation();
 		this->calcProjectionTranslation();
+
+		this->windowResizeHandler.addAction(
+			std::bind(&CameraController::setProjectionSizeToWindow, this));
+		GameWindow::getGameWindow()->getResizeEvent().addEventHandler(
+			&this->windowResizeHandler);
+
+		this->transformChangeHandler.addAction(
+			std::bind(&CameraController::calcProjectionOrientation, this));
+		this->transformChangeHandler.addAction(
+			std::bind(&CameraController::calcProjectionTranslation, this));
+		this->transform->getChangedEvent().addEventHandler(
+			&this->transformChangeHandler);
 
 		this->setActive();
 	}
 
 	void CameraController::update() {
 		if (!this->isActive) return;
-
-		// TODO: Find the active shader?
-		ShaderProgram::getActiveShader()->setUniform_mat4("camOrientation",
-			this->getProjectionOrientation());
-		ShaderProgram::getActiveShader()->setUniform_mat4("camTranslation",
-			this->getProjectionTranslation());
 	}
 
 	Matrix4f CameraController::calcProjection() {
@@ -129,7 +131,7 @@ namespace Honeycomb::Component::Render {
 			this->calcProjectionOrthographic();
 			break;
 		}
-		
+
 		ShaderProgram::getActiveShader()->setUniform_mat4("camProjection",
 			this->getProjection());
 
@@ -137,14 +139,16 @@ namespace Honeycomb::Component::Render {
 	}
 
 	Matrix4f CameraController::calcProjectionOrientation() {
-		this->projectionOrien = this->getAttached()->
-			getComponentOfType<Transform>("Transform")->getOrientationMatrix();
+		this->projectionOrien = this->transform->getOrientationMatrix();
 
 		// Negate the local forwards of the camera since the camera faces the
 		// opposite direction as the objects when rendering them.
 		this->projectionOrien.setAt(2, 0, -this->projectionOrien.getAt(2, 0));
 		this->projectionOrien.setAt(2, 1, -this->projectionOrien.getAt(2, 1));
 		this->projectionOrien.setAt(2, 2, -this->projectionOrien.getAt(2, 2));
+		
+		ShaderProgram::getActiveShader()->setUniform_mat4("camOrientation",
+			this->getProjectionOrientation());
 
 		return this->projectionOrien;
 	}
@@ -210,14 +214,16 @@ namespace Honeycomb::Component::Render {
 	}
 
 	Matrix4f CameraController::calcProjectionTranslation() {
-		this->projectionTrans = this->getAttached()->
-			getComponentOfType<Transform>("Transform")->getTranslationMatrix();
+		this->projectionTrans = this->transform->getTranslationMatrix();
 
 		// Negate the local forwards of the camera since the camera faces the
 		// opposite direction as the objects when rendering them.
 		this->projectionTrans.setAt(0, 3, -this->projectionTrans.getAt(0, 3));
 		this->projectionTrans.setAt(1, 3, -this->projectionTrans.getAt(1, 3));
 		this->projectionTrans.setAt(2, 3, -this->projectionTrans.getAt(2, 3));
+
+		ShaderProgram::getActiveShader()->setUniform_mat4("camTranslation",
+			this->getProjectionTranslation());
 
 		return this->projectionTrans;
 	}

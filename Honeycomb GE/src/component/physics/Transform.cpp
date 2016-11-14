@@ -7,6 +7,7 @@
 #include "..\..\..\include\math\Quaternion.h"
 #include "..\..\..\include\math\MathUtils.h"
 
+using Honeycomb::Conjuncture::Event;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Matrix4f;
 using Honeycomb::Math::Quaternion;
@@ -27,6 +28,10 @@ namespace Honeycomb::Component::Physics {
 		this->localForward = Vector3f::getGlobalForward();
 		this->localRight = Vector3f::getGlobalRight();
 		this->localUp = Vector3f::getGlobalUp();
+	}
+
+	Event& Transform::getChangedEvent() {
+		return this->changedEvent;
 	}
 
 	Vector3f Transform::getLocalForward() {
@@ -87,6 +92,8 @@ namespace Honeycomb::Component::Physics {
 		this->calculateOrientationMatrix();
 		this->calculateRotationMatrix();
 		this->calculateTransformationMatrix();
+
+		this->changedEvent.onEvent();
 	}
 
 	void Transform::setScale(Vector3f vec) {
@@ -94,6 +101,8 @@ namespace Honeycomb::Component::Physics {
 
 		this->calculateScaleMatrix();
 		this->calculateTransformationMatrix();
+
+		this->changedEvent.onEvent();
 	}
 
 	void Transform::setTranslation(Vector3f vec) {
@@ -101,6 +110,8 @@ namespace Honeycomb::Component::Physics {
 
 		this->calculateTranslationMatrix();
 		this->calculateTransformationMatrix();
+
+		this->changedEvent.onEvent();
 	}
 
 	void Transform::rotate(Vector3f axis, float rad) {

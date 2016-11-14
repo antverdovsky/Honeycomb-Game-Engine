@@ -109,8 +109,13 @@ namespace Honeycomb::Component::Render {
 		float projectionHeight = 1.0F; // The projection height
 		float projectionWidth = 1.0F; // The projection width
 
-		// Handles the window resize event for all cameras
-		Honeycomb::Conjuncture::EventHandler windowResizeHandler;
+		Honeycomb::Conjuncture::EventHandler 
+			windowResizeHandler; // Handles window resize event
+		Honeycomb::Conjuncture::EventHandler
+			transformChangeHandler; // Handles transform change event
+
+		// Transform of the game object this camera is attached to
+		Honeycomb::Component::Physics::Transform *transform;
 
 		Honeycomb::Math::Matrix4f projection; // Stores the projection
 

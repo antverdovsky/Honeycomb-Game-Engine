@@ -53,6 +53,15 @@ namespace HoneycombTest {
 		"..\\Honeycomb GE\\res\\textures\\default\\Checkerboard.bmp";
 
 	void TestGame::input() {
+		if (GameInput::getGameInput()->getKeyDown(
+				GameInput::KEY_CODE_LEFT_BRACKET)) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+		else if (GameInput::getGameInput()->getKeyDown(
+				GameInput::KEY_CODE_RIGHT_BRACKET)) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+
 		GameObject::getRoot()->input();
 	}
 

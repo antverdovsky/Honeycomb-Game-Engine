@@ -3,6 +3,7 @@
 #define TRANSFORM_H
 
 #include "..\GameComponent.h"
+#include "..\..\..\include\conjuncture\Event.h"
 #include "..\..\..\include\math\Vector3f.h"
 #include "..\..\..\include\math\Matrix4f.h"
 #include "..\..\..\include\math\Quaternion.h"
@@ -21,6 +22,11 @@ namespace Honeycomb::Component::Physics {
 		/// Vector3f scl : The scale of the object.
 		Transform(Honeycomb::Math::Vector3f pos, 
 			Honeycomb::Math::Quaternion rot, Honeycomb::Math::Vector3f scl);
+
+		/// Gets an event which will be triggered once the transform is changed
+		/// in any way (scaled, translated or rotated).
+		/// return : The event.
+		Honeycomb::Conjuncture::Event& getChangedEvent();
 
 		/// Gets the vector pointing in the local forward direction of this
 		/// transform.
@@ -110,6 +116,8 @@ namespace Honeycomb::Component::Physics {
 		Honeycomb::Math::Matrix4f rotationMatrix; // Rotation Mat
 		Honeycomb::Math::Matrix4f scaleMatrix; // Scale Mat
 		Honeycomb::Math::Matrix4f orientationMatrix; // Orientation Mat
+
+		Honeycomb::Conjuncture::Event changedEvent; // Transform changed event
 
 		/// Calculates the orientation matrix from the forward, up and right of
 		/// this transform.
