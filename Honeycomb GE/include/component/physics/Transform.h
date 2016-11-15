@@ -31,17 +31,17 @@ namespace Honeycomb::Component::Physics {
 		/// Gets the vector pointing in the local forward direction of this
 		/// transform.
 		/// return : The local forward vector.
-		Honeycomb::Math::Vector3f getLocalForward();
+		Honeycomb::Math::Vector3f& getLocalForward();
 
 		/// Gets the vector pointing in the local right direction of this
 		/// transform.
 		/// return : The local right vector.
-		Honeycomb::Math::Vector3f getLocalRight();
+		Honeycomb::Math::Vector3f& getLocalRight();
 
 		/// Gets the vector pointing in the local up direction of this
 		/// transform.
 		/// return : The local up vector.
-		Honeycomb::Math::Vector3f getLocalUp();
+		Honeycomb::Math::Vector3f& getLocalUp();
 
 		/// Gets the orientation matrix for this transform.
 		/// return : The orientation matrix.
@@ -49,7 +49,7 @@ namespace Honeycomb::Component::Physics {
 
 		/// Gets the rotation quaternion of this transform.
 		/// return : The rotation quaternion.
-		Honeycomb::Math::Quaternion getRotation();
+		Honeycomb::Math::Quaternion& getRotation();
 
 		/// Gets the current rotation matrix for this transform.
 		/// return : The rotation matrix.
@@ -57,7 +57,7 @@ namespace Honeycomb::Component::Physics {
 
 		/// Gets the scale vector of this uniform.
 		/// return : The scale vector.
-		Honeycomb::Math::Vector3f getScale();
+		Honeycomb::Math::Vector3f& getScale();
 
 		/// Gets the current scale matrix for this transform.
 		/// return : The scale matrix.
@@ -69,7 +69,7 @@ namespace Honeycomb::Component::Physics {
 
 		/// Gets the position vector of this transform.
 		/// return : The position vector.
-		Honeycomb::Math::Vector3f getTranslation();
+		Honeycomb::Math::Vector3f& getTranslation();
 
 		/// Gets the current translation matrix for this transform.
 		/// return : The translation matrix.

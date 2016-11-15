@@ -205,9 +205,9 @@
     <ClCompile Include="src\conjuncture\EventHandler.cpp" />
     <ClCompile Include="src\file\FileIO.cpp" />
     <ClCompile Include="src\graphics\Texture2D.cpp" />
-    <ClCompile Include="src\light\AmbientLight.cpp" />
-    <ClCompile Include="src\light\BaseLight.cpp" />
-    <ClCompile Include="src\light\DirectionalLight.cpp" />
+    <ClCompile Include="src\component\light\AmbientLight.cpp" />
+    <ClCompile Include="src\component\light\BaseLight.cpp" />
+    <ClCompile Include="src\component\light\DirectionalLight.cpp" />
     <ClCompile Include="src\math\MathUtils.cpp" />
     <ClCompile Include="src\math\Matrix4f.cpp" />
     <ClCompile Include="src\math\Quaternion.cpp" />
@@ -236,9 +236,9 @@
     <ClInclude Include="include\conjuncture\EventHandler.h" />
     <ClInclude Include="include\file\FileIO.h" />
     <ClInclude Include="include\graphics\Texture2D.h" />
-    <ClInclude Include="include\light\AmbientLight.h" />
-    <ClInclude Include="include\light\BaseLight.h" />
-    <ClInclude Include="include\light\DirectionalLight.h" />
+    <ClInclude Include="include\component\light\AmbientLight.h" />
+    <ClInclude Include="include\component\light\BaseLight.h" />
+    <ClInclude Include="include\component\light\DirectionalLight.h" />
     <ClInclude Include="include\math\MathUtils.h" />
     <ClInclude Include="include\math\Matrix4f.h" />
     <ClInclude Include="include\math\Quaternion.h" />

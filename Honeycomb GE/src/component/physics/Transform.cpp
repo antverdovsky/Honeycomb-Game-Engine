@@ -34,15 +34,15 @@ namespace Honeycomb::Component::Physics {
 		return this->changedEvent;
 	}
 
-	Vector3f Transform::getLocalForward() {
+	Vector3f& Transform::getLocalForward() {
 		return this->localForward;
 	}
 
-	Vector3f Transform::getLocalRight() {
+	Vector3f& Transform::getLocalRight() {
 		return this->localRight;
 	}
 
-	Vector3f Transform::getLocalUp() {
+	Vector3f& Transform::getLocalUp() {
 		return this->localUp;
 	}
 
@@ -66,15 +66,15 @@ namespace Honeycomb::Component::Physics {
 		return this->translationMatrix;
 	}
 
-	Quaternion Transform::getRotation() {
+	Quaternion& Transform::getRotation() {
 		return this->rotation;
 	}
 
-	Vector3f Transform::getScale() {
+	Vector3f& Transform::getScale() {
 		return this->scale;
 	}
 
-	Vector3f Transform::getTranslation() {
+	Vector3f& Transform::getTranslation() {
 		return this->translation;
 	}
 	

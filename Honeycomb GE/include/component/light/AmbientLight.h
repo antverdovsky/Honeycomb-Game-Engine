@@ -4,8 +4,8 @@
 
 #include "BaseLight.h"
 
-namespace Honeycomb::Light {
-	struct AmbientLight {
+namespace Honeycomb::Component::Light {
+	class AmbientLight : public BaseLight {
 	public:
 		/// Creates a new ambient light with a default base.
 		AmbientLight();
@@ -16,12 +16,8 @@ namespace Honeycomb::Light {
 
 		/// Default Destructor.
 		~AmbientLight();
-
-		/// Gets the base light component of this ambient light.
-		/// return : The base light component.
-		BaseLight getBase();
 	private:
-		BaseLight base; // The base light
+
 	};
 }
 

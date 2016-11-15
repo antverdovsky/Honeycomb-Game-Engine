@@ -24,6 +24,9 @@
 #include "..\..\Honeycomb GE\include\math\Vector3f.h"
 #include "..\..\Honeycomb GE\include\math\Quaternion.h"
 
+#include "..\..\Honeycomb GE\include\component\light\BaseLight.h"
+#include "..\..\Honeycomb GE\include\component\light\AmbientLight.h"
+
 using Honeycomb::Base::GameInput;
 
 using Honeycomb::Geometry::Importer::Model;
@@ -43,6 +46,10 @@ using Honeycomb::Object::GameObject;
 
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Quaternion;
+
+using Honeycomb::Component::Light::AmbientLight;
+using Honeycomb::Component::Light::BaseLight;
+using Honeycomb::Component::Light::DirectionalLight;
 
 using HoneycombTest::Components::InputTransformable;
 
@@ -115,10 +122,19 @@ namespace HoneycombTest {
 				Vector3f(1.0F, 1.0F, 1.0F));
 		InputTransformable *cameraInputTransformable =
 			new InputTransformable();
+		DirectionalLight *directionalLight = new DirectionalLight(
+			BaseLight("directionalLight", 1.0F, Vector3f(1.0F, 1.0F, 1.0F)));
 		this->cameraObject = new GameObject("Camera");
 		this->cameraObject->addComponent(*cameraController);
 		this->cameraObject->addComponent(*cameraTransform);
 		this->cameraObject->addComponent(*cameraInputTransformable);
+		this->cameraObject->addComponent(*directionalLight);
+
+		// Create ambient light
+		GameObject *ambientObject = new GameObject("Ambient Light");
+		AmbientLight *ambientComponent = new AmbientLight(
+			BaseLight("ambientLight", 0.25F, Vector3f(1.0F, 1.0F, 1.0F)));
+		ambientObject->addComponent(*ambientComponent);
 
 		delete cubeModel;
 

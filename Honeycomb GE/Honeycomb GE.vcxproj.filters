@@ -87,19 +87,19 @@
     <ClCompile Include="src\shader\phong\PhongShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\light\BaseLight.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\light\DirectionalLight.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\light\AmbientLight.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\conjuncture\Event.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\conjuncture\EventHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\light\AmbientLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\light\BaseLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\light\DirectionalLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -176,19 +176,19 @@
     <ClInclude Include="include\shader\phong\PhongShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\light\BaseLight.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\light\DirectionalLight.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\light\AmbientLight.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\conjuncture\Event.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\conjuncture\EventHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\component\light\DirectionalLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\component\light\AmbientLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\component\light\BaseLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
