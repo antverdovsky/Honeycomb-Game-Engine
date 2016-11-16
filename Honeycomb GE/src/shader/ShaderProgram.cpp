@@ -10,6 +10,7 @@
 
 using namespace Honeycomb::File;
 using Honeycomb::Math::Vector3f;
+using Honeycomb::Math::Vector4f;
 using Honeycomb::Math::Matrix4f;
 
 namespace Honeycomb::Shader {
@@ -157,6 +158,13 @@ namespace Honeycomb::Shader {
 
 		int loc = getUniformLocation(uni);
 		glUniform3f(loc, val.getX(), val.getY(), val.getZ());
+	}
+
+	void ShaderProgram::setUniform_vec4(std::string uni, Vector4f val) {
+		this->bindShaderProgram();
+
+		int loc = getUniformLocation(uni);
+		glUniform4f(loc, val.getX(), val.getY(), val.getZ(), val.getW());
 	}
 
 	void ShaderProgram::setUniform_mat4(std::string uni, Matrix4f val) {

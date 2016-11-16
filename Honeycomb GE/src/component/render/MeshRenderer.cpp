@@ -61,7 +61,7 @@ namespace Honeycomb::Component::Render {
 		if (this->material.getAlbedoTexture() != nullptr)
 			this->material.getAlbedoTexture()->bind();
 
-		ShaderProgram::getActiveShader()->setUniform_vec3("albedoColor",
+		ShaderProgram::getActiveShader()->setUniform_vec4("albedoColor",
 			this->material.getAlbedoColor());
 	}
 }

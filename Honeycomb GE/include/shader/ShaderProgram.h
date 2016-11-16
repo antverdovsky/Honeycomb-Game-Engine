@@ -6,6 +6,7 @@
 #include <unordered_map>
 
 #include "..\math\Vector3f.h"
+#include "..\math\Vector4f.h"
 #include "..\math\Matrix4f.h"
 
 namespace Honeycomb::Shader {
@@ -59,6 +60,11 @@ namespace Honeycomb::Shader {
 		/// Vector3f val : The new Vector3f value of the uniform.
 		void setUniform_vec3(std::string uni, Honeycomb::Math::Vector3f val);
 		
+		/// Sets the specified uniform variable to the specified value.
+		/// std::string uni : The name of the uniform variable to be set.
+		/// Vector4f val : The new Vector4f value of the uniform.
+		void setUniform_vec4(std::string uni, Honeycomb::Math::Vector4f val);
+
 		/// Sets the specified uniform variable to the specified value.
 		/// std::string uni : The name of the uniform variable to be set.
 		/// Matrix4f val : The new Matrix4f value of the uniform.

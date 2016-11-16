@@ -3,7 +3,7 @@
 #define MATERIAL_H
 
 #include "Texture2D.h"
-#include "..\math\Vector3f.h"
+#include "..\math\Vector4f.h"
 
 namespace Honeycomb::Graphics {
 	class Material {
@@ -13,15 +13,15 @@ namespace Honeycomb::Graphics {
 
 		/// Initializes a new material with the specified texture and color.
 		/// Texture2D tex : The texture of the material.
-		/// Vector3f col : The color to be applied over the material.
-		Material(Texture2D *tex, Honeycomb::Math::Vector3f col);
+		/// Vector4f col : The color to be applied over the material.
+		Material(Texture2D *tex, Honeycomb::Math::Vector4f col);
 
 		/// Destroys this Material instance.
 		~Material();
 
 		/// Return the albedo color vector.
 		/// return : The albedo color.
-		Honeycomb::Math::Vector3f& getAlbedoColor();
+		Honeycomb::Math::Vector4f& getAlbedoColor();
 
 		/// Returns the albedo texture, if it exists, otherwise a nullptr is
 		/// returned.
@@ -34,7 +34,7 @@ namespace Honeycomb::Graphics {
 		void use();
 	private:
 		Texture2D *albedoTexture; // The albedo texture, if any
-		Honeycomb::Math::Vector3f albedoColor; // The albedo color
+		Honeycomb::Math::Vector4f albedoColor; // The albedo color
 	};
 }
 

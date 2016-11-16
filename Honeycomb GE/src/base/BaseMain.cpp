@@ -22,6 +22,8 @@ namespace Honeycomb::Base::BaseMain {
 		glEnable(GL_TEXTURE_2D);
 
 		glEnable(GL_DEPTH_TEST); // Enable depth perception for drawing order
+		glEnable(GL_BLEND); // Enable blending for transparency
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Blend Function
 //		glEnable(GL_FRAMEBUFFER_SRGB); // Gamma correction
 //		TODO: [DISABLED, CAUSES TEXTURES TO APPEAR WASHED OUT].
 	}

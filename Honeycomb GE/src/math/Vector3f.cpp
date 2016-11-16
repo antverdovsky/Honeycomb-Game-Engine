@@ -1,6 +1,7 @@
+#include "..\..\include\math\Vector3f.h"
+
 #include <math.h>
 
-#include "..\..\include\math\Vector3f.h"
 #include "..\..\include\math\Quaternion.h"
 
 namespace Honeycomb::Math {

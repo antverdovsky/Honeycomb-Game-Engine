@@ -23,6 +23,7 @@
 #include "..\..\Honeycomb GE\include\object\GameObject.h"
 
 #include "..\..\Honeycomb GE\include\math\Vector3f.h"
+#include "..\..\Honeycomb GE\include\math\Vector4f.h"
 #include "..\..\Honeycomb GE\include\math\Quaternion.h"
 
 #include "..\..\Honeycomb GE\include\component\light\BaseLight.h"
@@ -47,6 +48,7 @@ using Honeycomb::Component::Render::MeshRenderer;
 using Honeycomb::Object::GameObject;
 
 using Honeycomb::Math::Vector3f;
+using Honeycomb::Math::Vector4f;
 using Honeycomb::Math::Quaternion;
 
 using Honeycomb::Component::Light::AmbientLight;
@@ -74,22 +76,50 @@ namespace HoneycombTest {
 		if (GameInput::getGameInput()->getKeyDown(
 				GameInput::KEY_CODE_1)) {
 			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
-				->getMaterial().getAlbedoColor() = Vector3f(1.0F, 0.0F, 0.0F);
+				->getMaterial().getAlbedoColor() = 
+					Vector4f(1.0F, 0.0F, 0.0F, 1.0F);
 		}
 		else if (GameInput::getGameInput()->getKeyDown(
 			GameInput::KEY_CODE_2)) {
 			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
-				->getMaterial().getAlbedoColor() = Vector3f(0.0F, 1.0F, 0.0F);
+				->getMaterial().getAlbedoColor() = 
+					Vector4f(0.0F, 1.0F, 0.0F, 1.0F);
 		}
 		else if (GameInput::getGameInput()->getKeyDown(
 			GameInput::KEY_CODE_3)) {
 			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
-				->getMaterial().getAlbedoColor() = Vector3f(0.0F, 0.0F, 1.0F);
+				->getMaterial().getAlbedoColor() = 
+					Vector4f(0.0F, 0.0F, 1.0F, 1.0F);
 		}
 		else if (GameInput::getGameInput()->getKeyDown(
 			GameInput::KEY_CODE_4)) {
 			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
-				->getMaterial().getAlbedoColor() = Vector3f(1.0F, 1.0F, 1.0F);
+				->getMaterial().getAlbedoColor() = 
+					Vector4f(1.0F, 1.0F, 1.0F, 1.0F);
+		}
+		else if (GameInput::getGameInput()->getKeyDown(
+			GameInput::KEY_CODE_5)) {
+			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
+				->getMaterial().getAlbedoColor() =
+				Vector4f(1.0F, 0.0F, 0.0F, 0.25F);
+		}
+		else if (GameInput::getGameInput()->getKeyDown(
+			GameInput::KEY_CODE_6)) {
+			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
+				->getMaterial().getAlbedoColor() =
+				Vector4f(0.0F, 1.0F, 0.0F, 0.25F);
+		}
+		else if (GameInput::getGameInput()->getKeyDown(
+			GameInput::KEY_CODE_7)) {
+			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
+				->getMaterial().getAlbedoColor() =
+				Vector4f(0.0F, 0.0F, 1.0F, 0.25F);
+		}
+		else if (GameInput::getGameInput()->getKeyDown(
+			GameInput::KEY_CODE_8)) {
+			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
+				->getMaterial().getAlbedoColor() =
+				Vector4f(1.0F, 1.0F, 1.0F, 0.25F);
 		}
 
 		GameObject::getRoot()->input();
@@ -108,6 +138,18 @@ namespace HoneycombTest {
 		ShaderProgram *cubeShader = PhongShader::getPhongShader();
 		Texture2D *cubeTexture = new Texture2D();
 
+		///// TODO [Remove]: Temporary Cube in the Back
+		Mesh *backCubeMesh = new Mesh(*cubeModel);
+		Material *backCubeMaterial = new Material();
+		MeshRenderer *backCubeRenderer = 
+			new MeshRenderer(*backCubeMesh, *cubeShader, *backCubeMaterial);
+		Transform *backCubeTransform =
+			new Transform(Vector3f(0.0F, 0.0F, -7.5F), Quaternion(),
+				Vector3f(1.0F, 1.0F, 1.0F));
+		GameObject *backCubeObject = new GameObject("back cube");
+		backCubeObject->addComponent(*backCubeRenderer);
+		backCubeObject->addComponent(*backCubeTransform);
+
 		// Initialize the Texture
 		// [TODO] Add method(s) to Texture2D class which will allow easier
 		// initialization...
@@ -117,7 +159,7 @@ namespace HoneycombTest {
 		cubeTexture->genMipMap();
 
 		Material *cubeMaterial = new Material(cubeTexture, 
-			Vector3f(1.0F, 1.0F, 1.0F));
+			Vector4f(1.0F, 1.0F, 1.0F, 0.1F));
 
 		// Create Cube Components & the Cube Object
 		MeshRenderer *cubeRenderer = new MeshRenderer(*cubeMesh, *cubeShader,
