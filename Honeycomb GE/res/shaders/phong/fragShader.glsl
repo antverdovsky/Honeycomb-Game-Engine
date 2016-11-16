@@ -31,6 +31,7 @@ struct DirectionalLight {
 
 in vec2 out_vs_texCoord; // Take in texture coordinate outputted by VS
 uniform sampler2D textureSampler; // Texture Sampler2D
+uniform vec3 albedoColor = vec3(0.0, 1.0F, 1.0F);
 
 in vec3 out_vs_norm; // Take in the normal outputted by VS
 
@@ -66,5 +67,6 @@ void main() {
 
 	// Set the color to the color provided by the Texture, mixed with the
     // lighting for this fragment.
-	gl_FragColor = totalLight * texture2D(textureSampler, out_vs_texCoord);
+	gl_FragColor = vec4(albedoColor, 1.0F) * totalLight * 
+		texture2D(textureSampler, out_vs_texCoord);
 }

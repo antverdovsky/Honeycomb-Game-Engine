@@ -10,6 +10,7 @@
 
 #include "..\..\Honeycomb GE\include\geometry\Mesh.h"
 #include "..\..\Honeycomb GE\include\graphics\Texture2D.h"
+#include "..\..\Honeycomb GE\include\graphics\Material.h"
 #include "..\..\Honeycomb GE\include\shader\ShaderProgram.h"
 #include "..\..\Honeycomb GE\include\shader\simple\SimpleShader.h"
 #include "..\..\Honeycomb GE\include\shader\phong\PhongShader.h"
@@ -34,6 +35,7 @@ using Honeycomb::Geometry::Importer::Model_OBJ;
 
 using Honeycomb::Geometry::Mesh;
 using Honeycomb::Graphics::Texture2D;
+using Honeycomb::Graphics::Material;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Shader::Simple::SimpleShader;
 using Honeycomb::Shader::Phong::PhongShader;
@@ -69,6 +71,27 @@ namespace HoneycombTest {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 
+		if (GameInput::getGameInput()->getKeyDown(
+				GameInput::KEY_CODE_1)) {
+			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
+				->getMaterial().getAlbedoColor() = Vector3f(1.0F, 0.0F, 0.0F);
+		}
+		else if (GameInput::getGameInput()->getKeyDown(
+			GameInput::KEY_CODE_2)) {
+			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
+				->getMaterial().getAlbedoColor() = Vector3f(0.0F, 1.0F, 0.0F);
+		}
+		else if (GameInput::getGameInput()->getKeyDown(
+			GameInput::KEY_CODE_3)) {
+			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
+				->getMaterial().getAlbedoColor() = Vector3f(0.0F, 0.0F, 1.0F);
+		}
+		else if (GameInput::getGameInput()->getKeyDown(
+			GameInput::KEY_CODE_4)) {
+			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
+				->getMaterial().getAlbedoColor() = Vector3f(1.0F, 1.0F, 1.0F);
+		}
+
 		GameObject::getRoot()->input();
 	}
 
@@ -93,9 +116,12 @@ namespace HoneycombTest {
 		cubeTexture->setTextureWrap(GL_REPEAT, GL_REPEAT);
 		cubeTexture->genMipMap();
 
+		Material *cubeMaterial = new Material(cubeTexture, 
+			Vector3f(1.0F, 1.0F, 1.0F));
+
 		// Create Cube Components & the Cube Object
-		MeshRenderer *cubeRenderer =
-			new MeshRenderer(*cubeMesh, *cubeShader, *cubeTexture);
+		MeshRenderer *cubeRenderer = new MeshRenderer(*cubeMesh, *cubeShader,
+			*cubeMaterial);
 		Transform *cubeTransform =
 			new Transform(Vector3f(0.0F, 0.0F, -5.0F), Quaternion(), 
 				Vector3f(1.0F, 1.0F, 1.0F));

@@ -13,15 +13,15 @@
 using Honeycomb::Component::Render::CameraController;
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Geometry::Mesh;
-using Honeycomb::Graphics::Texture2D;
+using Honeycomb::Graphics::Material;
 using Honeycomb::Shader::ShaderProgram;
 
 using namespace Honeycomb::File;
 
 namespace Honeycomb::Component::Render {
-	MeshRenderer::MeshRenderer(Mesh &mes, ShaderProgram &shad, Texture2D &tex)
+	MeshRenderer::MeshRenderer(Mesh &mes, ShaderProgram &shad, Material &mat)
 			: GameComponent("MeshRenderer"), mesh(mes), shader(shad),
-			  texture(tex) {
+			  material(mat) {
 
 	}
 
@@ -37,8 +37,8 @@ namespace Honeycomb::Component::Render {
 		return this->shader;
 	}
 
-	Texture2D& MeshRenderer::getTexture() {
-		return this->texture;
+	Material& MeshRenderer::getMaterial() {
+		return this->material;
 	}
 
 	void MeshRenderer::render() {
@@ -49,13 +49,19 @@ namespace Honeycomb::Component::Render {
 			objTrans.getTransformationMatrix());
 
 		this->shader.bindShaderProgram();
-		this->texture.bind();
+		this->useMaterial(); // or perhaps, material.use for consistency? TODO
 		this->mesh.draw();
-		this->texture.unbind();
-		this->shader.unbindShaderProgram();
 	}
 
 	void MeshRenderer::update() {
 
+	}
+
+	void MeshRenderer::useMaterial() {
+		if (this->material.getAlbedoTexture() != nullptr)
+			this->material.getAlbedoTexture()->bind();
+
+		ShaderProgram::getActiveShader()->setUniform_vec3("albedoColor",
+			this->material.getAlbedoColor());
 	}
 }

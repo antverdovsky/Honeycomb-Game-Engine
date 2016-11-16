@@ -102,6 +102,9 @@
     <ClCompile Include="src\component\light\DirectionalLight.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\math\Vector2f.h">
@@ -189,6 +192,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\component\light\BaseLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\graphics\Material.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

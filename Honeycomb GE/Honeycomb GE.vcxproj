@@ -204,6 +204,7 @@
     <ClCompile Include="src\conjuncture\Event.cpp" />
     <ClCompile Include="src\conjuncture\EventHandler.cpp" />
     <ClCompile Include="src\file\FileIO.cpp" />
+    <ClCompile Include="src\graphics\Material.cpp" />
     <ClCompile Include="src\graphics\Texture2D.cpp" />
     <ClCompile Include="src\component\light\AmbientLight.cpp" />
     <ClCompile Include="src\component\light\BaseLight.cpp" />
@@ -235,6 +236,7 @@
     <ClInclude Include="include\conjuncture\Event.h" />
     <ClInclude Include="include\conjuncture\EventHandler.h" />
     <ClInclude Include="include\file\FileIO.h" />
+    <ClInclude Include="include\graphics\Material.h" />
     <ClInclude Include="include\graphics\Texture2D.h" />
     <ClInclude Include="include\component\light\AmbientLight.h" />
     <ClInclude Include="include\component\light\BaseLight.h" />

@@ -33,5 +33,7 @@ namespace Honeycomb::Shader::Simple {
 		addUniform("camOrientation");
 		addUniform("camTranslation");
 		addUniform("objTransform");
+
+		addUniform("albedoColor");
 	}
 }

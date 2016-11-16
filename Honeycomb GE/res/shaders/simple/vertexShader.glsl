@@ -26,7 +26,6 @@ void main() {
     // mutliplied with the vector representing the original position.
     gl_Position = camProjection * camOrientation * camTranslation * 
 		objTransform * vec4(in_vs_pos, 1.0);
-	//gl_Position = vec4(in_vs_pos, 1.0);
 
 	out_vs_texCoord = in_vs_texCoord;
 }

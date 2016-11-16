@@ -41,6 +41,8 @@ namespace Honeycomb::Shader::Phong {
 		addUniform("camOrientation");
 		addUniform("camTranslation");
 		addUniform("objTransform");
+
+		addUniform("albedoColor");
 	}
 
 	void PhongShader::addUniform_AmbientLight(AmbientLight aL) {
