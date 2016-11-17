@@ -6,6 +6,7 @@
 #include "..\..\component\light\AmbientLight.h"
 #include "..\..\component\light\BaseLight.h"
 #include "..\..\component\light\DirectionalLight.h"
+#include "..\..\graphics\Material.h"
 
 namespace Honeycomb::Shader::Phong {
 	// File locations of the vertex and fragment shaders.
@@ -41,6 +42,12 @@ namespace Honeycomb::Shader::Phong {
 		/// BaseLight bL : The base light to be added.
 		void addUniform_BaseLight(Honeycomb::Component::Light::BaseLight bL);
 
+		/// Adds the specified Material as a uniform for this shader
+		/// (provided that the Phong Shader file contains a uniform with the
+		/// same name as the specified material).
+		/// Material mat : The material to be added.
+		void addUniform_Material(Honeycomb::Graphics::Material mat);
+
 		/// Sets the ambient light uniform of the name provided to the ambient
 		/// light specified.
 		/// string name : The name of the ambient light uniform.
@@ -62,6 +69,13 @@ namespace Honeycomb::Shader::Phong {
 		/// DirectionalLight dL : The directional light.
 		void setUniform_DirectionalLight(std::string name, 
 			Honeycomb::Component::Light::DirectionalLight dL);
+
+		/// Sets the material uniform of the name provided to the material 
+		/// specified.
+		/// string name : The name of the material uniform.
+		/// Material mat : The material.
+		void setUniform_Material(std::string name, 
+			Honeycomb::Graphics::Material mat);
 	private:
 		static PhongShader *instance; // Singleton instance of the Shader
 

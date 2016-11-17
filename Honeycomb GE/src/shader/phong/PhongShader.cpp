@@ -8,6 +8,7 @@
 using Honeycomb::Component::Light::AmbientLight;
 using Honeycomb::Component::Light::BaseLight;
 using Honeycomb::Component::Light::DirectionalLight;
+using Honeycomb::Graphics::Material;
 
 using Honeycomb::Math::Vector3f;
 
@@ -41,8 +42,6 @@ namespace Honeycomb::Shader::Phong {
 		addUniform("camOrientation");
 		addUniform("camTranslation");
 		addUniform("objTransform");
-
-		addUniform("albedoColor");
 	}
 
 	void PhongShader::addUniform_AmbientLight(AmbientLight aL) {
@@ -61,6 +60,11 @@ namespace Honeycomb::Shader::Phong {
 		addUniform(dL.getName() + ".direction");
 	}
 
+	void PhongShader::addUniform_Material(Material mat) {
+		addUniform(mat.getName() + ".ambientColor");
+		addUniform(mat.getName() + ".diffuseColor");
+	}
+
 	void PhongShader::setUniform_AmbientLight(std::string name, 
 			AmbientLight aL) {
 		// Upcast the ambient light to a base light so it can be set using the
@@ -77,5 +81,10 @@ namespace Honeycomb::Shader::Phong {
 			DirectionalLight dL) {
 		setUniform_BaseLight(name + ".base", dL);
 		setUniform_vec3(name + ".direction", dL.getDirection());
+	}
+
+	void PhongShader::setUniform_Material(std::string name, Material mat) {
+		setUniform_vec3(name + ".ambientColor", mat.getAmbientColor());
+		setUniform_vec3(name + ".diffuseColor", mat.getDiffuseColor());
 	}
 }

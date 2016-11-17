@@ -49,19 +49,11 @@ namespace Honeycomb::Component::Render {
 			objTrans.getTransformationMatrix());
 
 		this->shader.bindShaderProgram();
-		this->useMaterial(); // or perhaps, material.use for consistency? TODO
+		this->material.use();
 		this->mesh.draw();
 	}
 
 	void MeshRenderer::update() {
 
-	}
-
-	void MeshRenderer::useMaterial() {
-		if (this->material.getAlbedoTexture() != nullptr)
-			this->material.getAlbedoTexture()->bind();
-
-		ShaderProgram::getActiveShader()->setUniform_vec4("albedoColor",
-			this->material.getAlbedoColor());
 	}
 }

@@ -21,6 +21,7 @@ uniform mat4 camTranslation = mat4(1.0); // Translation Matrix (camera)
 
 out vec2 out_vs_texCoord; // Texture Coordinates Output
 out vec3 out_vs_norm; // Normals Output
+out vec3 out_vs_pos; // The position of the vertex in the world
 
 void main() {
     // The position of each vertex equals to the transformation matrix
@@ -30,4 +31,5 @@ void main() {
 
 	out_vs_texCoord = in_vs_texCoord;
 	out_vs_norm = (objTransform * vec4(in_vs_norm, 0.0F)).xyz;
+    out_vs_pos = (objTransform * vec4(in_vs_pos, 1.0F)).xyz;
 }

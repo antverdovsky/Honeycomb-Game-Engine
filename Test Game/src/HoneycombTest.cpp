@@ -65,61 +65,22 @@ namespace HoneycombTest {
 
 	void TestGame::input() {
 		if (GameInput::getGameInput()->getKeyDown(
-				GameInput::KEY_CODE_LEFT_BRACKET)) {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			GameInput::KEY_CODE_9)) {
+			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
+				->getMaterial().getAmbientColor() =
+				Vector3f(1.0F, 0.0F, 0.0F);
+			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
+				->getMaterial().getDiffuseColor() =
+				Vector3f(0.0F, 1.0F, 0.0F);
 		}
 		else if (GameInput::getGameInput()->getKeyDown(
-				GameInput::KEY_CODE_RIGHT_BRACKET)) {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
-
-		if (GameInput::getGameInput()->getKeyDown(
-				GameInput::KEY_CODE_1)) {
+			GameInput::KEY_CODE_0)) {
 			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
-				->getMaterial().getAlbedoColor() = 
-					Vector4f(1.0F, 0.0F, 0.0F, 1.0F);
-		}
-		else if (GameInput::getGameInput()->getKeyDown(
-			GameInput::KEY_CODE_2)) {
+				->getMaterial().getAmbientColor() =
+				Vector3f(1.0F, 1.0F, 1.0F);
 			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
-				->getMaterial().getAlbedoColor() = 
-					Vector4f(0.0F, 1.0F, 0.0F, 1.0F);
-		}
-		else if (GameInput::getGameInput()->getKeyDown(
-			GameInput::KEY_CODE_3)) {
-			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
-				->getMaterial().getAlbedoColor() = 
-					Vector4f(0.0F, 0.0F, 1.0F, 1.0F);
-		}
-		else if (GameInput::getGameInput()->getKeyDown(
-			GameInput::KEY_CODE_4)) {
-			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
-				->getMaterial().getAlbedoColor() = 
-					Vector4f(1.0F, 1.0F, 1.0F, 1.0F);
-		}
-		else if (GameInput::getGameInput()->getKeyDown(
-			GameInput::KEY_CODE_5)) {
-			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
-				->getMaterial().getAlbedoColor() =
-				Vector4f(1.0F, 0.0F, 0.0F, 0.25F);
-		}
-		else if (GameInput::getGameInput()->getKeyDown(
-			GameInput::KEY_CODE_6)) {
-			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
-				->getMaterial().getAlbedoColor() =
-				Vector4f(0.0F, 1.0F, 0.0F, 0.25F);
-		}
-		else if (GameInput::getGameInput()->getKeyDown(
-			GameInput::KEY_CODE_7)) {
-			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
-				->getMaterial().getAlbedoColor() =
-				Vector4f(0.0F, 0.0F, 1.0F, 0.25F);
-		}
-		else if (GameInput::getGameInput()->getKeyDown(
-			GameInput::KEY_CODE_8)) {
-			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
-				->getMaterial().getAlbedoColor() =
-				Vector4f(1.0F, 1.0F, 1.0F, 0.25F);
+				->getMaterial().getDiffuseColor() =
+				Vector3f(1.0F, 1.0F, 1.0F);
 		}
 
 		GameObject::getRoot()->input();
@@ -197,7 +158,7 @@ namespace HoneycombTest {
 		this->cameraObject->addComponent(*cameraTransform);
 		this->cameraObject->addComponent(*cameraInputTransformable);
 		this->cameraObject->addComponent(*directionalLight);
-
+		
 		// Create ambient light
 		GameObject *ambientObject = new GameObject("Ambient Light");
 		AmbientLight *ambientComponent = new AmbientLight(
