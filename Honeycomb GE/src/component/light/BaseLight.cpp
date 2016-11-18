@@ -2,16 +2,16 @@
 
 #include "..\..\..\include\shader\phong\PhongShader.h"
 
-using Honeycomb::Math::Vector3f;
+using Honeycomb::Math::Vector4f;
 using Honeycomb::Shader::Phong::PhongShader;
 
 namespace Honeycomb::Component::Light {
 	BaseLight::BaseLight() : BaseLight("light", 1.0F, 
-			Vector3f(1.0F, 1.0F, 1.0F)) {
+			Vector4f(1.0F, 1.0F, 1.0F, 1.0F)) {
 
 	}
 
-	BaseLight::BaseLight(std::string nam, float inten, Vector3f col) 
+	BaseLight::BaseLight(std::string nam, float inten, Vector4f col) 
 			: GameComponent(nam) {
 		this->intensity = inten;
 		this->color = col;
@@ -23,7 +23,7 @@ namespace Honeycomb::Component::Light {
 
 	}
 
-	Vector3f BaseLight::getColor() {
+	Vector4f BaseLight::getColor() {
 		return this->color;
 	}
 
@@ -31,7 +31,7 @@ namespace Honeycomb::Component::Light {
 		return this->intensity;
 	}
 
-	void BaseLight::setColor(Vector3f c) {
+	void BaseLight::setColor(Vector4f c) {
 		this->color = c;
 
 		this->writeToShader();

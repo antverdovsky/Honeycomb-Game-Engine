@@ -42,6 +42,8 @@ namespace Honeycomb::Shader::Phong {
 		addUniform("camOrientation");
 		addUniform("camTranslation");
 		addUniform("objTransform");
+
+		addUniform("cameraPos");
 	}
 
 	void PhongShader::addUniform_AmbientLight(AmbientLight aL) {
@@ -63,9 +65,11 @@ namespace Honeycomb::Shader::Phong {
 	void PhongShader::addUniform_Material(Material mat) {
 		addUniform(mat.getName() + ".ambientColor");
 		addUniform(mat.getName() + ".diffuseColor");
+		addUniform(mat.getName() + ".specularColor");
+		addUniform(mat.getName() + ".shininess");
 	}
 
-	void PhongShader::setUniform_AmbientLight(std::string name, 
+	void PhongShader::setUniform_AmbientLight(std::string name,
 			AmbientLight aL) {
 		// Upcast the ambient light to a base light so it can be set using the
 		// base light helper method.
@@ -73,7 +77,7 @@ namespace Honeycomb::Shader::Phong {
 	}
 
 	void PhongShader::setUniform_BaseLight(std::string name, BaseLight bL) {
-		setUniform_vec3(name + ".color", bL.getColor());
+		setUniform_vec4(name + ".color", bL.getColor());
 		setUniform_f(name + ".intensity", bL.getIntensity());
 	}
 
@@ -84,7 +88,9 @@ namespace Honeycomb::Shader::Phong {
 	}
 
 	void PhongShader::setUniform_Material(std::string name, Material mat) {
-		setUniform_vec3(name + ".ambientColor", mat.getAmbientColor());
-		setUniform_vec3(name + ".diffuseColor", mat.getDiffuseColor());
+		setUniform_vec4(name + ".ambientColor", mat.getAmbientColor());
+		setUniform_vec4(name + ".diffuseColor", mat.getDiffuseColor());
+		setUniform_vec4(name + ".specularColor", mat.getSpecularColor());
+		setUniform_f(name + ".shininess", mat.getShininess());
 	}
 }

@@ -7,21 +7,24 @@ using Honeycomb::Math::Vector4f;
 using Honeycomb::Shader::Phong::PhongShader;
 
 namespace Honeycomb::Graphics {
-	Material::Material() 
-		: Material(nullptr, Vector4f(1.0F, 1.0F, 1.0F, 1.0F)) {
+	Material::Material()
+			: Material(nullptr) {
 
 	}
 
-	Material::Material(Texture2D *tex, Vector4f col) 
-		: Material("material", tex, col, Vector3f(1.0F, 1.0F, 1.0F), 
-		  Vector3f(1.0F, 1.0F, 1.0F)) {
-		
+	Material::Material(Texture2D *tex)
+			: Material("material", tex, Vector4f(1.0F, 1.0F, 1.0F, 1.0F),
+			  Vector4f(1.0F, 1.0F, 1.0F, 1.0F), 
+			  Vector4f(1.0F, 1.0F, 1.0F, 1.0F), 1.0F) {
+
 	}
 
-	Material::Material(std::string n, Texture2D *tex, Vector4f col, 
-			Vector3f amb, Vector3f diff) 
-		: albedoTexture(tex), ambientColor(amb), diffuseColor(diff) {
+	Material::Material(std::string n, Texture2D *tex, Vector4f amb, 
+			Vector4f diff, Vector4f spec, float shine)
+			: albedoTexture(tex), ambientColor(amb), diffuseColor(diff),
+		      specularColor(spec) {
 		this->name = n;
+		this->shininess = shine;
 
 		PhongShader::getPhongShader()->addUniform_Material(*this);
 	}
@@ -34,16 +37,24 @@ namespace Honeycomb::Graphics {
 		return this->albedoTexture;
 	}
 
-	Vector3f& Material::getAmbientColor() {
+	Vector4f& Material::getAmbientColor() {
 		return this->ambientColor;
 	}
 
-	Vector3f& Material::getDiffuseColor() {
+	Vector4f& Material::getDiffuseColor() {
 		return this->diffuseColor;
 	}
 
 	std::string Material::getName() {
 		return this->name;
+	}
+
+	float& Material::getShininess() {
+		return this->shininess;
+	}
+
+	Vector4f& Material::getSpecularColor() {
+		return this->specularColor;
 	}
 
 	void Material::use() {

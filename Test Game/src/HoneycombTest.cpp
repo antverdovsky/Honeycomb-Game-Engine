@@ -1,5 +1,7 @@
 #include "..\include\HoneycombTest.h"
 
+#include <iostream>
+
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
@@ -64,25 +66,6 @@ namespace HoneycombTest {
 		"..\\Honeycomb GE\\res\\textures\\default\\Checkerboard.bmp";
 
 	void TestGame::input() {
-		if (GameInput::getGameInput()->getKeyDown(
-			GameInput::KEY_CODE_9)) {
-			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
-				->getMaterial().getAmbientColor() =
-				Vector3f(1.0F, 0.0F, 0.0F);
-			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
-				->getMaterial().getDiffuseColor() =
-				Vector3f(0.0F, 1.0F, 0.0F);
-		}
-		else if (GameInput::getGameInput()->getKeyDown(
-			GameInput::KEY_CODE_0)) {
-			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
-				->getMaterial().getAmbientColor() =
-				Vector3f(1.0F, 1.0F, 1.0F);
-			this->cubeObject->getComponentOfType<MeshRenderer>("MeshRenderer")
-				->getMaterial().getDiffuseColor() =
-				Vector3f(1.0F, 1.0F, 1.0F);
-		}
-
 		GameObject::getRoot()->input();
 	}
 
@@ -119,8 +102,12 @@ namespace HoneycombTest {
 		cubeTexture->setTextureWrap(GL_REPEAT, GL_REPEAT);
 		cubeTexture->genMipMap();
 
-		Material *cubeMaterial = new Material(cubeTexture, 
-			Vector4f(1.0F, 1.0F, 1.0F, 0.1F));
+		/// emerald material; approximately.
+		Material *cubeMaterial = new Material("material", cubeTexture,
+			Vector4f(0.0215F, 0.1745F, 0.0215F, 1.0F),
+			Vector4f(0.07568F, 0.61424F, 0.07568F, 1.0F),
+			Vector4f(0.633F, 0.727811F, 0.633F, 1.0F),
+			0.6F * 128.0F);
 
 		// Create Cube Components & the Cube Object
 		MeshRenderer *cubeRenderer = new MeshRenderer(*cubeMesh, *cubeShader,
@@ -152,7 +139,7 @@ namespace HoneycombTest {
 		InputTransformable *cameraInputTransformable =
 			new InputTransformable();
 		DirectionalLight *directionalLight = new DirectionalLight(
-			BaseLight("directionalLight", 1.0F, Vector3f(1.0F, 1.0F, 1.0F)));
+			BaseLight("directionalLight", 1.0F, Vector4f(1.0F, 1.0F, 1.0F, 1.0F)));
 		this->cameraObject = new GameObject("Camera");
 		this->cameraObject->addComponent(*cameraController);
 		this->cameraObject->addComponent(*cameraTransform);
@@ -162,7 +149,7 @@ namespace HoneycombTest {
 		// Create ambient light
 		GameObject *ambientObject = new GameObject("Ambient Light");
 		AmbientLight *ambientComponent = new AmbientLight(
-			BaseLight("ambientLight", 0.25F, Vector3f(1.0F, 1.0F, 1.0F)));
+			BaseLight("ambientLight", 1.0F, Vector4f(1.0F, 1.0F, 1.0F, 1.0F)));
 		ambientObject->addComponent(*ambientComponent);
 
 		delete cubeModel;

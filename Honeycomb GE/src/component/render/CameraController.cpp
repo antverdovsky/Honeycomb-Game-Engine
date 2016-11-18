@@ -224,6 +224,8 @@ namespace Honeycomb::Component::Render {
 
 		ShaderProgram::getActiveShader()->setUniform_mat4("camTranslation",
 			this->getProjectionTranslation());
+		ShaderProgram::getActiveShader()->setUniform_vec3("cameraPos",
+			this->transform->getTranslation());
 
 		return this->projectionTrans;
 	}
