@@ -58,12 +58,22 @@ using Honeycomb::Component::Light::DirectionalLight;
 using HoneycombTest::Components::InputTransformable;
 
 namespace HoneycombTest {
+//  TODO: WRONG NORMALS WHEN IMPORTING .BLEND RESULTS IN WEIRD LIGHTING...
+//	std::string TestGame::CUBE_MODEL_LOC =
+//		"..\\Honeycomb GE\\res\\models\\default\\cube.blend";
 	std::string TestGame::CUBE_MODEL_LOC = 
-		"..\\Honeycomb GE\\res\\models\\default\\cube.obj";
+		"..\\Honeycomb GE\\res\\models\\default\\cube.fbx";
 	std::string TestGame::CUBE_TEXTURE_LOC =
 		"..\\Honeycomb GE\\res\\textures\\default\\Checkerboard.bmp";
 
 	void TestGame::input() {
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_1)) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+		else if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_2)) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+
 		GameObject::getRoot()->input();
 	}
 
@@ -98,11 +108,11 @@ namespace HoneycombTest {
 		//cubeTexture->genMipMap();
 
 		/// emerald material; approximately.
-		//Material *cubeMaterial = new Material("material", cubeTexture,
-		//	Vector4f(0.0215F, 0.1745F, 0.0215F, 1.0F),
-		//	Vector4f(0.07568F, 0.61424F, 0.07568F, 1.0F),
-		//	Vector4f(0.633F, 0.727811F, 0.633F, 1.0F),
-		//	0.9 * 128.0F);
+		Material *cubeMaterial = new Material("material", nullptr,
+			Vector4f(0.0215F, 0.1745F, 0.0215F, 1.0F),
+			Vector4f(0.07568F, 0.61424F, 0.07568F, 1.0F),
+			Vector4f(0.633F, 0.727811F, 0.633F, 1.0F),
+			0.3 * 128.0F);
 
 		// Create Cube Components & the Cube Object
 		//MeshRenderer *cubeRenderer = new MeshRenderer(*cubeMesh, *cubeShader,
@@ -113,7 +123,9 @@ namespace HoneycombTest {
 		// Import the Cube Model
 		Model *cubeModel = new Model(CUBE_MODEL_LOC);
 		this->cubeObject = cubeModel->getGameObject();
-		GameObject *anotherCubeObject = cubeModel->getGameObject();
+//		this->cubeObject->getChild("Cube")->
+//			getComponentOfType<MeshRenderer>("MeshRenderer")->setMaterial(cubeMaterial);
+		//GameObject *anotherCubeObject = cubeModel->getGameObject();
 		InputTransformable *cubeInputTransformable = new InputTransformable(
 			GameInput::KEY_CODE_UP, GameInput::KEY_CODE_DOWN,
 			GameInput::KEY_CODE_LEFT, GameInput::KEY_CODE_RIGHT,

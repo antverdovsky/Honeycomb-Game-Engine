@@ -17,6 +17,13 @@ namespace Honeycomb::Graphics {
 		this->textureID = texID;
 	}
 
+	Texture2D::Texture2D(std::string file) : Texture2D() {
+		this->setImageData(file, GL_RGB, GL_RGB);
+		this->setTextureFiltering(GL_NEAREST, GL_NEAREST);
+		this->setTextureWrap(GL_REPEAT, GL_REPEAT);
+		this->genMipMap();
+	}
+
 	Texture2D::~Texture2D() {
 		GLuint texID = this->textureID;
 		glDeleteTextures(1, &texID); // Delete Texture from OpenGL
@@ -32,6 +39,10 @@ namespace Honeycomb::Graphics {
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		this->unbind();
+	}
+
+	void Texture2D::setImageData(std::string file) {
+		this->setImageData(file, GL_RGB, GL_RGB);
 	}
 
 	void Texture2D::setImageData(std::string file, int inForm, int exForm) {

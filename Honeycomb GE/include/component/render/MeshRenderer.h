@@ -12,9 +12,12 @@ namespace Honeycomb::Component::Render {
 	public:
 		/// Creates a Mesh Renderer component given the specified mesh, shader
 		/// and texture.
-		MeshRenderer(Honeycomb::Geometry::Mesh &mesh, 
-			Honeycomb::Shader::ShaderProgram &shad, 
-			Honeycomb::Graphics::Material &mat);
+		/// Mesh *mesh : The mesh to be rendered.
+		/// ShaderProgram *shad : The shader to be used when rendering.
+		/// Material *mat : The material to be used when rendering.
+		MeshRenderer(Honeycomb::Geometry::Mesh *mesh, 
+			Honeycomb::Shader::ShaderProgram *shad, 
+			Honeycomb::Graphics::Material *mat);
 
 		/// Deletes this Mesh Renderer component.
 		~MeshRenderer();
@@ -25,30 +28,39 @@ namespace Honeycomb::Component::Render {
 		/// return : The cloned Mesh Renderer.
 		MeshRenderer* clone();
 
-		/// Returns the reference to the mesh of this Mesh Renderer.
-		/// return : The mesh reference.
-		Honeycomb::Geometry::Mesh& getMesh();
+		/// Returns the pointer to the mesh of this Mesh Renderer.
+		/// return : The mesh pointer.
+		Honeycomb::Geometry::Mesh* getMesh();
 
-		/// Returns the reference to the shader of this Mesh Renderer.
-		/// return : The shader reference.
-		Honeycomb::Shader::ShaderProgram& getShader();
+		/// Returns the pointer to the shader of this Mesh Renderer.
+		/// return : The shader pointer.
+		Honeycomb::Shader::ShaderProgram* getShader();
 
-		/// Returns the reference to the material of this Mesh Renderer.
-		/// return : The material reference.
-		Honeycomb::Graphics::Material& getMaterial();
+		/// Returns the pointer to the material of this Mesh Renderer.
+		/// return : The material pointer.
+		Honeycomb::Graphics::Material* getMaterial();
 
 		/// Renders the mesh stored to the screen.
 		void render();
 
+		/// Sets the pointer to the material of this Mesh Renderer.
+		/// Material *mat : The new material of this Mesh Renderer.
+		void setMaterial(Honeycomb::Graphics::Material *mat);
+
+		/// Sets the pointer to the mesh of this Mesh Renderer.
+		/// Mesh *mes : The new mesh of this Mesh Renderer.
+		void setMesh(Honeycomb::Geometry::Mesh *mes);
+
+		/// Sets the pointer to the shader of this Mesh Renderer.
+		/// ShaderProgram *shad : The new shader of this Mesh Renderer.
+		void setShader(Honeycomb::Shader::ShaderProgram *shad);
+
 		/// Updates the mesh transformation for the Shader.
 		void update();
 	private:
-		Honeycomb::Geometry::Mesh mesh;
-		Honeycomb::Shader::ShaderProgram shader;
-		Honeycomb::Graphics::Material material;
-
-		/// Sends the information from the material to the Shader.
-		void useMaterial();
+		Honeycomb::Geometry::Mesh *mesh;
+		Honeycomb::Shader::ShaderProgram *shader;
+		Honeycomb::Graphics::Material *material;
 	};
 }
 

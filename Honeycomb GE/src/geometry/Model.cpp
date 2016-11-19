@@ -10,8 +10,10 @@
 #include "..\..\include\component\render\MeshRenderer.h"
 #include "..\..\include\geometry\Vertex.h"
 #include "..\..\include\graphics\Material.h"
+#include "..\..\include\graphics\Texture2D.h"
 #include "..\..\include\math\Vector2f.h"
 #include "..\..\include\math\Vector3f.h"
+#include "..\..\include\math\Vector4f.h"
 #include "..\..\include\shader\phong\PhongShader.h"
 
 using Assimp::Importer;
@@ -19,9 +21,11 @@ using Assimp::Importer;
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Component::Render::MeshRenderer;
 using Honeycomb::Graphics::Material;
+using Honeycomb::Graphics::Texture2D;
 using Honeycomb::Object::GameObject;
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
+using Honeycomb::Math::Vector4f;
 using Honeycomb::Shader::Phong::PhongShader;
 
 namespace Honeycomb::Geometry {
@@ -30,7 +34,7 @@ namespace Honeycomb::Geometry {
 	}
 
 	GameObject* Model::getGameObject() {
-		return new GameObject(*this->modelObject);
+		return this->modelObject->clone();
 	}
 
 	void Model::loadFromFile(std::string path) {
@@ -54,6 +58,38 @@ namespace Honeycomb::Geometry {
 		this->processAiNode(this->modelObject, this->scene->mRootNode, true);
 	}
 
+	void Model::processAiMaterial(MeshRenderer *ren, aiMaterial *aMat) {
+		aiString matName; // Name of the Material
+		Texture2D *texture; // Albedo Texture of the Material
+		aiColor3D matAmbient; // Ambient Property of the Material
+		aiColor3D matDiffuse; // Diffuse Property of the Material
+		aiColor3D matSpecular; // Specular Property of the Material
+		float matShininess; // Shininess Property of the Material
+
+		aMat->Get(AI_MATKEY_NAME, matName);
+		aMat->Get(AI_MATKEY_COLOR_AMBIENT, matAmbient);
+		aMat->Get(AI_MATKEY_COLOR_DIFFUSE, matDiffuse);
+		aMat->Get(AI_MATKEY_COLOR_SPECULAR, matSpecular);
+		aMat->Get(AI_MATKEY_SHININESS, matShininess);
+
+		if (aMat->GetTextureCount(aiTextureType_DIFFUSE)) {
+			///
+			/// TODO: SUPPORT FOR MORE TEXTURES.
+			///
+			aiString dir;
+			aMat->GetTexture(aiTextureType_DIFFUSE, 0, &dir);
+			texture = new Texture2D(dir.C_Str());
+		}
+
+		Material *material = new Material(matName.C_Str(), texture,
+			Vector4f(matAmbient.r, matAmbient.g, matAmbient.b, 1.0F),
+			Vector4f(matDiffuse.r, matDiffuse.g, matDiffuse.b, 1.0F),
+			Vector4f(matSpecular.r, matSpecular.g, matSpecular.b, 1.0F),
+			matShininess);
+
+		ren->setMaterial(material);
+	}
+
 	/// TODO: a lot of things...
 	///
 	///
@@ -62,6 +98,12 @@ namespace Honeycomb::Geometry {
 
 		std::vector<Vertex> vertices; // Vertices Data
 		std::vector<int> indices; // Indices Data
+
+		// Create a Mesh Renderer component and add it to the Object
+		MeshRenderer *meshRenderer = new MeshRenderer(mesh,
+			PhongShader::getPhongShader(), /// TODO, Other shader support!!!
+			(new Material())); // TODO: materials... TODO: dynamic memory alloc...
+		obj->addComponent(*meshRenderer);
 
 		// Go through all the vertices of the Mesh
 		for (int i = 0; i < aMesh->mNumVertices; i++) {
@@ -95,15 +137,15 @@ namespace Honeycomb::Geometry {
 			}
 		}
 
+		// If this mesh contains a material, it will have a non-negative index.
+		if (aMesh->mMaterialIndex >= 0) {
+			this->processAiMaterial(meshRenderer, this->scene->
+				mMaterials[aMesh->mMaterialIndex]);
+		}
+
 		// Send the vertex and index data of the Mesh to the Mesh
 		mesh->addVertexData(&vertices[0], vertices.size(), 
 			&indices[0], indices.size());
-
-		// Create a Mesh Renderer component and add it to the Object
-		MeshRenderer *meshRenderer = new MeshRenderer(*mesh,
-			*PhongShader::getPhongShader(), /// TODO, Other shader support!!!
-			*(new Material())); // TODO: materials... TODO: dynamic memory alloc...
-		obj->addComponent(*meshRenderer);
 	}
 
 	void Model::processAiNode(GameObject *par, aiNode *aNode, bool isRoot) {

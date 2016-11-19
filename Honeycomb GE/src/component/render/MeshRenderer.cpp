@@ -19,10 +19,11 @@ using Honeycomb::Shader::ShaderProgram;
 using namespace Honeycomb::File;
 
 namespace Honeycomb::Component::Render {
-	MeshRenderer::MeshRenderer(Mesh &mes, ShaderProgram &shad, Material &mat)
-			: GameComponent("MeshRenderer"), mesh(mes), shader(shad),
-			  material(mat) {
-
+	MeshRenderer::MeshRenderer(Mesh *mes, ShaderProgram *shad, Material *mat)
+			: GameComponent("MeshRenderer") {
+		this->mesh = mes;
+		this->shader = shad;
+		this->material = mat;
 	}
 
 	MeshRenderer::~MeshRenderer() {
@@ -33,15 +34,15 @@ namespace Honeycomb::Component::Render {
 		return new MeshRenderer(*this);
 	}
 
-	Mesh& MeshRenderer::getMesh() {
+	Mesh* MeshRenderer::getMesh() {
 		return this->mesh;
 	}
 
-	ShaderProgram& MeshRenderer::getShader() {
+	ShaderProgram* MeshRenderer::getShader() {
 		return this->shader;
 	}
 
-	Material& MeshRenderer::getMaterial() {
+	Material* MeshRenderer::getMaterial() {
 		return this->material;
 	}
 
@@ -49,12 +50,24 @@ namespace Honeycomb::Component::Render {
 		// Bind the shader & texture and then draw the Mesh.
 		Transform& objTrans = // TODO
 			*(this->getAttached()->getComponentOfType<Transform>("Transform"));
-		this->shader.setUniform_mat4("objTransform",
+		this->shader->setUniform_mat4("objTransform",
 			objTrans.getTransformationMatrix());
 
-		this->shader.bindShaderProgram();
-		this->material.use();
-		this->mesh.draw();
+		this->shader->bindShaderProgram();
+		this->material->use();
+		this->mesh->draw();
+	}
+
+	void MeshRenderer::setMaterial(Material *mat) {
+		this->material = mat;
+	}
+
+	void MeshRenderer::setMesh(Mesh *mes) {
+		this->mesh = mes;
+	}
+
+	void MeshRenderer::setShader(ShaderProgram *shad) {
+		this->shader = shad;
 	}
 
 	void MeshRenderer::update() {

@@ -10,6 +10,13 @@ namespace Honeycomb::Graphics {
 		/// Generates an empty texture from OpenGL.
 		Texture2D();
 
+		/// Generates a texture using the specified image file, using GL_RGB
+		/// for both the internal and external format. The filtering of the 
+		/// texture will be set to GL_NEAREST for minifying and magnifying. The
+		/// wrap of the texture will be set to GL_REPEAT for both S, and T 
+		/// coordinates. Mip Maps will also be generated for the texture.
+		Texture2D(std::string file);
+
 		/// Destroys this texture from OpenGL.
 		~Texture2D();
 
@@ -20,7 +27,12 @@ namespace Honeycomb::Graphics {
 		void genMipMap();
 
 		/// Gets the image data from the specified image file and passes it to
-		/// OpenGL.
+		/// OpenGL, using the GL_RGB formats.
+		/// string file : The file path to the image file.
+		void setImageData(std::string file);
+
+		/// Gets the image data from the specified image file and passes it to
+		/// OpenGL, using the specified internal and external formats.
 		/// string file : The file path to the image file.
 		/// int inForm : The internal format with which to store the image.
 		/// int exForm : The external format with which the data is passed in.

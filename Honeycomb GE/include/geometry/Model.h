@@ -6,7 +6,9 @@
 
 #include "Mesh.h"
 #include "..\object\GameObject.h"
+#include "..\component\render\MeshRenderer.h"
 
+struct aiMaterial;
 struct aiMesh;
 struct aiNode;
 struct aiScene;
@@ -33,15 +35,23 @@ namespace Honeycomb::Geometry {
 		/// aiNode *aNode : The ASSIMP node to be processed.
 		/// bool isRoot : Boolean indicating whether this is the root object,
 		///				  and if it is then the 
-		void processAiNode(Honeycomb::Object::GameObject *par, aiNode *node, 
+		void processAiNode(Honeycomb::Object::GameObject *par, aiNode *aNode, 
 			bool isRoot);
+
+		/// Processes the ASSIMP material and writes it to the specified Mesh 
+		/// Renderer for use when rendering.
+		/// MeshRenderer *ren : The pointer to the Mesh Renderer for which the
+		///						material is to be written for.
+		/// aiMaterial *aMat : The ASSIMP material.
+		void processAiMaterial(Honeycomb::Component::Render::MeshRenderer *ren,
+			aiMaterial *aMat);
 
 		/// Processes the specified ASSIMP mesh.
 		/// GameObject *obj : The object to which this mesh belongs. A mesh
 		///				 	  renderer will be added to the object, so that it
 		///				 	  may render the processed Mesh.
 		/// aiMesh *aMesh : The ASSIMP mesh to be processed.
-		void processAiMesh(Honeycomb::Object::GameObject *obj, aiMesh *mesh);
+		void processAiMesh(Honeycomb::Object::GameObject *obj, aiMesh *aMesh);
 
 		const aiScene* scene; // The ASSIMP Scene for this model
 		Honeycomb::Object::GameObject *modelObject; // The built model object
