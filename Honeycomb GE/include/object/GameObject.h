@@ -25,8 +25,17 @@ namespace Honeycomb::Object {
 		///			   own risk).
 		GameObject(std::string n, GameObject *p = root);
 
+		/// Copies the specified Game Object into a new Game Object.
+		/// GameObejct &o : The Game Object to be copied into this game object.
+		GameObject::GameObject(GameObject &o);
+
 		/// Deletes this Game Object, its children and its components.
 		~GameObject();
+
+		/// Clones this Game Object into a new, dynamically allocated, Game
+		/// Object.
+		/// return : The cloned Game Object.
+		GameObject* clone();
 
 		/// Adds the specified object as a child to this game object.
 		/// Object &o : The object to be parented to this game object.

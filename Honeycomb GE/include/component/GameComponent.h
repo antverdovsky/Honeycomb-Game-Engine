@@ -15,9 +15,15 @@ namespace Honeycomb::Component {
 		/// Creates a Component instance with the specified name.
 		/// string name : The name of this Component.
 		GameComponent(std::string name);
-		
+
 		/// Deletes this Component.
 		~GameComponent();
+
+		/// Clones this Component into a new, dynamically allocated, component.
+		/// This function should be used instead of the copy constructor to
+		/// prevent object slicing.
+		/// return : The cloned Component.
+		virtual GameComponent* clone();
 
 		/// Detaches this Component from its current object, and sets the
 		/// current object to which it is attached to NULL.

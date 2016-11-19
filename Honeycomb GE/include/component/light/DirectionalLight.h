@@ -20,6 +20,12 @@ namespace Honeycomb::Component::Light {
 		/// Default Destructor.
 		~DirectionalLight();
 
+		/// Clones this Directional Light into a new, dynamically allocated,
+		/// Directional Light. This function should be used instead of the copy 
+		/// constructor to prevent object slicing.
+		/// return : The cloned Directional Light.
+		DirectionalLight* clone();
+
 		/// Gets the direction of this directional light.
 		/// return : The direction.
 		Honeycomb::Math::Vector3f getDirection();

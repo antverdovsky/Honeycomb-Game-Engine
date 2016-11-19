@@ -30,7 +30,7 @@ namespace Honeycomb::Geometry {
 	}
 
 	GameObject* Model::getGameObject() {
-		return this->modelObject;
+		return new GameObject(*this->modelObject);
 	}
 
 	void Model::loadFromFile(std::string path) {
@@ -47,7 +47,7 @@ namespace Honeycomb::Geometry {
 		}
 		
 		this->modelObject = // Initialize the Model Object
-			new GameObject(this->scene->mRootNode->mName.C_Str());
+			new GameObject(this->scene->mRootNode->mName.C_Str(), nullptr);
 
 		// Process the root node, passing in the model object so that all
 		// recursively added children are parented to the model object.

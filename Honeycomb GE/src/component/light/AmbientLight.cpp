@@ -12,4 +12,8 @@ namespace Honeycomb::Component::Light {
 	AmbientLight::~AmbientLight() {
 
 	}
+
+	AmbientLight* AmbientLight::clone() {
+		return new AmbientLight(*this);
+	}
 }

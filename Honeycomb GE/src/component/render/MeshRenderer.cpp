@@ -29,6 +29,10 @@ namespace Honeycomb::Component::Render {
 
 	}
 
+	MeshRenderer* MeshRenderer::clone() {
+		return new MeshRenderer(*this);
+	}
+
 	Mesh& MeshRenderer::getMesh() {
 		return this->mesh;
 	}

@@ -16,6 +16,12 @@ namespace Honeycomb::Component::Light {
 
 		/// Default Destructor.
 		~AmbientLight();
+
+		/// Clones this Ambient Light into a new, dynamically allocated,
+		/// Ambient Light. This function should be used instead of the copy 
+		/// constructor to prevent object slicing.
+		/// return : The cloned Ambient Light.
+		AmbientLight* clone();
 	private:
 
 	};

@@ -34,6 +34,12 @@ namespace Honeycomb::Component::Render {
 		/// Destroys this Camera instance.
 		~CameraController();
 
+		/// Clones this Camera Controller into a new, dynamically allocated 
+		/// Camera Controller. This function should be used instead of the copy
+		/// constructor to prevent object slicing.
+		/// return : The cloned Transform.
+		CameraController* CameraController::clone();
+
 		/// Gets the current active camera instance.
 		static CameraController* getActiveCamera();
 

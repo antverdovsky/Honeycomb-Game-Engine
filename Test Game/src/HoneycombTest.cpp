@@ -72,10 +72,6 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::start() {
-		// Import the Cube Model
-		Model *cubeModel = new Model(CUBE_MODEL_LOC);
-		this->cubeObject = cubeModel->getGameObject();
-
 		// Initialize the Cube Mesh, Shader and Texture
 		//Mesh *cubeMesh = new Mesh(*cubeModel);
 		//ShaderProgram *cubeShader = PhongShader::getPhongShader();
@@ -114,6 +110,10 @@ namespace HoneycombTest {
 		//Transform *cubeTransform =
 		//	new Transform(Vector3f(0.0F, 0.0F, -5.0F), Quaternion(), 
 		//		Vector3f(1.0F, 1.0F, 1.0F));
+		// Import the Cube Model
+		Model *cubeModel = new Model(CUBE_MODEL_LOC);
+		this->cubeObject = cubeModel->getGameObject();
+		GameObject *anotherCubeObject = cubeModel->getGameObject();
 		InputTransformable *cubeInputTransformable = new InputTransformable(
 			GameInput::KEY_CODE_UP, GameInput::KEY_CODE_DOWN,
 			GameInput::KEY_CODE_LEFT, GameInput::KEY_CODE_RIGHT,
@@ -144,7 +144,7 @@ namespace HoneycombTest {
 		this->cameraObject->addComponent(*cameraTransform);
 		this->cameraObject->addComponent(*cameraInputTransformable);
 		this->cameraObject->addComponent(*directionalLight);
-		
+
 		// Create ambient light
 		GameObject *ambientObject = new GameObject("Ambient Light");
 		AmbientLight *ambientComponent = new AmbientLight(

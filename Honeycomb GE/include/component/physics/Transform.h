@@ -23,6 +23,12 @@ namespace Honeycomb::Component::Physics {
 		Transform(Honeycomb::Math::Vector3f pos, 
 			Honeycomb::Math::Quaternion rot, Honeycomb::Math::Vector3f scl);
 
+		/// Clones this Transform into a new, dynamically allocated Transform. 
+		/// This function should be used instead of the copy constructor to 
+		/// prevent object slicing.
+		/// return : The cloned Transform.
+		Transform* Transform::clone();
+
 		/// Gets an event which will be triggered once the transform is changed
 		/// in any way (scaled, translated or rotated).
 		/// return : The event.

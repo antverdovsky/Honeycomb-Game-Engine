@@ -20,6 +20,10 @@ namespace Honeycomb::Component {
 		this->detach();
 	}
 
+	GameComponent* GameComponent::clone() {
+		return new GameComponent(*this);
+	}
+
 	void GameComponent::detach() {
 		if (this->attached != nullptr) this->attached->removeComponent(this);
 		this->setAttached(nullptr); // Set NULL as the new attached object
@@ -42,7 +46,7 @@ namespace Honeycomb::Component {
 	}
 
 	void GameComponent::render() {
-
+		
 	}
 
 	void GameComponent::setAttached(GameObject *o) {

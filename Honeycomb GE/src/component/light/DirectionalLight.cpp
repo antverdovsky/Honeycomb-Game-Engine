@@ -23,6 +23,10 @@ namespace Honeycomb::Component::Light {
 
 	}
 
+	DirectionalLight* DirectionalLight::clone() {
+		return new DirectionalLight(*this);
+	}
+
 	Vector3f DirectionalLight::getDirection() {
 		return *this->direction;
 	}

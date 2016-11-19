@@ -19,6 +19,12 @@ namespace Honeycomb::Component::Render {
 		/// Deletes this Mesh Renderer component.
 		~MeshRenderer();
 
+		/// Clones this Mesh Renderer into a new, dynamically allocated 
+		/// Mesh Renderer. This function should be used instead of the copy 
+		/// constructor to prevent object slicing.
+		/// return : The cloned Mesh Renderer.
+		MeshRenderer* clone();
+
 		/// Returns the reference to the mesh of this Mesh Renderer.
 		/// return : The mesh reference.
 		Honeycomb::Geometry::Mesh& getMesh();

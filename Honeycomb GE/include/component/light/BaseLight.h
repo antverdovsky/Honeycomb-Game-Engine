@@ -21,6 +21,12 @@ namespace Honeycomb::Component::Light {
 
 		/// Default Destructor.
 		~BaseLight();
+
+		/// Clones this Base Light into a new, dynamically allocated,
+		/// Base Light. This function should be used instead of the copy 
+		/// constructor to prevent object slicing.
+		/// return : The cloned Base Light.
+		BaseLight* clone();
 		
 		/// Gets the color of the base light.
 		/// return : The color.

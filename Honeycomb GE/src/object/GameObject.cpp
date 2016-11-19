@@ -21,6 +21,21 @@ namespace Honeycomb::Object {
 		if (p != nullptr) p->addChild(*this);
 	}
 
+	GameObject::GameObject(GameObject& o) : GameObject("GameObject") {
+		this->isActive = o.isActive;
+		this->name = o.name;
+		
+		if (o.parent != nullptr) o.parent->addChild(*this);
+
+		// Copy over all of the children and the components, once duplicated
+		for (int i = 0; i < o.children.size(); i++)
+			this->addChild(*o.children.at(i)->clone());
+		for (int i = 0; i < o.components.size(); i++)
+			this->addComponent(*o.components.at(i)->clone());
+
+		int j = 3;
+	}
+
 	GameObject::~GameObject() {
 		// Delete all of the children and components
 		while (this->children.size() != 0)
@@ -30,6 +45,10 @@ namespace Honeycomb::Object {
 
 		// Notify parent that I am no longer a child
 		this->deparent();
+	}
+
+	GameObject* GameObject::clone() {
+		return new GameObject(*this);
 	}
 
 	void GameObject::addChild(GameObject &o) {
@@ -42,7 +61,7 @@ namespace Honeycomb::Object {
 	void GameObject::addComponent(GameComponent &c) {
 		this->components.push_back(&c);
 		
-		if (c.getAttached()) c.getAttached()->removeComponent(&c);
+		if (c.getAttached() != nullptr) c.getAttached()->removeComponent(&c);
 		c.setAttached(this);
 	}
 
@@ -114,12 +133,16 @@ namespace Honeycomb::Object {
 	void GameObject::removeChild(GameObject *o) {
 		children.erase( // Erase object from my children
 			std::remove(children.begin(), children.end(), o), children.end());
+
+		o->parent = nullptr;
 	}
 
 	void GameObject::removeComponent(GameComponent *c) {
 		components.erase( // Erase component from my components
 			std::remove(components.begin(), components.end(), c), 
 			components.end());
+
+		c->setAttached(nullptr);
 	}
 
 	void GameObject::render() {

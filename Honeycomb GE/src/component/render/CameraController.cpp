@@ -32,6 +32,10 @@ namespace Honeycomb::Component::Render {
 
 	}
 
+	CameraController* CameraController::clone() {
+		return new CameraController(*this);
+	}
+
 	CameraController* CameraController::getActiveCamera() {
 		return activeCamera;
 	}

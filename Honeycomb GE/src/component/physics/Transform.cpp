@@ -30,6 +30,10 @@ namespace Honeycomb::Component::Physics {
 		this->localUp = Vector3f::getGlobalUp();
 	}
 
+	Transform* Transform::clone() {
+		return new Transform(*this);
+	}
+
 	Event& Transform::getChangedEvent() {
 		return this->changedEvent;
 	}

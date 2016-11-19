@@ -23,6 +23,10 @@ namespace Honeycomb::Component::Light {
 
 	}
 
+	BaseLight* BaseLight::clone() {
+		return new BaseLight(*this);
+	}
+
 	Vector4f BaseLight::getColor() {
 		return this->color;
 	}
