@@ -76,7 +76,8 @@ namespace Honeycomb::Base {
 		glfwSetFramebufferSizeCallback(this->glfwWindow, 
 			(GLFWframebuffersizefun)callbackFrameBuffersize);
 
-		glfwWindowHint(GLFW_RESIZABLE, resizeable);
+		glfwWindowHint(GLFW_SAMPLES, this->samples);
+		glfwWindowHint(GLFW_RESIZABLE, this->resizeable);
 		glfwMakeContextCurrent(this->glfwWindow);
 	}
 }

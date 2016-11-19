@@ -9,11 +9,9 @@
 
 #include "..\..\include\file\FileIO.h"
 #include "..\..\include\math\Vector3f.h"
-#include "..\..\include\geometry\importer\Model.h"
 #include "..\..\include\geometry\Vertex.h"
 
 using Honeycomb::Geometry::Vertex;
-using Honeycomb::Geometry::Importer::Model;
 using Honeycomb::Math::Vector3f;
 
 namespace Honeycomb::Geometry {
@@ -34,11 +32,6 @@ namespace Honeycomb::Geometry {
 		this->indexBufferObj = ibo;
 		this->indexCount = 0;
 		this->indexSize = 0;
-	}
-
-	Mesh::Mesh(Model m) : Mesh() {
-		this->addVertexData(&m.getVerticies()[0], m.getVerticies().size(),
-			&m.getIndices()[0], m.getIndices().size());
 	}
 
 	Mesh::~Mesh() {

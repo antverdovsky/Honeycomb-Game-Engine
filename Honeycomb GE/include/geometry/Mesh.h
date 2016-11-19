@@ -4,17 +4,13 @@
 
 #include <string>
 
-#include "..\..\include\geometry\importer\Model.h"
+#include "Vertex.h"
 
 namespace Honeycomb::Geometry {
 	class Mesh {
 	public:
 		/// Initializes an empty mesh.
 		Mesh();
-
-		/// Initializes a mesh from the model.
-		/// Model m : The model to be used to initialize the Mesh.
-		Mesh(Honeycomb::Geometry::Importer::Model m);
 
 		/// Destroys the mesh and the buffers and data associated with it.
 		~Mesh();

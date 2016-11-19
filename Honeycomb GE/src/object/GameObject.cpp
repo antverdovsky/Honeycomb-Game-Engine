@@ -17,8 +17,8 @@ namespace Honeycomb::Object {
 		this->isActive = false;
 
 		// If parent is provided -> Parent this to specified object
+		this->parent = nullptr;
 		if (p != nullptr) p->addChild(*this);
-		else this->parent = nullptr;
 	}
 
 	GameObject::~GameObject() {

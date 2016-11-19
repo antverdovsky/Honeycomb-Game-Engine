@@ -19,7 +19,10 @@ namespace Honeycomb::Base::BaseMain {
 			glEnable(GL_CULL_FACE); // Disable rendering unseen back faces
 		}
 
+		glEnable(GL_MULTISAMPLE);
 		glEnable(GL_TEXTURE_2D);
+		glShadeModel(GL_SMOOTH);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		glEnable(GL_DEPTH_TEST); // Enable depth perception for drawing order
 		glEnable(GL_BLEND); // Enable blending for transparency

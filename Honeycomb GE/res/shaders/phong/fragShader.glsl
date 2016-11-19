@@ -151,5 +151,5 @@ void main() {
     
 	// Set the color to the color provided by the Texture, mixed with the
     // lighting for this fragment.
-	gl_FragColor = totalLight * texture2D(textureSampler, out_vs_texCoord);
+	gl_FragColor = totalLight; //* texture2D(textureSampler, out_vs_texCoord);
 }

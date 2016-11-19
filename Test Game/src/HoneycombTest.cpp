@@ -7,8 +7,7 @@
 
 #include "..\..\Honeycomb GE\include\base\GameInput.h"
 
-#include "..\..\Honeycomb GE\include\geometry\importer\Model.h"
-#include "..\..\Honeycomb GE\include\geometry\importer\Model_OBJ.h"
+#include "..\..\Honeycomb GE\include\geometry\Model.h"
 
 #include "..\..\Honeycomb GE\include\geometry\Mesh.h"
 #include "..\..\Honeycomb GE\include\graphics\Texture2D.h"
@@ -33,8 +32,7 @@
 
 using Honeycomb::Base::GameInput;
 
-using Honeycomb::Geometry::Importer::Model;
-using Honeycomb::Geometry::Importer::Model_OBJ;
+using Honeycomb::Geometry::Model;
 
 using Honeycomb::Geometry::Mesh;
 using Honeycomb::Graphics::Texture2D;
@@ -75,46 +73,47 @@ namespace HoneycombTest {
 
 	void TestGame::start() {
 		// Import the Cube Model
-		Model *cubeModel = Model_OBJ::loadModel(CUBE_MODEL_LOC);
+		Model *cubeModel = new Model(CUBE_MODEL_LOC);
+		this->cubeObject = cubeModel->getGameObject();
 
 		// Initialize the Cube Mesh, Shader and Texture
-		Mesh *cubeMesh = new Mesh(*cubeModel);
-		ShaderProgram *cubeShader = PhongShader::getPhongShader();
-		Texture2D *cubeTexture = new Texture2D();
+		//Mesh *cubeMesh = new Mesh(*cubeModel);
+		//ShaderProgram *cubeShader = PhongShader::getPhongShader();
+		//Texture2D *cubeTexture = new Texture2D();
 
 		///// TODO [Remove]: Temporary Cube in the Back
-		Mesh *backCubeMesh = new Mesh(*cubeModel);
-		Material *backCubeMaterial = new Material();
-		MeshRenderer *backCubeRenderer = 
-			new MeshRenderer(*backCubeMesh, *cubeShader, *backCubeMaterial);
-		Transform *backCubeTransform =
-			new Transform(Vector3f(0.0F, 0.0F, -7.5F), Quaternion(),
-				Vector3f(1.0F, 1.0F, 1.0F));
-		GameObject *backCubeObject = new GameObject("back cube");
-		backCubeObject->addComponent(*backCubeRenderer);
-		backCubeObject->addComponent(*backCubeTransform);
+		//Mesh *backCubeMesh = new Mesh();
+		//Material *backCubeMaterial = new Material();
+		//MeshRenderer *backCubeRenderer = 
+		//	new MeshRenderer(*backCubeMesh, *cubeShader, *backCubeMaterial);
+		//Transform *backCubeTransform =
+		//	new Transform(Vector3f(0.0F, 0.0F, -7.5F), Quaternion(),
+		//		Vector3f(1.0F, 1.0F, 1.0F));
+		//GameObject *backCubeObject = new GameObject("back cube");
+		//backCubeObject->addComponent(*backCubeRenderer);
+		//backCubeObject->addComponent(*backCubeTransform);
 
 		// Initialize the Texture
 		// [TODO] Add method(s) to Texture2D class which will allow easier
 		// initialization...
-		cubeTexture->setImageData(CUBE_TEXTURE_LOC, GL_RGB, GL_RGB);
-		cubeTexture->setTextureFiltering(GL_NEAREST, GL_NEAREST);
-		cubeTexture->setTextureWrap(GL_REPEAT, GL_REPEAT);
-		cubeTexture->genMipMap();
+		//cubeTexture->setImageData(CUBE_TEXTURE_LOC, GL_RGB, GL_RGB);
+		//cubeTexture->setTextureFiltering(GL_NEAREST, GL_NEAREST);
+		//cubeTexture->setTextureWrap(GL_REPEAT, GL_REPEAT);
+		//cubeTexture->genMipMap();
 
 		/// emerald material; approximately.
-		Material *cubeMaterial = new Material("material", cubeTexture,
-			Vector4f(0.0215F, 0.1745F, 0.0215F, 1.0F),
-			Vector4f(0.07568F, 0.61424F, 0.07568F, 1.0F),
-			Vector4f(0.633F, 0.727811F, 0.633F, 1.0F),
-			0.6F * 128.0F);
+		//Material *cubeMaterial = new Material("material", cubeTexture,
+		//	Vector4f(0.0215F, 0.1745F, 0.0215F, 1.0F),
+		//	Vector4f(0.07568F, 0.61424F, 0.07568F, 1.0F),
+		//	Vector4f(0.633F, 0.727811F, 0.633F, 1.0F),
+		//	0.9 * 128.0F);
 
 		// Create Cube Components & the Cube Object
-		MeshRenderer *cubeRenderer = new MeshRenderer(*cubeMesh, *cubeShader,
-			*cubeMaterial);
-		Transform *cubeTransform =
-			new Transform(Vector3f(0.0F, 0.0F, -5.0F), Quaternion(), 
-				Vector3f(1.0F, 1.0F, 1.0F));
+		//MeshRenderer *cubeRenderer = new MeshRenderer(*cubeMesh, *cubeShader,
+		//	*cubeMaterial);
+		//Transform *cubeTransform =
+		//	new Transform(Vector3f(0.0F, 0.0F, -5.0F), Quaternion(), 
+		//		Vector3f(1.0F, 1.0F, 1.0F));
 		InputTransformable *cubeInputTransformable = new InputTransformable(
 			GameInput::KEY_CODE_UP, GameInput::KEY_CODE_DOWN,
 			GameInput::KEY_CODE_LEFT, GameInput::KEY_CODE_RIGHT,
@@ -123,10 +122,10 @@ namespace HoneycombTest {
 			GameInput::KEY_CODE_F, GameInput::KEY_CODE_G,
 			GameInput::KEY_CODE_V, GameInput::KEY_CODE_B,
 			0.05F, 0.05F);
-		this->cubeObject = new GameObject("Cube");
-		this->cubeObject->addComponent(*cubeRenderer);
-		this->cubeObject->addComponent(*cubeTransform);
-		this->cubeObject->addComponent(*cubeInputTransformable);
+		//this->cubeObject = new GameObject("Cube");
+		//this->cubeObject->addComponent(*cubeRenderer);
+		//this->cubeObject->addComponent(*cubeTransform);
+		this->cubeObject->getChild("Cube")->addComponent(*cubeInputTransformable);
 
 		// Create Camera Components & Camera Object
 		CameraController *cameraController =

@@ -67,6 +67,7 @@ namespace Honeycomb::Base {
 
 		int width = 1024; // The width of the window.
 		int height = 768; // The height of the window.
+		int samples = 4; // The sampling for MSAA
 		bool resizeable = false; // Allow & check for resizing?
 		std::string title = "Honeycomb GE"; // Title of the Game Window
 

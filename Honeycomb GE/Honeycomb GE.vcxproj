@@ -204,6 +204,7 @@
     <ClCompile Include="src\conjuncture\Event.cpp" />
     <ClCompile Include="src\conjuncture\EventHandler.cpp" />
     <ClCompile Include="src\file\FileIO.cpp" />
+    <ClCompile Include="src\geometry\Model.cpp" />
     <ClCompile Include="src\graphics\Material.cpp" />
     <ClCompile Include="src\graphics\Texture2D.cpp" />
     <ClCompile Include="src\component\light\AmbientLight.cpp" />
@@ -214,8 +215,6 @@
     <ClCompile Include="src\math\Quaternion.cpp" />
     <ClCompile Include="src\math\Vector2f.cpp" />
     <ClCompile Include="src\math\Vector3f.cpp" />
-    <ClCompile Include="src\geometry\importer\Model.cpp" />
-    <ClCompile Include="src\geometry\importer\Model_OBJ.cpp" />
     <ClCompile Include="src\geometry\Mesh.cpp" />
     <ClCompile Include="src\component\render\MeshRenderer.cpp" />
     <ClCompile Include="src\geometry\Vertex.cpp" />
@@ -237,6 +236,7 @@
     <ClInclude Include="include\conjuncture\Event.h" />
     <ClInclude Include="include\conjuncture\EventHandler.h" />
     <ClInclude Include="include\file\FileIO.h" />
+    <ClInclude Include="include\geometry\Model.h" />
     <ClInclude Include="include\graphics\Material.h" />
     <ClInclude Include="include\graphics\Texture2D.h" />
     <ClInclude Include="include\component\light\AmbientLight.h" />
@@ -247,8 +247,6 @@
     <ClInclude Include="include\math\Quaternion.h" />
     <ClInclude Include="include\math\Vector2f.h" />
     <ClInclude Include="include\math\Vector3f.h" />
-    <ClInclude Include="include\geometry\importer\Model.h" />
-    <ClInclude Include="include\geometry\importer\Model_OBJ.h" />
     <ClInclude Include="include\geometry\Mesh.h" />
     <ClInclude Include="include\component\render\MeshRenderer.h" />
     <ClInclude Include="include\geometry\Vertex.h" />
