@@ -8,7 +8,7 @@
 #include "..\..\include\base\BaseGame.h"
 
 namespace Honeycomb::Base::BaseMain {
-	const static int FRAME_CAP = 60; // The FPS cap
+	const static int FRAME_CAP = 10000; // The FPS cap
 
 	extern bool isGameRunning; // Is the game loop running?
 	extern bool drawBackFaces; // Draw back faces?

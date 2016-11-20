@@ -29,9 +29,13 @@ using Honeycomb::Math::Vector4f;
 using Honeycomb::Shader::Phong::PhongShader;
 
 namespace Honeycomb::Geometry {
+	std::vector<Model*> Model::imports = std::vector<Model*>();
+
 	Model::Model(std::string path) {
 		this->path = path;
 		this->loadFromPath();
+
+		this->imports.push_back(this);
 	}
 
 	GameObject* Model::getGameObject() {
@@ -46,11 +50,32 @@ namespace Honeycomb::Geometry {
 		return this->path;
 	}
 
+	Model* Model::findMatchingImport() {
+		for (int i = 0; i < imports.size(); i++) {
+			Model *mod = imports.at(i); // Get current model
+
+			// If the model has the same path as the specified path, return it.
+			if (mod->getPath() == path) return mod;
+		}
+
+		return nullptr; // If no model with matching path found -> return NULL
+	}
+
 	void Model::loadFromPath() {
-		Importer aImp = Importer(); // Initialize the Importer
+		// Check if a model from this path has already been imported; if so,
+		// copy the information from that model into this model, instead of
+		// remaking it.
+		Model *matching = findMatchingImport();
+		if (matching != nullptr) {
+			this->scene = matching->scene;
+			this->gameObject = matching->gameObject->clone();
 
-		this->scene = aImp.ReadFile(path, aiProcess_Triangulate);
+			return;
+		}
 
+		// Import the Scene from ASSIMP and Check for Errors.
+		Importer aImp = Importer();
+		this->scene = aImp.ReadFile(path, aiProcess_Triangulate | aiProcess_GenNormals);
 		if (this->scene == nullptr ||
 				this->scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE ||
 				this->scene->mRootNode == nullptr) {
@@ -65,7 +90,7 @@ namespace Honeycomb::Geometry {
 
 	Material* Model::processAiMeshMaterial(aiMaterial* aMat) {
 		aiString matName; // Name of the Material
-		Texture2D *texture; // Albedo Texture of the Material
+		Texture2D *texture = nullptr; // Albedo Texture of the Material
 		aiColor3D matAmbient; // Ambient Property of the Material
 		aiColor3D matDiffuse; // Diffuse Property of the Material
 		aiColor3D matSpecular; // Specular Property of the Material

@@ -69,7 +69,7 @@ namespace Honeycomb::Object {
 		/// from that model will be returned, rather than re-importing the 
 		/// entire model again.
 		/// return : The constructed Game Object.
-		GameObject* newObjectWithPath(std::string path);
+		GameObject* newModel(std::string path);
 	private:
 		static Builder *instance; // The Builder Singleton instance
 
@@ -78,36 +78,17 @@ namespace Honeycomb::Object {
 		const static std::string PLANE_LOCATION;
 		const static std::string SPHERE_LOCATION;
 
-		// Lists of the imported models and import objects. If a request is
-		// received to build a model or object which has already been built, a
-		// copy of it from one of these lists will be returned instead.
-		std::vector<Honeycomb::Object::GameObject*> builtObjects;
-		std::vector<Honeycomb::Geometry::Model*> importedModels;
+		/// Helper method for loading in the default models (cube, plane, etc).
+		/// A new object will be instantiated from the model imported from the
+		/// path specified, and then a new object composed of the child of the
+		/// imported object with the specified name will be returned. The model
+		/// object will be destroyed.
+		/// return : The child object, with the specified name, of the model
+		///			 with the specified path.
+		GameObject* newDefaultImport(std::string name, std::string path);
 
 		/// Constructs a new Builder instance.
 		Builder();
-
-		/// Finds the Model in the imported models list, if the model has been
-		/// imported, with the matching path and returns it. If the model has 
-		/// not yet been imported, a nullptr will be returned instead.
-		/// return : The Model in the imported models list, or a nullptr if the
-		///			 model has not yet been imported.
-		Honeycomb::Geometry::Model* findModel(std::string path);
-
-		/// Finds the Game Object in the build objects list, if the object has
-		/// been built, with the matching name and returns it. If the object
-		/// has not yet been built, a nullptr will be returned instead.
-		Honeycomb::Object::GameObject* findObject(std::string name);
-
-		/// Helper method for importing the default objects. The name refers to
-		/// the name of the default object which is to be imported, and the
-		/// path refers to where the object is to be imported from. If the
-		/// object has already been built, a clone will be returned. Otherwise,
-		/// the object will be imported and the clone of the import will be
-		/// returned instead.
-		/// string name : The name of the default object.
-		Honeycomb::Object::GameObject* newImport(std::string name,
-			std::string path);
 	};
 }
 

@@ -1,6 +1,7 @@
 #include "..\include\HoneycombTest.h"
 
 #include <iostream>
+#include <ctime>
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
@@ -84,8 +85,35 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::start() {
+		srand(time(NULL));
 		// Import the Cube Model
 		//Model *cubeModel = new Model(CUBE_MODEL_LOC);
+
+		for (int i = 0; i <= 50; i++) {
+			GameObject *custom = Builder::getBuilder()->
+				newModel("..\\Honeycomb GE\\res\\models\\default\\untitled.fbx");
+			custom->getChild("Suzanne")->getComponentOfType<Transform>("Transform")->translate(
+				Vector3f((rand() % 40) - 20, (rand() % 40) - 20, (rand() % 40) - 20));
+			custom->getChild("Suzanne")->getComponentOfType<Transform>("Transform")->rotate(
+				Vector3f::getGlobalRight(), 3.1415926 / 2);
+			custom->getChild("Suzanne")->getComponentOfType<Transform>("Transform")->rotate(
+				Vector3f::getGlobalUp(), 3.1415926);
+			custom->getChild("Suzanne")->getComponentOfType<MeshRenderer>("MeshRenderer")->setMaterial(
+				new Material("material", nullptr,
+					Vector4f(static_cast <float> (rand()) / static_cast <float> (RAND_MAX),
+						static_cast <float> (rand()) / static_cast <float> (RAND_MAX),
+						static_cast <float> (rand()) / static_cast <float> (RAND_MAX),
+						1.0F),
+					Vector4f(1.0F, 1.0F, 1.0F, 1.0F),
+					Vector4f(1.0, 1.0F, 1.0F, 1.0F),
+					10.0F));
+//			custom->getChild("Suzanne")->getComponentOfType<Transform>("Transform")->setScale(
+//				Vector3f(2.5F, 2.5F, 2.5F));
+
+			if (i == 0) {
+				//	custom->getChild("Suzanne")->addComponent(*cubeInputTransformable->clone());
+			}
+		}
 
 		// Instantiate a Cube from the Cube Model, move the cube forward a bit,
 		// and attach an Input Transformable Component to it.
@@ -119,6 +147,10 @@ namespace HoneycombTest {
 			new InputTransformable();
 		camera->addComponent(*cameraInputTransformable);
 
+		aSphere->getComponentOfType<MeshRenderer>("MeshRenderer")->
+			getMaterial()->getAmbientColor() = Vector4f(1.0F, 0.0F, 0.0F, 1.0F);
+
+
 		// Create Camera Components & Camera Object
 //		CameraController *cameraController =
 //			new CameraController(CameraController::CameraType::PERSPECTIVE,
@@ -145,7 +177,7 @@ namespace HoneycombTest {
 		ambientObject->addComponent(*ambientComponent);
 		*/
 
-		delete Builder::getBuilder();
+		delete Builder::getBuilder(); // necessary?
 
 		GameObject *ptr = GameObject::getRoot();
 

@@ -29,10 +29,10 @@ namespace Honeycomb::Object {
 
 	Builder::~Builder() {
 		// Destroy all the imported models and built objects
-		for (int i = 0; i < this->importedModels.size(); i++)
-			delete this->importedModels.at(i);
-		for (int i = 0; i < this->builtObjects.size(); i++)
-			delete this->builtObjects.at(i);
+//		for (int i = 0; i < this->importedModels.size(); i++)
+//			delete this->importedModels.at(i);
+//		for (int i = 0; i < this->builtObjects.size(); i++)
+//			delete this->builtObjects.at(i);
 	}
 
 	Builder* Builder::getBuilder() {
@@ -48,7 +48,7 @@ namespace Honeycomb::Object {
 		//
 
 		// Try to find the object, if it has already been built
-		GameObject *obj = this->findObject("Ambient Light");
+		GameObject *obj = nullptr;
 
 		// If we cannot find the object, then it has not been built yet, so
 		// build it and add it to the the built objects list. Then, return the
@@ -63,7 +63,8 @@ namespace Honeycomb::Object {
 			obj->addComponent(*(new Honeycomb::Component::Physics::Transform()));
 			obj->addComponent(*aL);
 			GameObject::getRoot()->addChild(*obj);
-			this->builtObjects.push_back(obj);
+
+			return obj;
 		}
 
 		return obj->clone(); // Otherwise, clone the existing object.
@@ -71,7 +72,7 @@ namespace Honeycomb::Object {
 
 	GameObject* Builder::newCamera() {
 		// Try to find the object, if it has already been built
-		GameObject *obj = this->findObject("Camera");
+		GameObject *obj = nullptr;
 
 		// If we cannot find the object, then it has not been built yet, so
 		// build it and add it to the the built objects list. Then, return the
@@ -83,7 +84,8 @@ namespace Honeycomb::Object {
 			obj->addComponent(*(new Honeycomb::Component::Physics::Transform()));
 			obj->addComponent(*cam);
 			GameObject::getRoot()->addChild(*obj);
-			this->builtObjects.push_back(obj);
+
+			return obj;
 		}
 
 		return obj->clone(); // Otherwise, clone the existing object.
@@ -91,7 +93,7 @@ namespace Honeycomb::Object {
 
 	GameObject* Builder::newDirectionalLight() {
 		// Try to find the object, if it has already been built
-		GameObject *obj = this->findObject("Directional Light");
+		GameObject *obj = nullptr;
 
 		// If we cannot find the object, then it has not been built yet, so
 		// build it and add it to the the built objects list. Then, return the
@@ -105,79 +107,48 @@ namespace Honeycomb::Object {
 			obj->addComponent(*(new Honeycomb::Component::Physics::Transform()));
 			obj->addComponent(*dL);
 			GameObject::getRoot()->addChild(*obj);
-			this->builtObjects.push_back(obj);
+
+			return obj;
 		}
 
 		return obj->clone(); // Otherwise, clone the existing object.
 	}
 
 	GameObject* Builder::newCube() {
-		return this->newImport("Cube", CUBE_LOCATION);
+		return newDefaultImport("Cube", CUBE_LOCATION);
 	}
 
 	GameObject* Builder::newPlane() {
-		return this->newImport("Plane", PLANE_LOCATION);
+		return newDefaultImport("Plane", PLANE_LOCATION);
 	}
 
 	GameObject* Builder::newSphere() {
-		return this->newImport("Sphere", SPHERE_LOCATION);
+		return newDefaultImport("Sphere", SPHERE_LOCATION);
 	}
 
-	GameObject* Builder::newObjectWithPath(std::string path) {
-		// Try to find the model, if it has already been imported.
-		Model *model = this->findModel(path);
-		
-		// If we cannot find the model, then it has not been imported yet, so
-		// import it and add it to the imported models list.
-		if (model == nullptr) {
-			model = new Model(path);
-			this->importedModels.push_back(model);
-		}
+	GameObject* Builder::newModel(std::string path) {
+		// Create a Model and return the clone of it (again, do not delete the
+		// model so that the Model class may later reuse this model if needed).
+		GameObject* obj = (new Model(path))->getGameObjectClone();
+		GameObject::getRoot()->addChild(*obj);
 
-		// Return a cloned object of the model (regardless of whether it has
-		// already been imported or not).
-		return model->getGameObjectClone();
+		return obj;
 	}
 
 	Builder::Builder() {
 
 	}
 
-	Model* Builder::findModel(std::string path) {
-		for (int i = 0; i < this->importedModels.size(); i++) {
-			Model *mod = this->importedModels.at(i); // Get current model
+	GameObject* Builder::newDefaultImport(std::string name, std::string path) {
+		// Get the parent model and extract the child with the given name from
+		// it. Add the child to the root so that it may be instantiated.
+		GameObject *parent = (new Model(path))->getGameObjectClone();
+		GameObject *child = parent->getChild(name);
+		GameObject::getRoot()->addChild(*child);
 
-			// If the model has the same path as the specified path, return it.
-			if (mod->getPath() == path) return mod;
-		}
-
-		return nullptr; // If no model with matching path found -> return NULL
-	}
-
-	GameObject* Builder::findObject(std::string name) {
-		for (int i = 0; i < this->builtObjects.size(); i++) {
-			GameObject *obj = this->builtObjects.at(i); // Get current object
-
-			// If the obj. has the same name as the specified name, return it.
-			if (obj->getName() == name) return obj;
-		}
-
-		return nullptr; // If no object with matching name found -> return NULL
-	}
-
-	GameObject* Builder::newImport(std::string name, std::string path) {
-		// Try to find the object, if it has already been built
-		GameObject *obj = this->findObject(name);
-
-		// If we cannot find the object, then it has not been built yet, so
-		// build it and add it to the the built objects list. Then, return the
-		// newly built object.
-		if (obj == nullptr) {
-			obj = this->newObjectWithPath(path)->getChild(name);
-			GameObject::getRoot()->addChild(*obj);
-			this->builtObjects.push_back(obj);
-		}
-
-		return obj->clone(); // Otherwise, clone the existing object.
+		// Recycle the parent and return the child (keep the Model since the
+		// Model class will use it to avoid re-importation of models).
+		delete parent;
+		return child;
 	}
 }

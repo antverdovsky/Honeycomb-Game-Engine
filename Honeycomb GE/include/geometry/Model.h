@@ -37,9 +37,18 @@ namespace Honeycomb::Geometry {
 		/// return : The string containing the system path.
 		std::string getPath();
 	private:
+		static std::vector<Model*> imports; // All imported models
+
 		std::string path; // The system path to the model
 		const aiScene* scene; // The ASSIMP Scene for this model
 		Honeycomb::Object::GameObject *gameObject; // The built model object
+
+		/// Finds the Model in the imported models list, if the model has been
+		/// imported, with the matching path of this model. If the model has 
+		/// not yet been imported, a nullptr will be returned instead.
+		/// return : The Model in the imported models list, or a nullptr if the
+		///			 model has not yet been imported.
+		Model* findMatchingImport();
 
 		/// Loads the model object from the file path stored in this Model.
 		void loadFromPath();
