@@ -20,38 +20,45 @@ namespace Honeycomb::Geometry {
 		/// string path : The system file path to the model.
 		Model(std::string path);
 
-		/// Returns the game object... todo
-		Honeycomb::Object::GameObject* getGameObject();
+		/// Returns a Clone of the loaded Game Object. The game object will be
+		/// completely independent, with its own unique children and 
+		/// components, and it does not depend on the Model in any way.
+		/// return : A clone of the loaded Game Object.
+		Honeycomb::Object::GameObject* getGameObjectClone();
 	private:
 		/// Loads the model object from the specified file path.
 		/// string path : The system path to the model.
 		void loadFromFile(std::string path);
 
-		/// Processes the specified ASSIMP node. The meshes of the node will be
-		/// processed, and then the node's children will be processed
-		/// recursively.
-		/// GameObject *par : The object to which this node belongs. The node's
-		///					  object will be parented to this object.
-		/// aiNode *aNode : The ASSIMP node to be processed.
-		/// bool isRoot : Boolean indicating whether this is the root object,
-		///				  and if it is then the 
-		void processAiNode(Honeycomb::Object::GameObject *par, aiNode *aNode, 
-			bool isRoot);
+		/// Converts the ASSIMP Node into a Honeycomb GameObject, and returns
+		/// the GameObject instance. Each child node of the ASSIMP node will
+		/// also be converted into a GameObject, and parented to the returned
+		/// instance, recursively. All Objects will be equipped with a
+		/// Transform, and those which contain Mesh data will be equipped with
+		/// a MeshRenderer component.
+		/// aiNode *aNode : The ASSIMP node to be processed into a Honeycomb
+		///					GameObject.
+		/// return : The dynamically allocated Honeycomb GameObject instance,
+		///			 containing the information extracted from the ASSIMP node.
+		Honeycomb::Object::GameObject* processAiNode(aiNode *aNode);
 
-		/// Processes the ASSIMP material and writes it to the specified Mesh 
-		/// Renderer for use when rendering.
-		/// MeshRenderer *ren : The pointer to the Mesh Renderer for which the
-		///						material is to be written for.
-		/// aiMaterial *aMat : The ASSIMP material.
-		void processAiMaterial(Honeycomb::Component::Render::MeshRenderer *ren,
-			aiMaterial *aMat);
+		/// Converts the ASSIMP Material into a Honeycomb Material, and returns
+		/// the Material instance.
+		/// aiMaterial *aMat : The ASSIMP Material to be converted into a
+		///					   Honeycomb Material.
+		/// return : The dynamically allocated Honeycomb Material instance,
+		///			 containing the information extracted from the ASSIMP 
+		///			 Material.
+		Honeycomb::Graphics::Material* processAiMeshMaterial(aiMaterial *aMat);
 
-		/// Processes the specified ASSIMP mesh.
-		/// GameObject *obj : The object to which this mesh belongs. A mesh
-		///				 	  renderer will be added to the object, so that it
-		///				 	  may render the processed Mesh.
-		/// aiMesh *aMesh : The ASSIMP mesh to be processed.
-		void processAiMesh(Honeycomb::Object::GameObject *obj, aiMesh *aMesh);
+		/// Converts the ASSIMP Mesh into a Honeycomb Mesh, and returns the 
+		/// Mesh instance.
+		/// aiMesh *aMesh : The ASSIMP Mesh to be converted into a Honeycomb 
+		///					Mesh.
+		/// return : The dynamically allocated Honeycomb Mesh instance,
+		///			 containing the information extracted from the ASSIMP 
+		///			 Mesh.
+		Honeycomb::Geometry::Mesh* processAiMeshGeometry(aiMesh *aMesh);
 
 		const aiScene* scene; // The ASSIMP Scene for this model
 		Honeycomb::Object::GameObject *modelObject; // The built model object

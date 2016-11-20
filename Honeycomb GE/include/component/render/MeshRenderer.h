@@ -10,6 +10,9 @@
 namespace Honeycomb::Component::Render {
 	class MeshRenderer : public GameComponent {
 	public:
+		/// Creates a Mesh Renderer component with no mesh, shader, or texture.
+		MeshRenderer();
+
 		/// Creates a Mesh Renderer component given the specified mesh, shader
 		/// and texture.
 		/// Mesh *mesh : The mesh to be rendered.

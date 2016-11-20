@@ -34,6 +34,11 @@ namespace Honeycomb::Geometry {
 		this->indexSize = 0;
 	}
 
+	Mesh::Mesh(Vertex vert[], int vertCount, int indx[], int indxCount) 
+			: Mesh() {
+		this->addVertexData(vert, vertCount, indx, indxCount);
+	}
+
 	Mesh::~Mesh() {
 		GLuint ibo = this->indexBufferObj;
 		glDeleteBuffers(1, &ibo);
@@ -42,7 +47,7 @@ namespace Honeycomb::Geometry {
 		glDeleteBuffers(1, &vbo);
 	}
 
-	void Mesh::addVertexData(Vertex vert[], int vertCount, int index[],
+	void Mesh::addVertexData(Vertex vert[], int vertCount, int indx[],
 			int indxCount) {
 		// Convert the verticies into floats which OpenGL understands
 		GLfloat *vertFloats = Vertex::toFloatBuffer(vert, vertCount);
@@ -65,7 +70,7 @@ namespace Honeycomb::Geometry {
 
 		// Bind the buffer to the IBO and send the index data to the buffer
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBufferObj);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indexSize, &index[0], 
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indexSize, &indx[0], 
 			GL_STATIC_DRAW);
 		
 		delete vertFloats; // Done using the verticies floats

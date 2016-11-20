@@ -22,7 +22,7 @@ namespace HoneycombTest::Components {
 	InputTransformable::InputTransformable(
 			int mF, int mB, int mL, int mR, int mU, int mD,
 			int pU, int pD, int rL, int rR, int yL, int yR,
-			float sM, float sR) {
+			float sM, float sR) : GameComponent("InputTransformable") {
 		this->movForward = mF;
 		this->movBackward = mB;
 		this->movLeft = mL;

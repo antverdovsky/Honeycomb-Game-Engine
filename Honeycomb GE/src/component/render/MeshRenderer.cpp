@@ -19,6 +19,10 @@ using Honeycomb::Shader::ShaderProgram;
 using namespace Honeycomb::File;
 
 namespace Honeycomb::Component::Render {
+	MeshRenderer::MeshRenderer() : GameComponent("MeshRenderer") {
+
+	}
+
 	MeshRenderer::MeshRenderer(Mesh *mes, ShaderProgram *shad, Material *mat)
 			: GameComponent("MeshRenderer") {
 		this->mesh = mes;
@@ -53,9 +57,10 @@ namespace Honeycomb::Component::Render {
 		this->shader->setUniform_mat4("objTransform",
 			objTrans.getTransformationMatrix());
 
-		this->shader->bindShaderProgram();
-		this->material->use();
-		this->mesh->draw();
+		// Draw what you can (what isn't NULL).
+		if (this->shader != nullptr) this->shader->bindShaderProgram();
+		if (this->material != nullptr) this->material->use();
+		if (this->mesh != nullptr) this->mesh->draw();
 	}
 
 	void MeshRenderer::setMaterial(Material *mat) {
