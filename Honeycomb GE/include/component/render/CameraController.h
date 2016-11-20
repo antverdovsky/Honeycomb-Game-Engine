@@ -19,6 +19,11 @@ namespace Honeycomb::Component::Render {
 			PERSPECTIVE
 		};
 
+		/// Initializes a new Perspective camera, with 100.0F and 0.03F for the
+		/// far and near clipping planes, respectively; 75.0F degrees FOV;
+		/// and the window size for the projection width and height.
+		CameraController();
+
 		/// Initializes a new Camera instance.
 		/// CameraType cT : The camera type.
 		/// float clF : The far clipping plane.

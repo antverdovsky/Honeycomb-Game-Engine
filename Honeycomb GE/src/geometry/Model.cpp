@@ -30,14 +30,23 @@ using Honeycomb::Shader::Phong::PhongShader;
 
 namespace Honeycomb::Geometry {
 	Model::Model(std::string path) {
-		this->loadFromFile(path);
+		this->path = path;
+		this->loadFromPath();
+	}
+
+	GameObject* Model::getGameObject() {
+		return this->gameObject;
 	}
 
 	GameObject* Model::getGameObjectClone() {
-		return this->modelObject->clone();
+		return this->gameObject->clone();
 	}
 
-	void Model::loadFromFile(std::string path) {
+	std::string Model::getPath() {
+		return this->path;
+	}
+
+	void Model::loadFromPath() {
 		Importer aImp = Importer(); // Initialize the Importer
 
 		this->scene = aImp.ReadFile(path, aiProcess_Triangulate);
@@ -51,7 +60,7 @@ namespace Honeycomb::Geometry {
 		}
 		
 		// Initialize the Model Object from the Scene Root node
-		this->modelObject = this->processAiNode(this->scene->mRootNode);
+		this->gameObject = this->processAiNode(this->scene->mRootNode);
 	}
 
 	Material* Model::processAiMeshMaterial(aiMaterial* aMat) {

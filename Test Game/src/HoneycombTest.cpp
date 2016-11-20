@@ -22,6 +22,7 @@
 #include "..\..\Honeycomb GE\include\component\render\CameraController.h"
 #include "..\..\Honeycomb GE\include\component\render\MeshRenderer.h"
 #include "..\..\Honeycomb GE\include\object\GameObject.h"
+#include "..\..\Honeycomb GE\include\object\Builder.h"
 
 #include "..\..\Honeycomb GE\include\math\Vector3f.h"
 #include "..\..\Honeycomb GE\include\math\Vector4f.h"
@@ -46,6 +47,7 @@ using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Component::Render::CameraController;
 using Honeycomb::Component::Render::MeshRenderer;
 using Honeycomb::Object::GameObject;
+using Honeycomb::Object::Builder;
 
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
@@ -83,11 +85,18 @@ namespace HoneycombTest {
 
 	void TestGame::start() {
 		// Import the Cube Model
-		Model *cubeModel = new Model(CUBE_MODEL_LOC);
+		//Model *cubeModel = new Model(CUBE_MODEL_LOC);
 
 		// Instantiate a Cube from the Cube Model, move the cube forward a bit,
 		// and attach an Input Transformable Component to it.
-		this->cubeObject = cubeModel->getGameObjectClone();
+		//this->cubeObject = cubeModel->getGameObjectClone();
+		this->cubeObject = Builder::getBuilder()->newCube();
+		GameObject *aCube = Builder::getBuilder()->newCube();
+		GameObject *aPlane = Builder::getBuilder()->newPlane();
+		GameObject *aSphere = Builder::getBuilder()->newSphere();
+		aPlane->getComponentOfType<Transform>("Transform")->setScale(Vector3f(5.0F, 5.0F, 5.0F));
+		aPlane->getComponentOfType<Transform>("Transform")->rotate(Vector3f::getGlobalRight(), 3.1415926 / 2.0F);
+		aSphere->getComponentOfType<Transform>("Transform")->setTranslation(Vector3f(2.5F, 2.5F, 2.5F));
 		InputTransformable *cubeInputTransformable = new InputTransformable(
 			GameInput::KEY_CODE_UP, GameInput::KEY_CODE_DOWN,
 			GameInput::KEY_CODE_LEFT, GameInput::KEY_CODE_RIGHT,
@@ -96,37 +105,49 @@ namespace HoneycombTest {
 			GameInput::KEY_CODE_F, GameInput::KEY_CODE_G,
 			GameInput::KEY_CODE_V, GameInput::KEY_CODE_B,
 			0.05F, 0.05F);
-		this->cubeObject->getChild("Cube")->
-			getComponentOfType<Transform>("Transform")->
+		this->cubeObject->getComponentOfType<Transform>("Transform")->
 			translate(Vector3f(0.0F, 0.0F, -5.0F));
-		this->cubeObject->getChild("Cube")->
-			addComponent(*cubeInputTransformable);
+		aPlane->addComponent(*cubeInputTransformable);
+		aSphere->addComponent(*cubeInputTransformable->clone());
+		this->cubeObject->addComponent(*cubeInputTransformable->clone());
 
-		// Create Camera Components & Camera Object
-		CameraController *cameraController =
-			new CameraController(CameraController::CameraType::PERSPECTIVE,
-				100.0F, 0.3F, 75.0F, 768.0F, 1024.0F); // [TODO]: Perspective Size!!!
-		Transform *cameraTransform =
-			new Transform(Vector3f(),
-				Quaternion(Vector3f::getGlobalUp(), 3.1415926),
-				Vector3f(1.0F, 1.0F, 1.0F));
+		GameObject* ambientLightObj = Builder::getBuilder()->newAmbientLight();
+		GameObject* dirLightObj = Builder::getBuilder()->newDirectionalLight();
+
+		GameObject *camera = Builder::getBuilder()->newCamera();
 		InputTransformable *cameraInputTransformable =
 			new InputTransformable();
-		DirectionalLight *directionalLight = new DirectionalLight(
-			BaseLight("directionalLight", 1.0F, Vector4f(1.0F, 1.0F, 1.0F, 1.0F)));
-		this->cameraObject = new GameObject("Camera");
-		this->cameraObject->addComponent(*cameraController);
-		this->cameraObject->addComponent(*cameraTransform);
-		this->cameraObject->addComponent(*cameraInputTransformable);
-		this->cameraObject->addComponent(*directionalLight);
+		camera->addComponent(*cameraInputTransformable);
 
+		// Create Camera Components & Camera Object
+//		CameraController *cameraController =
+//			new CameraController(CameraController::CameraType::PERSPECTIVE,
+//				100.0F, 0.3F, 75.0F, 768.0F, 1024.0F); // [TODO]: Perspective Size!!!
+//		Transform *cameraTransform =
+//			new Transform(Vector3f(),
+//				Quaternion(Vector3f::getGlobalUp(), 3.1415926),
+//				Vector3f(1.0F, 1.0F, 1.0F));
+//		InputTransformable *cameraInputTransformable =
+//			new InputTransformable();
+//		DirectionalLight *directionalLight = new DirectionalLight(
+//			BaseLight("directionalLight", 1.0F, Vector4f(1.0F, 1.0F, 1.0F, 1.0F)));
+//		this->cameraObject = new GameObject("Camera");
+//		this->cameraObject->addComponent(*cameraController);
+//		this->cameraObject->addComponent(*cameraTransform);
+//		this->cameraObject->addComponent(*cameraInputTransformable);
+//		this->cameraObject->addComponent(*directionalLight);
+
+		/*
 		// Create ambient light
 		GameObject *ambientObject = new GameObject("Ambient Light");
 		AmbientLight *ambientComponent = new AmbientLight(
 			BaseLight("ambientLight", 1.0F, Vector4f(1.0F, 1.0F, 1.0F, 1.0F)));
 		ambientObject->addComponent(*ambientComponent);
+		*/
 
-		delete cubeModel;
+		delete Builder::getBuilder();
+
+		GameObject *ptr = GameObject::getRoot();
 
 		GameObject::getRoot()->start();
 	}
@@ -136,6 +157,8 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::update() {
+		GameObject *ptr = GameObject::getRoot();
+
 		GameObject::getRoot()->update();
 	}
 }

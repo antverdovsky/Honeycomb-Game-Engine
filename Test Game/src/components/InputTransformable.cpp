@@ -45,6 +45,10 @@ namespace HoneycombTest::Components {
 
 	}
 
+	InputTransformable* InputTransformable::clone() {
+		return new InputTransformable(*this);
+	}
+
 	void InputTransformable::input() {
 		Transform *transform = 
 			this->attached->getComponentOfType<Transform>("Transform");

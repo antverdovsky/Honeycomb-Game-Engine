@@ -18,6 +18,13 @@ using namespace Honeycomb::Math::Utils;
 namespace Honeycomb::Component::Render {
 	CameraController *CameraController::activeCamera = nullptr;
 
+	CameraController::CameraController()
+		: CameraController(CameraType::PERSPECTIVE, 100.0F, 0.03F, 75.0F,
+			GameWindow::getGameWindow()->getWindowHeight(),
+			GameWindow::getGameWindow()->getWindowWidth()) {
+
+	}
+
 	CameraController::CameraController(CameraType cT, float clF, float clN,
 			float cTP, float projH, float projW) : GameComponent("Camera") {
 		this->type = cT;

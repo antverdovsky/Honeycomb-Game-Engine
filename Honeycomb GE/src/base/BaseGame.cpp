@@ -2,7 +2,7 @@
 
 namespace Honeycomb::Base {
 	void BaseGame::input() {
-		
+
 	}
 
 	void BaseGame::render() {

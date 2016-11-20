@@ -220,6 +220,7 @@
     <ClCompile Include="src\geometry\Vertex.cpp" />
     <ClCompile Include="src\component\GameComponent.cpp" />
     <ClCompile Include="src\math\Vector4f.cpp" />
+    <ClCompile Include="src\object\Builder.cpp" />
     <ClCompile Include="src\object\GameObject.cpp" />
     <ClCompile Include="src\component\physics\Transform.cpp" />
     <ClCompile Include="src\component\render\CameraController.cpp" />
@@ -252,6 +253,7 @@
     <ClInclude Include="include\geometry\Vertex.h" />
     <ClInclude Include="include\component\GameComponent.h" />
     <ClInclude Include="include\math\Vector4f.h" />
+    <ClInclude Include="include\object\Builder.h" />
     <ClInclude Include="include\object\GameObject.h" />
     <ClInclude Include="include\component\physics\Transform.h" />
     <ClInclude Include="include\component\render\CameraController.h" />

@@ -42,6 +42,12 @@ namespace HoneycombTest::Components {
 		/// Default Destructor.
 		~InputTransformable();
 
+		/// Clones this Input Transformable into a new, dynamically allocated 
+		/// Input Transformable. This function should be used instead of the 
+		/// copy constructor to  prevent object slicing.
+		/// return : The cloned Input Transformable.
+		InputTransformable* clone();
+
 		/// Takes in the input and transforms the transform according to the
 		/// input.
 		void input();

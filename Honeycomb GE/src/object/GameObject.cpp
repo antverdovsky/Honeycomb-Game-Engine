@@ -21,7 +21,7 @@ namespace Honeycomb::Object {
 		if (p != nullptr) p->addChild(*this);
 	}
 
-	GameObject::GameObject(GameObject& o) : GameObject("GameObject") {
+	GameObject::GameObject(GameObject& o) : GameObject("GameObject", nullptr) {
 		this->isActive = o.isActive;
 		this->name = o.name;
 		
