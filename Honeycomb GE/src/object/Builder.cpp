@@ -26,13 +26,11 @@ namespace Honeycomb::Object {
 		"..\\Honeycomb GE\\res\\models\\default\\plane.fbx";
 	const std::string Builder::SPHERE_LOCATION =
 		"..\\Honeycomb GE\\res\\models\\default\\sphere.fbx";
+	const std::string Builder::SUZANNE_LOCATION =
+		"..\\Honeycomb GE\\res\\models\\default\\suzanne.fbx";
 
 	Builder::~Builder() {
-		// Destroy all the imported models and built objects
-//		for (int i = 0; i < this->importedModels.size(); i++)
-//			delete this->importedModels.at(i);
-//		for (int i = 0; i < this->builtObjects.size(); i++)
-//			delete this->builtObjects.at(i);
+
 	}
 
 	Builder* Builder::getBuilder() {
@@ -43,79 +41,65 @@ namespace Honeycomb::Object {
 	}
 
 	GameObject* Builder::newAmbientLight() {
-		//
-		// TODO: Find way to unify code for ambient, camera, directional
-		//
+		// Initialize the Ambient Light Game Object
+		GameObject *ambLight = new GameObject("Ambient Light");
 
-		// Try to find the object, if it has already been built
-		GameObject *obj = nullptr;
+		// Initialize the Ambient Light Game Components
+		BaseLight bL = BaseLight("ambientLight", 0.25F,
+			Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
+		AmbientLight *aL = new AmbientLight(bL);
+		Transform *trans = new Transform();
 
-		// If we cannot find the object, then it has not been built yet, so
-		// build it and add it to the the built objects list. Then, return the
-		// newly built object.
-		if (obj == nullptr) {
-			obj = new GameObject("Ambient Light", nullptr);
-			BaseLight bL = BaseLight("ambientLight", 1.0F,
-				Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
-			AmbientLight *aL = new AmbientLight(bL);
+		// Add the initialized components to the Ambient Light Game Object
+		ambLight->addComponent(*aL);
+		ambLight->addComponent(*trans);
 
-			/// TODO: Why doesn't Transform() work without namespace???
-			obj->addComponent(*(new Honeycomb::Component::Physics::Transform()));
-			obj->addComponent(*aL);
-			GameObject::getRoot()->addChild(*obj);
-
-			return obj;
-		}
-
-		return obj->clone(); // Otherwise, clone the existing object.
+		return ambLight; // Return the Ambient Light Game Object
 	}
 
 	GameObject* Builder::newCamera() {
-		// Try to find the object, if it has already been built
-		GameObject *obj = nullptr;
+		// Initialize the Camera Game Object
+		GameObject *camera = new GameObject("Camera");
 
-		// If we cannot find the object, then it has not been built yet, so
-		// build it and add it to the the built objects list. Then, return the
-		// newly built object.
-		if (obj == nullptr) {
-			obj = new GameObject("Camera", nullptr);
-			CameraController *cam = new CameraController();
+		// Initialize the Camera Game Component
+		CameraController *cam = new CameraController();
+		Transform *trans = new Transform();
 
-			obj->addComponent(*(new Honeycomb::Component::Physics::Transform()));
-			obj->addComponent(*cam);
-			GameObject::getRoot()->addChild(*obj);
+		// Add the initialized components to the Camera Game Object
+		camera->addComponent(*cam);
+		camera->addComponent(*trans);
 
-			return obj;
-		}
-
-		return obj->clone(); // Otherwise, clone the existing object.
+		return camera; // Return the Camera Game Object
 	}
 
 	GameObject* Builder::newDirectionalLight() {
-		// Try to find the object, if it has already been built
-		GameObject *obj = nullptr;
+		// Initialize the Directional Light Game Object
+		GameObject *dirLight = new GameObject("Directional Light");
 
-		// If we cannot find the object, then it has not been built yet, so
-		// build it and add it to the the built objects list. Then, return the
-		// newly built object.
-		if (obj == nullptr) {
-			obj = new GameObject("Directional Light", nullptr);
-			BaseLight bL = BaseLight("directionalLight", 1.0F,
-				Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
-			DirectionalLight *dL = new DirectionalLight(bL);
+		// Initialize the Directional Light Game Components
+		BaseLight bL = BaseLight("directionalLight", 1.0F,
+			Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
+		DirectionalLight *dL = new DirectionalLight(bL);
+		Transform *trans = new Transform();
 
-			obj->addComponent(*(new Honeycomb::Component::Physics::Transform()));
-			obj->addComponent(*dL);
-			GameObject::getRoot()->addChild(*obj);
+		// Add the initialized components to the Directional Light Game Object
+		dirLight->addComponent(*dL);
+		dirLight->addComponent(*trans);
 
-			return obj;
-		}
-
-		return obj->clone(); // Otherwise, clone the existing object.
+		return dirLight; // Return the Directional Light Game Object
 	}
 
 	GameObject* Builder::newCube() {
 		return newDefaultImport("Cube", CUBE_LOCATION);
+	}
+
+	GameObject* Builder::newModel(std::string path) {
+		// Create a Model and return the clone of it (again, do not delete the
+		// model so that the Model class may later reuse this model if needed).
+		GameObject* obj = (new Model(path))->getGameObjectClone();
+		GameObject::getRoot()->addChild(*obj);
+
+		return obj;
 	}
 
 	GameObject* Builder::newPlane() {
@@ -126,13 +110,8 @@ namespace Honeycomb::Object {
 		return newDefaultImport("Sphere", SPHERE_LOCATION);
 	}
 
-	GameObject* Builder::newModel(std::string path) {
-		// Create a Model and return the clone of it (again, do not delete the
-		// model so that the Model class may later reuse this model if needed).
-		GameObject* obj = (new Model(path))->getGameObjectClone();
-		GameObject::getRoot()->addChild(*obj);
-
-		return obj;
+	GameObject* Builder::newSuzanne() {
+		return newDefaultImport("Suzanne", SUZANNE_LOCATION);
 	}
 
 	Builder::Builder() {

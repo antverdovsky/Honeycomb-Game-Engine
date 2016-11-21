@@ -63,6 +63,11 @@ namespace Honeycomb::Graphics {
 		/// return : The specular color.
 		Honeycomb::Math::Vector4f& getSpecularColor();
 
+		/// Sets the Albedo Texture of this Material (may also be set to null
+		/// to indicate this material has no Albedo Texture). 
+		/// Texture2D *tex : The Albedo Texture.
+		void setAlbedoTexture(Texture2D *tex);
+
 		/// Uses this Material to draw something. The texture of this material
 		/// will be binded, and the color will be sent to the active Shader
 		/// program.

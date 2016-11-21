@@ -57,6 +57,10 @@ namespace Honeycomb::Graphics {
 		return this->specularColor;
 	}
 
+	void Material::setAlbedoTexture(Texture2D *tex) {
+		this->albedoTexture = tex;
+	}
+
 	void Material::use() {
 		if (this->albedoTexture != nullptr)
 			this->albedoTexture->bind();

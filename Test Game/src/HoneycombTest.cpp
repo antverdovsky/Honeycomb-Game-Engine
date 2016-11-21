@@ -1,11 +1,11 @@
 #include "..\include\HoneycombTest.h"
 
 #include <iostream>
-#include <ctime>
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
+#include "..\..\Honeycomb GE\include\base\GameTime.h"
 #include "..\..\Honeycomb GE\include\base\GameInput.h"
 
 #include "..\..\Honeycomb GE\include\geometry\Model.h"
@@ -25,6 +25,7 @@
 #include "..\..\Honeycomb GE\include\object\GameObject.h"
 #include "..\..\Honeycomb GE\include\object\Builder.h"
 
+#include "..\..\Honeycomb GE\include\math\MathUtils.h"
 #include "..\..\Honeycomb GE\include\math\Vector3f.h"
 #include "..\..\Honeycomb GE\include\math\Vector4f.h"
 #include "..\..\Honeycomb GE\include\math\Quaternion.h"
@@ -53,6 +54,7 @@ using Honeycomb::Object::Builder;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
 using Honeycomb::Math::Quaternion;
+using Honeycomb::Math::Utils::PI;
 
 using Honeycomb::Component::Light::AmbientLight;
 using Honeycomb::Component::Light::BaseLight;
@@ -60,23 +62,10 @@ using Honeycomb::Component::Light::DirectionalLight;
 
 using HoneycombTest::Components::InputTransformable;
 
+using namespace Honeycomb::Base;
+
 namespace HoneycombTest {
-//  TODO: WRONG NORMALS WHEN IMPORTING .BLEND RESULTS IN WEIRD LIGHTING...
-//	std::string TestGame::CUBE_MODEL_LOC =
-//		"..\\Honeycomb GE\\res\\models\\default\\cube.blend";
-	std::string TestGame::CUBE_MODEL_LOC = 
-		"..\\Honeycomb GE\\res\\models\\default\\cube.fbx";
-	std::string TestGame::CUBE_TEXTURE_LOC =
-		"..\\Honeycomb GE\\res\\textures\\default\\Checkerboard.bmp";
-
 	void TestGame::input() {
-		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_1)) {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
-		else if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_2)) {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		}
-
 		GameObject::getRoot()->input();
 	}
 
@@ -85,101 +74,85 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::start() {
-		srand(time(NULL));
-		// Import the Cube Model
-		//Model *cubeModel = new Model(CUBE_MODEL_LOC);
+		///
+		/// Load in all of the Models.
+		///
+		GameObject *cube = Builder::getBuilder()->newCube();
+		GameObject *plane = Builder::getBuilder()->newPlane();
+		GameObject *sphere = Builder::getBuilder()->newSphere();
+		GameObject *suzanne = Builder::getBuilder()->newSuzanne();
 
-		for (int i = 0; i <= 50; i++) {
-			GameObject *custom = Builder::getBuilder()->
-				newModel("..\\Honeycomb GE\\res\\models\\default\\untitled.fbx");
-			custom->getChild("Suzanne")->getComponentOfType<Transform>("Transform")->translate(
-				Vector3f((rand() % 40) - 20, (rand() % 40) - 20, (rand() % 40) - 20));
-			custom->getChild("Suzanne")->getComponentOfType<Transform>("Transform")->rotate(
-				Vector3f::getGlobalRight(), 3.1415926 / 2);
-			custom->getChild("Suzanne")->getComponentOfType<Transform>("Transform")->rotate(
-				Vector3f::getGlobalUp(), 3.1415926);
-			custom->getChild("Suzanne")->getComponentOfType<MeshRenderer>("MeshRenderer")->setMaterial(
-				new Material("material", nullptr,
-					Vector4f(static_cast <float> (rand()) / static_cast <float> (RAND_MAX),
-						static_cast <float> (rand()) / static_cast <float> (RAND_MAX),
-						static_cast <float> (rand()) / static_cast <float> (RAND_MAX),
-						1.0F),
-					Vector4f(1.0F, 1.0F, 1.0F, 1.0F),
-					Vector4f(1.0, 1.0F, 1.0F, 1.0F),
-					10.0F));
-//			custom->getChild("Suzanne")->getComponentOfType<Transform>("Transform")->setScale(
-//				Vector3f(2.5F, 2.5F, 2.5F));
 
-			if (i == 0) {
-				//	custom->getChild("Suzanne")->addComponent(*cubeInputTransformable->clone());
-			}
-		}
+		///
+		/// Load in all of the Lights and the Camera.
+		///
+		GameObject *camera = Builder::getBuilder()->newCamera();
+		GameObject *ambientLight = Builder::getBuilder()->newAmbientLight();
+		GameObject *directionalLight = Builder::getBuilder()->
+			newDirectionalLight();
 
-		// Instantiate a Cube from the Cube Model, move the cube forward a bit,
-		// and attach an Input Transformable Component to it.
-		//this->cubeObject = cubeModel->getGameObjectClone();
-		this->cubeObject = Builder::getBuilder()->newCube();
-		GameObject *aCube = Builder::getBuilder()->newCube();
-		GameObject *aPlane = Builder::getBuilder()->newPlane();
-		GameObject *aSphere = Builder::getBuilder()->newSphere();
-		aPlane->getComponentOfType<Transform>("Transform")->setScale(Vector3f(5.0F, 5.0F, 5.0F));
-		aPlane->getComponentOfType<Transform>("Transform")->rotate(Vector3f::getGlobalRight(), 3.1415926 / 2.0F);
-		aSphere->getComponentOfType<Transform>("Transform")->setTranslation(Vector3f(2.5F, 2.5F, 2.5F));
-		InputTransformable *cubeInputTransformable = new InputTransformable(
+
+		///
+		/// Create additional components for the created objects & add.
+		///
+		InputTransformable *camInputTransformable = new InputTransformable();
+		InputTransformable *suzInputTransformable = new InputTransformable(
 			GameInput::KEY_CODE_UP, GameInput::KEY_CODE_DOWN,
 			GameInput::KEY_CODE_LEFT, GameInput::KEY_CODE_RIGHT,
 			GameInput::KEY_CODE_COMMA, GameInput::KEY_CODE_PERIOD,
 			GameInput::KEY_CODE_R, GameInput::KEY_CODE_T,
 			GameInput::KEY_CODE_F, GameInput::KEY_CODE_G,
 			GameInput::KEY_CODE_V, GameInput::KEY_CODE_B,
-			0.05F, 0.05F);
-		this->cubeObject->getComponentOfType<Transform>("Transform")->
-			translate(Vector3f(0.0F, 0.0F, -5.0F));
-		aPlane->addComponent(*cubeInputTransformable);
-		aSphere->addComponent(*cubeInputTransformable->clone());
-		this->cubeObject->addComponent(*cubeInputTransformable->clone());
-
-		GameObject* ambientLightObj = Builder::getBuilder()->newAmbientLight();
-		GameObject* dirLightObj = Builder::getBuilder()->newDirectionalLight();
-
-		GameObject *camera = Builder::getBuilder()->newCamera();
-		InputTransformable *cameraInputTransformable =
-			new InputTransformable();
-		camera->addComponent(*cameraInputTransformable);
-
-		aSphere->getComponentOfType<MeshRenderer>("MeshRenderer")->
-			getMaterial()->getAmbientColor() = Vector4f(1.0F, 0.0F, 0.0F, 1.0F);
+			5.0F, 5.0F);
+		camera->addComponent(*camInputTransformable);
+		suzanne->addComponent(*suzInputTransformable);
 
 
-		// Create Camera Components & Camera Object
-//		CameraController *cameraController =
-//			new CameraController(CameraController::CameraType::PERSPECTIVE,
-//				100.0F, 0.3F, 75.0F, 768.0F, 1024.0F); // [TODO]: Perspective Size!!!
-//		Transform *cameraTransform =
-//			new Transform(Vector3f(),
-//				Quaternion(Vector3f::getGlobalUp(), 3.1415926),
-//				Vector3f(1.0F, 1.0F, 1.0F));
-//		InputTransformable *cameraInputTransformable =
-//			new InputTransformable();
-//		DirectionalLight *directionalLight = new DirectionalLight(
-//			BaseLight("directionalLight", 1.0F, Vector4f(1.0F, 1.0F, 1.0F, 1.0F)));
-//		this->cameraObject = new GameObject("Camera");
-//		this->cameraObject->addComponent(*cameraController);
-//		this->cameraObject->addComponent(*cameraTransform);
-//		this->cameraObject->addComponent(*cameraInputTransformable);
-//		this->cameraObject->addComponent(*directionalLight);
+		///
+		/// Transform the objects in the scene.
+		///
+		cube->getComponentOfType<Transform>("Transform")->setTranslation(
+			Vector3f(-2.5F, 1.0F, -2.5F));
 
-		/*
-		// Create ambient light
-		GameObject *ambientObject = new GameObject("Ambient Light");
-		AmbientLight *ambientComponent = new AmbientLight(
-			BaseLight("ambientLight", 1.0F, Vector4f(1.0F, 1.0F, 1.0F, 1.0F)));
-		ambientObject->addComponent(*ambientComponent);
-		*/
+		plane->getComponentOfType<Transform>("Transform")->setScale(
+			Vector3f(10.0F, 10.0F, 10.0F));
 
-		delete Builder::getBuilder(); // necessary?
+		sphere->getComponentOfType<Transform>("Transform")->setScale(
+			Vector3f(PI, PI, PI));
+		sphere->getComponentOfType<Transform>("Transform")->translate(
+			Vector3f(PI, PI, PI));
 
-		GameObject *ptr = GameObject::getRoot();
+		suzanne->getComponentOfType<Transform>("Transform")->setTranslation(
+			Vector3f(-2.5F, 2.5F, 2.5F));
+
+
+		///
+		/// Create a fancy Emerald Material (textured and non-textured).
+		///
+		Material *emerald = new Material("material", nullptr,
+			Vector4f(0.0215F, 0.1745F, 0.0215F, 1.0F),
+			Vector4f(0.07568F, 0.61424F, 0.07568F, 1.0F),
+			Vector4f(0.633F, 0.727811F, 0.633F, 1.0F),
+			0.6F * 128.0F);
+		Material *emeraldTex = new Material(*emerald);
+		Texture2D *tex =
+			cube->getComponentOfType<MeshRenderer>("MeshRenderer")->
+			getMaterial()->getAlbedoTexture();
+		emeraldTex->setAlbedoTexture(tex);
+
+
+		///
+		/// Give the Cube, Sphere and Plane the Textured Emerald Material, and
+		/// give Suzanne the non-Textured Emerald Material.
+		///
+		cube->getComponentOfType<MeshRenderer>("MeshRenderer")->
+			setMaterial(emeraldTex);
+		plane->getComponentOfType<MeshRenderer>("MeshRenderer")->
+			setMaterial(emeraldTex);
+		sphere->getComponentOfType<MeshRenderer>("MeshRenderer")->
+			setMaterial(emeraldTex);
+		suzanne->getComponentOfType<MeshRenderer>("MeshRenderer")->
+			setMaterial(emerald);
 
 		GameObject::getRoot()->start();
 	}
@@ -189,7 +162,13 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::update() {
-		GameObject *ptr = GameObject::getRoot();
+		///
+		/// Rotate the Directional Light to emulate sun light in the scene.
+		///
+		GameObject *sun = GameObject::getRoot()->getChild("Directional Light");
+		Transform *sunTrans = sun->getComponentOfType<Transform>("Transform");
+		sunTrans->rotate(sunTrans->getLocalRight(), 
+			0.333F * Time::getDeltaTimeSeconds());
 
 		GameObject::getRoot()->update();
 	}

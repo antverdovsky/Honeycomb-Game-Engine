@@ -8,9 +8,6 @@
 #include "..\..\..\include\math\Matrix4f.h"
 #include "..\..\..\include\object\GameObject.h"
 
-namespace Honeycomb::Math { class Matrix4f; }
-namespace Honeycomb::Object { class Transform; }
-
 namespace Honeycomb::Component::Render {
 	class CameraController : public GameComponent {
 	public:

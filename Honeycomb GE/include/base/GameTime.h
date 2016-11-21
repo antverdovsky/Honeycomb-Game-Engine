@@ -12,10 +12,20 @@ namespace Honeycomb::Base::Time {
 	/// return : The time between the frames (in ms).
 	float getDeltaTime();
 
+	/// Gets the time between the current frame and the last frame in
+	/// seconds.
+	/// return : The time between the frames (in s).
+	float getDeltaTimeSeconds();
+
 	/// Gets the current game time (since the start of the game) in 
 	/// milliseconds.
 	/// return : The game time (in ms).
 	float getGameTime();
+
+	/// Gets the current game time (since the start of the game) in 
+	/// seconds.
+	/// return : The game time (in s).
+	float getGameTimeSeconds();
 
 	/// Sets the time between the current frame and the last frame in
 	/// milliseconds.

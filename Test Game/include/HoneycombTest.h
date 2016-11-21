@@ -19,11 +19,7 @@ namespace HoneycombTest {
 
 		void update();
 	private:
-		static std::string CUBE_MODEL_LOC;
-		static std::string CUBE_TEXTURE_LOC;
 
-		Honeycomb::Object::GameObject *cubeObject;
-		Honeycomb::Object::GameObject *cameraObject;
 	};
 }
 
