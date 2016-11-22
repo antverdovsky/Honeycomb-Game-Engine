@@ -245,6 +245,7 @@
     <ClInclude Include="include\component\light\AmbientLight.h" />
     <ClInclude Include="include\component\light\BaseLight.h" />
     <ClInclude Include="include\component\light\DirectionalLight.h" />
+    <ClInclude Include="include\HoneycombEngine.h" />
     <ClInclude Include="include\math\MathUtils.h" />
     <ClInclude Include="include\math\Matrix4f.h" />
     <ClInclude Include="include\math\Quaternion.h" />

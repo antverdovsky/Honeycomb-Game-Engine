@@ -1,71 +1,11 @@
 #include "..\include\HoneycombTest.h"
 
-#include <iostream>
-
-#include <GL\glew.h>
-#include <GLFW\glfw3.h>
-
-#include "..\..\Honeycomb GE\include\base\GameTime.h"
-#include "..\..\Honeycomb GE\include\base\GameInput.h"
-
-#include "..\..\Honeycomb GE\include\geometry\Model.h"
-
-#include "..\..\Honeycomb GE\include\geometry\Mesh.h"
-#include "..\..\Honeycomb GE\include\graphics\Texture2D.h"
-#include "..\..\Honeycomb GE\include\graphics\Material.h"
-#include "..\..\Honeycomb GE\include\shader\ShaderProgram.h"
-#include "..\..\Honeycomb GE\include\shader\simple\SimpleShader.h"
-#include "..\..\Honeycomb GE\include\shader\phong\PhongShader.h"
+#include "..\..\Honeycomb GE\include\HoneycombEngine.h"
 
 #include "..\include\components\InputTransformable.h"
-#include "..\..\Honeycomb GE\include\component\GameComponent.h"
-#include "..\..\Honeycomb GE\include\component\physics\Transform.h"
-#include "..\..\Honeycomb GE\include\component\render\CameraController.h"
-#include "..\..\Honeycomb GE\include\component\render\MeshRenderer.h"
-#include "..\..\Honeycomb GE\include\object\GameObject.h"
-#include "..\..\Honeycomb GE\include\object\Builder.h"
 
-#include "..\..\Honeycomb GE\include\math\MathUtils.h"
-#include "..\..\Honeycomb GE\include\math\Vector3f.h"
-#include "..\..\Honeycomb GE\include\math\Vector4f.h"
-#include "..\..\Honeycomb GE\include\math\Quaternion.h"
-
-#include "..\..\Honeycomb GE\include\component\light\BaseLight.h"
-#include "..\..\Honeycomb GE\include\component\light\AmbientLight.h"
-#include "..\..\Honeycomb GE\include\component\light\DirectionalLight.h"
-#include "..\..\Honeycomb GE\include\component\light\PointLight.h"
-
-using Honeycomb::Base::GameInput;
-
-using Honeycomb::Geometry::Model;
-
-using Honeycomb::Geometry::Mesh;
-using Honeycomb::Graphics::Texture2D;
-using Honeycomb::Graphics::Material;
-using Honeycomb::Shader::ShaderProgram;
-using Honeycomb::Shader::Simple::SimpleShader;
-using Honeycomb::Shader::Phong::PhongShader;
-
-using Honeycomb::Component::GameComponent;
-using Honeycomb::Component::Physics::Transform;
-using Honeycomb::Component::Render::CameraController;
-using Honeycomb::Component::Render::MeshRenderer;
-using Honeycomb::Object::GameObject;
-using Honeycomb::Object::Builder;
-
-using Honeycomb::Math::Vector3f;
-using Honeycomb::Math::Vector4f;
-using Honeycomb::Math::Quaternion;
-using Honeycomb::Math::Utils::PI;
-
-using Honeycomb::Component::Light::AmbientLight;
-using Honeycomb::Component::Light::BaseLight;
-using Honeycomb::Component::Light::DirectionalLight;
-using Honeycomb::Component::Light::PointLight;
-
-using HoneycombTest::Components::InputTransformable;
-
-using namespace Honeycomb::Base;
+using namespace HoneycombEngine;
+using namespace HoneycombTest::Components;
 
 namespace HoneycombTest {
 	void TestGame::input() {

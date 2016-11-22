@@ -209,6 +209,9 @@
     <ClInclude Include="include\component\light\PointLight.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\HoneycombEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\phong\fragShader.glsl" />
