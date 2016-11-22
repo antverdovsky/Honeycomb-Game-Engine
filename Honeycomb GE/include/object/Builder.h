@@ -5,8 +5,6 @@
 #include "GameObject.h"
 #include "..\geometry\Model.h"
 
-#include <map>
-
 namespace Honeycomb::Object {
 	class Builder {
 	public:
@@ -67,6 +65,13 @@ namespace Honeycomb::Object {
 		/// the Builder imports the plane.
 		/// return : The new Plane Game Object.
 		GameObject* newPlane();
+
+		/// Builds a new Point Light GameObject. The game object will be the
+		/// object named "Point Light", with the PointLight and Transform 
+		/// components attached to it. The PointLight and Transform will be the
+		/// default instances of their respective components.
+		/// return : The new Point Light Game Object.
+		GameObject* newPointLight();
 
 		/// Builds a new Sphere GameObject. The game object will simply be the
 		/// object named "Sphere", with a MeshRenderer and Transform attached 

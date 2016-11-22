@@ -32,6 +32,8 @@
 
 #include "..\..\Honeycomb GE\include\component\light\BaseLight.h"
 #include "..\..\Honeycomb GE\include\component\light\AmbientLight.h"
+#include "..\..\Honeycomb GE\include\component\light\DirectionalLight.h"
+#include "..\..\Honeycomb GE\include\component\light\PointLight.h"
 
 using Honeycomb::Base::GameInput;
 
@@ -59,6 +61,7 @@ using Honeycomb::Math::Utils::PI;
 using Honeycomb::Component::Light::AmbientLight;
 using Honeycomb::Component::Light::BaseLight;
 using Honeycomb::Component::Light::DirectionalLight;
+using Honeycomb::Component::Light::PointLight;
 
 using HoneycombTest::Components::InputTransformable;
 
@@ -82,6 +85,9 @@ namespace HoneycombTest {
 		GameObject *sphere = Builder::getBuilder()->newSphere();
 		GameObject *suzanne = Builder::getBuilder()->newSuzanne();
 
+		suzanne->addComponent(*(new PointLight(BaseLight("pointLight", 1.0F, 
+			Vector4f(1.0F, 1.0F, 1.0F, 1.0F)), 
+			1.0F, 0.22F, 0.20F)));
 
 		///
 		/// Load in all of the Lights and the Camera.
@@ -90,6 +96,7 @@ namespace HoneycombTest {
 		GameObject *ambientLight = Builder::getBuilder()->newAmbientLight();
 		GameObject *directionalLight = Builder::getBuilder()->
 			newDirectionalLight();
+//		GameObject *pointLight = Builder::getBuilder()->newPointLight();
 
 
 		///

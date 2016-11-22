@@ -5,6 +5,7 @@
 #include "..\..\include\component\light\AmbientLight.h"
 #include "..\..\include\component\light\BaseLight.h"
 #include "..\..\include\component\light\DirectionalLight.h"
+#include "..\..\include\component\light\PointLight.h"
 #include "..\..\include\component\physics\Transform.h"
 #include "..\..\include\component\render\CameraController.h"
 #include "..\..\include\math\Vector4f.h"
@@ -12,6 +13,7 @@
 using Honeycomb::Component::Light::AmbientLight;
 using Honeycomb::Component::Light::BaseLight;
 using Honeycomb::Component::Light::DirectionalLight;
+using Honeycomb::Component::Light::PointLight;
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Component::Render::CameraController;
 using Honeycomb::Geometry::Model;
@@ -104,6 +106,23 @@ namespace Honeycomb::Object {
 
 	GameObject* Builder::newPlane() {
 		return newDefaultImport("Plane", PLANE_LOCATION);
+	}
+
+	GameObject* Builder::newPointLight() {
+		// Initialize the Point Light Game Object
+		GameObject *pntLight = new GameObject("Point Light");
+
+		// Initialize the Point Light Game Components
+		BaseLight bL = BaseLight("pointLight", 1.0F,
+			Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
+		PointLight *pL = new PointLight(bL, 1.0F, 0.22F, 0.20F); // todo; use default
+		Transform *trans = new Transform();
+
+		// Add the initialized components to the Point Light Game Object
+		pntLight->addComponent(*pL);
+		pntLight->addComponent(*trans);
+
+		return pntLight; // Return the Point Light Game Object
 	}
 
 	GameObject* Builder::newSphere() {

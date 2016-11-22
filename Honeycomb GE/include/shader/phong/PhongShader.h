@@ -6,6 +6,7 @@
 #include "..\..\component\light\AmbientLight.h"
 #include "..\..\component\light\BaseLight.h"
 #include "..\..\component\light\DirectionalLight.h"
+#include "..\..\component\light\PointLight.h"
 #include "..\..\graphics\Material.h"
 
 namespace Honeycomb::Shader::Phong {
@@ -48,6 +49,12 @@ namespace Honeycomb::Shader::Phong {
 		/// Material mat : The material to be added.
 		void addUniform_Material(Honeycomb::Graphics::Material mat);
 
+		/// Adds the specified Point Light as a uniform for this shader.
+		/// (provided that the Phong Shader file contains a uniform with the
+		/// same name as the specified point light).
+		/// PointLight pL : The Point Light to be added.
+		void addUniform_PointLight(Honeycomb::Component::Light::PointLight pL);
+
 		/// Sets the ambient light uniform of the name provided to the ambient
 		/// light specified.
 		/// string name : The name of the ambient light uniform.
@@ -76,6 +83,13 @@ namespace Honeycomb::Shader::Phong {
 		/// Material mat : The material.
 		void setUniform_Material(std::string name, 
 			Honeycomb::Graphics::Material mat);
+
+		/// Sets the point light uniform of the name provided to the point
+		/// light specified.
+		/// string name : The name of the Point Light uniform.
+		/// PointLight pL :  The Point Light.
+		void setUniform_PointLight(std::string name, 
+			Honeycomb::Component::Light::PointLight pL);
 	private:
 		static PhongShader *instance; // Singleton instance of the Shader
 

@@ -8,6 +8,7 @@
 using Honeycomb::Component::Light::AmbientLight;
 using Honeycomb::Component::Light::BaseLight;
 using Honeycomb::Component::Light::DirectionalLight;
+using Honeycomb::Component::Light::PointLight;
 using Honeycomb::Graphics::Material;
 
 using Honeycomb::Math::Vector3f;
@@ -69,6 +70,15 @@ namespace Honeycomb::Shader::Phong {
 		addUniform(mat.getName() + ".shininess");
 	}
 
+	void PhongShader::addUniform_PointLight(PointLight pL) {
+		addUniform(pL.getName() + ".base.color");
+		addUniform(pL.getName() + ".base.intensity");
+		addUniform(pL.getName() + ".constant");
+		addUniform(pL.getName() + ".linear");
+		addUniform(pL.getName() + ".quadratic");
+		addUniform(pL.getName() + ".position");
+	}
+
 	void PhongShader::setUniform_AmbientLight(std::string name,
 			AmbientLight aL) {
 		// Upcast the ambient light to a base light so it can be set using the
@@ -92,5 +102,13 @@ namespace Honeycomb::Shader::Phong {
 		setUniform_vec4(name + ".diffuseColor", mat.getDiffuseColor());
 		setUniform_vec4(name + ".specularColor", mat.getSpecularColor());
 		setUniform_f(name + ".shininess", mat.getShininess());
+	}
+
+	void PhongShader::setUniform_PointLight(std::string name, PointLight pL) {
+		setUniform_BaseLight(name + ".base", pL);
+		setUniform_f(name + ".constant", pL.getAttenuationConstant());
+		setUniform_f(name + ".linear", pL.getAttenuationLinear());
+		setUniform_f(name + ".quadratic", pL.getAttenuationQuadratic());
+		setUniform_vec3(name + ".position", pL.getPosition());
 	}
 }

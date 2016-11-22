@@ -9,8 +9,7 @@
 namespace Honeycomb::Component::Light {
 	class DirectionalLight : public BaseLight {
 	public:
-		/// Creates a new Directional light with a default base and a direction
-		/// of global down.
+		/// Creates a new Directional light with a default base.
 		DirectionalLight();
 
 		/// Creates a new Directional light with the given base.
@@ -36,7 +35,7 @@ namespace Honeycomb::Component::Light {
 		/// Writes this Directional Light to the Phong Shader.
 		void writeToShader();
 	private:
-		Honeycomb::Math::Vector3f *direction; // Direction of the light
+		Honeycomb::Math::Vector3f *direction; // The direction (from Transform)
 
 		// Event handler for the change in the transform (for direction)
 		Honeycomb::Conjuncture::EventHandler transformChange;
