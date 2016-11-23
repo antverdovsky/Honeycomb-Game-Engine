@@ -7,6 +7,7 @@
 #include "..\..\component\light\BaseLight.h"
 #include "..\..\component\light\DirectionalLight.h"
 #include "..\..\component\light\PointLight.h"
+#include "..\..\component\light\SpotLight.h"
 #include "..\..\graphics\Material.h"
 
 namespace Honeycomb::Shader::Phong {
@@ -55,6 +56,12 @@ namespace Honeycomb::Shader::Phong {
 		/// PointLight pL : The Point Light to be added.
 		void addUniform_PointLight(Honeycomb::Component::Light::PointLight pL);
 
+		/// Adds the specified Spot Light as a uniform for this shader.
+		/// (provided that the Phong Shader file contains a uniform with the
+		/// same name as the specified point light).
+		/// SpotLight pL : The Spot Light to be added.
+		void addUniform_SpotLight(Honeycomb::Component::Light::SpotLight sL);
+
 		/// Sets the ambient light uniform of the name provided to the ambient
 		/// light specified.
 		/// string name : The name of the ambient light uniform.
@@ -90,6 +97,13 @@ namespace Honeycomb::Shader::Phong {
 		/// PointLight pL :  The Point Light.
 		void setUniform_PointLight(std::string name, 
 			Honeycomb::Component::Light::PointLight pL);
+
+		/// Sets the spot light uniform of the name provided to the spot light
+		/// specified.
+		/// string name : The name of the Spot Light uniform.
+		/// SpotLight sL : The Spot Light.
+		void setUniform_SpotLight(std::string name, 
+			Honeycomb::Component::Light::SpotLight sL);
 	private:
 		static PhongShader *instance; // Singleton instance of the Shader
 

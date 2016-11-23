@@ -80,6 +80,13 @@ namespace Honeycomb::Object {
 		/// return : The new Sphere Game Object.
 		GameObject* newSphere();
 
+		/// Builds a new Spot Light GameObject. The game object will be the
+		/// object named "Spot Light", with the SpotLight and Transform 
+		/// components attached to it. The SpotLight and Transform will be the
+		/// default instances of their respective components.
+		/// return : The new Spot Light Game Object.
+		GameObject* newSpotLight();
+
 		/// Builds a new Suzanne (Blender Monkey) Game Object. The game object
 		/// will simply be the object named "Suzanne", with a MeshRenderer and
 		/// Transform attached to it.  The Mesh and Material data will come 

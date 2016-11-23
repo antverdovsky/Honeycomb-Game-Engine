@@ -202,6 +202,7 @@
     <ClCompile Include="src\base\GameTime.cpp" />
     <ClCompile Include="src\base\GameWindow.cpp" />
     <ClCompile Include="src\component\light\PointLight.cpp" />
+    <ClCompile Include="src\component\light\SpotLight.cpp" />
     <ClCompile Include="src\conjuncture\Event.cpp" />
     <ClCompile Include="src\conjuncture\EventHandler.cpp" />
     <ClCompile Include="src\file\FileIO.cpp" />
@@ -236,6 +237,7 @@
     <ClInclude Include="include\base\GameTime.h" />
     <ClInclude Include="include\base\GameWindow.h" />
     <ClInclude Include="include\component\light\PointLight.h" />
+    <ClInclude Include="include\component\light\SpotLight.h" />
     <ClInclude Include="include\conjuncture\Event.h" />
     <ClInclude Include="include\conjuncture\EventHandler.h" />
     <ClInclude Include="include\file\FileIO.h" />

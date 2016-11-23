@@ -22,8 +22,8 @@ struct Material {
 /// The basic structure for all lights.
 /// 
 struct BaseLight {
-    float intensity; // The intensity of the light
     vec4 color; // The color of the light
+    float intensity; // The intensity of the light
 };
 
 ///
@@ -38,6 +38,7 @@ struct AmbientLight {
 ///
 struct DirectionalLight {
     BaseLight base; // The base component of the light
+    
     vec3 direction; // The direction of the light
 };
 
@@ -52,8 +53,29 @@ struct PointLight {
 	float quadratic; // The quadratic term in the Attenuation
 	
 	vec3 position; // The 3D position of the light in the world
+    
     float range; // The sphere-like radius of the light (the higher this value
                  // the more accurate the attenuation of the light).
+};
+
+///
+/// The spot light structure
+///
+struct SpotLight {
+    BaseLight base; // The base component of the light
+    
+    float constant; // The constant term in the Attenuation
+	float linear; // The linear term in the Attenuation
+	float quadratic; // The quadratic term in the Attenuation
+    
+    vec3 position; // The 3D position of the light in the world
+    vec3 direction; // The direction of the light in the world
+    
+    float range; // The range of the light (height of the cone formed by the 
+                 // light point and light ray).
+    float cosAngle; // The cosine of the spot angle of the light (angle of 
+                        // the 1 / 2 cone formed by the light point and the 
+                        // light ray).
 };
 
 in vec2 out_vs_texCoord; // Take in texture coordinate outputted by VS
@@ -63,6 +85,7 @@ in vec3 out_vs_pos; // Take in the world position outputted by VS
 uniform AmbientLight ambientLight; // The ambient light
 uniform DirectionalLight directionalLight; // The directional light (TODO: ARRAY of many lights)
 uniform PointLight pointLight; // The point light (TODO: ARRAY...)
+uniform SpotLight spotLight; // The spot light (TODO: ARRAY)
 uniform Material material; // The material
 
 uniform vec3 cameraPos; // TEMP TEMP TEMP TODO!
@@ -70,10 +93,14 @@ uniform vec3 cameraPos; // TEMP TEMP TEMP TODO!
 /// Forward Declarations
 vec4 calculateAmbientLight(AmbientLight aL, Material mat);
 vec4 calculateDiffuseLight(BaseLight bL, Material mat, vec3 dir, vec3 norm);
-vec4 calculateDirectionalLight(DirectionalLight dL, Material mat, vec3 norm);
-vec4 calculatePointLight(PointLight pL, Material mat, vec3 norm);
+vec4 calculateDirectionalLight(DirectionalLight dL, Material mat, vec3 cP,
+    vec3 wP, vec3 norm);
+vec4 calculatePointLight(PointLight pL, Material mat, vec3 cP, vec3 wP, 
+    vec3 norm);
 vec4 calculateSpecularReflection(BaseLight bL, Material mat, vec3 cP, vec3 wP,
-        vec3 dir, vec3 norm);
+    vec3 dir, vec3 norm);
+vec4 calculateSpotLight(SpotLight sL, Material mat, vec3 cP, vec3 wP, 
+    vec3 norm);
 
 /// Calculates the light which should be applied to this fragment, given the
 /// ambient light which shines on it.
@@ -155,7 +182,7 @@ vec4 calculatePointLight(PointLight pL, Material mat, vec3 cP, vec3 wP,
     // distance exceeds the range of the point light, return a zero vector 
     // since the point light can't affect this fragment.
     float dispMag = length(displacement);
-    if (dispMag > (pL.range)) return vec4(0.0F, 0.0F, 0.0F, 0.0F);
+    if (dispMag > pL.range) return vec4(0.0F, 0.0F, 0.0F, 0.0F);
         
 	// Get the unit vector pointing in the direction of the displacement
     vec3 direction  = normalize(displacement);
@@ -205,6 +232,55 @@ vec4 calculateSpecularReflection(BaseLight bL, Material mat, vec3 cP, vec3 wP,
         bL.color.w * mat.specularColor.w);
 }
 
+/// Calculates the light which should be applied to this fragment given the
+/// spot light which shines upon it, the material of the surface, the camera
+/// position, the world position of the fragment and the normal of the surface
+/// normal.
+/// SpotLight sL : The spot light which shines on this fragment.
+/// Material mat : The material of the surface on this fragment.
+/// vec3 cP : The world position of the camera.
+/// vec3 wP : The world position of this fragment.
+/// vec3 norm : The normalized normal of the surface.
+vec4 calculateSpotLight(SpotLight sL, Material mat, vec3 cP, vec3 wP, 
+        vec3 norm) {
+    // Calculate the displacement vector between the world position of the
+    // fragment and the spot light position.
+    vec3 displacement = wP - sL.position;
+    
+    // Calculate the distance between the fragment and the point light. If the
+    // distance exceeds the range of the point light, return a zero vector 
+    // since the point light can't affect this fragment.
+    float dispMag = length(displacement);
+    if (dispMag > sL.range) return vec4(0.0F, 0.0F, 0.0F, 0.0F);
+    
+    // Calculate the angle between the fragment and the spot light. If the 
+    // angle exceeds the angle of the spot light, return a zero vector since
+    // the spot light can't affect this fragment.
+    vec3 direction = normalize(displacement);
+    float cosAngle = dot(direction, normalize(sL.direction));
+    if (cosAngle < sL.cosAngle) return vec4(0.0F, 0.0F, 0.0F, 0.0F);
+    
+    // Calculate the Attenuation of the Point Light, and the adjusted
+    // attenuation which will make the attenuation zero at the range of the
+    // spot light and zero at the edge of the angle of the spot light to allow 
+    // for a smoother light transition.
+    float atten = sL.base.intensity / (sL.constant + sL.linear * dispMag +
+        sL.quadratic * dispMag * dispMag);
+    float adjAtten = (1.0F - (1.0F - cosAngle) / (1.0F - sL.cosAngle)) * 
+        ((sL.range - dispMag) / sL.range) * atten;
+    
+    // Calculate the Diffuse and Specular Light components of the Spot Light 
+    // and scale by the attenuation to adjust the light with distance.
+    vec4 diffuse = calculateDiffuseLight(sL.base, mat, direction, norm);
+    vec4 specular = calculateSpecularReflection(sL.base, mat, cP, wP, 
+        direction, norm);
+    diffuse = vec4(diffuse.xyz * adjAtten, diffuse.w);
+    specular = vec4(specular.xyz * adjAtten, specular.w);
+    
+    // Return the blend of the Diffuse and Specular lighting
+    return diffuse + specular;
+}
+
 void main() {
     // Calculate the contributions of the Light sources
     vec4 ambientComponent = calculateAmbientLight(ambientLight, material);
@@ -212,9 +288,12 @@ void main() {
         material, cameraPos, out_vs_pos, out_vs_norm);
     vec4 pointComponent = calculatePointLight(pointLight, material, cameraPos,
         out_vs_pos, out_vs_norm);
+    vec4 spotComponent  = calculateSpotLight(spotLight, material, cameraPos,
+        out_vs_pos, out_vs_norm);
         
     // Sum up the contributions of the Light sources
-    vec4 totalLight = ambientComponent + directionalComponent + pointComponent;
+    vec4 totalLight = ambientComponent + directionalComponent + 
+        pointComponent + spotComponent;
     
 	// Set the color to the color provided by the Texture, mixed with the
     // lighting for this fragment.

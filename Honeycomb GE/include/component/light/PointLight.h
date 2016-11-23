@@ -1,4 +1,7 @@
 #pragma once
+#ifndef POINT_LIGHT_H
+#define POINT_LIGHT_H
+
 #include "BaseLight.h"
 
 #include "..\..\conjuncture\EventHandler.h"
@@ -7,9 +10,9 @@
 namespace Honeycomb::Component::Light {
 	class PointLight : public BaseLight {
 	public:
-		/// Initializes a new Point Light with a default base, 1.0F for the
-		/// attenuation constant, 0.22F for the attenuation linear and 0.20F
-		/// for the attentuation quadratic.
+		/// Initializes a new Point Light with a default base, 10.0F for the
+		/// range, 1.0F for the attenuation constant, 0.22F for the attenuation
+		/// linear and 0.20F for the attentuation quadratic.
 		PointLight();
 
 		/// Initializes a new Point Light with the specified base, range, and 
@@ -41,7 +44,7 @@ namespace Honeycomb::Component::Light {
 		/// Gets the quadratic term in the attenuation equation.
 		/// return : The value of the quadratic term.
 		float getAttenuationQuadratic();
-		
+
 		/// Gets the Position of this Point Light.
 		/// return : A vector representing the position.
 		Honeycomb::Math::Vector3f getPosition();
@@ -85,3 +88,5 @@ namespace Honeycomb::Component::Light {
 		Honeycomb::Conjuncture::EventHandler transformChange;
 	};
 }
+
+#endif

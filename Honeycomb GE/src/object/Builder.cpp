@@ -6,6 +6,7 @@
 #include "..\..\include\component\light\BaseLight.h"
 #include "..\..\include\component\light\DirectionalLight.h"
 #include "..\..\include\component\light\PointLight.h"
+#include "..\..\include\component\light\SpotLight.h"
 #include "..\..\include\component\physics\Transform.h"
 #include "..\..\include\component\render\CameraController.h"
 #include "..\..\include\math\Vector4f.h"
@@ -14,6 +15,7 @@ using Honeycomb::Component::Light::AmbientLight;
 using Honeycomb::Component::Light::BaseLight;
 using Honeycomb::Component::Light::DirectionalLight;
 using Honeycomb::Component::Light::PointLight;
+using Honeycomb::Component::Light::SpotLight;
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Component::Render::CameraController;
 using Honeycomb::Geometry::Model;
@@ -130,6 +132,23 @@ namespace Honeycomb::Object {
 
 	GameObject* Builder::newSphere() {
 		return newDefaultImport("Sphere", SPHERE_LOCATION);
+	}
+
+	GameObject* Builder::newSpotLight() {
+		// Initialize the Spot Light Game Object
+		GameObject *pntLight = new GameObject("Point Light");
+
+		// Initialize the Spot Light Game Components
+		BaseLight bL = BaseLight("spotLight", 1.0F,
+			Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
+		SpotLight *sL = new SpotLight(bL, 10.0F, 30.0F, 1.0F, 0.22F, 0.20F); // todo; use default
+		Transform *trans = new Transform();
+
+		// Add the initialized components to the Spot Light Game Object
+		pntLight->addComponent(*sL);
+		pntLight->addComponent(*trans);
+
+		return pntLight; // Return the Spot Light Game Object
 	}
 
 	GameObject* Builder::newSuzanne() {
