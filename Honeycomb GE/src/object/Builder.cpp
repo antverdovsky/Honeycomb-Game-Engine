@@ -84,6 +84,9 @@ namespace Honeycomb::Object {
 		DirectionalLight *dL = new DirectionalLight(bL);
 		Transform *trans = new Transform();
 
+		// very temporary TODOD
+		trans->rotate(trans->getLocalRight(), -3.1415926 / 2);
+
 		// Add the initialized components to the Directional Light Game Object
 		dirLight->addComponent(*dL);
 		dirLight->addComponent(*trans);
@@ -115,7 +118,7 @@ namespace Honeycomb::Object {
 		// Initialize the Point Light Game Components
 		BaseLight bL = BaseLight("pointLight", 1.0F,
 			Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
-		PointLight *pL = new PointLight(bL, 1.0F, 0.22F, 0.20F); // todo; use default
+		PointLight *pL = new PointLight(bL, 5.0F, 1.0F, 0.22F, 0.20F); // todo; use default
 		Transform *trans = new Transform();
 
 		// Add the initialized components to the Point Light Game Object

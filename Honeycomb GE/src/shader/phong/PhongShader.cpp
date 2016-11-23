@@ -77,6 +77,7 @@ namespace Honeycomb::Shader::Phong {
 		addUniform(pL.getName() + ".linear");
 		addUniform(pL.getName() + ".quadratic");
 		addUniform(pL.getName() + ".position");
+		addUniform(pL.getName() + ".range");
 	}
 
 	void PhongShader::setUniform_AmbientLight(std::string name,
@@ -110,5 +111,6 @@ namespace Honeycomb::Shader::Phong {
 		setUniform_f(name + ".linear", pL.getAttenuationLinear());
 		setUniform_f(name + ".quadratic", pL.getAttenuationQuadratic());
 		setUniform_vec3(name + ".position", pL.getPosition());
+		setUniform_f(name + ".range", pL.getRange());
 	}
 }

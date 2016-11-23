@@ -12,13 +12,14 @@ namespace Honeycomb::Component::Light {
 		/// for the attentuation quadratic.
 		PointLight();
 
-		/// Initializes a new Point Light with the specified base, and 
+		/// Initializes a new Point Light with the specified base, range, and 
 		/// attenuation variables.
 		/// BaseLight bL : The base light of this Point Light.
+		/// float ran : The range of the Point Light.
 		/// float c : The Attenuation constant factor.
 		/// float l : The Attenuation linear factor.
 		/// float q : The Attenuation quadratic factor.
-		PointLight(BaseLight bL, float c, float l, float q);
+		PointLight(BaseLight bL, float ran, float c, float l, float q);
 
 		/// Destroys this Point Light.
 		~PointLight();
@@ -40,22 +41,30 @@ namespace Honeycomb::Component::Light {
 		/// Gets the quadratic term in the attenuation equation.
 		/// return : The value of the quadratic term.
 		float getAttenuationQuadratic();
-
+		
 		/// Gets the Position of this Point Light.
 		/// return : A vector representing the position.
 		Honeycomb::Math::Vector3f getPosition();
+
+		/// Gets the sphere-like radius range of this Point Light.
+		/// return : The range value.
+		float getRange();
 		
 		/// Sets the constant term in the attenuation equation.
-		/// return : The value of the constant term.
+		/// float c : The new value of the constant term.
 		void setAttenuationConstant(float c);
 
 		/// Sets the linear term in the attenuation equation.
-		/// return : The value of the linear term.
-		void setAttenuationLinear(float c);
+		/// float l : The new value of the linear term.
+		void setAttenuationLinear(float l);
 
 		/// Sets the quadratic term in the attenuation equation.
-		/// return : The quadratic of the constant term.
-		void setAttenuationQuadratic(float c);
+		/// float q : The new value of the quadratic term.
+		void setAttenuationQuadratic(float q);
+
+		/// Sets the range of this Point Light.
+		/// float ran : The new range of the Point Light.
+		void setRange(float ran);
 
 		/// Starts this Point Light.
 		void start();
@@ -69,6 +78,8 @@ namespace Honeycomb::Component::Light {
 		float attenConstant;
 		float attenLinear;
 		float attenQuadratic;
+
+		float range; // The sphere-like radius range of the Point Light
 
 		// Event handler for the change in the transform (for position)
 		Honeycomb::Conjuncture::EventHandler transformChange;

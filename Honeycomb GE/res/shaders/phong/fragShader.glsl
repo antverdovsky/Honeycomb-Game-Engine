@@ -52,6 +52,8 @@ struct PointLight {
 	float quadratic; // The quadratic term in the Attenuation
 	
 	vec3 position; // The 3D position of the light in the world
+    float range; // The sphere-like radius of the light (the higher this value
+                 // the more accurate the attenuation of the light).
 };
 
 in vec2 out_vs_texCoord; // Take in texture coordinate outputted by VS
@@ -145,25 +147,36 @@ vec4 calculateDirectionalLight(DirectionalLight dL, Material mat, vec3 cP,
 ///          fragment.
 vec4 calculatePointLight(PointLight pL, Material mat, vec3 cP, vec3 wP, 
         vec3 norm) {
-	// Both variables refer to the quantity between the Point Light position
-    // and the Fragment position.
-    vec3 direction  = normalize(wP - pL.position); // Direction
-	float displacement  = length(wP - pL.position); // Distance
+    // Calculate the displacement vector between the world position of the
+    // fragment and the point light position.
+    vec3 displacement = wP - pL.position;
     
-    // Calculate the Attenuation of the Point Light
-    float atten = pL.base.intensity / (pL.constant + pL.linear * displacement +
-        pL.quadratic * displacement * displacement);
+    // Calculate the distance between the fragment and the point light. If the
+    // distance exceeds the range of the point light, return a zero vector 
+    // since the point light can't affect this fragment.
+    float dispMag = length(displacement);
+    if (dispMag > (pL.range)) return vec4(0.0F, 0.0F, 0.0F, 0.0F);
+        
+	// Get the unit vector pointing in the direction of the displacement
+    vec3 direction  = normalize(displacement);
+    
+    // Calculate the Attenuation of the Point Light, and the adjusted
+    // attenuation which will make the attenuation zero at the range of the
+    // point light to allow for a smoother light transition.
+    float atten = pL.base.intensity / (pL.constant + pL.linear * dispMag +
+        pL.quadratic * dispMag * dispMag);
+    float adjAtten = ((pL.range - dispMag) / pL.range) * atten;
     
     // Calculate the Diffuse and Specular Light components of the Point Light 
     // and scale by the attenuation to adjust the light with distance.
     vec4 diffuse = calculateDiffuseLight(pL.base, mat, direction, norm);
     vec4 specular = calculateSpecularReflection(pL.base, mat, cP, wP, 
         direction, norm);
-    diffuse = vec4(diffuse.xyz * atten, diffuse.w);
-    specular = vec4(specular.xyz * atten, specular.w);
-        
+    diffuse = vec4(diffuse.xyz * adjAtten, diffuse.w);
+    specular = vec4(specular.xyz * adjAtten, specular.w);
+    
     // Return the blend of the Diffuse and Specular lighting
-    return diffuse + specular;
+    return vec4(vec3(diffuse.xyz + specular.xyz), diffuse.w + specular.w);
 }
 
 /// Calculates the specular reflection for this fragment given the light for
@@ -205,5 +218,5 @@ void main() {
     
 	// Set the color to the color provided by the Texture, mixed with the
     // lighting for this fragment.
-	gl_FragColor = vec4(totalLight.xyz, 1.0F) * texture2D(textureSampler, out_vs_texCoord);
+	gl_FragColor = vec4(totalLight.xyz, 1.0F);// * texture2D(textureSampler, out_vs_texCoord);
 }

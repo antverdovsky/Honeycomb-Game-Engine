@@ -10,12 +10,14 @@ using Honeycomb::Shader::Phong::PhongShader;
 
 namespace Honeycomb::Component::Light {
 	PointLight::PointLight() 
-			: PointLight(BaseLight(), 1.0F, 0.22F, 0.20F) {
+			: PointLight(BaseLight(), 5.0F, 1.0F, 0.22F, 0.20F) {
 
 	}
 
-	PointLight::PointLight(BaseLight bL, float c, float l, float q) 
+	PointLight::PointLight(BaseLight bL, float ran, float c, float l, float q) 
 			: BaseLight(bL) {
+		this->range = ran;
+
 		this->attenConstant = c;
 		this->attenLinear = l;
 		this->attenQuadratic = q;
@@ -45,6 +47,10 @@ namespace Honeycomb::Component::Light {
 		return *this->position;
 	}
 
+	float PointLight::getRange() {
+		return this->range;
+	}
+
 	void PointLight::setAttenuationConstant(float c) {
 		this->attenConstant = c;
 
@@ -59,6 +65,12 @@ namespace Honeycomb::Component::Light {
 
 	void PointLight::setAttenuationQuadratic(float q) {
 		this->attenQuadratic = q;
+
+		this->writeToShader();
+	}
+
+	void PointLight::setRange(float ran) {
+		this->range = ran;
 
 		this->writeToShader();
 	}
