@@ -15,12 +15,8 @@ namespace Honeycomb::Component::Light {
 	}
 
 	PointLight::PointLight(BaseLight bL, float ran, float c, float l, float q) 
-			: BaseLight(bL) {
+			: BaseLight(bL), attenuation(c, l, q) {
 		this->range = ran;
-
-		this->attenConstant = c;
-		this->attenLinear = l;
-		this->attenQuadratic = q;
 	}
 
 	PointLight::~PointLight() {
@@ -33,16 +29,8 @@ namespace Honeycomb::Component::Light {
 		return new PointLight(*this);
 	}
 
-	float PointLight::getAttenuationConstant() {
-		return this->attenConstant;
-	}
-
-	float PointLight::getAttenuationLinear() {
-		return this->attenLinear;
-	}
-
-	float PointLight::getAttenuationQuadratic() {
-		return this->attenQuadratic;
+	BaseLight::Attenuation& PointLight::getAttenuation() {
+		return this->attenuation;
 	}
 
 	Vector3f PointLight::getPosition() {
@@ -53,20 +41,8 @@ namespace Honeycomb::Component::Light {
 		return this->range;
 	}
 
-	void PointLight::setAttenuationConstant(float c) {
-		this->attenConstant = c;
-
-		this->writeToShader();
-	}
-
-	void PointLight::setAttenuationLinear(float l) {
-		this->attenLinear = l;
-	
-		this->writeToShader();
-	}
-
-	void PointLight::setAttenuationQuadratic(float q) {
-		this->attenQuadratic = q;
+	void PointLight::setAttenuation(BaseLight::Attenuation atten) {
+		this->attenuation = atten;
 
 		this->writeToShader();
 	}
@@ -88,6 +64,13 @@ namespace Honeycomb::Component::Light {
 			std::bind(&PointLight::writeToShader, this));
 		this->getAttached()->getComponentOfType<Transform>("Transform")->
 			getChangedEvent().addEventHandler(&this->transformChange);
+
+		// Subscribe to the Attenuation change event, so that the attenuation
+		// may be written to the shader each time it is changed.
+		this->attenuationChange.addAction(
+			std::bind(&PointLight::writeToShader, this));
+		this->attenuation.getChangedEvent().
+			addEventHandler(&this->attenuationChange);
 
 		// Get the position from the Transform so that it may be sent to the
 		// Phong Shader.

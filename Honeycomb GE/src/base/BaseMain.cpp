@@ -19,16 +19,12 @@ namespace Honeycomb::Base::BaseMain {
 			glEnable(GL_CULL_FACE); // Disable rendering unseen back faces
 		}
 
-		glEnable(GL_MULTISAMPLE);
-		glEnable(GL_TEXTURE_2D);
-		glShadeModel(GL_SMOOTH);
-		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+		glEnable(GL_MULTISAMPLE); // Enable MSAA
+		glEnable(GL_TEXTURE_2D); // Enable 2D texturing
+		glShadeModel(GL_SMOOTH); // Smooth Shading
 		glEnable(GL_DEPTH_TEST); // Enable depth perception for drawing order
 		glEnable(GL_BLEND); // Enable blending for transparency
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Blend Function
-//		glEnable(GL_FRAMEBUFFER_SRGB); // Gamma correction
-//		TODO: [DISABLED, CAUSES TEXTURES TO APPEAR WASHED OUT].
 	}
 
 	void render() {

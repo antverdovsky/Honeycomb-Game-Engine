@@ -12,15 +12,15 @@ namespace HoneycombTest {
 		PointLight *pL = GameObject::getRoot()->getChild("Suzanne")->
 			getComponentOfType<PointLight>("pointLight");
 
-		/*if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_1))
-			pL->setRange(pL->getRange() + 0.5F);
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_1))
+			pL->getAttenuation().setAttenuationQuadratic(0.5F);
 		else if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_2))
-			pL->setRange(pL->getRange() - 0.5F);
+			pL->getAttenuation().setAttenuationQuadratic(0.22F);
 
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_3))
-			pL->setIntensity(pL->getIntensity() + 0.1F);
+			pL->getAttenuation().setAttenuationLinear(0.5F);
 		else if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_4))
-			pL->setIntensity(pL->getIntensity() - 0.1F);*/
+			pL->getAttenuation().setAttenuationLinear(0.20F);
 
 		GameObject::getRoot()->input();
 	}
@@ -38,12 +38,12 @@ namespace HoneycombTest {
 		GameObject *sphere = Builder::getBuilder()->newSphere();
 		GameObject *suzanne = Builder::getBuilder()->newSuzanne();
 
-//		suzanne->addComponent(*(new PointLight(BaseLight("pointLight", 1.0F, 
-//			Vector4f(1.0F, 1.0F, 1.0F, 1.0F)), 
-//			20.0F, 1.0F, 0.22F, 0.20F)));
-		suzanne->addComponent(*(new SpotLight(BaseLight("spotLight", 25,
-			Vector4f(1.0F, 1.0F, 1.0F, 1.0F)),
-			50, Utils::degToRad(10), 1.0F, 0.22F, 0.20F)));
+		suzanne->addComponent(*(new PointLight(BaseLight("pointLight", 2.5F, 
+			Vector4f(1.0F, 1.0F, 1.0F, 1.0F)), 
+			10.0F, 1.0F, 0.22F, 0.20F)));
+//		suzanne->addComponent(*(new SpotLight(BaseLight("spotLight", 1,
+//			Vector4f(1.0F, 1.0F, 1.0F, 1.0F)),
+//			5000, Utils::degToRad(45), 1.0F, 0.22F, 0.20F)));
 
 		///
 		/// Load in all of the Lights and the Camera.
@@ -106,7 +106,6 @@ namespace HoneycombTest {
 //			cube->getComponentOfType<MeshRenderer>("MeshRenderer")->
 //			getMaterial()->getAlbedoTexture();
 //		emeraldTex->setAlbedoTexture(tex);
-
 
 		///
 		/// Give the Cube, Sphere and Plane the Textured Emerald Material, and

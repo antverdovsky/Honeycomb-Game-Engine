@@ -15,13 +15,9 @@ namespace Honeycomb::Component::Light {
 	}
 
 	SpotLight::SpotLight(BaseLight bL, float ran, float ang, float c, float l,
-			float q) : BaseLight(bL) {
+			float q) : BaseLight(bL), attenuation(c, l, q) {
 		this->range = ran;
 		this->angle = ang;
-
-		this->attenConstant = c;
-		this->attenLinear = l;
-		this->attenQuadratic = q;
 	}
 
 	SpotLight::~SpotLight() {
@@ -36,16 +32,8 @@ namespace Honeycomb::Component::Light {
 		return this->angle;
 	}
 
-	float SpotLight::getAttenuationConstant() {
-		return this->attenConstant;
-	}
-
-	float SpotLight::getAttenuationLinear() {
-		return this->attenLinear;
-	}
-
-	float SpotLight::getAttenuationQuadratic() {
-		return this->attenQuadratic;
+	BaseLight::Attenuation& SpotLight::getAttenuation() {
+		return this->attenuation;
 	}
 
 	Vector3f SpotLight::getDirection() {
@@ -66,20 +54,8 @@ namespace Honeycomb::Component::Light {
 		this->writeToShader();
 	}
 
-	void SpotLight::setAttenuationConstant(float c) {
-		this->attenConstant = c;
-
-		this->writeToShader();
-	}
-
-	void SpotLight::setAttenuationLinear(float l) {
-		this->attenLinear = l;
-
-		this->writeToShader();
-	}
-
-	void SpotLight::setAttenuationQuadratic(float q) {
-		this->attenQuadratic = q;
+	void SpotLight::setAttenuation(BaseLight::Attenuation atten) {
+		this->attenuation = atten;
 
 		this->writeToShader();
 	}
@@ -101,6 +77,13 @@ namespace Honeycomb::Component::Light {
 			std::bind(&SpotLight::writeToShader, this));
 		this->getAttached()->getComponentOfType<Transform>("Transform")->
 			getChangedEvent().addEventHandler(&this->transformChange);
+
+		// Subscribe to the Attenuation change event, so that the attenuation
+		// may be written to the shader each time it is changed.
+		this->attenuationChange.addAction(
+			std::bind(&SpotLight::writeToShader, this));
+		this->attenuation.getChangedEvent().
+			addEventHandler(&this->attenuationChange);
 
 		// Get the position and direction from the Transform so that it may be 
 		// sent to the Phong Shader.

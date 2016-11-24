@@ -24,7 +24,7 @@ namespace Honeycomb::Component::Light {
 		/// float c : The Attenuation constant factor.
 		/// float l : The Attenuation linear factor.
 		/// float q : The Attenuation quadratic factor.
-		SpotLight(BaseLight bL, float ran, float ang, float c, float l, 
+		SpotLight(BaseLight bL, float ran, float ang, float c, float l,
 			float q);
 
 		/// Destroys this Spot Light.
@@ -40,17 +40,9 @@ namespace Honeycomb::Component::Light {
 		/// return : The spot angle value.
 		float getAngle();
 
-		/// Gets the constant term in the attenuation equation.
-		/// return : The value of the constant term.
-		float getAttenuationConstant();
-
-		/// Gets the linear term in the attenuation equation.
-		/// return : The value of the linear term.
-		float getAttenuationLinear();
-
-		/// Gets the quadratic term in the attenuation equation.
-		/// return : The value of the quadratic term.
-		float getAttenuationQuadratic();
+		/// Gets the reference to the Attenuation of this Spot Light.
+		/// return : The attenuation reference.
+		BaseLight::Attenuation& getAttenuation();
 
 		/// Gets the Direction of this Spot Light.
 		/// return : A vector representing the direction.
@@ -68,17 +60,9 @@ namespace Honeycomb::Component::Light {
 		/// return : The value of the spot angle.
 		void setAngle(float ang);
 
-		/// Sets the constant term in the attenuation equation.
-		/// float c : The new value of the constant term.
-		void setAttenuationConstant(float c);
-
-		/// Sets the linear term in the attenuation equation.
-		/// float l : The new value of the linear term.
-		void setAttenuationLinear(float l);
-
-		/// Sets the quadratic term in the attenuation equation.
-		/// float q : The new value of the quadratic term.
-		void setAttenuationQuadratic(float q);
+		/// Sets the attenuation of this Spot Light.
+		/// Attenuation atten : The new attenuation of this Spot Light.
+		void setAttenuation(BaseLight::Attenuation atten);
 
 		/// Sets the range of this Spot Light.
 		/// float ran : The new range of the Spot Light.
@@ -93,16 +77,13 @@ namespace Honeycomb::Component::Light {
 		Honeycomb::Math::Vector3f *position; // The position (from Transform)
 		Honeycomb::Math::Vector3f *direction; // The direction (from Transform)
 
-		/// Variables for the Attenuation calculation
-		float attenConstant;
-		float attenLinear;
-		float attenQuadratic;
-
+		BaseLight::Attenuation attenuation; // The attenuation of the Light
 		float angle; // The spot angle of the Spot Light (entire light).
 		float range; // The range of the Spot Light
 
-		// Event handler for the change in the transform
+		// Event handlers for the change in the transform and attenuation
 		Honeycomb::Conjuncture::EventHandler transformChange;
+		Honeycomb::Conjuncture::EventHandler attenuationChange;
 	};
 }
 

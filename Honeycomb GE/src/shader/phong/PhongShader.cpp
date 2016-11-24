@@ -52,6 +52,12 @@ namespace Honeycomb::Shader::Phong {
 		addUniform_BaseLight(aL);
 	}
 
+	void PhongShader::addUniform_Attenuation(BaseLight bL) {
+		addUniform(bL.getName() + ".attenuation.constant");
+		addUniform(bL.getName() + ".attenuation.linear");
+		addUniform(bL.getName() + ".attenuation.quadratic");
+	}
+
 	void PhongShader::addUniform_BaseLight(BaseLight aL) {
 		addUniform(aL.getName() + ".base.color");
 		addUniform(aL.getName() + ".base.intensity");
@@ -74,9 +80,7 @@ namespace Honeycomb::Shader::Phong {
 	void PhongShader::addUniform_PointLight(PointLight pL) {
 		addUniform(pL.getName() + ".base.color");
 		addUniform(pL.getName() + ".base.intensity");
-		addUniform(pL.getName() + ".constant");
-		addUniform(pL.getName() + ".linear");
-		addUniform(pL.getName() + ".quadratic");
+		addUniform_Attenuation(pL);
 		addUniform(pL.getName() + ".position");
 		addUniform(pL.getName() + ".range");
 	}
@@ -84,9 +88,7 @@ namespace Honeycomb::Shader::Phong {
 	void PhongShader::addUniform_SpotLight(SpotLight sL) {
 		addUniform(sL.getName() + ".base.color");
 		addUniform(sL.getName() + ".base.intensity");
-		addUniform(sL.getName() + ".constant");
-		addUniform(sL.getName() + ".linear");
-		addUniform(sL.getName() + ".quadratic");
+		addUniform_Attenuation(sL);
 		addUniform(sL.getName() + ".position");
 		addUniform(sL.getName() + ".direction");
 		addUniform(sL.getName() + ".range");
@@ -98,6 +100,16 @@ namespace Honeycomb::Shader::Phong {
 		// Upcast the ambient light to a base light so it can be set using the
 		// base light helper method.
 		setUniform_BaseLight(name + ".base", aL);
+	}
+
+	void PhongShader::setUniform_Attenuation(std::string name,
+			BaseLight::Attenuation atten) {
+		setUniform_f(name + ".attenuation.constant", 
+			atten.getAttenuationConstant());
+		setUniform_f(name + ".attenuation.linear", 
+			atten.getAttenuationLinear());
+		setUniform_f(name + ".attenuation.quadratic", 
+			atten.getAttenuationQuadratic());
 	}
 
 	void PhongShader::setUniform_BaseLight(std::string name, BaseLight bL) {
@@ -120,18 +132,14 @@ namespace Honeycomb::Shader::Phong {
 
 	void PhongShader::setUniform_PointLight(std::string name, PointLight pL) {
 		setUniform_BaseLight(name + ".base", pL);
-		setUniform_f(name + ".constant", pL.getAttenuationConstant());
-		setUniform_f(name + ".linear", pL.getAttenuationLinear());
-		setUniform_f(name + ".quadratic", pL.getAttenuationQuadratic());
+		setUniform_Attenuation(name, pL.getAttenuation());
 		setUniform_vec3(name + ".position", pL.getPosition());
 		setUniform_f(name + ".range", pL.getRange());
 	}
 
 	void PhongShader::setUniform_SpotLight(std::string name, SpotLight sL) {
 		setUniform_BaseLight(name + ".base", sL);
-		setUniform_f(name + ".constant", sL.getAttenuationConstant());
-		setUniform_f(name + ".linear", sL.getAttenuationLinear());
-		setUniform_f(name + ".quadratic", sL.getAttenuationQuadratic());
+		setUniform_Attenuation(name, sL.getAttenuation());
 		setUniform_vec3(name + ".direction", sL.getDirection());
 		setUniform_vec3(name + ".position", sL.getPosition());
 		setUniform_f(name + ".range", sL.getRange());

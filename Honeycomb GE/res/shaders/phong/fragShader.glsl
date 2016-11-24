@@ -27,6 +27,15 @@ struct BaseLight {
 };
 
 ///
+/// The attenuation structure.
+///
+struct Attenuation {
+	float constant; // The constant coefficient in the attenuation equation
+	float linear; // The linear coefficient in the attenuation equation
+	float quadratic; // The quadratic coefficient in the attenuation equation
+};
+
+///
 /// The ambient light strcture.
 ///
 struct AmbientLight {
@@ -47,13 +56,9 @@ struct DirectionalLight {
 ///
 struct PointLight {
     BaseLight base; // The base component of the light
-
-	float constant; // The constant term in the Attenuation
-	float linear; // The linear term in the Attenuation
-	float quadratic; // The quadratic term in the Attenuation
+	Attenuation attenuation; // The attenuation of the light
 	
 	vec3 position; // The 3D position of the light in the world
-    
     float range; // The sphere-like radius of the light (the higher this value
                  // the more accurate the attenuation of the light).
 };
@@ -63,11 +68,8 @@ struct PointLight {
 ///
 struct SpotLight {
     BaseLight base; // The base component of the light
-    
-    float constant; // The constant term in the Attenuation
-	float linear; // The linear term in the Attenuation
-	float quadratic; // The quadratic term in the Attenuation
-    
+    Attenuation attenuation; // The attenuation of the light
+
     vec3 position; // The 3D position of the light in the world
     vec3 direction; // The direction of the light in the world
     
@@ -92,6 +94,7 @@ uniform vec3 cameraPos; // TEMP TEMP TEMP TODO!
 
 /// Forward Declarations
 vec4 calculateAmbientLight(AmbientLight aL, Material mat);
+float calculateAttenuation(Attenuation atten);
 vec4 calculateDiffuseLight(BaseLight bL, Material mat, vec3 dir, vec3 norm);
 vec4 calculateDirectionalLight(DirectionalLight dL, Material mat, vec3 cP,
     vec3 wP, vec3 norm);
@@ -116,6 +119,15 @@ vec4 calculateAmbientLight(AmbientLight aL, Material mat) {
         vec3(aL.base.intensity * aL.base.color.xyz * mat.ambientColor.xyz *
             aL.base.color.w * mat.ambientColor.w),
         aL.base.color.w * mat.ambientColor.w);             
+}
+
+/// Calculates the attenuation of the specified attenuation component at the
+/// specified distance.
+/// Attenuation atten : The attenuation component.
+/// float d : The distance of the fragment from the light.
+/// return : The value of the attenuation at the fragment distance given.
+float calculateAttenuation(Attenuation atten, float d) {
+	return (atten.constant + atten.linear * d + atten.quadratic * d * d);
 }
 
 /// Calculates the diffuse light which should be applied to this fragment, 
@@ -190,17 +202,17 @@ vec4 calculatePointLight(PointLight pL, Material mat, vec3 cP, vec3 wP,
     // Calculate the Attenuation of the Point Light, and the adjusted
     // attenuation which will make the attenuation zero at the range of the
     // point light to allow for a smoother light transition.
-    float atten = pL.base.intensity / (pL.constant + pL.linear * dispMag +
-        pL.quadratic * dispMag * dispMag);
-    float adjAtten = ((pL.range - dispMag) / pL.range) * atten;
+	float atten = calculateAttenuation(pL.attenuation, dispMag);
+	float intensity = (1.0F / atten) * pL.base.intensity * 
+		((pL.range - dispMag) / pL.range);
     
     // Calculate the Diffuse and Specular Light components of the Point Light 
     // and scale by the attenuation to adjust the light with distance.
     vec4 diffuse = calculateDiffuseLight(pL.base, mat, direction, norm);
     vec4 specular = calculateSpecularReflection(pL.base, mat, cP, wP, 
         direction, norm);
-    diffuse = vec4(diffuse.xyz * adjAtten, diffuse.w);
-    specular = vec4(specular.xyz * adjAtten, specular.w);
+    diffuse = vec4(diffuse.xyz * intensity, diffuse.w);
+    specular = vec4(specular.xyz * intensity, specular.w);
     
     // Return the blend of the Diffuse and Specular lighting
     return vec4(vec3(diffuse.xyz + specular.xyz), diffuse.w + specular.w);
@@ -264,18 +276,18 @@ vec4 calculateSpotLight(SpotLight sL, Material mat, vec3 cP, vec3 wP,
     // attenuation which will make the attenuation zero at the range of the
     // spot light and zero at the edge of the angle of the spot light to allow 
     // for a smoother light transition.
-    float atten = sL.base.intensity / (sL.constant + sL.linear * dispMag +
-        sL.quadratic * dispMag * dispMag);
-    float adjAtten = (1.0F - (1.0F - cosAngle) / (1.0F - sL.cosAngle)) * 
-        ((sL.range - dispMag) / sL.range) * atten;
+    float atten = calculateAttenuation(sL.attenuation, dispMag);
+    float intensity = (1.0F / atten) * sL.base.intensity * 
+        (1.0F - (1.0F - cosAngle) / (1.0F - sL.cosAngle)) * 
+        ((sL.range - dispMag) / sL.range);
     
     // Calculate the Diffuse and Specular Light components of the Spot Light 
     // and scale by the attenuation to adjust the light with distance.
     vec4 diffuse = calculateDiffuseLight(sL.base, mat, direction, norm);
     vec4 specular = calculateSpecularReflection(sL.base, mat, cP, wP, 
         direction, norm);
-    diffuse = vec4(diffuse.xyz * adjAtten, diffuse.w);
-    specular = vec4(specular.xyz * adjAtten, specular.w);
+    diffuse = vec4(diffuse.xyz * intensity, diffuse.w);
+    specular = vec4(specular.xyz * intensity, specular.w);
     
     // Return the blend of the Diffuse and Specular lighting
     return diffuse + specular;

@@ -31,18 +31,23 @@ namespace Honeycomb::Shader::Phong {
 		void addUniform_AmbientLight(
 			Honeycomb::Component::Light::AmbientLight aL);
 
-		/// Adds the specified directional light as a uniform for this shader
-		/// (provided that the Phong Shader file contains a uniform with the
-		/// same name as the specified directional light).
-		/// DirectionalLight dL : The directional light to be added.
-		void addUniform_DirectionalLight(
-			Honeycomb::Component::Light::DirectionalLight dL);
+		/// Adds the attenuation variables for the specified base light as
+		/// uniforms for this shader.
+		/// BaseLight bL : The light for which the attenuation is to be added.
+		void addUniform_Attenuation(Honeycomb::Component::Light::BaseLight bL);
 
 		/// Adds the specified base light as a uniform for this shader
 		/// (provided that the Phong Shader file contains a uniform with the
 		/// same name as the specified base light).
 		/// BaseLight bL : The base light to be added.
 		void addUniform_BaseLight(Honeycomb::Component::Light::BaseLight bL);
+
+		/// Adds the specified directional light as a uniform for this shader
+		/// (provided that the Phong Shader file contains a uniform with the
+		/// same name as the specified directional light).
+		/// DirectionalLight dL : The directional light to be added.
+		void addUniform_DirectionalLight(
+			Honeycomb::Component::Light::DirectionalLight dL);
 
 		/// Adds the specified Material as a uniform for this shader
 		/// (provided that the Phong Shader file contains a uniform with the
@@ -68,6 +73,13 @@ namespace Honeycomb::Shader::Phong {
 		/// AmbientLight aL : The ambient light.
 		void setUniform_AmbientLight(std::string name,
 			Honeycomb::Component::Light::AmbientLight aL);
+
+		/// Sets the attenuation uniforms for the light of the specified name.
+		/// std::string name : The name of the light for which the attenuation
+		///					   is to be set.
+		/// Attenuation atten : The attenuation of the light.
+		void setUniform_Attenuation(std::string name,
+			Honeycomb::Component::Light::BaseLight::Attenuation atten);
 
 		/// Sets the base light uniform of the name provided to the base light
 		/// specified.

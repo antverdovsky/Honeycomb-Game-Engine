@@ -3,11 +3,78 @@
 #define BASE_LIGHT_H
 
 #include "..\..\component\GameComponent.h"
+#include "..\..\conjuncture\Event.h"
 #include "..\..\math\Vector4f.h"
 
 namespace Honeycomb::Component::Light {
 	class BaseLight : public Honeycomb::Component::GameComponent {
 	public:
+		class Attenuation {
+		public:
+			/// Initializes the Attenuation to the values: 1.0F for the 
+			/// constant, 0.22F for the linear, 0.20F for the quadratic.
+			Attenuation();
+
+			/// Initializes the Attenuation to the specified constant, linear 
+			/// and quadratic values.
+			/// float c : The constant term of the Attenuation equation.
+			/// float l : The linear term of the Attenuation equation.
+			/// float q : The quadratic term of the Attenuation equation.
+			Attenuation(float c, float l, float q);
+
+			/// Destructs this Attenuation.
+			~Attenuation();
+			
+			/// Gets all of the terms of this Attenuation.
+			/// float &c : Where the constant term is to be written.
+			/// float &l : Where the linear term is to be written.
+			/// float &q : Where the quadratic term is to be written.
+			void get(float &c, float &l, float &q);
+
+			/// Gets the constant term in the attenuation equation.
+			/// return : The value of the constant term.
+			float getAttenuationConstant();
+
+			/// Gets the linear term in the attenuation equation.
+			/// return : The value of the linear term.
+			float getAttenuationLinear();
+
+			/// Gets the quadratic term in the attenuation equation.
+			/// return : The value of the quadratic term.
+			float getAttenuationQuadratic();
+
+			/// Gets the event which is triggered when any of the three
+			/// attenuation values are changed.
+			/// return : The reference to the event.
+			Honeycomb::Conjuncture::Event& getChangedEvent();
+
+			/// Sets all of the terms of this Attenuation.
+			/// float c : The new constant term of the Attenuation.
+			/// float l : The new linear term of the Attenuation.
+			/// float q : The new quadratic term of the Attenuation.
+			void set(float c, float l, float q);
+
+			/// Sets the constant term in the attenuation equation.
+			/// float c : The new value of the constant term.
+			void setAttenuationConstant(float c);
+
+			/// Sets the linear term in the attenuation equation.
+			/// float l : The new value of the linear term.
+			void setAttenuationLinear(float l);
+
+			/// Sets the quadratic term in the attenuation equation.
+			/// float q : The new value of the quadratic term.
+			void setAttenuationQuadratic(float q);
+		protected:
+			/// Variables for the Attenuation calculation
+			float attenConstant;
+			float attenLinear;
+			float attenQuadratic;
+
+			// Attenuation change (constant, linear, or quadratic) event.
+			Honeycomb::Conjuncture::Event attenuationChange;
+		};
+
 		/// Initializes a new base light with the name "light", an intensity of
 		/// 1.0F and a white (1, 1, 1, 1) color.
 		BaseLight();

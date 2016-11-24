@@ -33,37 +33,21 @@ namespace Honeycomb::Component::Light {
 		/// return : The cloned Point Light.
 		PointLight* clone();
 
-		/// Gets the constant term in the attenuation equation.
-		/// return : The value of the constant term.
-		float getAttenuationConstant();
-
-		/// Gets the linear term in the attenuation equation.
-		/// return : The value of the linear term.
-		float getAttenuationLinear();
-
-		/// Gets the quadratic term in the attenuation equation.
-		/// return : The value of the quadratic term.
-		float getAttenuationQuadratic();
-
 		/// Gets the Position of this Point Light.
 		/// return : A vector representing the position.
 		Honeycomb::Math::Vector3f getPosition();
 
+		/// Gets the reference to the Attenuation of this Point Light.
+		/// return : The attenuation reference.
+		BaseLight::Attenuation& getAttenuation();
+		
 		/// Gets the sphere-like radius range of this Point Light.
 		/// return : The range value.
 		float getRange();
-		
-		/// Sets the constant term in the attenuation equation.
-		/// float c : The new value of the constant term.
-		void setAttenuationConstant(float c);
 
-		/// Sets the linear term in the attenuation equation.
-		/// float l : The new value of the linear term.
-		void setAttenuationLinear(float l);
-
-		/// Sets the quadratic term in the attenuation equation.
-		/// float q : The new value of the quadratic term.
-		void setAttenuationQuadratic(float q);
+		/// Sets the attenuation of this Point Light.
+		/// Attenuation atten : The new attenuation of this Point Light.
+		void setAttenuation(BaseLight::Attenuation atten);
 
 		/// Sets the range of this Point Light.
 		/// float ran : The new range of the Point Light.
@@ -77,15 +61,12 @@ namespace Honeycomb::Component::Light {
 	private:
 		Honeycomb::Math::Vector3f *position; // The position (from Transform)
 
-		/// Variables for the Attenuation calculation
-		float attenConstant;
-		float attenLinear;
-		float attenQuadratic;
-
+		BaseLight::Attenuation attenuation; // The attenuation of the Light
 		float range; // The sphere-like radius range of the Point Light
 
-		// Event handler for the change in the transform (for position)
+		// Event handlers for the change in the transform & attenuation
 		Honeycomb::Conjuncture::EventHandler transformChange;
+		Honeycomb::Conjuncture::EventHandler attenuationChange;
 	};
 }
 
