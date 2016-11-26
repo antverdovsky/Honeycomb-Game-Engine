@@ -22,7 +22,7 @@ namespace Honeycomb::Math {
 
 	}
 
-	Matrix4f Matrix4f::add(Matrix4f m2) {
+	Matrix4f Matrix4f::add(const Matrix4f& m2) const {
 		Matrix4f sum;
 
 		for (int r = 0; r < 4; r++) {
@@ -34,18 +34,18 @@ namespace Honeycomb::Math {
 		return sum;
 	}
 
-	Matrix4f Matrix4f::addTo(Matrix4f m2) {
-		Matrix4f sum;
+	Matrix4f Matrix4f::addTo(const Matrix4f& m2) {
+		Matrix4f sum = this->add(m2);
 
 		sum.setMatrix(sum.matrix);
 		return *this;
 	}
 
-	Matrix4f& Matrix4f::identity() {
+	const Matrix4f& Matrix4f::identity() {
 		return Matrix4f::IDENTITY;
 	}
 
-	float* Matrix4f::get() {
+	float* Matrix4f::get() const {
 		float* oneDim = new float[16]; // Create a 1D array of 16 values (4x4)
 
 		for (int r = 0; r < 4; r++) {
@@ -58,11 +58,11 @@ namespace Honeycomb::Math {
 		return oneDim;
 	}
 
-	float Matrix4f::getAt(int r, int c) {
+	float Matrix4f::getAt(const int &r, const int &c) const {
 		return this->matrix[r][c];
 	}
 
-	Matrix4f Matrix4f::multiply(Matrix4f m2) {
+	Matrix4f Matrix4f::multiply(const Matrix4f& m2) const {
 		Matrix4f product;
 
 		for (int r = 0; r < 4; r++) { // Go through all points on the matrix
@@ -80,14 +80,14 @@ namespace Honeycomb::Math {
 		return product;
 	}
 
-	Matrix4f Matrix4f::multiplyTo(Matrix4f m2) {
-		Matrix4f product;
+	Matrix4f Matrix4f::multiplyTo(const Matrix4f& m2) {
+		Matrix4f product = this->multiply(m2);
 
 		this->setMatrix(product.matrix);
 		return *this;
 	}
 
-	Matrix4f Matrix4f::scale(float scale) {
+	Matrix4f Matrix4f::scale(const float &scale) const {
 		Matrix4f scaled;
 
 		for (int r = 0; r < 4; r++) {
@@ -99,14 +99,14 @@ namespace Honeycomb::Math {
 		return scaled;
 	}
 
-	Matrix4f Matrix4f::scaleTo(float scale) {
+	Matrix4f Matrix4f::scaleTo(const float &scale) {
 		Matrix4f scaled = this->scale(scale);
 
 		this->setMatrix(scaled.matrix);
 		return *this;
 	}
 
-	void Matrix4f::setAt(int r, int c, float val) {
+	void Matrix4f::setAt(const int &r, const int &c, const float &val) {
 		this->matrix[r][c] = val;
 	}
 
@@ -130,47 +130,50 @@ namespace Honeycomb::Math {
 		}
 	}
 
-	Matrix4f Matrix4f::operator*(float scale) {
+	Matrix4f Matrix4f::operator*(const float &scale) const {
 		return this->scale(scale);
 	}
 
-	Matrix4f Matrix4f::operator*=(float scale) {
+	Matrix4f Matrix4f::operator*=(const float &scale) {
 		return this->scaleTo(scale);
 	}
 
-	Matrix4f Matrix4f::operator*(Matrix4f m2) {
+	Matrix4f Matrix4f::operator*(const Matrix4f& m2) const {
 		return this->multiply(m2);
 	}
 
-	Matrix4f Matrix4f::operator*=(Matrix4f m2) {
+	Matrix4f Matrix4f::operator*=(const Matrix4f& m2) {
 		return this->multiplyTo(m2);
 	}
 
-	Matrix4f Matrix4f::operator/(float scale) {
+	Matrix4f Matrix4f::operator/(const float &scale) const {
 		return this->scale(1.0F / scale);
 	}
 
-	Matrix4f Matrix4f::operator/=(float scale) {
+	Matrix4f Matrix4f::operator/=(const float &scale) {
 		return this->scaleTo(1.0F / scale);
 	}
 
-	Matrix4f Matrix4f::operator+(Matrix4f m2) {
+	Matrix4f Matrix4f::operator+(const Matrix4f& m2) const {
 		return this->add(m2);
 	}
 
-	Matrix4f Matrix4f::operator+=(Matrix4f m2) {
+	Matrix4f Matrix4f::operator+=(const Matrix4f& m2) {
 		return this->addTo(m2);
 	}
 
-	Matrix4f Matrix4f::operator-() {
-		return this->scale(-1.0F);
+	Matrix4f Matrix4f::operator-() const {
+		Matrix4f neg = Matrix4f(*this);
+		neg.scaleTo(-1.0F);
+
+		return neg;
 	}
 
-	Matrix4f Matrix4f::operator-(Matrix4f m2) {
+	Matrix4f Matrix4f::operator-(const Matrix4f& m2) const {
 		return this->add(-m2);
 	}
 
-	Matrix4f Matrix4f::operator-=(Matrix4f m2) {
+	Matrix4f Matrix4f::operator-=(const Matrix4f& m2) {
 		return this->addTo(-m2);
 	}
 }

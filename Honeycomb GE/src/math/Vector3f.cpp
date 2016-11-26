@@ -11,7 +11,7 @@ namespace Honeycomb::Math {
 
 	Vector3f::Vector3f() : Vector3f(0.0F, 0.0F, 0.0F) { }
 
-	Vector3f::Vector3f(float x, float y, float z) {
+	Vector3f::Vector3f(const float &x, const float &y, const float &z) {
 		this->x = x;
 		this->y = y;
 		this->z = z;
@@ -21,18 +21,18 @@ namespace Honeycomb::Math {
 
 	}
 
-	Vector3f Vector3f::add(Vector3f v2) {
+	Vector3f Vector3f::add(const Vector3f& v2) const {
 		return Vector3f(this->x + v2.x, this->y + v2.y, this->z + v2.z);
 	}
-
-	Vector3f Vector3f::addTo(Vector3f v2) {
+	
+	Vector3f Vector3f::addTo(const Vector3f& v2) {
 		Vector3f resultant = this->add(v2);
 
 		this->set(resultant.x, resultant.y, resultant.z);
 		return *this;
 	}
 
-	float Vector3f::angle(Vector3f v2) {
+	float Vector3f::angle(const Vector3f& v2) const {
 		// Calculate cos(theta) = (v1 . v2) / (|v1||v2|)
 		float dot = this->dot(v2);
 		float magMult = this->magnitude() * v2.magnitude();
@@ -41,7 +41,7 @@ namespace Honeycomb::Math {
 		return (float)acos(cosTheta);
 	}
 
-	Vector3f Vector3f::cross(Vector3f v2) {
+	Vector3f Vector3f::cross(const Vector3f& v2) const {
 		// Calculate the cross product using the determinant of the cross
 		// product matrix of this and the second vector.
 		return Vector3f(
@@ -50,18 +50,18 @@ namespace Honeycomb::Math {
 			this->x * v2.y - v2.x * this->y);
 	}
 
-	Vector3f Vector3f::crossTo(Vector3f v2) {
+	Vector3f Vector3f::crossTo(const Vector3f& v2) {
 		Vector3f crossed = this->cross(v2);
 
 		this->set(crossed.x, crossed.y, crossed.z);
 		return *this;
 	}
 
-	float Vector3f::dot(Vector3f v2) {
+	float Vector3f::dot(const Vector3f& v2) const {
 		return this->x * v2.x + this->y * v2.y + this->z * v2.z;
 	}
 
-	void Vector3f::get(float &x, float &y, float &z) {
+	void Vector3f::get(float &x, float &y, float &z) const {
 		x = this->x;
 		y = this->y;
 		z = this->z;
@@ -79,19 +79,19 @@ namespace Honeycomb::Math {
 		return up;
 	}
 
-	float& Vector3f::getX() {
+	const float& Vector3f::getX() const {
 		return this->x;
 	}
 
-	float& Vector3f::getY() {
+	const float& Vector3f::getY() const {
 		return this->y;
 	}
 
-	float& Vector3f::getZ() {
+	const float& Vector3f::getZ() const {
 		return this->z;
 	}
 
-	float Vector3f::magnitude() {
+	float Vector3f::magnitude() const {
 		return (float)sqrt(x * x + y * y + z * z);
 	}
 
@@ -102,13 +102,13 @@ namespace Honeycomb::Math {
 		return *this;
 	}
 
-	Vector3f Vector3f::normalized() {
+	Vector3f Vector3f::normalized() const {
 		float mag = this->magnitude();
 
 		return Vector3f(this->x / mag, this->y / mag, this->z / mag);
 	}
 
-	Vector3f Vector3f::rotate(Vector3f axis, float rad) {
+	Vector3f Vector3f::rotate(const Vector3f &axis, const float &rad) const {
 		// Construct a Rotation Quaternion which will rotate the vector.
 		Quaternion rotQuat = Quaternion(axis, rad);
 		Quaternion rotQuatConj = rotQuat.conjugated();
@@ -122,107 +122,88 @@ namespace Honeycomb::Math {
 		return Vector3f(result.getX(), result.getY(), result.getZ());
 	}
 
-	Vector3f Vector3f::rotate(Quaternion quat) {
+	Vector3f Vector3f::rotate(const Quaternion &quat) const {
 		Quaternion rotated = quat * (*this) * quat.conjugated();
 
 		return Vector3f(rotated.getX(), rotated.getY(), rotated.getZ());
 	}
 
-	Vector3f Vector3f::rotateTo(Vector3f axis, float rad) {
+	Vector3f Vector3f::rotateTo(const Vector3f &axis, const float &rad) {
 		Vector3f rotated = this->rotate(axis, rad);
 
 		this->set(rotated.x, rotated.y, rotated.z);
 		return *this;
 	}
 
-	Vector3f Vector3f::rotateTo(Quaternion quat) {
+	Vector3f Vector3f::rotateTo(const Quaternion &quat) {
 		Vector3f rotated = this->rotate(quat);
 
 		this->set(rotated.x, rotated.y, rotated.z);
 		return *this;
 	}
 
-	Vector3f Vector3f::scale(float scale) {
+	Vector3f Vector3f::scale(const float &scale) const {
 		return Vector3f(this->x * scale, this->y * scale, this->z * scale);
 	}
 
-	Vector3f Vector3f::scaleTo(float scale) {
+	Vector3f Vector3f::scaleTo(const float &scale) {
 		Vector3f scaled = this->scale(scale);
 
 		this->set(scaled.x, scaled.y, scaled.z);
 		return *this;
 	}
 
-	void Vector3f::set(float x, float y, float z) {
+	void Vector3f::set(const float &x, const float &y, const float &z) {
 		this->x = x;
 		this->y = y;
 		this->z = z;
 	}
 
-	void Vector3f::setX(float x) {
+	void Vector3f::setX(const float &x) {
 		this->x = x;
 	}
 
-	void Vector3f::setY(float y) {
+	void Vector3f::setY(const float &y) {
 		this->y = y;
 	}
 
-	void Vector3f::setZ(float z) {
+	void Vector3f::setZ(const float &z) {
 		this->z = z;
 	}
 
-	float* Vector3f::vectorsToFloatBuffer(Vector3f vec[], int count) {
-		// The float buffer array will store each component (total 3) for each
-		// vector (total count), therefore the float buffer must store 
-		// 3 * count elements.
-		float *floatBuffer = new float[count * 3];
-
-		for (int i = 0; i < count * 3; ) { // Go through the float buffer array
-			// Store each component of the element into the float buffer. Each 
-			// time a component is copied over, the current index is increased 
-			// so that the next component is copied into the next slot in the 
-			// float buffer.
-			floatBuffer[i++] = vec[i / 3].getX();
-			floatBuffer[i++] = vec[i / 3].getY();
-			floatBuffer[i++] = vec[i / 3].getZ();
-		}
-
-		return floatBuffer;
-	}
-
-	Vector3f Vector3f::operator*(float scale) {
+	Vector3f Vector3f::operator*(const float &scale) const {
 		return this->scale(scale);
 	}
 
-	Vector3f Vector3f::operator*=(float scale) {
+	Vector3f Vector3f::operator*=(const float &scale) {
 		return this->scaleTo(scale);
 	}
 
-	Vector3f Vector3f::operator/(float scale) {
+	Vector3f Vector3f::operator/(const float &scale) const {
 		return this->scale(1.0F / scale);
 	}
 
-	Vector3f Vector3f::operator/=(float scale) {
+	Vector3f Vector3f::operator/=(const float &scale) {
 		return this->scale(1.0F / scale);
 	}
-
-	Vector3f Vector3f::operator+(Vector3f v2) {
+	
+	Vector3f Vector3f::operator+(const Vector3f &v2) const {
 		return this->add(v2);
 	}
 
-	Vector3f Vector3f::operator+=(Vector3f v2) {
+	Vector3f Vector3f::operator+=(const Vector3f &v2) {
 		return this->addTo(v2);
 	}
 
-	Vector3f Vector3f::operator-() {
+	Vector3f Vector3f::operator-() const {
 		return this->scale(-1.0F);
 	}
 
-	Vector3f Vector3f::operator-(Vector3f v2) {
+	Vector3f Vector3f::operator-(const Vector3f &v2) const {
 		return this->add(-v2);
 	}
 
-	Vector3f Vector3f::operator-=(Vector3f v2) {
+	Vector3f Vector3f::operator-=(const Vector3f &v2) {
 		return this->addTo(-v2);
 	}
 }

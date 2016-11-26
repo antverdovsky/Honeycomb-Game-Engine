@@ -4,6 +4,8 @@
 
 #include "..\include\components\InputTransformable.h"
 
+#include <iostream>
+
 using namespace HoneycombEngine;
 using namespace HoneycombTest::Components;
 
@@ -30,6 +32,29 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::start() {
+		
+		Vector2f vec = Vector2f(0.0F, 1.0F);
+		const float &vecXRef = vec.getX();
+
+		std::cout << "VEC.GET_X(): " << vec.getX() << std::endl;
+		std::cout << "VEC X REF: " << vecXRef << std::endl;
+
+		vec.setX(9.0F);
+
+		std::cout << "VEC.GET_X(): " << vec.getX() << std::endl;
+		std::cout << "VEC X REF: " << vecXRef << std::endl;
+		
+		Vector2f newVec = vec.add(Vector2f(1.0F, 1.0F));
+		
+		std::cout << "NEW VEC.GET_X(): " << newVec.getX() << std::endl;
+
+		Matrix4f mat = Matrix4f::identity();
+		mat.setAt(0, 0, 10);
+
+		std::cout << mat.getAt(0, 0) << std::endl;
+		std::cout << (Matrix4f::identity()).getAt(0, 0) << std::endl;
+
+
 		///
 		/// Load in all of the Models.
 		///
@@ -88,7 +113,6 @@ namespace HoneycombTest {
 		suzanne->getComponentOfType<Transform>("Transform")->setTranslation(
 			Vector3f(0.0F, 2.5F, 0.0F));
 
-
 		///
 		/// Create a fancy Emerald Material (textured and non-textured).
 		///
@@ -102,10 +126,10 @@ namespace HoneycombTest {
 //			Vector4f(0.633F, 0.727811F, 0.633F, 1.0F),
 //			0.6F * 128.0F);
 		Material *emeraldTex = new Material(*emerald);
-//		Texture2D *tex =
-//			cube->getComponentOfType<MeshRenderer>("MeshRenderer")->
-//			getMaterial()->getAlbedoTexture();
-//		emeraldTex->setAlbedoTexture(tex);
+		Texture2D *tex =
+			cube->getComponentOfType<MeshRenderer>("MeshRenderer")->
+			getMaterial()->getAlbedoTexture();
+		emeraldTex->setAlbedoTexture(tex);
 
 		///
 		/// Give the Cube, Sphere and Plane the Textured Emerald Material, and
@@ -118,7 +142,7 @@ namespace HoneycombTest {
 		sphere->getComponentOfType<MeshRenderer>("MeshRenderer")->
 			setMaterial(emeraldTex);
 		suzanne->getComponentOfType<MeshRenderer>("MeshRenderer")->
-			setMaterial(emerald);
+			setMaterial(emeraldTex);
 
 		GameObject::getRoot()->start();
 	}

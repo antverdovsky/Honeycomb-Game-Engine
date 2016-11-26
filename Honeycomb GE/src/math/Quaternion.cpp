@@ -12,7 +12,7 @@ namespace Honeycomb::Math {
 
 	}
 
-	Quaternion::Quaternion(Vector3f axis, float rad) {
+	Quaternion::Quaternion(const Vector3f &axis, const float &rad) {
 		// Calculate the sin and cos of the half angle.
 		float sinHalfAngle = sin(rad / 2);
 		float cosHalfAngle = cos(rad / 2);
@@ -26,7 +26,8 @@ namespace Honeycomb::Math {
 		this->normalize();
 	}
 
-	Quaternion::Quaternion(float x, float y, float z, float w) {
+	Quaternion::Quaternion(const float &x, const float &y, const float &z, 
+			const float &w) {
 		this->x = x;
 		this->y = y;
 		this->z = z;
@@ -44,50 +45,50 @@ namespace Honeycomb::Math {
 		return *this;
 	}
 
-	Quaternion Quaternion::conjugated() {
+	Quaternion Quaternion::conjugated() const {
 		return Quaternion(-x, -y, -z, w);
 	}
 
-	void Quaternion::get(float &x, float &y, float &z, float &w) {
+	void Quaternion::get(float &x, float &y, float &z, float &w) const {
 		x = this->x;
 		y = this->y;
 		z = this->z;
 		w = this->w;
 	}
 
-	Vector3f Quaternion::getForwardVector() {
+	Vector3f Quaternion::getForwardVector() const {
 		return Vector3f::getGlobalForward().rotate(*this);
 	}
 
-	Vector3f Quaternion::getRightVector() {
+	Vector3f Quaternion::getRightVector() const {
 		return Vector3f::getGlobalRight().rotate(*this);
 	}
 
-	Vector3f Quaternion::getUpVector() {
+	Vector3f Quaternion::getUpVector() const {
 		return Vector3f::getGlobalUp().rotate(*this);
 	}
 
-	float& Quaternion::getW() {
+	const float& Quaternion::getW() const {
 		return this->w;
 	}
 
-	float& Quaternion::getX() {
+	const float& Quaternion::getX() const {
 		return this->x;
 	}
 
-	float& Quaternion::getY() {
+	const float& Quaternion::getY() const {
 		return this->y;
 	}
 
-	float& Quaternion::getZ() {
+	const float& Quaternion::getZ() const {
 		return this->z;
 	}
 
-	float Quaternion::magnitude() {
+	float Quaternion::magnitude() const {
 		return (float)sqrt(x * x + y * y + z * z + w * w);
 	}
 
-	Quaternion Quaternion::multiply(Quaternion q2) {
+	Quaternion Quaternion::multiply(const Quaternion &q2) const {
 		// Calculate the vectors composed of the real components of the
 		// quaternions and calculate the cross and dot products of the vectors.
 		Vector3f a = Vector3f(this->x, this->y, this->z);
@@ -105,7 +106,7 @@ namespace Honeycomb::Math {
 			this->w * q2.w - dot);
 	}
 
-	Quaternion Quaternion::multiply(Vector3f v) {
+	Quaternion Quaternion::multiply(const Vector3f &v) const {
 		// Convert the specified vector to a quaternion (multiplication code
 		// will remain the same).
 		Quaternion vecAsQuat = Quaternion(v.getX(), v.getY(), v.getZ(), 0.0F);
@@ -113,14 +114,14 @@ namespace Honeycomb::Math {
 		return this->multiply(vecAsQuat);
 	}
 
-	Quaternion Quaternion::multiplyTo(Quaternion q2) {
+	Quaternion Quaternion::multiplyTo(const Quaternion &q2) {
 		Quaternion multiplied = this->multiply(q2);
 
 		this->set(multiplied.x, multiplied.y, multiplied.z, multiplied.w);
 		return *this;
 	}
 
-	Quaternion Quaternion::multiplyTo(Vector3f v) {
+	Quaternion Quaternion::multiplyTo(const Vector3f &v) {
 		Quaternion vecAsQuat = Quaternion(v.getX(), v.getY(), v.getZ(), 0.0F);
 
 		return this->multiplyTo(vecAsQuat);
@@ -133,33 +134,34 @@ namespace Honeycomb::Math {
 		return *this;
 	}
 
-	Quaternion Quaternion::normalized() {
+	Quaternion Quaternion::normalized() const {
 		float mag = this->magnitude();
 
 		return Quaternion(this->x / mag, this->y / mag, this->z / mag,
 			this->w / mag);
 	}
 
-	void Quaternion::set(float x, float y, float z, float w) {
+	void Quaternion::set(const float &x, const float &y, const float &z, 
+			const float &w) {
 		this->x = x;
 		this->y = y;
 		this->z = z;
 		this->w = w;
 	}
 
-	void Quaternion::setW(float w) {
+	void Quaternion::setW(const float &W) {
 		this->w = w;
 	}
 
-	void Quaternion::setX(float x) {
+	void Quaternion::setX(const float &x) {
 		this->x = x;
 	}
 
-	void Quaternion::setY(float y) {
+	void Quaternion::setY(const float &y) {
 		this->y = y;
 	}
 
-	void Quaternion::setZ(float z) {
+	void Quaternion::setZ(const float &z) {
 		this->z = z;
 	}
 
@@ -182,19 +184,19 @@ namespace Honeycomb::Math {
 		return rotMat;
 	}
 
-	Quaternion Quaternion::operator*(Quaternion q2) {
+	Quaternion Quaternion::operator*(const Quaternion &q2) const {
 		return this->multiply(q2);
 	}
 
-	Quaternion Quaternion::operator*(Vector3f v) {
+	Quaternion Quaternion::operator*(const Vector3f &v) const {
 		return this->multiply(v);
 	}
 
-	Quaternion Quaternion::operator*=(Quaternion q2) {
+	Quaternion Quaternion::operator*=(const Quaternion &q2) {
 		return this->multiplyTo(q2);
 	}
 
-	Quaternion Quaternion::operator*=(Vector3f v) {
+	Quaternion Quaternion::operator*=(const Vector3f &v) {
 		return this->multiplyTo(v);
 	}
 }
