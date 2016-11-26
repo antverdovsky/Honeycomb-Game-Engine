@@ -2,27 +2,38 @@
 
 #include <ctime>
 
-namespace Honeycomb::Base::Time {
-	float deltaTime;
+namespace Honeycomb::Base {
+	const float GameTime::SECOND = 1000.0F;
+	GameTime* GameTime::gameTime = nullptr;
 
-	float getDeltaTime() {
-		return deltaTime;
+	float GameTime::getDeltaTimeMS() {
+		return this->deltaTime;
 	}
 
-	float getDeltaTimeSeconds() {
-		return getDeltaTime() / SECOND;
+	float GameTime::getDeltaTimeS() {
+		return (this->deltaTime / SECOND);
 	}
 
-	float getGameTime() {
-		// Get the clock ticks, convert to seconds, then to ms and return
-		return (float)clock() / CLOCKS_PER_SEC * 1000.0F;
+	float GameTime::getElapsedTimeMS() {
+		return ((float)clock() / CLOCKS_PER_SEC * 1000.0F);
 	}
 
-	float getGameTimeSeconds() {
-		return getGameTime() / SECOND;
+	float GameTime::getElapsedTimeS() {
+		return ((float)clock() / CLOCKS_PER_SEC);
 	}
 
-	void setDeltaTime(float dT) {
-		deltaTime = dT;
+	GameTime* GameTime::getGameTime() {
+		if (gameTime == nullptr)
+			gameTime = new GameTime();
+
+		return gameTime;
+	}
+
+	void GameTime::setDeltaTimeMS(float ms) {
+		this->deltaTime = ms;
+	}
+
+	GameTime::GameTime() {
+
 	}
 }

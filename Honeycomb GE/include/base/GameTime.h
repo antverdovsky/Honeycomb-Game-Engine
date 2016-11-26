@@ -1,36 +1,48 @@
 #pragma once
-#ifndef TIME_H
-#define TIME_H
+#ifndef GAME_TIME_H
+#define GAME_TIME_H
 
-namespace Honeycomb::Base::Time {
-	const float SECOND = 1000.0F; // Number of ms (this Time unit) in a sec.
+namespace Honeycomb::Base {
+	class GameTime {
+	public:
+		const static float SECOND; // Number of ms in a sec.
+		
+		/// Gets the time between the current frame and the last frame in
+		/// milliseconds.
+		/// return : The time between the frames (in milliseconds).
+		float getDeltaTimeMS();
 
-	extern float deltaTime; // The last known time between frames.
+		/// Gets the time between the current frame and the last frame in
+		/// seconds.
+		/// return : The time between the frames (in s).
+		float getDeltaTimeS();
 
-	/// Gets the time between the current frame and the last frame in
-	/// milliseconds.
-	/// return : The time between the frames (in ms).
-	float getDeltaTime();
+		/// Gets the elapsed game time (since the start of the game) in 
+		/// milliseconds.
+		/// return : The game time (in ms).
+		float getElapsedTimeMS();
 
-	/// Gets the time between the current frame and the last frame in
-	/// seconds.
-	/// return : The time between the frames (in s).
-	float getDeltaTimeSeconds();
+		/// Gets the elapsed game time (since the start of the game) in 
+		/// seconds.
+		/// return : The game time (in s).
+		float getElapsedTimeS();
 
-	/// Gets the current game time (since the start of the game) in 
-	/// milliseconds.
-	/// return : The game time (in ms).
-	float getGameTime();
+		/// Sets the time between the current frame and the last frame in
+		/// milliseconds.
+		/// The delta time (in ms).
+		void setDeltaTimeMS(float ms);
 
-	/// Gets the current game time (since the start of the game) in 
-	/// seconds.
-	/// return : The game time (in s).
-	float getGameTimeSeconds();
+		/// Returns the Game Time instance of this Singleton.
+		/// return : The Game Time instance.
+		static GameTime* getGameTime();
+	private:
+		static GameTime* gameTime; // Singleton Instance
 
-	/// Sets the time between the current frame and the last frame in
-	/// milliseconds.
-	/// float dT : The time difference (in ms) between the frames.
-	void setDeltaTime(float dT);
+		float deltaTime; // The last known time between frames (in ms).
+
+		/// Constructs a new Game Time component.
+		GameTime();
+	};
 }
 
 #endif

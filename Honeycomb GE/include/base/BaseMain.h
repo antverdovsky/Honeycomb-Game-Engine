@@ -8,10 +8,11 @@
 #include "..\..\include\base\BaseGame.h"
 
 namespace Honeycomb::Base::BaseMain {
-	const static int FRAME_CAP = 999; // The FPS cap
-
+	extern const int FRAME_CAP; // The FPS cap
+	extern const bool DRAW_BACK_FACES; // Draw back faces?
+	
 	extern bool isGameRunning; // Is the game loop running?
-	extern bool drawBackFaces; // Draw back faces?
+
 	extern BaseGame *game; // Reference to the current game object
 
 	/// Initializes OpenGL settings for the game.

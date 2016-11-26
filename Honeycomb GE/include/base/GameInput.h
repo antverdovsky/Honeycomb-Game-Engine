@@ -165,7 +165,7 @@ namespace Honeycomb::Base {
 
 		/// Gets the mouse position within the game window (in pixels).
 		/// return : The mouse position 2D vector.
-		Honeycomb::Math::Vector2f* getMousePosition();
+		Honeycomb::Math::Vector2f getMousePosition();
 	private:
 		static GameInput *gameInput; // Instance stored by the singleton
 
@@ -182,7 +182,7 @@ namespace Honeycomb::Base {
 
 		// Arrays which store the mouse position and whether each mouse button
 		// is down or up. The down/up conditions are the same as for the keys.
-		Honeycomb::Math::Vector2f *mousePos;
+		Honeycomb::Math::Vector2f mousePos;
 		bool buttonsDown[MAX_NUM_BUTTONS];
 		bool buttonsReleased[MAX_NUM_BUTTONS];
 

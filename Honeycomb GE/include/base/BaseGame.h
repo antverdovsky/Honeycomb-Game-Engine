@@ -5,11 +5,10 @@
 namespace Honeycomb::Base {
 	class BaseGame {
 	public:
-		/// Handles the input for the game. Note, all input should be cleared
-		/// at the end of this function.
+		/// Handles the input for the game every frame.
 		virtual void input();
 
-		/// Handles the rendering for the game (every frame).
+		/// Handles the rendering for the game every frame.
 		virtual void render();
 
 		/// Starts the game. Note, this should be used for loading in and 
@@ -19,10 +18,8 @@ namespace Honeycomb::Base {
 		/// Stops the game.
 		virtual void stop();
 
-		/// Updates the game (every frame).
+		/// Updates the game every frame.
 		virtual void update();
-	private:
-
 	};
 }
 

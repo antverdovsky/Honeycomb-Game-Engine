@@ -53,7 +53,6 @@
 namespace HoneycombEngine {
 	using namespace Honeycomb::Base;
 	using namespace Honeycomb::Base::BaseMain;
-	using namespace Honeycomb::Base::Time;
 
 	using namespace Honeycomb::Component;
 	using namespace Honeycomb::Component::Light;

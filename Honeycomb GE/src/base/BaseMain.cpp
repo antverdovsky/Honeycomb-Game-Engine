@@ -6,15 +6,17 @@
 #include <iostream>
 
 namespace Honeycomb::Base::BaseMain {
-	bool isGameRunning = false; // Is the game loop running?
-	bool drawBackFaces = false; // Draw back faces?
+	const int FRAME_CAP = 999; // The maximum Frames Per Second
+	const bool DRAW_BACK_FACES = false; // Draw back faces?
 
+	bool isGameRunning = false; // Is the game loop running?
+	
 	BaseGame *game;
 	
 	void initializeOpenGL() {
 		glClearColor(0.0F, 0.0F, 0.0F, 0.0F); // Set clear color to black
 		
-		if (!drawBackFaces) { // Should back faces be drawn?
+		if (!DRAW_BACK_FACES) { // Should back faces be drawn?
 			glCullFace(GL_BACK); // Do not draw the back face (CW)
 			glEnable(GL_CULL_FACE); // Disable rendering unseen back faces
 		}
@@ -28,6 +30,7 @@ namespace Honeycomb::Base::BaseMain {
 	}
 
 	void render() {
+		// Clear the Screen -> Render the Game -> Update the Screen
 		GameWindow::getGameWindow()->clear();
 		game->render();
 		GameWindow::getGameWindow()->refresh();
@@ -36,13 +39,15 @@ namespace Honeycomb::Base::BaseMain {
 	void run() {
 		// The expected time that we should spend rendering each frame in order
 		// to hit the desired FPS count.
-		const float msPerFrame = 1.0F / FRAME_CAP * Time::SECOND;
+		const float msPerFrame = 1.0F / FRAME_CAP * GameTime::SECOND;
 
-		float lastTime = Time::getGameTime(); // Last time game was rendered
+		// Last time a frame was renderered and the time between frame renders,
+		// both are in milliseconds.
+		float lastTime = GameTime::getGameTime()->getElapsedTimeMS();
 		float deltaTime = 0;
 
 		// The number of frames rendered in some amount of time that we spent
-		// rendering them.
+		// rendering them (used to calculate the FPS).
 		int framesRendered = 0;
 		float timeSpentRenderingFrames = 0;
 
@@ -50,7 +55,7 @@ namespace Honeycomb::Base::BaseMain {
 			// Get the game time at the start of the loop and calculate the 
 			// delta time between the last loop iteration and the current. 
 			// Reset the last render time to the current loop start time.
-			float currentTime = Time::getGameTime();
+			float currentTime = GameTime::getGameTime()->getElapsedTimeMS();
 			deltaTime += currentTime - lastTime;
 			lastTime = currentTime;
 
@@ -67,15 +72,15 @@ namespace Honeycomb::Base::BaseMain {
 
 				// Record the time between frames in the Time namespace and
 				// reset the delta time for future iterations of the loop.
-				Time::setDeltaTime(deltaTime);
+				GameTime::getGameTime()->setDeltaTimeMS(deltaTime);
 				deltaTime = 0;
 
 				// If we have spent at least one second rendering the frames,
 				// we have the current number of frames for the last second.
 				// Reset the variables so the FPS can be calculated next frame.
-				if (timeSpentRenderingFrames >= Time::SECOND) {
-					std::cout << "FPS " << framesRendered << std::endl;
-					
+				if (timeSpentRenderingFrames >= GameTime::SECOND) {
+					std::cout << "FPS: " << framesRendered << std::endl;
+
 					timeSpentRenderingFrames = 0;
 					framesRendered = 0;
 				}
@@ -92,10 +97,11 @@ namespace Honeycomb::Base::BaseMain {
 		// Initialize the GLFW, the Window, GLEW and OpenGL.
 		glfwInit();
 		GameWindow::getGameWindow(); // Initialize the Game Window (first time)
+		GameInput::getGameInput(); // Initialize the Game Input (first time)
 		glewExperimental = true; glewInit();
 		initializeOpenGL();
-
-		GameInput::getGameInput(); // Initialize the Game Input (first time)
+		
+		// Initialize the Game & Start!
 		game = g;
 		game->start();
 	}
@@ -110,5 +116,7 @@ namespace Honeycomb::Base::BaseMain {
 	void update() {
 		game->input();
 		game->update();
+		
+		GameInput::getGameInput()->clear(); // Clear input in between frames
 	}
 }

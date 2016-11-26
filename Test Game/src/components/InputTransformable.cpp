@@ -64,8 +64,10 @@ namespace HoneycombTest::Components {
 		GameInput *input = GameInput::getGameInput();
 
 		// Adjust the speed values for the frame rate
-		float adjSpeedM = this->speedM * Time::getDeltaTimeSeconds();
-		float adjSpeedR = this->speedR * Time::getDeltaTimeSeconds();
+		float adjSpeedM = 
+			this->speedM * GameTime::getGameTime()->getDeltaTimeS();
+		float adjSpeedR = 
+			this->speedR * GameTime::getGameTime()->getDeltaTimeS();
 
 		if (input->getKeyDown(this->movForward))
 			transform->translate( transform->getLocalForward() * adjSpeedM);

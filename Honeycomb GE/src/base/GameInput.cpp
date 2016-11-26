@@ -7,16 +7,15 @@
 using Honeycomb::Math::Vector2f;
 
 namespace Honeycomb::Base {
-	GameInput *GameInput::gameInput = NULL;
+	GameInput *GameInput::gameInput = nullptr;
 	
 	GameInput::~GameInput() {
-		delete mousePos;
-		delete gameInput;
+
 	}
 
 	void GameInput::callbackCursorPosition(GLFWWindow *window, double x, 
 			double y) {
-		getGameInput()->mousePos->set((float)x, (float)y);
+		getGameInput()->mousePos.set((float)x, (float)y);
 	}
 
 	void GameInput::callbackKey(GLFWWindow *window, int key, int scanCode,
@@ -62,7 +61,7 @@ namespace Honeycomb::Base {
 	}
 
 	GameInput* GameInput::getGameInput() {
-		if (gameInput == NULL)
+		if (gameInput == nullptr)
 			gameInput = new GameInput();
 
 		return gameInput;
@@ -80,7 +79,7 @@ namespace Honeycomb::Base {
 		return keysReleased[key];
 	}
 
-	Vector2f* GameInput::getMousePosition() {
+	Vector2f GameInput::getMousePosition() {
 		return mousePos;
 	}
 
@@ -88,18 +87,13 @@ namespace Honeycomb::Base {
 		// Set the released state of all buttons and keys to false. (The down 
 		// state is not modified as that is automatically cleared when the use 
 		// lets go of the button).
-		for (int i = 0; i < MAX_NUM_KEYS; i++) {
+		for (int i = 0; i < MAX_NUM_KEYS; i++)
 			keysReleased[i] = false;
-		}
-
-		for (int i = 0; i < MAX_NUM_BUTTONS; i++) {
+		for (int i = 0; i < MAX_NUM_BUTTONS; i++)
 			buttonsReleased[i] = false;
-		}
 	}
 
 	GameInput::GameInput() {
-		mousePos = new Vector2f();
-
 		// Set up the GLFW Input
 		glfwSetInputMode(GameWindow::getGameWindow()->getGLFWwindow(), 
 			GLFW_STICKY_KEYS, GL_TRUE);
@@ -114,11 +108,12 @@ namespace Honeycomb::Base {
 			GameWindow::getGameWindow()->getGLFWwindow(),
 			(GLFWmousebuttonfun)callbackMouseButton);
 
+		// By default, keys are not down and they have not just been released,
+		// same for the mouse buttons.
 		for (int i = 0; i < MAX_NUM_KEYS; i++) {
 			this->keysDown[i] = false;
 			this->keysReleased[i] = false;
 		}
-
 		for (int i = 0; i < MAX_NUM_BUTTONS; i++) {
 			this->buttonsDown[i] = false;
 			this->buttonsReleased[i] = false;
