@@ -29,19 +29,19 @@ namespace Honeycomb::Component::Light {
 			/// float &c : Where the constant term is to be written.
 			/// float &l : Where the linear term is to be written.
 			/// float &q : Where the quadratic term is to be written.
-			void get(float &c, float &l, float &q);
+			void get(float &c, float &l, float &q) const;
 
 			/// Gets the constant term in the attenuation equation.
 			/// return : The value of the constant term.
-			float getAttenuationConstant();
+			const float& getAttenuationConstant() const;
 
 			/// Gets the linear term in the attenuation equation.
 			/// return : The value of the linear term.
-			float getAttenuationLinear();
+			const float& getAttenuationLinear() const;
 
 			/// Gets the quadratic term in the attenuation equation.
 			/// return : The value of the quadratic term.
-			float getAttenuationQuadratic();
+			const float& getAttenuationQuadratic() const;
 
 			/// Gets the event which is triggered when any of the three
 			/// attenuation values are changed.
@@ -97,11 +97,11 @@ namespace Honeycomb::Component::Light {
 		
 		/// Gets the color of the base light.
 		/// return : The color.
-		virtual Honeycomb::Math::Vector4f getColor();
+		virtual const Honeycomb::Math::Vector4f& getColor() const;
 
 		/// Gets the intensity of this base light.
 		/// return : The intensity.
-		virtual float getIntensity();
+		virtual const float& getIntensity() const;
 
 		/// Sets the color of this base light.
 		/// Vector4f col : The new color.

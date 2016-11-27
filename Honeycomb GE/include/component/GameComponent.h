@@ -39,7 +39,7 @@ namespace Honeycomb::Component {
 		bool& getIsActive();
 
 		/// Returns the name of this component.
-		virtual std::string getName();
+		virtual std::string getName() const;
 
 		/// Handles any input events for this component, if necessary. This 
 		/// method will only do something if the object is active.

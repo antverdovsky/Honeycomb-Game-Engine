@@ -48,36 +48,36 @@ namespace Honeycomb::Shader::Phong {
 		addUniform("cameraPos");
 	}
 
-	void PhongShader::addUniform_AmbientLight(AmbientLight aL) {
+	void PhongShader::addUniform_AmbientLight(const AmbientLight &aL) {
 		addUniform_BaseLight(aL);
 	}
 
-	void PhongShader::addUniform_Attenuation(BaseLight bL) {
+	void PhongShader::addUniform_Attenuation(const BaseLight &bL) {
 		addUniform(bL.getName() + ".attenuation.constant");
 		addUniform(bL.getName() + ".attenuation.linear");
 		addUniform(bL.getName() + ".attenuation.quadratic");
 	}
 
-	void PhongShader::addUniform_BaseLight(BaseLight aL) {
+	void PhongShader::addUniform_BaseLight(const BaseLight &aL) {
 		addUniform(aL.getName() + ".base.color");
 		addUniform(aL.getName() + ".base.intensity");
 	}
 
-	void PhongShader::addUniform_DirectionalLight(DirectionalLight dL) {
+	void PhongShader::addUniform_DirectionalLight(const DirectionalLight &dL) {
 		// TODO: Allow for more lights (duh)
 		addUniform(dL.getName() + ".base.color");
 		addUniform(dL.getName() + ".base.intensity");
 		addUniform(dL.getName() + ".direction");
 	}
 
-	void PhongShader::addUniform_Material(Material mat) {
+	void PhongShader::addUniform_Material(const Material &mat) {
 		addUniform(mat.getName() + ".ambientColor");
 		addUniform(mat.getName() + ".diffuseColor");
 		addUniform(mat.getName() + ".specularColor");
 		addUniform(mat.getName() + ".shininess");
 	}
 
-	void PhongShader::addUniform_PointLight(PointLight pL) {
+	void PhongShader::addUniform_PointLight(const PointLight &pL) {
 		addUniform(pL.getName() + ".base.color");
 		addUniform(pL.getName() + ".base.intensity");
 		addUniform_Attenuation(pL);
@@ -85,7 +85,7 @@ namespace Honeycomb::Shader::Phong {
 		addUniform(pL.getName() + ".range");
 	}
 
-	void PhongShader::addUniform_SpotLight(SpotLight sL) {
+	void PhongShader::addUniform_SpotLight(const SpotLight &sL) {
 		addUniform(sL.getName() + ".base.color");
 		addUniform(sL.getName() + ".base.intensity");
 		addUniform_Attenuation(sL);
@@ -95,51 +95,58 @@ namespace Honeycomb::Shader::Phong {
 		addUniform(sL.getName() + ".cosAngle");
 	}
 
-	void PhongShader::setUniform_AmbientLight(std::string name,
-			AmbientLight aL) {
+	void PhongShader::setUniform_AmbientLight(const AmbientLight &aL) {
 		// Upcast the ambient light to a base light so it can be set using the
 		// base light helper method.
-		setUniform_BaseLight(name + ".base", aL);
+		setUniform_BaseLight(aL);
 	}
 
-	void PhongShader::setUniform_Attenuation(std::string name,
-			BaseLight::Attenuation atten) {
-		setUniform_f(name + ".attenuation.constant", 
+	void PhongShader::setUniform_Attenuation(
+			const Honeycomb::Component::Light::BaseLight &bL,
+			const Honeycomb::Component::Light::BaseLight::Attenuation &atten) {
+		setUniform_f(bL.getName() + ".attenuation.constant", 
 			atten.getAttenuationConstant());
-		setUniform_f(name + ".attenuation.linear", 
+		setUniform_f(bL.getName() + ".attenuation.linear", 
 			atten.getAttenuationLinear());
-		setUniform_f(name + ".attenuation.quadratic", 
+		setUniform_f(bL.getName() + ".attenuation.quadratic", 
 			atten.getAttenuationQuadratic());
 	}
 
-	void PhongShader::setUniform_BaseLight(std::string name, BaseLight bL) {
-		setUniform_vec4(name + ".color", bL.getColor());
-		setUniform_f(name + ".intensity", bL.getIntensity());
+	void PhongShader::setUniform_BaseLight(const BaseLight &bL) {
+		// TODO: Not all base light uniforms are inherited, therefore it should
+		// NOT be .base".uniform"
+		setUniform_vec4(bL.getName() + ".base.color", bL.getColor());
+		setUniform_f(bL.getName() + ".base.intensity", bL.getIntensity());
 	}
 
-	void PhongShader::setUniform_DirectionalLight(std::string name,
-			DirectionalLight dL) {
-		setUniform_BaseLight(name + ".base", dL);
-		setUniform_vec3(name + ".direction", dL.getDirection());
+	void PhongShader::setUniform_DirectionalLight(const DirectionalLight &dL) {
+		setUniform_BaseLight(dL);
+		setUniform_vec3(dL.getName() + ".direction", dL.getDirection());
 	}
 
-	void PhongShader::setUniform_Material(std::string name, Material mat) {
+	void PhongShader::setUniform_Material(const Material &mat) {
+		std::string name = mat.getName();
+
 		setUniform_vec4(name + ".ambientColor", mat.getAmbientColor());
 		setUniform_vec4(name + ".diffuseColor", mat.getDiffuseColor());
 		setUniform_vec4(name + ".specularColor", mat.getSpecularColor());
 		setUniform_f(name + ".shininess", mat.getShininess());
 	}
 
-	void PhongShader::setUniform_PointLight(std::string name, PointLight pL) {
-		setUniform_BaseLight(name + ".base", pL);
-		setUniform_Attenuation(name, pL.getAttenuation());
+	void PhongShader::setUniform_PointLight(const PointLight &pL) {
+		std::string name = pL.getName();
+
+		setUniform_BaseLight(pL);
+		setUniform_Attenuation(pL, pL.getAttenuation());
 		setUniform_vec3(name + ".position", pL.getPosition());
 		setUniform_f(name + ".range", pL.getRange());
 	}
 
-	void PhongShader::setUniform_SpotLight(std::string name, SpotLight sL) {
-		setUniform_BaseLight(name + ".base", sL);
-		setUniform_Attenuation(name, sL.getAttenuation());
+	void PhongShader::setUniform_SpotLight(const SpotLight &sL) {
+		std::string name = sL.getName();
+
+		setUniform_BaseLight(sL);
+		setUniform_Attenuation(sL, sL.getAttenuation());
 		setUniform_vec3(name + ".direction", sL.getDirection());
 		setUniform_vec3(name + ".position", sL.getPosition());
 		setUniform_f(name + ".range", sL.getRange());

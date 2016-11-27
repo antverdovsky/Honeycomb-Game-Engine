@@ -11,18 +11,43 @@ using namespace HoneycombTest::Components;
 
 namespace HoneycombTest {
 	void TestGame::input() {
+		bool somethingHappened = false;
 		PointLight *pL = GameObject::getRoot()->getChild("Suzanne")->
 			getComponentOfType<PointLight>("pointLight");
+		BaseLight::Attenuation atten = pL->getAttenuation();
+		BaseLight::Attenuation atten2 = pL->getAttenuation();
+		const BaseLight::Attenuation &attenRef = pL->getAttenuation();
 
-		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_1))
-			pL->getAttenuation().setAttenuationQuadratic(0.5F);
-		else if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_2))
-			pL->getAttenuation().setAttenuationQuadratic(0.22F);
+		if (GameInput::getGameInput()->getKeyReleased(GameInput::KEY_CODE_1)) {
+			atten.setAttenuationQuadratic(0.5F);
+			somethingHappened = true;
+		}
+		else if (GameInput::getGameInput()->getKeyReleased(GameInput::KEY_CODE_2)) {
+			atten.setAttenuationQuadratic(0.22F);
+			somethingHappened = true;
+		}
 
-		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_3))
-			pL->getAttenuation().setAttenuationLinear(0.5F);
-		else if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_4))
-			pL->getAttenuation().setAttenuationLinear(0.20F);
+		if (GameInput::getGameInput()->getKeyReleased(GameInput::KEY_CODE_3)) {
+			atten.setAttenuationLinear(0.5F);
+			somethingHappened = true;
+		}
+		else if (GameInput::getGameInput()->getKeyReleased(GameInput::KEY_CODE_4)) {
+			atten.setAttenuationLinear(0.20F);
+			somethingHappened = true;
+		}
+		else if (GameInput::getGameInput()->getKeyReleased(GameInput::KEY_CODE_5)) {
+			atten2.setAttenuationLinear(1.0F);
+			somethingHappened = true;
+		}
+
+		pL->setAttenuation(atten);
+
+		if (somethingHappened) {
+			std::cout << "PL->ATTEN LIN: " << pL->getAttenuation().getAttenuationLinear() << std::endl;
+			std::cout << "ATTEN LIN: " << atten.getAttenuationLinear() << std::endl;
+			std::cout << "ATTEN2 LIN: " << atten2.getAttenuationLinear() << std::endl;
+			std::cout << "ATTEN REF LIN: " << attenRef.getAttenuationLinear() << std::endl;
+		}
 
 		GameObject::getRoot()->input();
 	}

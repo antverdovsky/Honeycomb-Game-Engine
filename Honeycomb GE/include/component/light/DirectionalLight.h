@@ -27,7 +27,7 @@ namespace Honeycomb::Component::Light {
 
 		/// Gets the direction of this directional light.
 		/// return : The direction.
-		Honeycomb::Math::Vector3f getDirection();
+		const Honeycomb::Math::Vector3f& getDirection() const;
 
 		/// Starts this Directional Light.
 		void start();

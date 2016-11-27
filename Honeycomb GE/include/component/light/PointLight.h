@@ -35,15 +35,15 @@ namespace Honeycomb::Component::Light {
 
 		/// Gets the Position of this Point Light.
 		/// return : A vector representing the position.
-		Honeycomb::Math::Vector3f getPosition();
+		const Honeycomb::Math::Vector3f& getPosition() const;
 
 		/// Gets the reference to the Attenuation of this Point Light.
 		/// return : The attenuation reference.
-		BaseLight::Attenuation& getAttenuation();
+		const BaseLight::Attenuation& getAttenuation() const;
 		
 		/// Gets the sphere-like radius range of this Point Light.
 		/// return : The range value.
-		float getRange();
+		const float& getRange() const;
 
 		/// Sets the attenuation of this Point Light.
 		/// Attenuation atten : The new attenuation of this Point Light.

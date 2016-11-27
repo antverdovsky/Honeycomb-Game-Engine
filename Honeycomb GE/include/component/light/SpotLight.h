@@ -38,23 +38,23 @@ namespace Honeycomb::Component::Light {
 
 		/// Gets the spot angle of the Spot Light.
 		/// return : The spot angle value.
-		float getAngle();
+		const float& getAngle() const;
 
 		/// Gets the reference to the Attenuation of this Spot Light.
 		/// return : The attenuation reference.
-		BaseLight::Attenuation& getAttenuation();
+		const BaseLight::Attenuation& getAttenuation() const;
 
 		/// Gets the Direction of this Spot Light.
 		/// return : A vector representing the direction.
-		Honeycomb::Math::Vector3f getDirection();
+		const Honeycomb::Math::Vector3f& getDirection() const;
 
 		/// Gets the Position of this Spot Light.
 		/// return : A vector representing the position.
-		Honeycomb::Math::Vector3f getPosition();
+		const Honeycomb::Math::Vector3f& getPosition() const;
 
 		/// Gets the range of this Spot Light.
 		/// return : The range of this Spot Light.
-		float getRange();
+		const float& getRange() const;
 
 		/// Sets the spot angle of the Spot Light.
 		/// return : The value of the spot angle.

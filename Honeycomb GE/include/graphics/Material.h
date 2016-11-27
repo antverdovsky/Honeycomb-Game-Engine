@@ -45,23 +45,23 @@ namespace Honeycomb::Graphics {
 
 		/// Returns the reference to the ambient color of this material.
 		/// return : The ambient color.
-		Honeycomb::Math::Vector4f& getAmbientColor();
+		const Honeycomb::Math::Vector4f& getAmbientColor() const;
 
 		/// Returns the reference to the diffuse color of this material.
 		/// return : The diffuse color.
-		Honeycomb::Math::Vector4f& getDiffuseColor();
+		const Honeycomb::Math::Vector4f& getDiffuseColor() const;
 
 		/// Returns the name of the material.
 		/// return : The material name.
-		std::string getName();
+		const std::string& getName() const;
 
 		/// Returns a reference to the shininess of this material.
 		/// return : The shininess.
-		float& getShininess();
+		const float& getShininess() const;
 
 		/// Returns the reference to the specular color of this material.
 		/// return : The specular color.
-		Honeycomb::Math::Vector4f& getSpecularColor();
+		const Honeycomb::Math::Vector4f& getSpecularColor() const;
 
 		/// Sets the Albedo Texture of this Material (may also be set to null
 		/// to indicate this material has no Albedo Texture). 

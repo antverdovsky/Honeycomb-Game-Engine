@@ -37,7 +37,7 @@ namespace Honeycomb::Component {
 		return this->isActive;
 	}
 
-	std::string GameComponent::getName() {
+	std::string GameComponent::getName() const {
 		return this->name;
 	}
 

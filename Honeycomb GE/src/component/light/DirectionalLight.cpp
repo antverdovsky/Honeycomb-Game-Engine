@@ -27,7 +27,7 @@ namespace Honeycomb::Component::Light {
 		return new DirectionalLight(*this);
 	}
 
-	Vector3f DirectionalLight::getDirection() {
+	const Vector3f& DirectionalLight::getDirection() const {
 		return *this->direction;
 	}
 
@@ -52,7 +52,6 @@ namespace Honeycomb::Component::Light {
 	}
 
 	void DirectionalLight::writeToShader() {
-		PhongShader::getPhongShader()->setUniform_DirectionalLight(this->name,
-			*this);
+		PhongShader::getPhongShader()->setUniform_DirectionalLight(*this);
 	}
 }

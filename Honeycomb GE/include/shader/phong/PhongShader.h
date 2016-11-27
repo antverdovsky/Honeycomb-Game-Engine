@@ -29,93 +29,93 @@ namespace Honeycomb::Shader::Phong {
 		/// same name as the specified ambient light).
 		/// AmbientLight aL : The ambient light to be added.
 		void addUniform_AmbientLight(
-			Honeycomb::Component::Light::AmbientLight aL);
+				const Honeycomb::Component::Light::AmbientLight &aL);
 
 		/// Adds the attenuation variables for the specified base light as
 		/// uniforms for this shader.
 		/// BaseLight bL : The light for which the attenuation is to be added.
-		void addUniform_Attenuation(Honeycomb::Component::Light::BaseLight bL);
+		void addUniform_Attenuation(
+				const Honeycomb::Component::Light::BaseLight &bL);
 
 		/// Adds the specified base light as a uniform for this shader
 		/// (provided that the Phong Shader file contains a uniform with the
 		/// same name as the specified base light).
 		/// BaseLight bL : The base light to be added.
-		void addUniform_BaseLight(Honeycomb::Component::Light::BaseLight bL);
+		void addUniform_BaseLight(
+				const Honeycomb::Component::Light::BaseLight &bL);
 
 		/// Adds the specified directional light as a uniform for this shader
 		/// (provided that the Phong Shader file contains a uniform with the
 		/// same name as the specified directional light).
 		/// DirectionalLight dL : The directional light to be added.
 		void addUniform_DirectionalLight(
-			Honeycomb::Component::Light::DirectionalLight dL);
+				const Honeycomb::Component::Light::DirectionalLight &dL);
 
 		/// Adds the specified Material as a uniform for this shader
 		/// (provided that the Phong Shader file contains a uniform with the
 		/// same name as the specified material).
 		/// Material mat : The material to be added.
-		void addUniform_Material(Honeycomb::Graphics::Material mat);
+		void addUniform_Material(
+				const Honeycomb::Graphics::Material &mat);
 
 		/// Adds the specified Point Light as a uniform for this shader.
 		/// (provided that the Phong Shader file contains a uniform with the
 		/// same name as the specified point light).
 		/// PointLight pL : The Point Light to be added.
-		void addUniform_PointLight(Honeycomb::Component::Light::PointLight pL);
+		void addUniform_PointLight(
+				const Honeycomb::Component::Light::PointLight &pL);
 
 		/// Adds the specified Spot Light as a uniform for this shader.
 		/// (provided that the Phong Shader file contains a uniform with the
 		/// same name as the specified point light).
 		/// SpotLight pL : The Spot Light to be added.
-		void addUniform_SpotLight(Honeycomb::Component::Light::SpotLight sL);
+		void addUniform_SpotLight(
+				const Honeycomb::Component::Light::SpotLight &sL);
 
-		/// Sets the ambient light uniform of the name provided to the ambient
-		/// light specified.
-		/// string name : The name of the ambient light uniform.
+		/// Sets the ambient light specified to its ambient light uniform in 
+		/// the Phong Shader.
 		/// AmbientLight aL : The ambient light.
-		void setUniform_AmbientLight(std::string name,
-			Honeycomb::Component::Light::AmbientLight aL);
+		void setUniform_AmbientLight(
+				const Honeycomb::Component::Light::AmbientLight &aL);
 
-		/// Sets the attenuation uniforms for the light of the specified name.
-		/// std::string name : The name of the light for which the attenuation
-		///					   is to be set.
-		/// Attenuation atten : The attenuation of the light.
-		void setUniform_Attenuation(std::string name,
-			Honeycomb::Component::Light::BaseLight::Attenuation atten);
-
-		/// Sets the base light uniform of the name provided to the base light
-		/// specified.
-		/// string name : The name of the base light uniform.
+		/// Sets the attenuation light uniform in the Phong Shader for the
+		/// specified base light.
 		/// BaseLight bL : The base light.
-		void setUniform_BaseLight(std::string name, 
-			Honeycomb::Component::Light::BaseLight bL);
+		/// Attenuation atten : The attenuation of the base light.
+		/// TODO: Make an interface for attenuation to simplify this.
+		void setUniform_Attenuation(
+				const Honeycomb::Component::Light::BaseLight &bL,
+				const Honeycomb::Component::Light::BaseLight::Attenuation 
+				&atten);
 
-		/// Sets the directional light uniform of the name provided to the
-		/// directional light specified. The base component of the directional
-		/// light will also be set.
-		/// string name : The name of the direction light uniform.
+		/// Sets the base light specified to its base light uniform in 
+		/// the Phong Shader.
+		/// BaseLight bL : The base light.
+		void setUniform_BaseLight( 
+			const Honeycomb::Component::Light::BaseLight &bL);
+
+		/// Sets the directional light specified to its directional light 
+		/// uniform in the Phong Shader.
 		/// DirectionalLight dL : The directional light.
-		void setUniform_DirectionalLight(std::string name, 
-			Honeycomb::Component::Light::DirectionalLight dL);
+		void setUniform_DirectionalLight(
+			const Honeycomb::Component::Light::DirectionalLight &dL);
 
-		/// Sets the material uniform of the name provided to the material 
-		/// specified.
-		/// string name : The name of the material uniform.
+		/// Sets the material specified to its material uniform in the Phong 
+		/// Shader.
 		/// Material mat : The material.
-		void setUniform_Material(std::string name, 
-			Honeycomb::Graphics::Material mat);
+		void setUniform_Material(const Honeycomb::Graphics::Material &mat);
 
-		/// Sets the point light uniform of the name provided to the point
-		/// light specified.
-		/// string name : The name of the Point Light uniform.
-		/// PointLight pL :  The Point Light.
-		void setUniform_PointLight(std::string name, 
-			Honeycomb::Component::Light::PointLight pL);
+		/// Sets the point light light specified to its point light uniform in 
+		/// the Phong Shader.
+		/// PointLight pL : The point light.
+		void setUniform_PointLight(
+			const Honeycomb::Component::Light::PointLight &pL);
 
-		/// Sets the spot light uniform of the name provided to the spot light
-		/// specified.
-		/// string name : The name of the Spot Light uniform.
-		/// SpotLight sL : The Spot Light.
-		void setUniform_SpotLight(std::string name, 
-			Honeycomb::Component::Light::SpotLight sL);
+		/// Sets the spot light specified to its spot light uniform in the 
+		/// Phong Shader.
+		/// SpotLight sL : The spot light.
+		void setUniform_SpotLight(
+			const Honeycomb::Component::Light::SpotLight &sL);
 	private:
 		static PhongShader *instance; // Singleton instance of the Shader
 

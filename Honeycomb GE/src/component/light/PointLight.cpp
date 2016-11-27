@@ -29,15 +29,15 @@ namespace Honeycomb::Component::Light {
 		return new PointLight(*this);
 	}
 
-	BaseLight::Attenuation& PointLight::getAttenuation() {
+	const BaseLight::Attenuation& PointLight::getAttenuation() const {
 		return this->attenuation;
 	}
 
-	Vector3f PointLight::getPosition() {
+	const Vector3f& PointLight::getPosition() const {
 		return *this->position;
 	}
 
-	float PointLight::getRange() {
+	const float& PointLight::getRange() const {
 		return this->range;
 	}
 
@@ -81,7 +81,6 @@ namespace Honeycomb::Component::Light {
 	}
 
 	void PointLight::writeToShader() {
-		PhongShader::getPhongShader()->setUniform_PointLight(this->name,
-			*this);
+		PhongShader::getPhongShader()->setUniform_PointLight(*this);
 	}
 }

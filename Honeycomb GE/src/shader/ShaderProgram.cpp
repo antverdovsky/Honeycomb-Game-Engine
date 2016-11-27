@@ -29,7 +29,7 @@ namespace Honeycomb::Shader {
 		this->unbindShaderProgram();
 	}
 
-	void ShaderProgram::addShader(std::string file, int type) {
+	void ShaderProgram::addShader(const std::string &file, const int &type) {
 		this->bindShaderProgram();
 
 		// Read in the source from the file provided and get a pointer to it
@@ -64,7 +64,7 @@ namespace Honeycomb::Shader {
 		this->shaders.push_back(shaderID);
 	}
 
-	void ShaderProgram::addUniform(std::string uni) {
+	void ShaderProgram::addUniform(const std::string &uni) {
 		this->bindShaderProgram();
 
 		// Create the uniform on the GPU & get its location
@@ -135,39 +135,43 @@ namespace Honeycomb::Shader {
 		return ShaderProgram::active;
 	}
 
-	int ShaderProgram::getUniformLocation(std::string uni) {
+	int ShaderProgram::getUniformLocation(const std::string &uni) {
 		return uniforms.at(uni);
 	}
 
-	void ShaderProgram::setUniform_f(std::string uni, float val) {
+	void ShaderProgram::setUniform_f(const std::string &uni, 
+			const float &val) {
 		this->bindShaderProgram();
 
 		int loc = getUniformLocation(uni); // Get uniform location
 		glUniform1f(loc, val); // Write the value to the location
 	}
 
-	void ShaderProgram::setUniform_i(std::string uni, int val) {
+	void ShaderProgram::setUniform_i(const std::string &uni, const int &val) {
 		this->bindShaderProgram();
 
 		int loc = getUniformLocation(uni);
 		glUniform1i(loc, val);
 	}
 	
-	void ShaderProgram::setUniform_vec3(std::string uni, Vector3f val) {
+	void ShaderProgram::setUniform_vec3(const std::string &uni, 
+			const Vector3f &val) {
 		this->bindShaderProgram();
 
 		int loc = getUniformLocation(uni);
 		glUniform3f(loc, val.getX(), val.getY(), val.getZ());
 	}
 
-	void ShaderProgram::setUniform_vec4(std::string uni, Vector4f val) {
+	void ShaderProgram::setUniform_vec4(const std::string &uni, 
+			const Vector4f &val) {
 		this->bindShaderProgram();
 
 		int loc = getUniformLocation(uni);
 		glUniform4f(loc, val.getX(), val.getY(), val.getZ(), val.getW());
 	}
 
-	void ShaderProgram::setUniform_mat4(std::string uni, Matrix4f val) {
+	void ShaderProgram::setUniform_mat4(const std::string &uni, 
+			const Matrix4f &val) {
 		this->bindShaderProgram();
 		int loc = getUniformLocation(uni);
 		

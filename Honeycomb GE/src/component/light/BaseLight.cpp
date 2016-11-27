@@ -22,21 +22,21 @@ namespace Honeycomb::Component::Light {
 
 	}
 
-	void BaseLight::Attenuation::get(float &c, float &l, float &q) {
+	void BaseLight::Attenuation::get(float &c, float &l, float &q) const {
 		c = this->attenConstant;
 		l = this->attenLinear;
 		q = this->attenQuadratic;
 	}
 
-	float BaseLight::Attenuation::getAttenuationConstant() {
+	const float& BaseLight::Attenuation::getAttenuationConstant() const {
 		return this->attenConstant;
 	}
 
-	float BaseLight::Attenuation::getAttenuationLinear() {
+	const float& BaseLight::Attenuation::getAttenuationLinear() const {
 		return this->attenLinear;
 	}
 
-	float BaseLight::Attenuation::getAttenuationQuadratic() {
+	const float& BaseLight::Attenuation::getAttenuationQuadratic() const {
 		return this->attenQuadratic;
 	}
 
@@ -89,11 +89,11 @@ namespace Honeycomb::Component::Light {
 		return new BaseLight(*this);
 	}
 
-	Vector4f BaseLight::getColor() {
+	const Vector4f& BaseLight::getColor() const {
 		return this->color;
 	}
 
-	float BaseLight::getIntensity() {
+	const float& BaseLight::getIntensity() const {
 		return this->intensity;
 	}
 
@@ -116,7 +116,6 @@ namespace Honeycomb::Component::Light {
 	}
 
 	void BaseLight::writeToShader() {
-		PhongShader::getPhongShader()->setUniform_BaseLight(this->baseName,
-			*this);
+		PhongShader::getPhongShader()->setUniform_BaseLight(*this);
 	}
 }

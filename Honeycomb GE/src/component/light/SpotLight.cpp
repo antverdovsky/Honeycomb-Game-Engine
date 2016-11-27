@@ -28,23 +28,23 @@ namespace Honeycomb::Component::Light {
 		return new SpotLight(*this);
 	}
 
-	float SpotLight::getAngle() {
+	const float& SpotLight::getAngle() const {
 		return this->angle;
 	}
 
-	BaseLight::Attenuation& SpotLight::getAttenuation() {
+	const BaseLight::Attenuation& SpotLight::getAttenuation() const {
 		return this->attenuation;
 	}
 
-	Vector3f SpotLight::getDirection() {
+	const Vector3f& SpotLight::getDirection() const {
 		return *this->direction;
 	}
 
-	Vector3f SpotLight::getPosition() {
+	const Vector3f& SpotLight::getPosition() const {
 		return *this->position;
 	}
 
-	float SpotLight::getRange() {
+	const float& SpotLight::getRange() const {
 		return this->range;
 	}
 
@@ -96,7 +96,6 @@ namespace Honeycomb::Component::Light {
 	}
 
 	void SpotLight::writeToShader() {
-		PhongShader::getPhongShader()->setUniform_SpotLight(this->name,
-			*this);
+		PhongShader::getPhongShader()->setUniform_SpotLight(*this);
 	}
 }
