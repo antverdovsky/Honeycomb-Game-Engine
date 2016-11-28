@@ -20,7 +20,7 @@ namespace Honeycomb::Graphics {
 		/// to their default values of { 1.0F, 1.0F, 1.0F, 1.0f } and 1.0F. The 
 		/// material will be given the name of "material".
 		/// Texture2D *tex : The albedo texture of the material.
-		Material(Texture2D *tex);
+		Material(const Texture2D &tex);
 
 		/// Initializes a new material with the specified alebdo texture,
 		/// albedo color, ambient, diffuse, specular and shininess components;
@@ -31,7 +31,7 @@ namespace Honeycomb::Graphics {
 		/// Vector4f diff : The diffuse color of the material.
 		/// Vector4f spec : The specular highlight of the material.
 		/// float shine : The shinniness of the material.
-		Material(std::string n, Texture2D *tex, Honeycomb::Math::Vector4f amb, 
+		Material(std::string n, const Texture2D &tex, Honeycomb::Math::Vector4f amb, 
 			Honeycomb::Math::Vector4f diff, Honeycomb::Math::Vector4f spec, 
 			float shine);
 
@@ -41,7 +41,7 @@ namespace Honeycomb::Graphics {
 		/// Returns the albedo texture, if it exists, otherwise a nullptr is
 		/// returned.
 		/// return : The albedo texture pointer.
-		Texture2D* getAlbedoTexture();
+		const Texture2D& getAlbedoTexture() const;
 
 		/// Returns the reference to the ambient color of this material.
 		/// return : The ambient color.
@@ -66,7 +66,23 @@ namespace Honeycomb::Graphics {
 		/// Sets the Albedo Texture of this Material (may also be set to null
 		/// to indicate this material has no Albedo Texture). 
 		/// Texture2D *tex : The Albedo Texture.
-		void setAlbedoTexture(Texture2D *tex);
+		void setAlbedoTexture(const Texture2D &tex);
+
+		/// Sets the Ambient Color of this Material.
+		/// const Vector4f &col : The new Ambient Color.
+		void setAmbientColor(const Honeycomb::Math::Vector4f& col);
+
+		/// Sets the Diffuse Color of this Material.
+		/// const Vector4f &col : The new Diffuse Color.
+		void setDiffuseColor(const Honeycomb::Math::Vector4f& col);
+
+		/// Sets the Shininess of this Material.
+		/// const float *shine : The new shininess.
+		void setShininess(const float &shine);
+
+		/// Sets the Specular Color of this Material.
+		/// const Vector4f &col : The new Specular Color.
+		void setSpecularColor(const Honeycomb::Math::Vector4f& col);
 
 		/// Uses this Material to draw something. The texture of this material
 		/// will be binded, and the color will be sent to the active Shader
@@ -75,7 +91,7 @@ namespace Honeycomb::Graphics {
 	private:
 		std::string name; // The name of this material.
 
-		Texture2D *albedoTexture; // The albedo texture, if any
+		Texture2D albedoTexture; // The albedo texture
 
 		Honeycomb::Math::Vector4f ambientColor; // Color under Ambient Light
 		Honeycomb::Math::Vector4f diffuseColor; // Color under Diffuse Light

@@ -11,6 +11,7 @@ using namespace HoneycombTest::Components;
 
 namespace HoneycombTest {
 	void TestGame::input() {
+		/*
 		bool somethingHappened = false;
 		PointLight *pL = GameObject::getRoot()->getChild("Suzanne")->
 			getComponentOfType<PointLight>("pointLight");
@@ -48,7 +49,7 @@ namespace HoneycombTest {
 			std::cout << "ATTEN2 LIN: " << atten2.getAttenuationLinear() << std::endl;
 			std::cout << "ATTEN REF LIN: " << attenRef.getAttenuationLinear() << std::endl;
 		}
-
+		*/
 		GameObject::getRoot()->input();
 	}
 
@@ -89,19 +90,19 @@ namespace HoneycombTest {
 		GameObject *suzanne = Builder::getBuilder()->newSuzanne();
 
 		suzanne->addComponent(*(new PointLight(BaseLight("pointLight", 2.5F, 
-			Vector4f(1.0F, 1.0F, 1.0F, 1.0F)), 
+			Vector4f(0.0F, 0.0F, 1.0F, 1.0F)), 
 			10.0F, 1.0F, 0.22F, 0.20F)));
-//		suzanne->addComponent(*(new SpotLight(BaseLight("spotLight", 1,
-//			Vector4f(1.0F, 1.0F, 1.0F, 1.0F)),
-//			5000, Utils::degToRad(45), 1.0F, 0.22F, 0.20F)));
+		suzanne->addComponent(*(new SpotLight(BaseLight("spotLight", 5.0F,
+			Vector4f(1.0F, 0.0F, 0.0F, 1.0F)),
+			50, Utils::degToRad(45), 1.0F, 0.22F, 0.20F)));
 
 		///
 		/// Load in all of the Lights and the Camera.
 		///
 		GameObject *camera = Builder::getBuilder()->newCamera();
 		GameObject *ambientLight = Builder::getBuilder()->newAmbientLight();
-//		GameObject *directionalLight = Builder::getBuilder()->
-//			newDirectionalLight();
+		GameObject *directionalLight = Builder::getBuilder()->
+			newDirectionalLight();
 //		GameObject *pointLight = Builder::getBuilder()->newPointLight();
 
 
@@ -141,33 +142,27 @@ namespace HoneycombTest {
 		///
 		/// Create a fancy Emerald Material (textured and non-textured).
 		///
-		Material *emerald = new Material("material", nullptr,
+		Material *emerald = new Material("material", Texture2D(),
 			Vector4f(0.0215F, 0.1745F, 0.0215F, 1.0F),
 			Vector4f(0.07568F, 0.61424F, 0.07568F, 1.0F),
 			Vector4f(0.633F, 0.727811F, 0.633F, 1.0F),
 			0.6F * 128.0F);
-//			Vector4f(0.0215F, 0.1745F, 0.0215F, 1.0F),
-//			Vector4f(0.07568F, 0.61424F, 0.07568F, 1.0F),
-//			Vector4f(0.633F, 0.727811F, 0.633F, 1.0F),
-//			0.6F * 128.0F);
-		Material *emeraldTex = new Material(*emerald);
-		Texture2D *tex =
-			cube->getComponentOfType<MeshRenderer>("MeshRenderer")->
-			getMaterial()->getAlbedoTexture();
-		emeraldTex->setAlbedoTexture(tex);
-
 		///
 		/// Give the Cube, Sphere and Plane the Textured Emerald Material, and
 		/// give Suzanne the non-Textured Emerald Material.
 		///
+		//delete plane->getComponentOfType<MeshRenderer>("MeshRenderer")->getMaterial();
+		delete cube->getComponentOfType<MeshRenderer>("MeshRenderer")->getMaterial();
+		//delete sphere->getComponentOfType<MeshRenderer>("MeshRenderer")->getMaterial();
+		delete suzanne->getComponentOfType<MeshRenderer>("MeshRenderer")->getMaterial();
+		//plane->getComponentOfType<MeshRenderer>("MeshRenderer")->
+		//	setMaterial(emerald);
 		cube->getComponentOfType<MeshRenderer>("MeshRenderer")->
-			setMaterial(emeraldTex);
-		plane->getComponentOfType<MeshRenderer>("MeshRenderer")->
-			setMaterial(emeraldTex);
-		sphere->getComponentOfType<MeshRenderer>("MeshRenderer")->
-			setMaterial(emeraldTex);
+			setMaterial(emerald);
+		//sphere->getComponentOfType<MeshRenderer>("MeshRenderer")->
+		//	setMaterial(emerald);
 		suzanne->getComponentOfType<MeshRenderer>("MeshRenderer")->
-			setMaterial(emeraldTex);
+			setMaterial(emerald);
 
 		GameObject::getRoot()->start();
 	}
@@ -180,10 +175,10 @@ namespace HoneycombTest {
 		///
 		/// Rotate the Directional Light to emulate sun light in the scene.
 		///
-//		GameObject *sun = GameObject::getRoot()->getChild("Directional Light");
-//		Transform *sunTrans = sun->getComponentOfType<Transform>("Transform");
-//		sunTrans->rotate(sunTrans->getLocalRight(), 
-//			0.333F * Time::getDeltaTimeSeconds());
+		GameObject *sun = GameObject::getRoot()->getChild("Directional Light");
+		Transform *sunTrans = sun->getComponentOfType<Transform>("Transform");
+		sunTrans->rotate(sunTrans->getLocalRight(), 
+			0.333F * GameTime::getGameTime()->getDeltaTimeS());
 
 		GameObject::getRoot()->update();
 	}
