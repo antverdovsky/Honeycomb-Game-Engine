@@ -23,15 +23,16 @@ namespace Honeycomb::Component::Render {
 
 		/// Initializes a new Camera instance.
 		/// CameraType cT : The camera type.
-		/// float clF : The far clipping plane.
-		/// float clN : The near clipping plane.
 		/// float cTP : The camera type parameter. If the Camera Type is set to
 		///				perspective, this is the FOV. If the Camera Type is set
 		///				to orthographic, this is the orthographic size.
+		/// float clF : The far clipping plane.
+		/// float clN : The near clipping plane.
 		/// float projH : The camera projection height.
 		/// float projW : The camera projection width.
-		CameraController(CameraType cT, float clF, float clN, float cTP,
-			float projH, float projW);
+		CameraController(const CameraType &cT, const float &cTP, 
+			const float &clF, const float &clN, const float &projH, 
+			const float &projW);
 
 		/// Destroys this Camera instance.
 		~CameraController();
@@ -40,52 +41,59 @@ namespace Honeycomb::Component::Render {
 		/// Camera Controller. This function should be used instead of the copy
 		/// constructor to prevent object slicing.
 		/// return : The cloned Transform.
-		CameraController* CameraController::clone();
+		CameraController* CameraController::clone() const;
 
 		/// Gets the current active camera instance.
 		static CameraController* getActiveCamera();
 
 		/// Gets the camera type (Ortho / Persp).
 		/// return : The camera type.
-		CameraType getCameraType();
+		const CameraType& getCameraType() const;
 
 		/// Gets the far clipping plane for this camera.
 		/// return : The far clipping plane.
-		float getClipFar();
+		const float& getClipFar() const;
 
 		/// Gets the near clipping plane for this camera.
 		/// return : The near clipping plane.
-		float getClipNear();
+		const float& getClipNear() const;
 
 		/// Gets the type parameter for the camera. If this is a perspective
 		/// camera, the parameter is equal to the FOV (in degrees). Otherwise,
 		/// the parameter is equal to the orthographic size.
 		/// return : The type parameter.
-		float getTypeParameter();
+		const float& getTypeParameter() const;
 
-		/// Gets the projection matrix for this camera.
+		/// Gets the projection matrix for this camera. The projection matrix
+		/// is comprised of the camera projection view matrix multiplied by the 
+		/// camera orientation matrix multiplied by the camera translation
+		/// matrix.
 		/// return : The projection matrix.
-		Honeycomb::Math::Matrix4f getProjection();
+		const Honeycomb::Math::Matrix4f& getProjection() const;
 
 		/// Gets the projection height for this camera.
 		/// return : The projection height.
-		float getProjectionHeight();
+		const float& getProjectionHeight() const;
 
 		/// Gets the projection orientation matrix for this camera. This method
 		/// should be used instead of the Transformation's orientation method
 		/// for projection matricies, as this matrix is correctly negated.
 		/// return : The projection orientation matrix.
-		Honeycomb::Math::Matrix4f getProjectionOrientation();
+		const Honeycomb::Math::Matrix4f& getProjectionOrientation() const;
 
 		/// Gets the projection translation matrix for this camera. This method
 		/// should be used instead of the Transformation's translation method
 		/// for projection matricies, as this matrix is correctly negated.
 		/// return : The projection translation matrix.
-		Honeycomb::Math::Matrix4f getProjectionTranslation();
+		const Honeycomb::Math::Matrix4f& getProjectionTranslation() const;
+
+		/// Gets the projection matrix for this camera.
+		/// return : The projection matrix.
+		const Honeycomb::Math::Matrix4f& getProjectionView() const;
 
 		/// Gets the projection width for this camera.
 		/// return : The projection width.
-		float getProjectionWidth();
+		const float& getProjectionWidth() const;
 
 		/// Sets this camera as the active world camera. There can only be one
 		/// active world camera, so this camera will replace the existing
@@ -125,8 +133,9 @@ namespace Honeycomb::Component::Render {
 		// Transform of the game object this camera is attached to
 		Honeycomb::Component::Physics::Transform *transform;
 
-		Honeycomb::Math::Matrix4f projection; // Stores the projection
+		Honeycomb::Math::Matrix4f projection; // Stores the Projection
 
+		Honeycomb::Math::Matrix4f projectionView; // Projection View (P / O)
 		Honeycomb::Math::Matrix4f projectionOrien; // Orientation Projection
 		Honeycomb::Math::Matrix4f projectionTrans; // Translation Projection
 
@@ -134,31 +143,37 @@ namespace Honeycomb::Component::Render {
 		/// orthographic projection matrix for this camera, depending on its
 		/// type.
 		/// return : The projection matrix.
-		Honeycomb::Math::Matrix4f calcProjection();
+		const Honeycomb::Math::Matrix4f& calcProjection();
 
 		/// Calculates (or recalculates) the orientation projection for this
 		/// camera. This corrects the transformation orientation projection
 		/// matrix by negating quantities which cause the world to rotate 
 		/// opposite of the camera, creating the illusion that the camera is
 		/// rotating.
-		Honeycomb::Math::Matrix4f calcProjectionOrientation();
+		const Honeycomb::Math::Matrix4f& calcProjectionOrientation();
 
 		/// Calculates (or recalculates) the orthographic projection matrix for
-		/// this camera, and stores it into the projection matrix variable.
-		/// return : The projection matrix.
-		Honeycomb::Math::Matrix4f calcProjectionOrthographic();
+		/// this camera and stores it into the projection view matrix variable.
+		/// return : The projection view matrix.
+		const Honeycomb::Math::Matrix4f& calcProjectionOrthographic();
 
 		/// Calculates (or recalculates) the perspective projection matrix for 
-		/// this camera, and stores it into the projection matrix variable.
-		/// return : The projection matrix.
-		Honeycomb::Math::Matrix4f calcProjectionPerspective();
+		/// this camera and stores it into the projection view matrix variable.
+		/// return : The projection view matrix.
+		const Honeycomb::Math::Matrix4f& calcProjectionPerspective();
 
 		/// Calculates (or recalculates) the translation projection for this
 		/// camera. This corrects the transformation translation projection
 		/// matrix by negating quantities which cause the world to move 
 		/// opposite of the camera, creating the illusion that the camera is
 		/// moving.
-		Honeycomb::Math::Matrix4f calcProjectionTranslation();
+		const Honeycomb::Math::Matrix4f& calcProjectionTranslation();
+
+		/// Calculates (or recalculates) the projection view for this camera,
+		/// and stores it into the projection view matrix variable. The type
+		/// of projection calculated depends on the type for which the camera 
+		/// is configured.
+		const Honeycomb::Math::Matrix4f& calcProjectionView();
 	};
 }
 

@@ -76,7 +76,7 @@ namespace Honeycomb::Geometry {
 		delete vertFloats; // Done using the verticies floats
 	}
 
-	void Mesh::draw() {
+	void Mesh::draw() const {
 		// Enable attribute arrays for the vertices
 		glEnableVertexAttribArray(0); // The position
 		glEnableVertexAttribArray(1); // The texture coordinates

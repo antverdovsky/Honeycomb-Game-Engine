@@ -87,7 +87,7 @@ namespace Honeycomb::Graphics {
 		/// Uses this Material to draw something. The texture of this material
 		/// will be binded, and the color will be sent to the active Shader
 		/// program.
-		void use();
+		void use() const;
 	private:
 		std::string name; // The name of this material.
 

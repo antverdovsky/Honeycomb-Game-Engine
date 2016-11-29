@@ -190,9 +190,8 @@ namespace Honeycomb::Geometry {
 
 			// Create a Mesh Renderer with the mesh and material extracted.
 			// TODO: Shader???
-			MeshRenderer *meshRen = new MeshRenderer(mesh,
-				PhongShader::getPhongShader(),
-				mat);
+			MeshRenderer *meshRen = new MeshRenderer(*mat, *mesh,
+				*PhongShader::getPhongShader());
 			object->addComponent(*meshRen);
 		}
 

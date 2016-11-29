@@ -77,7 +77,7 @@ namespace Honeycomb::Graphics {
 		this->specularColor = col;
 	}
 
-	void Material::use() {
+	void Material::use() const {
 		this->albedoTexture.bind();
 
 		PhongShader::getPhongShader()->setUniform_Material(*this);

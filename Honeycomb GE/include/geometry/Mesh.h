@@ -32,7 +32,7 @@ namespace Honeycomb::Geometry {
 				int indx[], int indxCount);
 
 		/// Draws this Mesh to the screen using the vertex data.
-		void draw();
+		void draw() const;
 	private:
 		int vertexBufferObj; // VBO "Pointer"
 		int vertCount; // The count of vertices stored for this mesh

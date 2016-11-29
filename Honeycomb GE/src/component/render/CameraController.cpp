@@ -19,18 +19,22 @@ namespace Honeycomb::Component::Render {
 	CameraController *CameraController::activeCamera = nullptr;
 
 	CameraController::CameraController()
-		: CameraController(CameraType::PERSPECTIVE, 100.0F, 0.03F, 75.0F,
+		: CameraController(CameraType::PERSPECTIVE, 75.0F, 100.0F, 0.03F,
 			GameWindow::getGameWindow()->getWindowHeight(),
 			GameWindow::getGameWindow()->getWindowWidth()) {
 
 	}
 
-	CameraController::CameraController(CameraType cT, float clF, float clN,
-			float cTP, float projH, float projW) : GameComponent("Camera") {
+	CameraController::CameraController(const CameraType &cT, const float &cTP,
+			const float &clF, const float &clN, const float &projH,
+			const float &projW) 
+			: GameComponent("Camera") {
 		this->type = cT;
+		this->typeParameter = cTP;
+
 		this->clipFar = clF;
 		this->clipNear = clN;
-		this->typeParameter = cTP;
+
 		this->projectionHeight = projH;
 		this->projectionWidth = projW;
 	}
@@ -39,7 +43,7 @@ namespace Honeycomb::Component::Render {
 
 	}
 
-	CameraController* CameraController::clone() {
+	CameraController* CameraController::clone() const {
 		return new CameraController(*this);
 	}
 
@@ -47,39 +51,44 @@ namespace Honeycomb::Component::Render {
 		return activeCamera;
 	}
 
-	CameraController::CameraType CameraController::getCameraType() {
+	const CameraController::CameraType& CameraController::getCameraType() 
+			const {
 		return this->type;
 	}
 
-	float CameraController::getClipFar() {
+	const float& CameraController::getClipFar() const {
 		return this->clipFar;
 	}
 
-	float CameraController::getClipNear() {
+	const float& CameraController::getClipNear() const {
 		return this->clipNear;
 	}
 
-	float CameraController::getTypeParameter() {
+	const float& CameraController::getTypeParameter() const {
 		return this->typeParameter;
 	}
 
-	Matrix4f CameraController::getProjection() {
+	const Matrix4f& CameraController::getProjection() const {
 		return this->projection;
 	}
 
-	float CameraController::getProjectionHeight() {
+	const float& CameraController::getProjectionHeight() const {
 		return this->projectionHeight;
 	}
 
-	Honeycomb::Math::Matrix4f CameraController::getProjectionOrientation() {
+	const Matrix4f& CameraController::getProjectionOrientation() const {
 		return this->projectionOrien;
 	}
 
-	Honeycomb::Math::Matrix4f CameraController::getProjectionTranslation() {
+	const Matrix4f& CameraController::getProjectionTranslation() const {
 		return this->projectionTrans;
 	}
 
-	float CameraController::getProjectionWidth() {
+	const Matrix4f& CameraController::getProjectionView() const {
+		return this->projectionView;
+	}
+
+	const float& CameraController::getProjectionWidth() const {
 		return this->projectionWidth;
 	}
 
@@ -108,19 +117,32 @@ namespace Honeycomb::Component::Render {
 		this->transform = this->getAttached()->
 			getComponentOfType<Transform>("Transform");
 
-		this->calcProjection();
+		// Calculate the initial projection orientation, translation and view
+		// matricies; use the matricies to calculate the projection matrix.
 		this->calcProjectionOrientation();
 		this->calcProjectionTranslation();
+		this->calcProjectionView();
+		this->calcProjection();
 
+		// Create an event for window resize; set the projection size and
+		// recalculate the projection view and projection when it occurs.
 		this->windowResizeHandler.addAction(
 			std::bind(&CameraController::setProjectionSizeToWindow, this));
 		GameWindow::getGameWindow()->getResizeEvent().addEventHandler(
 			&this->windowResizeHandler);
+		this->windowResizeHandler.addAction(
+			std::bind(&CameraController::calcProjectionView, this));
+		this->windowResizeHandler.addAction(
+			std::bind(&CameraController::calcProjection, this));
 
+		// Create an event for transform change; recalculate the orientation,
+		// translation and projection when it occurs.
 		this->transformChangeHandler.addAction(
 			std::bind(&CameraController::calcProjectionOrientation, this));
 		this->transformChangeHandler.addAction(
 			std::bind(&CameraController::calcProjectionTranslation, this));
+		this->transformChangeHandler.addAction(
+			std::bind(&CameraController::calcProjection, this));
 		this->transform->getChangedEvent().addEventHandler(
 			&this->transformChangeHandler);
 
@@ -131,17 +153,10 @@ namespace Honeycomb::Component::Render {
 		if (!this->isActive) return;
 	}
 
-	Matrix4f CameraController::calcProjection() {
-		// Call the appropriate matrix projection calculation method according
-		// to the type of Camera.
-		switch (this->type) {
-		case CameraType::PERSPECTIVE:
-			this->calcProjectionPerspective();
-			break;
-		case CameraType::ORTHOGRAPHIC:
-			this->calcProjectionOrthographic();
-			break;
-		}
+	const Matrix4f& CameraController::calcProjection() {
+		this->projection = this->getProjectionView() *
+			this->getProjectionOrientation() *
+			this->getProjectionTranslation();
 
 		ShaderProgram::getActiveShader()->setUniform_mat4("camProjection",
 			this->getProjection());
@@ -149,7 +164,7 @@ namespace Honeycomb::Component::Render {
 		return this->getProjection();
 	}
 
-	Matrix4f CameraController::calcProjectionOrientation() {
+	const Matrix4f& CameraController::calcProjectionOrientation() {
 		this->projectionOrien = this->transform->getOrientationMatrix();
 
 		// Negate the local forwards of the camera since the camera faces the
@@ -157,14 +172,11 @@ namespace Honeycomb::Component::Render {
 		this->projectionOrien.setAt(2, 0, -this->projectionOrien.getAt(2, 0));
 		this->projectionOrien.setAt(2, 1, -this->projectionOrien.getAt(2, 1));
 		this->projectionOrien.setAt(2, 2, -this->projectionOrien.getAt(2, 2));
-		
-		ShaderProgram::getActiveShader()->setUniform_mat4("camOrientation",
-			this->getProjectionOrientation());
 
 		return this->projectionOrien;
 	}
 
-	Matrix4f CameraController::calcProjectionOrthographic() {
+	const Matrix4f& CameraController::calcProjectionOrthographic() {
 		// Mathematics Explanation From:
 		// www.scratchapixel.com/lessons/3d-basic-rendering/
 		// perspective-and-orthographic-projection-matrix
@@ -183,16 +195,16 @@ namespace Honeycomb::Component::Render {
 		float pmD = -(clipFar + clipNear) / (clipFar - clipNear);
 
 		// Construct the Projection Matrix:
-		this->projection = Matrix4f::identity();
-		this->projection.setAt(0, 0, pmA);		// [ A  0  0  0 ]
-		this->projection.setAt(1, 1, pmB);		// [ 0  B  0  0 ]
-		this->projection.setAt(2, 2, pmC);		// [ 0  0  C  D ]
-		this->projection.setAt(2, 3, pmD);		// [ 0  0  0  1 ]
+		this->projectionView = Matrix4f::identity();
+		this->projectionView.setAt(0, 0, pmA);		// [ A  0  0  0 ]
+		this->projectionView.setAt(1, 1, pmB);		// [ 0  B  0  0 ]
+		this->projectionView.setAt(2, 2, pmC);		// [ 0  0  C  D ]
+		this->projectionView.setAt(2, 3, pmD);		// [ 0  0  0  1 ]
 
-		return this->projection;
+		return this->projectionView;
 	}
 
-	Matrix4f CameraController::calcProjectionPerspective() {
+	const Matrix4f& CameraController::calcProjectionPerspective() {
 		// Mathematics Explanation From:
 		// www.scratchapixel.com/lessons/3d-basic-rendering/
 		// perspective-and-orthographic-projection-matrix
@@ -213,18 +225,18 @@ namespace Honeycomb::Component::Render {
 		float pmD = -2 * clipNear * clipFar / (clipFar - clipNear);
 
 		// Construct the Projection Matrix:
-		this->projection = Matrix4f::identity();
-		this->projection.setAt(0, 0, pmA);		// [ A  0  0  0 ]
-		this->projection.setAt(1, 1, pmB);		// [ 0  B  0  0 ]
-		this->projection.setAt(2, 2, pmC);		// [ 0  0  C  D ]
-		this->projection.setAt(2, 3, pmD);		// [ 0  0 -1  0 ]
-		this->projection.setAt(3, 2, -1.0F);
-		this->projection.setAt(3, 3, 0.0F);
+		this->projectionView = Matrix4f::identity();
+		this->projectionView.setAt(0, 0, pmA);		// [ A  0  0  0 ]
+		this->projectionView.setAt(1, 1, pmB);		// [ 0  B  0  0 ]
+		this->projectionView.setAt(2, 2, pmC);		// [ 0  0  C  D ]
+		this->projectionView.setAt(2, 3, pmD);		// [ 0  0 -1  0 ]
+		this->projectionView.setAt(3, 2, -1.0F);
+		this->projectionView.setAt(3, 3, 0.0F);
 
-		return this->projection;
+		return this->projectionView;
 	}
 
-	Matrix4f CameraController::calcProjectionTranslation() {
+	const Matrix4f& CameraController::calcProjectionTranslation() {
 		this->projectionTrans = this->transform->getTranslationMatrix();
 
 		// Negate the local forwards of the camera since the camera faces the
@@ -233,11 +245,25 @@ namespace Honeycomb::Component::Render {
 		this->projectionTrans.setAt(1, 3, -this->projectionTrans.getAt(1, 3));
 		this->projectionTrans.setAt(2, 3, -this->projectionTrans.getAt(2, 3));
 
-		ShaderProgram::getActiveShader()->setUniform_mat4("camTranslation",
-			this->getProjectionTranslation());
+		// todo
 		ShaderProgram::getActiveShader()->setUniform_vec3("cameraPos",
 			this->transform->getTranslation());
 
 		return this->projectionTrans;
+	}
+
+	const Matrix4f& CameraController::calcProjectionView() {
+		// Call the appropriate matrix projection calculation method according
+		// to the type of Camera.
+		switch (this->type) {
+		case CameraType::PERSPECTIVE:
+			this->projectionView = this->calcProjectionPerspective();
+			break;
+		case CameraType::ORTHOGRAPHIC:
+			this->projectionView = this->calcProjectionOrthographic();
+			break;
+		}
+
+		return this->projectionView;
 	}
 }

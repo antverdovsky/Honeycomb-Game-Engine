@@ -19,15 +19,11 @@ using Honeycomb::Shader::ShaderProgram;
 using namespace Honeycomb::File;
 
 namespace Honeycomb::Component::Render {
-	MeshRenderer::MeshRenderer() : GameComponent("MeshRenderer") {
+	MeshRenderer::MeshRenderer(const Material &mat, const Mesh &mes, 
+			ShaderProgram &shad) 
+			: GameComponent("MeshRenderer"), material(&mat), mesh(&mes), 
+			  shader(&shad) {
 
-	}
-
-	MeshRenderer::MeshRenderer(Mesh *mes, ShaderProgram *shad, Material *mat)
-			: GameComponent("MeshRenderer") {
-		this->mesh = mes;
-		this->shader = shad;
-		this->material = mat;
 	}
 
 	MeshRenderer::~MeshRenderer() {
@@ -38,44 +34,42 @@ namespace Honeycomb::Component::Render {
 		return new MeshRenderer(*this);
 	}
 
-	Mesh* MeshRenderer::getMesh() {
-		return this->mesh;
+	const Mesh& MeshRenderer::getMesh() const {
+		return *this->mesh;
 	}
 
-	ShaderProgram* MeshRenderer::getShader() {
-		return this->shader;
+	const ShaderProgram& MeshRenderer::getShader() const {
+		return *this->shader;
 	}
 
-	Material* MeshRenderer::getMaterial() {
-		return this->material;
+	const Material& MeshRenderer::getMaterial() const {
+		return *this->material;
 	}
 
 	void MeshRenderer::render() {
-		// Bind the shader & texture and then draw the Mesh.
-		Transform& objTrans = // TODO
-			*(this->getAttached()->getComponentOfType<Transform>("Transform"));
 		this->shader->setUniform_mat4("objTransform",
-			objTrans.getTransformationMatrix());
+			this->transform->getTransformationMatrix());
 
-		// Draw what you can (what isn't NULL).
-		if (this->shader != nullptr) this->shader->bindShaderProgram();
-		if (this->material != nullptr) this->material->use();
-		if (this->mesh != nullptr) this->mesh->draw();
+		// Render the mesh using the shader and material provided.
+		this->shader->bindShaderProgram();
+		this->material->use();
+		this->mesh->draw();
 	}
 
-	void MeshRenderer::setMaterial(Material *mat) {
-		this->material = mat;
+	void MeshRenderer::setMaterial(const Honeycomb::Graphics::Material &mat) {
+		this->material = &mat;
 	}
 
-	void MeshRenderer::setMesh(Mesh *mes) {
-		this->mesh = mes;
+	void MeshRenderer::setMesh(const Honeycomb::Geometry::Mesh &mes) {
+		this->mesh = &mes;
 	}
 
-	void MeshRenderer::setShader(ShaderProgram *shad) {
-		this->shader = shad;
+	void MeshRenderer::setShader(Honeycomb::Shader::ShaderProgram &shad) {
+		this->shader = &shad;
 	}
 
-	void MeshRenderer::update() {
-
+	void MeshRenderer::start() {
+		this->transform = this->getAttached()->
+			getComponentOfType<Transform>("Transform");
 	}
 }

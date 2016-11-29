@@ -41,8 +41,6 @@ namespace Honeycomb::Shader::Phong {
 
 		// Add Vertex Shader Uniforms
 		addUniform("camProjection");
-		addUniform("camOrientation");
-		addUniform("camTranslation");
 		addUniform("objTransform");
 
 		addUniform("cameraPos");
