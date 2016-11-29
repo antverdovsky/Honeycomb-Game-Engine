@@ -12,14 +12,14 @@ namespace Honeycomb::Graphics {
 
 	}
 
-	Material::Material(const Texture2D &tex)
+	Material::Material(Texture2D &tex)
 		: Material("material", tex, Vector4f(1.0F, 1.0F, 1.0F, 1.0F),
 			Vector4f(1.0F, 1.0F, 1.0F, 1.0F),
 			Vector4f(1.0F, 1.0F, 1.0F, 1.0F), 1.0F) {
 
 	}
 
-	Material::Material(std::string n, const Texture2D &tex, Vector4f amb,
+	Material::Material(std::string n, Texture2D &tex, Vector4f amb,
 			Vector4f diff, Vector4f spec, float shine)
 			: albedoTexture(tex), ambientColor(amb), diffuseColor(diff),
 			  specularColor(spec) {
@@ -30,7 +30,7 @@ namespace Honeycomb::Graphics {
 	}
 
 	Material::~Material() {
-
+		int j = 3;
 	}
 
 	const Texture2D& Material::getAlbedoTexture() const {
@@ -57,7 +57,7 @@ namespace Honeycomb::Graphics {
 		return this->specularColor;
 	}
 
-	void Material::setAlbedoTexture(const Texture2D &tex) {
+	void Material::setAlbedoTexture(Texture2D &tex) {
 		this->albedoTexture = tex;
 	}
 

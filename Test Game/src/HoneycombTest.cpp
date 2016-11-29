@@ -5,6 +5,7 @@
 #include "..\include\components\InputTransformable.h"
 
 #include <iostream>
+#include <ctime>
 
 using namespace HoneycombEngine;
 using namespace HoneycombTest::Components;
@@ -58,7 +59,26 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::start() {
-		
+		srand(time(NULL));
+
+		for (int i = 0; i <= 200; i++) {
+			Model::loadModel("..\\Honeycomb GE\\res\\models\\default\\cube.fbx");
+			GameObject *myCube = Builder::getBuilder()->newCube();
+
+			myCube->getComponentOfType<Transform>("Transform")->
+				translate(Vector3f(rand() % 20 - 10, rand() % 20 - 10, rand() % 20 - 10));
+			Material *newMat = new Material(*myCube->getComponentOfType<MeshRenderer>("MeshRenderer")->
+				getMaterial());
+			newMat->setDiffuseColor(Vector4f(((float)rand() / (RAND_MAX)),
+				((float)rand() / (RAND_MAX)),
+				((float)rand() / (RAND_MAX)),
+				1.0F));
+			myCube->getComponentOfType<MeshRenderer>("MeshRenderer")->setMaterial(newMat);
+
+			
+			delete myCube;
+		}
+
 		Vector2f vec = Vector2f(0.0F, 1.0F);
 		const float &vecXRef = vec.getX();
 
@@ -142,7 +162,7 @@ namespace HoneycombTest {
 		///
 		/// Create a fancy Emerald Material (textured and non-textured).
 		///
-		Material *emerald = new Material("material", Texture2D(),
+		Material *emerald = new Material("material", *(new Texture2D()),
 			Vector4f(0.0215F, 0.1745F, 0.0215F, 1.0F),
 			Vector4f(0.07568F, 0.61424F, 0.07568F, 1.0F),
 			Vector4f(0.633F, 0.727811F, 0.633F, 1.0F),
@@ -154,15 +174,15 @@ namespace HoneycombTest {
 		//delete plane->getComponentOfType<MeshRenderer>("MeshRenderer")->getMaterial();
 		delete cube->getComponentOfType<MeshRenderer>("MeshRenderer")->getMaterial();
 		//delete sphere->getComponentOfType<MeshRenderer>("MeshRenderer")->getMaterial();
-		delete suzanne->getComponentOfType<MeshRenderer>("MeshRenderer")->getMaterial();
+		//delete suzanne->getComponentOfType<MeshRenderer>("MeshRenderer")->getMaterial();
 		//plane->getComponentOfType<MeshRenderer>("MeshRenderer")->
 		//	setMaterial(emerald);
 		cube->getComponentOfType<MeshRenderer>("MeshRenderer")->
 			setMaterial(emerald);
 		//sphere->getComponentOfType<MeshRenderer>("MeshRenderer")->
 		//	setMaterial(emerald);
-		suzanne->getComponentOfType<MeshRenderer>("MeshRenderer")->
-			setMaterial(emerald);
+		//suzanne->getComponentOfType<MeshRenderer>("MeshRenderer")->
+		//	setMaterial(emerald);
 
 		GameObject::getRoot()->start();
 	}

@@ -31,6 +31,33 @@ using Honeycomb::Shader::Phong::PhongShader;
 namespace Honeycomb::Geometry {
 	std::vector<Model*> Model::imports = std::vector<Model*>();
 
+	Model::~Model() {
+		for (int i = 0; i < this->textures.size(); i++)
+			delete this->textures.at(i);
+		for (int i = 0; i < this->materials.size(); i++)
+			delete this->materials.at(i);
+	}
+
+	const Model& Model::loadModel(std::string path) {
+		for (int i = 0; i < imports.size(); i++)
+			if (imports.at(i)->path == path)
+				return *imports.at(i);
+
+		return *(new Model(path));
+	}
+
+	GameObject* Model::getGameObject() {
+		return this->gameObject;
+	}
+
+	GameObject* Model::getGameObjectClone() const {
+		return this->gameObject->clone();
+	}
+
+	const std::string& Model::getPath() const {
+		return this->path;
+	}
+
 	Model::Model(std::string path) {
 		this->path = path;
 		this->loadFromPath();
@@ -38,41 +65,7 @@ namespace Honeycomb::Geometry {
 		this->imports.push_back(this);
 	}
 
-	GameObject* Model::getGameObject() {
-		return this->gameObject;
-	}
-
-	GameObject* Model::getGameObjectClone() {
-		return this->gameObject->clone();
-	}
-
-	std::string Model::getPath() {
-		return this->path;
-	}
-
-	Model* Model::findMatchingImport() {
-		for (int i = 0; i < imports.size(); i++) {
-			Model *mod = imports.at(i); // Get current model
-
-			// If the model has the same path as the specified path, return it.
-			if (mod->getPath() == path) return mod;
-		}
-
-		return nullptr; // If no model with matching path found -> return NULL
-	}
-
 	void Model::loadFromPath() {
-		// Check if a model from this path has already been imported; if so,
-		// copy the information from that model into this model, instead of
-		// remaking it.
-		Model *matching = findMatchingImport();
-		if (matching != nullptr) {
-			this->scene = matching->scene;
-			this->gameObject = matching->gameObject->clone();
-
-			return;
-		}
-
 		// Import the Scene from ASSIMP and Check for Errors.
 		Importer aImp = Importer();
 		this->scene = aImp.ReadFile(path, aiProcess_Triangulate | aiProcess_GenNormals);
@@ -90,7 +83,7 @@ namespace Honeycomb::Geometry {
 
 	Material* Model::processAiMeshMaterial(aiMaterial* aMat) {
 		aiString matName; // Name of the Material
-		Texture2D *texturePtr = nullptr; // Albedo Texture of the Material
+		Texture2D *texture = nullptr; // Albedo Texture of the Material
 		aiColor3D matAmbient; // Ambient Property of the Material
 		aiColor3D matDiffuse; // Diffuse Property of the Material
 		aiColor3D matSpecular; // Specular Property of the Material
@@ -110,18 +103,21 @@ namespace Honeycomb::Geometry {
 			aiString dir;
 			aMat->GetTexture(aiTextureType_DIFFUSE, 0, &dir);
 			
-			texturePtr = new Texture2D(dir.C_Str());
+			texture = new Texture2D(dir.C_Str());
 		} else {
-			texturePtr = new Texture2D();
+			texture = new Texture2D();
 		}
 
 		// Build the Material and return it
-		Material *mat = new Material(matName.C_Str(), *texturePtr,
+		Material *mat = new Material(matName.C_Str(), *texture,
 			Vector4f(matAmbient.r, matAmbient.g, matAmbient.b, 1.0F),
 			Vector4f(matDiffuse.r, matDiffuse.g, matDiffuse.b, 1.0F),
 			Vector4f(matSpecular.r, matSpecular.g, matSpecular.b, 1.0F),
 			matShininess);
-		delete texturePtr;
+
+		// Save the texture and material
+		this->textures.push_back(texture);
+		this->materials.push_back(mat);
 
 		return mat;
 	}

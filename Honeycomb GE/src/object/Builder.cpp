@@ -103,7 +103,7 @@ namespace Honeycomb::Object {
 	GameObject* Builder::newModel(std::string path) {
 		// Create a Model and return the clone of it (again, do not delete the
 		// model so that the Model class may later reuse this model if needed).
-		GameObject* obj = (new Model(path))->getGameObjectClone();
+		GameObject* obj = Model::loadModel(path).getGameObjectClone();
 		GameObject::getRoot()->addChild(*obj);
 
 		return obj;
@@ -162,7 +162,7 @@ namespace Honeycomb::Object {
 	GameObject* Builder::newDefaultImport(std::string name, std::string path) {
 		// Get the parent model and extract the child with the given name from
 		// it. Add the child to the root so that it may be instantiated.
-		GameObject *parent = (new Model(path))->getGameObjectClone();
+		GameObject *parent = Model::loadModel(path).getGameObjectClone();
 		GameObject *child = parent->getChild(name);
 		GameObject::getRoot()->addChild(*child);
 
