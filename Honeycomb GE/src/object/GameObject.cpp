@@ -12,7 +12,7 @@ namespace Honeycomb::Object {
 		
 	}
 
-	GameObject::GameObject(std::string n, GameObject *p) {
+	GameObject::GameObject(const std::string &n, GameObject *p) {
 		this->name = n;
 		this->isActive = false;
 
@@ -21,7 +21,8 @@ namespace Honeycomb::Object {
 		if (p != nullptr) p->addChild(*this);
 	}
 
-	GameObject::GameObject(GameObject& o) : GameObject("GameObject", nullptr) {
+	GameObject::GameObject(const GameObject& o) : 
+			GameObject("GameObject", nullptr) {
 		this->isActive = o.isActive;
 		this->name = o.name;
 		
@@ -32,8 +33,6 @@ namespace Honeycomb::Object {
 			this->addChild(*o.children.at(i)->clone());
 		for (int i = 0; i < o.components.size(); i++)
 			this->addComponent(*o.components.at(i)->clone());
-
-		int j = 3;
 	}
 
 	GameObject::~GameObject() {
@@ -47,7 +46,7 @@ namespace Honeycomb::Object {
 		this->deparent();
 	}
 
-	GameObject* GameObject::clone() {
+	GameObject* GameObject::clone() const {
 		return new GameObject(*this);
 	}
 
@@ -55,7 +54,7 @@ namespace Honeycomb::Object {
 		this->children.push_back(&o);
 		
 		if (o.parent != nullptr) o.parent->removeChild(&o);
-		o.setParent(this);
+		o.parent = this;
 	}
 
 	void GameObject::addComponent(GameComponent &c) {
@@ -68,11 +67,13 @@ namespace Honeycomb::Object {
 	void GameObject::deparent() {
 		// Remove this object from its parents' children and set the parent of
 		// this object to nothing.
-		if (this->parent != nullptr) this->parent->removeChild(this);
-		this->setParent(nullptr);
+		if (this->parent != nullptr) {
+			this->parent->removeChild(this);
+			this->parent = nullptr;
+		}
 	}
 
-	GameObject* GameObject::getChild(std::string name) {
+	GameObject* GameObject::getChild(const std::string &name) {
 		// Go through all components and try to find one whose name matches
 		for (int i = 0; i < this->children.size(); i++) {
 			if (this->children.at(i)->getName() == name) {
@@ -81,14 +82,43 @@ namespace Honeycomb::Object {
 		}
 
 		// If unable to find a matching child -> Return NULL
-		return NULL;
+		return nullptr;
+	}
+
+	const GameObject* GameObject::getChild(const std::string &name) const {
+		// Go through all components and try to find one whose name matches
+		for (int i = 0; i < this->children.size(); i++) {
+			if (this->children.at(i)->getName() == name) {
+				return this->children.at(i);
+			}
+		}
+
+		// If unable to find a matching child -> Return NULL
+		return nullptr;
 	}
 
 	std::vector<GameObject*>& GameObject::getChildren() {
 		return this->children;
 	}
 
-	GameComponent* GameObject::getComponent(std::string name) {
+	const std::vector<GameObject*>& GameObject::getChildren() const {
+		return this->children;
+	}
+
+	GameComponent* GameObject::getComponent(const std::string &name) {
+		// Go through all components and try to find one whose name matches
+		for (int i = 0; i < this->components.size(); i++) {
+			if (this->components.at(i)->getName() == name) {
+				return this->components.at(i);
+			}
+		}
+
+		// If unable to find a matching component -> Return NULL
+		return NULL;
+	}
+
+	const GameComponent* GameObject::getComponent(const std::string &name) 
+			const {
 		// Go through all components and try to find one whose name matches
 		for (int i = 0; i < this->components.size(); i++) {
 			if (this->components.at(i)->getName() == name) {
@@ -104,15 +134,23 @@ namespace Honeycomb::Object {
 		return this->components;
 	}
 
-	bool& GameObject::getIsActive() {
+	const std::vector<GameComponent*>& GameObject::getComponents() const {
+		return this->components;
+	}
+
+	const bool& GameObject::getIsActive() const {
 		return this->isActive;
 	}
 
-	std::string GameObject::getName() {
+	const std::string& GameObject::getName() const {
 		return this->name;
 	}
 
 	GameObject* GameObject::getParent() {
+		return this->parent;
+	}
+
+	const GameObject* GameObject::getParent() const {
 		return this->parent;
 	}
 	
@@ -153,10 +191,6 @@ namespace Honeycomb::Object {
 			this->children.at(i)->render();
 		for (int i = 0; i < this->components.size(); i++)
 			this->components.at(i)->render();
-	}
-
-	void GameObject::setParent(GameObject *o) {
-		this->parent = o;
 	}
 
 	void GameObject::start() {

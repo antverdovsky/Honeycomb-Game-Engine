@@ -23,7 +23,7 @@ namespace Honeycomb::Component::Light {
 
 	}
 
-	PointLight* PointLight::clone() {
+	PointLight* PointLight::clone() const {
 		// TODO, for all lights which use a transform pointer, the clone needs
 		// to get a new pointer.
 		return new PointLight(*this);

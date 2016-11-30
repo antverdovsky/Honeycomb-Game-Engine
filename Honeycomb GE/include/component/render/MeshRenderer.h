@@ -29,7 +29,7 @@ namespace Honeycomb::Component::Render {
 		/// Renderer will still reference the material, mesh and shader of this
 		/// instance.
 		/// return : The cloned Mesh Renderer.
-		MeshRenderer* clone();
+		MeshRenderer* clone() const;
 
 		/// Returns the pointer to the mesh of this Mesh Renderer.
 		/// return : The mesh pointer.

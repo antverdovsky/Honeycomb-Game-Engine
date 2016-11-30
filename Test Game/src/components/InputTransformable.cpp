@@ -53,7 +53,7 @@ namespace HoneycombTest::Components {
 
 	}
 
-	InputTransformable* InputTransformable::clone() {
+	InputTransformable* InputTransformable::clone() const {
 		return new InputTransformable(*this);
 	}
 

@@ -23,7 +23,7 @@ namespace Honeycomb::Component::Light {
 
 	}
 
-	DirectionalLight* DirectionalLight::clone() {
+	DirectionalLight* DirectionalLight::clone() const {
 		return new DirectionalLight(*this);
 	}
 

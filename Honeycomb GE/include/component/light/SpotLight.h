@@ -34,7 +34,7 @@ namespace Honeycomb::Component::Light {
 		/// Light. This function should be used instead of the copy constructor
 		/// to prevent object slicing.
 		/// return : The cloned Spot Light.
-		SpotLight* clone();
+		SpotLight* clone() const;
 
 		/// Gets the spot angle of the Spot Light.
 		/// return : The spot angle value.
@@ -74,8 +74,8 @@ namespace Honeycomb::Component::Light {
 		/// Writes this Spot Light to the Phong Shader.
 		void writeToShader();
 	private:
-		Honeycomb::Math::Vector3f *position; // The position (from Transform)
-		Honeycomb::Math::Vector3f *direction; // The direction (from Transform)
+		const Honeycomb::Math::Vector3f *position; // Transform Position
+		const Honeycomb::Math::Vector3f *direction; // Transform Direction
 
 		BaseLight::Attenuation attenuation; // The attenuation of the Light
 		float angle; // The spot angle of the Spot Light (entire light).

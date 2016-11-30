@@ -93,7 +93,7 @@ namespace Honeycomb::Component::Light {
 		/// Base Light. This function should be used instead of the copy 
 		/// constructor to prevent object slicing.
 		/// return : The cloned Base Light.
-		BaseLight* clone();
+		BaseLight* clone() const;
 		
 		/// Gets the color of the base light.
 		/// return : The color.

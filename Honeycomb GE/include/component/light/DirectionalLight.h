@@ -23,7 +23,7 @@ namespace Honeycomb::Component::Light {
 		/// Directional Light. This function should be used instead of the copy 
 		/// constructor to prevent object slicing.
 		/// return : The cloned Directional Light.
-		DirectionalLight* clone();
+		DirectionalLight* clone() const;
 
 		/// Gets the direction of this directional light.
 		/// return : The direction.
@@ -35,7 +35,7 @@ namespace Honeycomb::Component::Light {
 		/// Writes this Directional Light to the Phong Shader.
 		void writeToShader();
 	private:
-		Honeycomb::Math::Vector3f *direction; // The direction (from Transform)
+		const Honeycomb::Math::Vector3f *direction; // Transform Direction
 
 		// Event handler for the change in the transform (for direction)
 		Honeycomb::Conjuncture::EventHandler transformChange;

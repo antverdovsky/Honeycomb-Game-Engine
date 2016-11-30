@@ -85,7 +85,7 @@ namespace Honeycomb::Component::Light {
 
 	}
 
-	BaseLight* BaseLight::clone() {
+	BaseLight* BaseLight::clone() const {
 		return new BaseLight(*this);
 	}
 

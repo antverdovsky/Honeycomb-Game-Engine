@@ -13,7 +13,7 @@ namespace Honeycomb::Component::Light {
 
 	}
 
-	AmbientLight* AmbientLight::clone() {
+	AmbientLight* AmbientLight::clone() const {
 		return new AmbientLight(*this);
 	}
 }

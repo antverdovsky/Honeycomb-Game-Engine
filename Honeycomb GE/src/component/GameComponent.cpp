@@ -20,7 +20,7 @@ namespace Honeycomb::Component {
 		this->detach();
 	}
 
-	GameComponent* GameComponent::clone() {
+	GameComponent* GameComponent::clone() const {
 		return new GameComponent(*this);
 	}
 

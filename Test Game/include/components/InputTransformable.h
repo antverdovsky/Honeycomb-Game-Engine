@@ -46,7 +46,7 @@ namespace HoneycombTest::Components {
 		/// Input Transformable. This function should be used instead of the 
 		/// copy constructor to  prevent object slicing.
 		/// return : The cloned Input Transformable.
-		InputTransformable* clone();
+		InputTransformable* clone() const;
 
 		/// Takes in the input and transforms the transform according to the
 		/// input.

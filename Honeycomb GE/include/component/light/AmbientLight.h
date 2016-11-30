@@ -21,7 +21,7 @@ namespace Honeycomb::Component::Light {
 		/// Ambient Light. This function should be used instead of the copy 
 		/// constructor to prevent object slicing.
 		/// return : The cloned Ambient Light.
-		AmbientLight* clone();
+		AmbientLight* clone() const;
 	private:
 
 	};

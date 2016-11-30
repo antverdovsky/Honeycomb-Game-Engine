@@ -20,14 +20,15 @@ namespace Honeycomb::Component::Physics {
 		/// Vector3f pos : The position of the object.
 		/// Quaternion rot : The rotation of the object.
 		/// Vector3f scl : The scale of the object.
-		Transform(Honeycomb::Math::Vector3f pos, 
-			Honeycomb::Math::Quaternion rot, Honeycomb::Math::Vector3f scl);
+		Transform(const Honeycomb::Math::Vector3f &pos, 
+			const Honeycomb::Math::Quaternion &rot, 
+			const Honeycomb::Math::Vector3f &scl);
 
 		/// Clones this Transform into a new, dynamically allocated Transform. 
 		/// This function should be used instead of the copy constructor to 
 		/// prevent object slicing.
 		/// return : The cloned Transform.
-		Transform* Transform::clone();
+		Transform* Transform::clone() const;
 
 		/// Gets an event which will be triggered once the transform is changed
 		/// in any way (scaled, translated or rotated).
@@ -37,49 +38,49 @@ namespace Honeycomb::Component::Physics {
 		/// Gets the vector pointing in the local forward direction of this
 		/// transform.
 		/// return : The local forward vector.
-		Honeycomb::Math::Vector3f& getLocalForward();
+		const Honeycomb::Math::Vector3f& getLocalForward() const;
 
 		/// Gets the vector pointing in the local right direction of this
 		/// transform.
 		/// return : The local right vector.
-		Honeycomb::Math::Vector3f& getLocalRight();
+		const Honeycomb::Math::Vector3f& getLocalRight() const;
 
 		/// Gets the vector pointing in the local up direction of this
 		/// transform.
 		/// return : The local up vector.
-		Honeycomb::Math::Vector3f& getLocalUp();
+		const Honeycomb::Math::Vector3f& getLocalUp() const;
 
 		/// Gets the orientation matrix for this transform.
 		/// return : The orientation matrix.
-		Honeycomb::Math::Matrix4f getOrientationMatrix();
+		const Honeycomb::Math::Matrix4f& getOrientationMatrix() const;
 
 		/// Gets the rotation quaternion of this transform.
 		/// return : The rotation quaternion.
-		Honeycomb::Math::Quaternion& getRotation();
+		const Honeycomb::Math::Quaternion& getRotation() const;
 
 		/// Gets the current rotation matrix for this transform.
 		/// return : The rotation matrix.
-		Honeycomb::Math::Matrix4f getRotationMatrix();
+		const Honeycomb::Math::Matrix4f& getRotationMatrix() const;
 
 		/// Gets the scale vector of this uniform.
 		/// return : The scale vector.
-		Honeycomb::Math::Vector3f& getScale();
+		const Honeycomb::Math::Vector3f& getScale() const;
 
 		/// Gets the current scale matrix for this transform.
 		/// return : The scale matrix.
-		Honeycomb::Math::Matrix4f getScaleMatrix();
+		const Honeycomb::Math::Matrix4f& getScaleMatrix() const;
 
 		/// Gets the current transformation matrix for this transform.
 		/// return : The transformation matrix.
-		Honeycomb::Math::Matrix4f getTransformationMatrix();
+		const Honeycomb::Math::Matrix4f& getTransformationMatrix() const;
 
 		/// Gets the position vector of this transform.
 		/// return : The position vector.
-		Honeycomb::Math::Vector3f& getTranslation();
+		const Honeycomb::Math::Vector3f& getTranslation() const;
 
 		/// Gets the current translation matrix for this transform.
 		/// return : The translation matrix.
-		Honeycomb::Math::Matrix4f getTranslationMatrix();
+		const Honeycomb::Math::Matrix4f& getTranslationMatrix() const;
 
 		/// Starts this Transform instance.
 		void start();
@@ -128,27 +129,27 @@ namespace Honeycomb::Component::Physics {
 		/// Calculates the orientation matrix from the forward, up and right of
 		/// this transform.
 		/// return : The orientation matrix.
-		Honeycomb::Math::Matrix4f calculateOrientationMatrix();
+		const Honeycomb::Math::Matrix4f& calculateOrientationMatrix();
 
 		/// Constructs a rotation matrix from the rotation vector of this
 		/// transform.
 		/// return : The rotation matrix.
-		Honeycomb::Math::Matrix4f calculateRotationMatrix();
+		const Honeycomb::Math::Matrix4f& calculateRotationMatrix();
 
 		/// Constructs a scale matrix from the scale vector of this transform.
 		/// return : The scale vector.
-		Honeycomb::Math::Matrix4f calculateScaleMatrix();
+		const Honeycomb::Math::Matrix4f& calculateScaleMatrix();
 
 		/// Calculates the transformation matrix for the transform. This should
 		/// be called every time either the rotation, scale, or translation of 
 		/// the transform is modified.
 		/// return : The updated transformation matrix.
-		Honeycomb::Math::Matrix4f calculateTransformationMatrix();
+		const Honeycomb::Math::Matrix4f& calculateTransformationMatrix();
 
 		/// Constructs a translation matrix from the position vector of this
 		/// transform.
 		/// return : The translation matrix.
-		Honeycomb::Math::Matrix4f calculateTranslationMatrix();
+		const Honeycomb::Math::Matrix4f& calculateTranslationMatrix();
 	};
 }
 

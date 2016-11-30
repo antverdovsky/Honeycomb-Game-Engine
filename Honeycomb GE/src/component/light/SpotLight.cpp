@@ -24,7 +24,7 @@ namespace Honeycomb::Component::Light {
 
 	}
 
-	SpotLight* SpotLight::clone() {
+	SpotLight* SpotLight::clone() const {
 		return new SpotLight(*this);
 	}
 

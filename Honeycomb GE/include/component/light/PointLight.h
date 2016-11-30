@@ -31,7 +31,7 @@ namespace Honeycomb::Component::Light {
 		/// Light. This function should be used instead of the copy constructor
 		/// to prevent object slicing.
 		/// return : The cloned Point Light.
-		PointLight* clone();
+		PointLight* clone() const;
 
 		/// Gets the Position of this Point Light.
 		/// return : A vector representing the position.
@@ -59,7 +59,7 @@ namespace Honeycomb::Component::Light {
 		/// Writes this Point Light to the Phong Shader.
 		void writeToShader();
 	private:
-		Honeycomb::Math::Vector3f *position; // The position (from Transform)
+		const Honeycomb::Math::Vector3f *position; // Transform Position
 
 		BaseLight::Attenuation attenuation; // The attenuation of the Light
 		float range; // The sphere-like radius range of the Point Light

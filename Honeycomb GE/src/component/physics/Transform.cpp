@@ -19,8 +19,8 @@ namespace Honeycomb::Component::Physics {
 
 	}
 
-	Transform::Transform(Vector3f pos, Quaternion rot, Vector3f scl)
-			: GameComponent("Transform") {
+	Transform::Transform(const Vector3f &pos, const Quaternion &rot, 
+			const Vector3f &scl) : GameComponent("Transform") {
 		this->setTranslation(pos);
 		this->setRotation(rot);
 		this->setScale(scl);
@@ -30,7 +30,7 @@ namespace Honeycomb::Component::Physics {
 		this->localUp = Vector3f::getGlobalUp();
 	}
 
-	Transform* Transform::clone() {
+	Transform* Transform::clone() const {
 		return new Transform(*this);
 	}
 
@@ -38,47 +38,47 @@ namespace Honeycomb::Component::Physics {
 		return this->changedEvent;
 	}
 
-	Vector3f& Transform::getLocalForward() {
+	const Vector3f& Transform::getLocalForward() const {
 		return this->localForward;
 	}
 
-	Vector3f& Transform::getLocalRight() {
+	const Vector3f& Transform::getLocalRight() const {
 		return this->localRight;
 	}
 
-	Vector3f& Transform::getLocalUp() {
+	const Vector3f& Transform::getLocalUp() const {
 		return this->localUp;
 	}
 
-	Matrix4f Transform::getOrientationMatrix() {
+	const Matrix4f& Transform::getOrientationMatrix() const {
 		return this->orientationMatrix;
 	}
 
-	Matrix4f Transform::getRotationMatrix() {
+	const Matrix4f& Transform::getRotationMatrix() const {
 		return this->rotationMatrix;
 	}
 
-	Matrix4f Transform::getScaleMatrix() {
+	const Matrix4f& Transform::getScaleMatrix() const {
 		return this->scaleMatrix;
 	}
 
-	Matrix4f Transform::getTransformationMatrix() {
+	const Matrix4f& Transform::getTransformationMatrix() const {
 		return this->transformationMatrix;
 	}
 
-	Matrix4f Transform::getTranslationMatrix() {
+	const Matrix4f& Transform::getTranslationMatrix() const {
 		return this->translationMatrix;
 	}
 
-	Quaternion& Transform::getRotation() {
+	const Quaternion& Transform::getRotation() const {
 		return this->rotation;
 	}
 
-	Vector3f& Transform::getScale() {
+	const Vector3f& Transform::getScale() const {
 		return this->scale;
 	}
 
-	Vector3f& Transform::getTranslation() {
+	const Vector3f& Transform::getTranslation() const {
 		return this->translation;
 	}
 	
@@ -126,7 +126,7 @@ namespace Honeycomb::Component::Physics {
 		this->setTranslation(this->translation + vec);
 	}
 
-	Matrix4f Transform::calculateOrientationMatrix() {
+	const Matrix4f& Transform::calculateOrientationMatrix() {
 		this->orientationMatrix = Matrix4f::identity();
 
 		// Calculate new directions using the rotations
@@ -155,7 +155,7 @@ namespace Honeycomb::Component::Physics {
 		return this->orientationMatrix;
 	}
 
-	Matrix4f Transform::calculateTransformationMatrix() {
+	const Matrix4f& Transform::calculateTransformationMatrix() {
 		// Create individual matricies for each component of the transform
 		Matrix4f transMat = this->getTranslationMatrix();
 		Matrix4f rotMat = this->getRotationMatrix();
@@ -167,13 +167,13 @@ namespace Honeycomb::Component::Physics {
 		return this->transformationMatrix;
 	}
 
-	Matrix4f Transform::calculateRotationMatrix() {
+	const Matrix4f& Transform::calculateRotationMatrix() {
 		this->rotationMatrix = this->rotation.toRotationMatrix4f();
 
 		return this->rotationMatrix;
 	}
 
-	Matrix4f Transform::calculateScaleMatrix() {
+	const Matrix4f& Transform::calculateScaleMatrix() {
 		this->scaleMatrix = Matrix4f::identity();
 
 		// A scale matrix is composed as an identity matrix whose diagonal
@@ -190,7 +190,7 @@ namespace Honeycomb::Component::Physics {
 		return this->scaleMatrix;
 	}
 
-	Matrix4f Transform::calculateTranslationMatrix() {
+	const Matrix4f& Transform::calculateTranslationMatrix() {
 		this->translationMatrix = Matrix4f::identity();
 
 		// A translation matrix is composed as an identity matrix whose last

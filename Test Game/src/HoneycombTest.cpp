@@ -60,22 +60,35 @@ namespace HoneycombTest {
 
 	void TestGame::start() {
 		srand(time(NULL));
+		InputTransformable *suzInputTransformable = new InputTransformable(
+			GameInput::KEY_CODE_UP, GameInput::KEY_CODE_DOWN,
+			GameInput::KEY_CODE_LEFT, GameInput::KEY_CODE_RIGHT,
+			GameInput::KEY_CODE_COMMA, GameInput::KEY_CODE_PERIOD,
+			GameInput::KEY_CODE_R, GameInput::KEY_CODE_T,
+			GameInput::KEY_CODE_F, GameInput::KEY_CODE_G,
+			GameInput::KEY_CODE_V, GameInput::KEY_CODE_B,
+			5.0F, 5.0F);
 
 		for (int i = 0; i <= 1000; i++) {
 			Model::loadModel("..\\Honeycomb GE\\res\\models\\default\\cube.fbx");
-			GameObject *myCube = Builder::getBuilder()->newCube();
+			GameObject *mySuz = Builder::getBuilder()->newSuzanne();
 
-			myCube->getComponentOfType<Transform>("Transform")->
-				translate(Vector3f(rand() % 30 - 10, rand() % 30 - 10, rand() % 30 - 10));
-			MeshRenderer *meshre = myCube->getComponentOfType<MeshRenderer>("MeshRenderer");
-			Material *newMat = new Material(myCube->getComponentOfType<MeshRenderer>("MeshRenderer")->
+			mySuz->getComponentOfType<Transform>("Transform")->
+				translate(Vector3f(rand() % 200 - 100, rand() % 200 - 100, rand() % 200 - 100));
+			Material *newMat = new Material(mySuz->getComponentOfType<MeshRenderer>("MeshRenderer")->
 				getMaterial());
+			newMat->setAmbientColor(Vector4f(((float)rand() / (RAND_MAX)),
+				((float)rand() / (RAND_MAX)),
+				((float)rand() / (RAND_MAX)),
+				1.0F));
 			newMat->setDiffuseColor(Vector4f(((float)rand() / (RAND_MAX)),
 				((float)rand() / (RAND_MAX)),
 				((float)rand() / (RAND_MAX)),
 				1.0F));
-			myCube->getComponentOfType<MeshRenderer>("MeshRenderer")->setMaterial(*newMat);
-
+			mySuz->getComponentOfType<MeshRenderer>("MeshRenderer")->setMaterial(*newMat);
+			
+			InputTransformable &inTrans = *suzInputTransformable->clone();
+			mySuz->addComponent(inTrans);
 			
 			//delete myCube;
 		}
@@ -131,17 +144,8 @@ namespace HoneycombTest {
 		/// Create additional components for the created objects & add.
 		///
 		InputTransformable *camInputTransformable = new InputTransformable();
-		InputTransformable *suzInputTransformable = new InputTransformable(
-			GameInput::KEY_CODE_UP, GameInput::KEY_CODE_DOWN,
-			GameInput::KEY_CODE_LEFT, GameInput::KEY_CODE_RIGHT,
-			GameInput::KEY_CODE_COMMA, GameInput::KEY_CODE_PERIOD,
-			GameInput::KEY_CODE_R, GameInput::KEY_CODE_T,
-			GameInput::KEY_CODE_F, GameInput::KEY_CODE_G,
-			GameInput::KEY_CODE_V, GameInput::KEY_CODE_B,
-			5.0F, 5.0F);
 		camera->addComponent(*camInputTransformable);
 		suzanne->addComponent(*suzInputTransformable);
-
 
 		///
 		/// Transform the objects in the scene.

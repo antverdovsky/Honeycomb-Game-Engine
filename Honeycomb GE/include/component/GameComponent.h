@@ -23,7 +23,7 @@ namespace Honeycomb::Component {
 		/// This function should be used instead of the copy constructor to
 		/// prevent object slicing.
 		/// return : The cloned Component.
-		virtual GameComponent* clone();
+		virtual GameComponent* clone() const;
 
 		/// Detaches this Component from its current object, and sets the
 		/// current object to which it is attached to NULL.

@@ -30,7 +30,7 @@ namespace Honeycomb::Component::Render {
 
 	}
 
-	MeshRenderer* MeshRenderer::clone() {
+	MeshRenderer* MeshRenderer::clone() const {
 		return new MeshRenderer(*this);
 	}
 
