@@ -18,7 +18,7 @@ namespace Honeycomb::Object {
 
 		/// Instantializes a Game Object with the specified name and parent
 		/// (root by default).
-		/// string n : The name of this Game Object.
+		/// const string &n : The name of this Game Object.
 		/// Object p : The parent of this Game Object. If none is specified,
 		///			   the object will be parented to the root. NULL may also
 		///			   be provided but the object will have NO parent (use at
@@ -51,14 +51,14 @@ namespace Honeycomb::Object {
 
 		/// Gets the child with the specified name, or NULL if no such child
 		/// exists.
-		/// string name : The name of the child.
-		/// return : The child object.
+		/// const string &name : The name of the child.
+		/// return : The pointer to the child object.
 		GameObject* getChild(const std::string &name);
 
 		/// Gets the child with the specified name, or NULL if no such child
 		/// exists.
-		/// string name : The name of the child.
-		/// return : The child object.
+		/// const string &name : The name of the child.
+		/// return : The constant pointer to the child object.
 		const GameObject* getChild(const std::string &name) const;
 
 		/// Gets all the children game objects of this game object.
@@ -66,23 +66,28 @@ namespace Honeycomb::Object {
 		std::vector<GameObject*>& getChildren();
 
 		/// Gets all the children game objects of this game object.
-		/// return : The list containing the children game objects.
+		/// return : The constant list containing the children game objects.
 		const std::vector<GameObject*>& getChildren() const;
 
 		/// Gets the component with the specified name, or NULL if no such
 		/// component exists.
-		/// string name : The name of the component.
+		/// const string &name : The name of the component.
 		/// return : The component object.
 		Honeycomb::Component::GameComponent*
 			getComponent(const std::string &name);
 
 		/// Gets the component with the specified name, or NULL if no such
 		/// component exists.
-		/// string name : The name of the component.
+		/// const string &name : The name of the component.
 		/// return : The component object.
 		const Honeycomb::Component::GameComponent*
 				getComponent(const std::string &name) const;
-
+		
+		/// Gets the component with the specified name, downcast to the
+		/// specific type of component.
+		/// class Type : The type of the component.
+		/// const string &name : The name of the component.
+		/// return : The pointer to the component object.
 		template<class Type>
 		inline Type* getComponentOfType(const std::string &name) {
 			Honeycomb::Component::GameComponent *comp =
@@ -97,8 +102,8 @@ namespace Honeycomb::Object {
 		/// Gets the component with the specified name, downcast to the
 		/// specific type of component.
 		/// class Type : The type of the component.
-		/// string name : The name of the component.
-		/// return : The component object.
+		/// const string &name : The name of the component.
+		/// return : The constant pointer to the component object.
 		template<class Type>
 		const inline Type* getComponentOfType(const std::string &name) const {
 			Honeycomb::Component::GameComponent *comp = 
@@ -115,7 +120,7 @@ namespace Honeycomb::Object {
 		std::vector<Honeycomb::Component::GameComponent*>& getComponents();
 
 		/// Gets all the components of this game object.
-		/// return : The list containing the components.
+		/// return : The constant list containing the components.
 		const std::vector<Honeycomb::Component::GameComponent*>& 
 				getComponents() const;
 
@@ -128,16 +133,16 @@ namespace Honeycomb::Object {
 		const std::string& getName() const;
 
 		/// Returns the parent of this Game Object.
-		/// return : The parent.
+		/// return : The pointer to the parent.
 		GameObject* getParent();
 
 		/// Returns the parent of this Game Object.
-		/// return : The pointer to the parent.
+		/// return : The constant pointer to the parent.
 		const GameObject* getParent() const;
 
 		/// Returns the Root game object.
 		/// return : The Root object.
-		static GameObject* getRoot();
+		static GameObject& getRoot();
 
 		/// Handles any input events for this component, if necessary. This 
 		/// method will only do something if the object is active.

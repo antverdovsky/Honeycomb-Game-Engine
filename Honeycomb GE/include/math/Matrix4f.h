@@ -20,14 +20,14 @@ namespace Honeycomb::Math {
 		/// Returns an instance of the Matrix class initialized to the matrix
 		/// sum of this and the specified second matrix. Neither matrix is 
 		/// modified in the process.
-		/// Matrix4f m2 : The second matrix.
+		/// const Matrix4f &m2 : The second matrix.
 		/// return : The summation matrix.
 		Matrix4f add(const Matrix4f &m2) const;
 
 		/// Adds the specified second matrix to this current matrix.
-		/// Matrix4f m2 : The second matrix.
-		/// return : This matrix, post addition.
-		Matrix4f addTo(const Matrix4f &m2);
+		/// const Matrix4f &m2 : The second matrix.
+		/// return : The reference to this matrix, post addition.
+		Matrix4f& addTo(const Matrix4f &m2);
 
 		/// Returns an instance of the Matrix class which is initialized to a 
 		/// 4x4 identity matrix.
@@ -41,34 +41,34 @@ namespace Honeycomb::Math {
 		float* get() const;
 
 		/// Gets the value in the 4x4 Matrix at the specified row and column.
-		/// int r : The row position.
-		/// int c : The column position.
+		/// const int &r : The row position.
+		/// const int &c : The column position.
 		/// return : The value at the position.
-		float getAt(const int &r, const int &c) const;
+		const float& getAt(const int &r, const int &c) const;
 
 		/// Returns an instance of the Matrix equal to the product of this 
 		/// matrix and the specified other matrix.
-		/// Matrix4f m2 : The second matrix.
+		/// const Matrix4f &m2 : The second matrix.
 		/// return : The product of the two matricies.
 		Matrix4f multiply(const Matrix4f& m2) const;
 
 		/// Multiplies this and the specified matrix and stores the result in 
 		/// this matrix instance.
-		/// Matrix4f m2 : The second matrix.
-		/// return : This product of the two matricies.
-		Matrix4f multiplyTo(const Matrix4f& m2);
+		/// const Matrix4f &m2 : The second matrix.
+		/// return : The reference to this matrix, post multiplication.
+		Matrix4f& multiplyTo(const Matrix4f& m2);
 
 		/// Returns an instance of the Matrix class initialized to this matrix
 		/// scaled by the scalar quantity specified. The contents of this 
 		/// matrix are not changed.
-		/// scale : The scale by which to scale the matrix.
+		/// const float &scale : The scale by which to scale the matrix.
 		/// return : The scaled copy of this Matrix.
 		Matrix4f scale(const float &scale) const;
 
 		/// Scales this matrix by specified scalar factor.
-		/// float scale : The constant by which to scale the matrix.
-		/// return : This scaled matrix.
-		Matrix4f scaleTo(const float &scale);
+		/// const float &scale : The constant by which to scale the matrix.
+		/// return : The reference to this matrix, post scaling.
+		Matrix4f& scaleTo(const float &scale);
 
 		/// Sets the value in the 4x4 Matrix at the specified row and column 
 		/// position to the specified value.
@@ -96,46 +96,46 @@ namespace Honeycomb::Math {
 		/// instance equal to this matrix scaled by the specified constant.
 		/// const float &scale : The constant by which to scale the matrix.
 		/// return : The scaled matrix.
-		Matrix4f operator*=(const float &scale);
+		Matrix4f& operator*=(const float &scale);
 
 		/// Overloads the mulitplication operator to return a matrix instance
 		/// which is equivalent to this matrix, multiplied by the specified 
 		/// matrix. Neither this or the specified matrix's values are modified.
-		/// Matrix4f m2 : The second matrix.
+		/// const Matrix4f &m2 : The second matrix.
 		/// return : The product of the matricies.
 		Matrix4f operator*(const Matrix4f& m2) const;
 
 		/// Overloads the multiplication set operator to set this matrix equal 
 		/// to the product of this matrix and the specified matrix.
-		/// Matrix4f m2 : The second matrix.
+		/// const Matrix4f &m2 : The second matrix.
 		/// return : This product of the matricies.
-		Matrix4f operator*=(const Matrix4f& m2);
+		Matrix4f& operator*=(const Matrix4f& m2);
 
 		/// Overloads the division operator to return a matrix instance which 
 		/// is equivalent to this matrix, divided by the specified scalar.
 		/// This matrix instance is not modified.
-		/// Matrix4f m2 : The second matrix.
+		/// const float &scale : The scale by which to scale the matrix.
 		/// return : The scaled matrix.
 		Matrix4f operator/(const float &scale) const;
 
 		/// Overloads the division set operator to set this matrix equal to the
 		/// original matrix divided by the scaling factor.
-		/// float scale : The scale.
+		/// const float &scale : The scale by which to scale the matrix.
 		/// return : This scaled matrix.
-		Matrix4f operator/=(const float &scale);
+		Matrix4f& operator/=(const float &scale);
 
 		/// Overloads the addition operator to return a matrix instance
 		/// which is equivalent to the sum of this matrix and the specified
 		/// matrix. Neither this or the specified matrix's values are modified.
-		/// const Matrix4f &m2 : Reference to the second matrix.
+		/// const Matrix4f &m2 : The second matrix.
 		/// return : The sum matrix.
 		Matrix4f operator+(const Matrix4f& m2) const;
 
 		/// Overloads the addition set operator to set this matrix equal to the
 		/// resultant of this and the specified matrix, and return it.
-		/// Matrix4f v2 : Reference to the second matrix.
+		/// const Matrix4f &m2 : The second matrix.
 		/// return : This resultant matrix.
-		Matrix4f operator+=(const Matrix4f& m2);
+		Matrix4f& operator+=(const Matrix4f& m2);
 
 		/// Unary operator overload which returns a matrix instance which is
 		/// equivalent to this matrix, negated. This matrix is not modified.
@@ -146,15 +146,15 @@ namespace Honeycomb::Math {
 		/// which is equivalent to the difference of this matrix and the 
 		/// specified matrix. Neither this nor the specified matrix's values 
 		/// are modified.
-		/// const Matrix4f &m2 : Reference to the second matrix.
+		/// const Matrix4f &m2 : The second matrix.
 		/// return : The difference matrix.
 		Matrix4f operator-(const Matrix4f& m2) const;
 
 		/// Overloads the subtraction set operator to set this matrix equal to 
 		/// the difference of this and the specified matrix, and return it.
-		/// Matrix4f v2 : Reference to the second matrix.
+		/// const Matrix4f &m2 : The second matrix.
 		/// return : This difference matrix.
-		Matrix4f operator-=(const Matrix4f& m2);
+		Matrix4f& operator-=(const Matrix4f& m2);
 	private:
 		float matrix[4][4]; // Stores the 4x4 array which represents the matrix
 

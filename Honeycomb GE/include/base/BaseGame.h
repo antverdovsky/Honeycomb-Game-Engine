@@ -11,14 +11,15 @@ namespace Honeycomb::Base {
 		/// Handles the rendering for the game every frame.
 		virtual void render();
 
-		/// Starts the game. Note, this should be used for loading in and 
-		/// processing resources and for initializing game components only.
+		/// Handles the loading in of resources and initialization of game
+		/// data at the very beginning of the game.
 		virtual void start();
 
-		/// Stops the game.
+		/// Handles the freeing of resources and destruction of game data at
+		/// the very end of the game.
 		virtual void stop();
 
-		/// Updates the game every frame.
+		/// Handles the updating for the game every frame.
 		virtual void update();
 	};
 }

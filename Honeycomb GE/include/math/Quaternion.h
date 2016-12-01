@@ -19,10 +19,10 @@ namespace Honeycomb::Math {
 
 		/// Initializes a new Quaternion with the specified x, y, z, and w 
 		/// components.
-		/// float x : The x component.
-		/// float y : The y component.
-		/// float z : The z component.
-		/// float w : The w component.
+		/// const float &x : The x component.
+		/// const float &y : The y component.
+		/// const float &z : The z component.
+		/// const float &w : The w component.
 		Quaternion(const float &x, const float &y, const float &z, 
 				const float &w);
 
@@ -31,8 +31,8 @@ namespace Honeycomb::Math {
 
 		/// Conjugates this Quaternion such that all imaginary components are
 		/// multiplied by -1.
-		/// return : This conjugated instance.
-		Quaternion conjugate();
+		/// return : This instance, post conjugation.
+		Quaternion& conjugate();
 
 		/// Returns a Quaternion instance, equivalent to this instance, but
 		/// conjugated.
@@ -59,21 +59,37 @@ namespace Honeycomb::Math {
 		/// return : The up direction vector.
 		Vector3f getUpVector() const;
 
-		/// Gets the x-component of the quaternion.
-		/// return : The x-component.
+		/// Gets the reference to the w-component of the quaternion.
+		/// return : The reference to the w-component.
+		float& getW();
+
+		/// Gets the constant reference to the w-component of the quaternion.
+		/// return : The constant reference to the w-component.
+		const float& getW() const;
+
+		/// Gets the reference to the x-component of the quaternion.
+		/// return : The reference to the x-component.
+		float& getX();
+
+		/// Gets the constant reference to the x-component of the quaternion.
+		/// return : The constant reference to the x-component.
 		const float& getX() const;
 
-		/// Gets the y-component of the quaternion.
-		/// return : The y-component.
+		/// Gets the reference to the y-component of the quaternion.
+		/// return : The reference to the y-component.
+		float& getY();
+
+		/// Gets the constant reference to the y-component of the quaternion.
+		/// return : The constant reference to the y-component.
 		const float& getY() const;
 
-		/// Gets the z-component of the quaternion.
-		/// return : The z-component.
-		const float& getZ() const;
+		/// Gets the reference to the z-component of the quaternion.
+		/// return : The reference to the z-component.
+		float& getZ();
 
-		/// Gets the w-component of the quaternion.
-		/// return : The w-component.
-		const float& getW() const;
+		/// Gets the constant reference to the z-component of the quaternion.
+		/// return : The constant reference to the z-component.
+		const float& getZ() const;
 
 		/// Gets the magnitude of the Quaternion.
 		/// return : The magnitude.
@@ -82,59 +98,61 @@ namespace Honeycomb::Math {
 		/// Multiplies this and the specified quaternion and returns the 
 		/// quaternion representing the product. Neither this nor the specified
 		/// Quaternion is modified.
-		/// Quaternion q2 : The second quaternion.
+		/// const Quaternion &q2 : The second quaternion.
 		/// return : The product quaternion.
 		Quaternion multiply(const Quaternion &q2) const;
 
 		/// Multiplies this and the specified vector and returns the quaternion
 		/// representing the product. Neither this nor the specified Vector is
 		/// modified.
-		/// Vector3f v : The Vector by which to multiply this Quaternion.
+		/// const Vector3f &v : The Vector by which to multiply this 
+		///					    Quaternion.
 		/// return : The product quaternion.
 		Quaternion multiply(const Vector3f &v) const;
 
 		/// Multiplies this and the specified quaternion and stores the product
 		/// quaternion in this instance.
-		/// Quaternion q2 : The second quaternion.
+		/// const Quaternion &q2 : The second quaternion.
 		/// return : This product quaternion.
-		Quaternion multiplyTo(const Quaternion &q2);
+		Quaternion& multiplyTo(const Quaternion &q2);
 
 		/// Multiplies this and the specified vector and stores the quaternion
 		/// representing the product in this instance.
-		/// Vector3f v : The Vector by which to multiply this Quaternion.
+		/// const Vector3f &v : The Vector by which to multiply this 
+		///						Quaternion.
 		/// return : This product quaternion.
-		Quaternion multiplyTo(const Vector3f &v);
+		Quaternion& multiplyTo(const Vector3f &v);
 
 		/// Normalizes this vector.
 		/// return : This normalized Quaternion.
-		Quaternion normalize();
+		Quaternion& normalize();
 
 		/// Gets a normalized version of this Quaternion, without modifying it.
 		/// return : The normalized copy of this Quaternion.
 		Quaternion normalized() const;
 
 		/// Sets the x, y, z and w components of the vector.
-		/// float x : The new x-component.
-		/// float y : The new y-component.
-		/// float z : The new z-component.
-		/// float w : The new w-component.
+		/// const float &x : The new x-component.
+		/// const float &y : The new y-component.
+		/// const float &z : The new z-component.
+		/// const float &w : The new w-component.
 		void set(const float &x, const float &y, const float &z, 
 				const float &w);
 
 		/// Sets the x-component of the quaternion.
-		/// float x : The new x-component.
+		/// const float &x : The new x-component.
 		void setX(const float &x);
 
 		/// Sets the y-component of the quaternion.
-		/// float y : The new y-component.
+		/// const float &y : The new y-component.
 		void setY(const float &y);
 
 		/// Sets the z-component of the quaternion.
-		/// float y : The new z-component.
+		/// const float &z : The new z-component.
 		void setZ(const float &z);
 
 		/// Sets the w-component of the quaternion.
-		/// float w : The new w-component.
+		/// const float &w : The new w-component.
 		void setW(const float &w);
 
 		/// Converts this Quaternion to a 4x4 Rotation Matrix and returns it.
@@ -158,14 +176,14 @@ namespace Honeycomb::Math {
 		/// specified quaternion.
 		/// Quaternion q2 : The second quaternion.
 		/// return : The product quaternion.
-		Quaternion operator*=(const Quaternion &q2);
+		Quaternion& operator*=(const Quaternion &q2);
 
 		/// Overloads the multiplication set operator to return this instance,
 		/// after it has been modified to store the product of this and the
 		/// specified vector.
 		/// Vector3f v : The vector.
 		/// return : The product quaternion.
-		Quaternion operator*=(const Vector3f &v);
+		Quaternion& operator*=(const Vector3f &v);
 	private:
 		float x; // The x component
 		float y; // The y component

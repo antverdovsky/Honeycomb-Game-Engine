@@ -14,7 +14,7 @@ namespace Honeycomb::Math {
 		return Vector2f(this->x + v2.x, this->y + v2.y);
 	}
 
-	Vector2f Vector2f::addTo(const Vector2f &v2) {
+	Vector2f& Vector2f::addTo(const Vector2f &v2) {
 		Vector2f resultant = this->add(v2);
 
 		this->set(resultant.x, resultant.y);
@@ -39,8 +39,16 @@ namespace Honeycomb::Math {
 		y = this->y;
 	}
 
+	float& Vector2f::getX() {
+		return this->x;
+	}
+
 	const float& Vector2f::getX() const {
 		return this->x;
+	}
+
+	float& Vector2f::getY() {
+		return this->y;
 	}
 
 	const float& Vector2f::getY() const {
@@ -51,7 +59,7 @@ namespace Honeycomb::Math {
 		return (float)sqrt(x * x + y * y);
 	}
 
-	Vector2f Vector2f::normalize() {
+	Vector2f& Vector2f::normalize() {
 		Vector2f normalized = this->normalized();
 
 		this->set(normalized.x, normalized.y);
@@ -72,7 +80,7 @@ namespace Honeycomb::Math {
 		return Vector2f(x * cosRad - y * sinRad, x * sinRad + y * cosRad);
 	}
 
-	Vector2f Vector2f::rotateTo(const float &rad) {
+	Vector2f& Vector2f::rotateTo(const float &rad) {
 		Vector2f rotated = this->rotate(rad);
 
 		this->set(rotated.x, rotated.y);
@@ -83,7 +91,7 @@ namespace Honeycomb::Math {
 		return Vector2f(this->x * scale, this->y * scale);
 	}
 
-	Vector2f Vector2f::scaleTo(const float &scale) {
+	Vector2f& Vector2f::scaleTo(const float &scale) {
 		Vector2f scaled = this->scale(scale);
 
 		this->set(scaled.x, scaled.y);
@@ -107,7 +115,7 @@ namespace Honeycomb::Math {
 		return this->scale(scale);
 	}
 
-	Vector2f Vector2f::operator*=(const float &scale) {
+	Vector2f& Vector2f::operator*=(const float &scale) {
 		return this->scaleTo(scale);
 	}
 
@@ -115,7 +123,7 @@ namespace Honeycomb::Math {
 		return this->scale(1.0F / scale);
 	}
 
-	Vector2f Vector2f::operator/=(const float &scale) {
+	Vector2f& Vector2f::operator/=(const float &scale) {
 		return this->scale(1.0F / scale);
 	}
 
@@ -123,7 +131,7 @@ namespace Honeycomb::Math {
 		return this->add(v2);
 	}
 
-	Vector2f Vector2f::operator+=(const Vector2f &v2) {
+	Vector2f& Vector2f::operator+=(const Vector2f &v2) {
 		return this->addTo(v2);
 	}
 
@@ -135,7 +143,7 @@ namespace Honeycomb::Math {
 		return this->add(-v2);
 	}
 
-	Vector2f Vector2f::operator-=(const Vector2f &v2) {
+	Vector2f& Vector2f::operator-=(const Vector2f &v2) {
 		return this->addTo(-v2);
 	}
 }

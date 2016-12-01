@@ -13,29 +13,35 @@ namespace Honeycomb::Conjuncture {
 
 	}
 
-	void Event::addEventHandler(EventHandler *eH) {
-		this->eHandlers.push_back(eH); // Add handler to list of handlers
+	void Event::addEventHandler(const EventHandler &eH) {
+		this->eHandlers.push_back(&eH); // Add handler to list of handlers
 	}
 
-	void Event::onEvent() {
+	void Event::clearEventHandlers() {
+		this->eHandlers.clear();
+	}
+
+	void Event::onEvent() const {
 		// Notifies all event handlers that the event is occuring
-		for (EventHandler *eH : this->eHandlers) eH->onEvent();
+		for (const EventHandler *eH : this->eHandlers) eH->onEvent();
 	}
 
-	void Event::removeEventHandler(EventHandler *eH) {
+	void Event::removeEventHandler(const EventHandler &eH) {
+		const EventHandler *eH_ptr = &eH; // Pointer to reference, for compare
+
 		this->eHandlers.erase( // Remove handler from list of handlers
-			std::remove(eHandlers.begin(), eHandlers.end(), eH), 
+			std::remove(eHandlers.begin(), eHandlers.end(), eH_ptr),
 			eHandlers.end());
 	}
 
-	Event& Event::operator+=(EventHandler *eH) {
+	Event& Event::operator+=(const EventHandler &eH) {
 		this->addEventHandler(eH);
 
 		return *this;
 	}
 
-	Event& Event::operator-=(EventHandler *eH) {
-		this->addEventHandler(eH);
+	Event& Event::operator-=(const EventHandler &eH) {
+		this->removeEventHandler(eH);
 		
 		return *this;
 	}

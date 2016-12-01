@@ -1,27 +1,16 @@
 #pragma once
-#ifndef WINDOW_H
-#define WINDOW_H
+#ifndef GAME_WINDOW_H
+#define GAME_WINDOW_H
 
-#include <string>
 #include <GLFW\glfw3.h>
 
-#include "..\conjuncture\Event.h"
+#include <string>
 
-struct GLFWwindow;
+#include "..\conjuncture\Event.h"
 
 namespace Honeycomb::Base {
 	class GameWindow {
 	public:
-		/// Cleans up the Window, and destroys the GLFW window instance.
-		~GameWindow();
-
-		/// Callback function for when the size of the window is modified.
-		/// GLFWwindow *window : The reference to the GLFW window instance.
-		/// int width : The new width of the window.
-		/// int height : The new height of the window.
-		static void callbackFrameBuffersize(GLFWwindow *window, int width,
-			int height);
-
 		/// Clears the game window.
 		void clear();
 		
@@ -41,39 +30,55 @@ namespace Honeycomb::Base {
 
 		/// Gets the height of this window (in pixels).
 		/// return : The height.
-		int getWindowHeight();
+		const int& getWindowHeight() const;
+
+		/// Gets the title of this window.
+		/// return : The title.
+		const std::string& getWindowTitle() const;
 
 		/// Gets the width of this window (in pixels).
 		/// return : The width.
-		int getWindowWidth();
+		const int& getWindowWidth() const;
 
 		/// Checks if the window is requesting to be closed (the user has
-		/// pressed the 'x' button on the window).
-		/// return : True if the user has pressed 'x'; False otherwise.
-		bool isCloseRequested();
+		/// pressed the 'X' button on the window).
+		/// return : True if the user has pressed 'X'; False otherwise.
+		const bool& isCloseRequested() const;
 
 		/// Refreshes the game window.
 		void refresh();
-
-		/// Sets the size of the window.
-		/// int w : The width of the window.
-		/// int h : The height of the window.
-		void setWindowSize(int w, int h);
 	private:
 		static GameWindow *gameWindow; // Instance stored by the singleton
 
+		const GLFWvidmode *videoMode; // GLFW Video Mode
 		GLFWwindow *glfwWindow; // Stores the reference to the GLFW window
 		Honeycomb::Conjuncture::Event resizeEvent; // Called on window resize
+		
+		const bool FULL_SCREEN = false; // Is the window full screen?
+		const int MSAA_SAMPLES = 4; // Number of samples for MultiSampling AA
+		const bool RESIZABLE = true; // Is the window resizable?
 
-		int width = 1024; // The width of the window.
-		int height = 768; // The height of the window.
-		int samples = 4; // The sampling for MSAA
-		bool resizeable = false; // Allow & check for resizing?
+		int width = 1024; // The current width of the window.
+		int height = 768; // The current height of the window.
 		std::string title = "Honeycomb GE"; // Title of the Game Window
 
 		/// Constructs a new GLFW window using the width, height, resizeable,
 		/// and title parameters stored in this header file.
 		GameWindow();
+
+		/// Cleans up the Window, and destroys the GLFW window instance.
+		~GameWindow();
+
+		/// Callback function for when the size of the window is modified.
+		/// GLFWwindow *window : The reference to the GLFW window instance.
+		/// int w : The new width of the window.
+		/// int h : The new height of the window.
+		static void callbackFrameBuffersize(GLFWwindow *window, int w, int h);
+
+		/// Sets the size of the window.
+		/// const int &w : The width of the window.
+		/// const int &h : The height of the window.
+		void setWindowSize(const int &w, const int &h);
 	};
 }
 

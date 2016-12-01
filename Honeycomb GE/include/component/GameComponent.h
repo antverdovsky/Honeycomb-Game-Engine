@@ -8,38 +8,53 @@ namespace Honeycomb::Object { class GameObject; }
 
 namespace Honeycomb::Component {
 	class GameComponent {
+		friend class Honeycomb::Object::GameObject;
+
 	public:
 		/// Creates a Component instance with the "Component" name.
 		GameComponent();
 
 		/// Creates a Component instance with the specified name.
-		/// string name : The name of this Component.
-		GameComponent(std::string name);
+		/// const string &name : The name of this Component.
+		GameComponent(const std::string &name);
 
 		/// Deletes this Component.
-		~GameComponent();
+		virtual ~GameComponent();
 
 		/// Clones this Component into a new, dynamically allocated, component.
-		/// This function should be used instead of the copy constructor to
-		/// prevent object slicing.
-		/// return : The cloned Component.
+		/// Do note that the object to which this component is attached will
+		/// not add the cloned component as a component.
+		/// return : The pointer to the newly cloned Component.
 		virtual GameComponent* clone() const;
 
 		/// Detaches this Component from its current object, and sets the
-		/// current object to which it is attached to NULL.
+		/// current object to which it is attached to pointer to nullptr.
 		void detach();
 
 		/// Returns the object to which this component is attached to.
 		/// return : The pointer to the object.
 		Honeycomb::Object::GameObject* getAttached();
 
+		/// Returns the object to which this component is attached to.
+		/// return : The constant pointer to the object.
+		const Honeycomb::Object::GameObject* getAttached() const;
+
 		/// Gets a boolean representing whether this game object is active
 		/// or not.
-		/// return : A boolean representing whether the game object is active.
+		/// return : A boolean reference representing whether the game object 
+		///			 is active.
 		bool& getIsActive();
 
+		/// Gets a boolean representing whether this game object is active
+		/// or not.
+		/// return : A constant boolean reference representing whether the game
+		///			 object is active.
+		const bool& getIsActive() const;
+
 		/// Returns the name of this component.
-		virtual std::string getName() const;
+		/// return : A constant string reference containing the name of this
+		///			 Game Component.
+		virtual const std::string& getName() const;
 
 		/// Handles any input events for this component, if necessary. This 
 		/// method will only do something if the object is active.
@@ -48,11 +63,7 @@ namespace Honeycomb::Component {
 		/// Handles any render events for this component, if necessary. This 
 		/// method will only do something if the object is active.
 		virtual void render();
-
-		/// Sets the object to which this component is attached to.
-		/// Object *o : The object to which to attach this component.
-		void setAttached(Honeycomb::Object::GameObject *o);
-
+		
 		/// Handles any starting events for this component, if necessary.
 		/// Additionally, this method will make this component active when
 		/// called.

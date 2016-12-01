@@ -14,6 +14,14 @@ namespace Honeycomb::Component::Light {
 		/// BaseLight bL : The base light to be used for this light.
 		AmbientLight(BaseLight bL);
 
+		/// Creates a new Ambient Light with the given name, intensity and
+		/// color.
+		/// const string &nam : The name of this light.
+		/// const float &inten : The intensity of this light.
+		/// const Vector4f &col : The color of this light.
+		AmbientLight(const std::string &nam, const float &inten, const
+			Honeycomb::Math::Vector4f &col);
+
 		/// Default Destructor.
 		~AmbientLight();
 
@@ -22,8 +30,6 @@ namespace Honeycomb::Component::Light {
 		/// constructor to prevent object slicing.
 		/// return : The cloned Ambient Light.
 		AmbientLight* clone() const;
-	private:
-
 	};
 }
 

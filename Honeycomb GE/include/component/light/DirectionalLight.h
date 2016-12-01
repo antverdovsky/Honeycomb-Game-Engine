@@ -13,10 +13,18 @@ namespace Honeycomb::Component::Light {
 		DirectionalLight();
 
 		/// Creates a new Directional light with the given base.
-		/// BaseLight bL : The base light to be used for this light.
-		DirectionalLight(BaseLight bL);
+		/// const BaseLight &bL : The base light to be used for this light.
+		DirectionalLight(const BaseLight &bL);
 
-		/// Default Destructor.
+		/// Creates a new Directional light with the given name, intensity and
+		/// color.
+		/// const string &nam : The name of this light.
+		/// const float &inten : The intensity of this light.
+		/// const Vector4f &col : The color of this light.
+		DirectionalLight(const std::string &nam, const float &inten, const
+			Honeycomb::Math::Vector4f &col);
+
+		/// Destroys this Directional Light.
 		~DirectionalLight();
 
 		/// Clones this Directional Light into a new, dynamically allocated,
@@ -25,7 +33,8 @@ namespace Honeycomb::Component::Light {
 		/// return : The cloned Directional Light.
 		DirectionalLight* clone() const;
 
-		/// Gets the direction of this directional light.
+		/// Gets the direction of this directional light. The reference which
+		/// is returned is equivalent to the Transform's local forward vector.
 		/// return : The direction.
 		const Honeycomb::Math::Vector3f& getDirection() const;
 

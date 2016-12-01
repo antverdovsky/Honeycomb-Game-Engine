@@ -12,14 +12,11 @@ namespace Honeycomb::Component::Light {
 
 	}
 
-	BaseLight::Attenuation::Attenuation(float c, float l, float q) {
+	BaseLight::Attenuation::Attenuation(const float &c, const float &l, 
+			const float &q) {
 		this->attenConstant = c;
 		this->attenLinear = l;
 		this->attenQuadratic = q;
-	}
-
-	BaseLight::Attenuation::~Attenuation() {
-
 	}
 
 	void BaseLight::Attenuation::get(float &c, float &l, float &q) const {
@@ -44,25 +41,32 @@ namespace Honeycomb::Component::Light {
 		return this->attenuationChange;
 	}
 
-	void BaseLight::Attenuation::set(float c, float l, float q) {
+	const Event& BaseLight::Attenuation::getChangedEvent() const {
+		return this->attenuationChange;
+	}
+
+	void BaseLight::Attenuation::set(const float &c, const float &l, 
+			const float &q) {
 		this->attenConstant = c;
 		this->attenLinear = l;
 		this->attenQuadratic = q;
+
+		this->attenuationChange();
 	}
 
-	void BaseLight::Attenuation::setAttenuationConstant(float c) {
+	void BaseLight::Attenuation::setAttenuationConstant(const float &c) {
 		this->attenConstant = c;
 
 		this->attenuationChange();
 	}
 
-	void BaseLight::Attenuation::setAttenuationLinear(float l) {
+	void BaseLight::Attenuation::setAttenuationLinear(const float &l) {
 		this->attenLinear = l;
 
 		this->attenuationChange();
 	}
 
-	void BaseLight::Attenuation::setAttenuationQuadratic(float q) {
+	void BaseLight::Attenuation::setAttenuationQuadratic(const float &q) {
 		this->attenQuadratic = q;
 
 		this->attenuationChange();
@@ -73,8 +77,13 @@ namespace Honeycomb::Component::Light {
 
 	}
 
-	BaseLight::BaseLight(std::string nam, float inten, Vector4f col) 
-			: GameComponent(nam) {
+	BaseLight::BaseLight(const std::string &nam) : BaseLight(nam, 1.0F,
+			Vector4f(1.0F, 1.0F, 1.0F, 1.0F)) {
+
+	}
+
+	BaseLight::BaseLight(const std::string &nam, const float &inten, 
+			const Vector4f &col) : GameComponent(nam) {
 		this->intensity = inten;
 		this->color = col;
 
@@ -86,7 +95,7 @@ namespace Honeycomb::Component::Light {
 	}
 
 	BaseLight* BaseLight::clone() const {
-		return new BaseLight(*this);
+		return new BaseLight(this->name, this->intensity, this->color);
 	}
 
 	const Vector4f& BaseLight::getColor() const {
@@ -97,13 +106,13 @@ namespace Honeycomb::Component::Light {
 		return this->intensity;
 	}
 
-	void BaseLight::setColor(Vector4f c) {
+	void BaseLight::setColor(const Vector4f &c) {
 		this->color = c;
 
 		this->writeToShader();
 	}
 
-	void BaseLight::setIntensity(float i) {
+	void BaseLight::setIntensity(const float &i) {
 		this->intensity = i;
 
 		this->writeToShader();

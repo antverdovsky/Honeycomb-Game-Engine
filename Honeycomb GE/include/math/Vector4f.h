@@ -11,10 +11,10 @@ namespace Honeycomb::Math {
 
 		/// Creates a new three dimensional vector with the specified x, y, z 
 		/// and w components.
-		/// float x : The x-component.
-		/// float y : The y-component.
-		/// float z : The z-component.
-		/// float w : The w-component.
+		/// const float &x : The x component.
+		/// const float &y : The y component.
+		/// const float &z : The z component.
+		/// const float &w : The w component.
 		Vector4f(const float &x, const float &y, const float &z, 
 				const float &w);
 
@@ -23,18 +23,18 @@ namespace Honeycomb::Math {
 
 		/// Gets a vector equivalent to the resultant of this vector and the
 		/// specified second vector. This instance is not modified.
-		/// Vector3f v2 : The second vector.
+		/// const Vector4f &v2 : The second vector.
 		/// return : The resultant of the two vectors.
 		Vector4f add(const Vector4f &v2) const;
 
 		/// Adds the specified vector to this vector, resulting in this 
 		/// instance equaling to the resultant of the sum.
-		/// Vector3f v2 : The second vector.
+		/// const Vector4f &v2 : The second vector.
 		/// return : This resultant vector.
-		Vector4f addTo(const Vector4f &v2);
+		Vector4f& addTo(const Vector4f &v2);
 
 		/// Gets the dot product of this vector and the specified second vetor.
-		/// Vector4f v2 : The second vector.
+		/// const Vector4f &v2 : The second vector.
 		/// return : The dot product scalar.
 		float dot(const Vector4f &v2) const;
 
@@ -46,21 +46,37 @@ namespace Honeycomb::Math {
 		/// float &w : The ref. to where the w-component is to be written to.
 		void get(float &x, float &y, float &z, float &w) const;
 
-		/// Gets the x-component of the vector.
-		/// return : The x-component.
+		/// Gets the reference to the w-component of the vector.
+		/// return : The reference to the w-component.
+		float& getW();
+
+		/// Gets the constant reference to the w-component of the vector.
+		/// return : The constant reference to the w-component.
+		const float& getW() const;
+
+		/// Gets the reference to the x-component of the vector.
+		/// return : The reference to the x-component.
+		float& getX();
+
+		/// Gets the constant reference to the x-component of the vector.
+		/// return : The constant reference to the x-component.
 		const float& getX() const;
 
-		/// Gets the y-component of the vector.
-		/// return : The y-component.
+		/// Gets the reference to the y-component of the vector.
+		/// return : The reference to the y-component.
+		float& getY();
+
+		/// Gets the constant reference to the y-component of the vector.
+		/// return : The constant reference to the y-component.
 		const float& getY() const;
 
-		/// Gets the z-component of the vector.
-		/// return : The z-component.
-		const float& getZ() const;
+		/// Gets the reference to the z-component of the vector.
+		/// return : The reference to the z-component.
+		float& getZ();
 
-		/// Gets the w-component of this vector.
-		/// return : The w-component.
-		const float& getW() const;
+		/// Gets the constant reference to the z-component of the vector.
+		/// return : The constant reference to the z-component.
+		const float& getZ() const;
 
 		/// Gets the magnitude of the vector.
 		/// return : The magnitude.
@@ -69,7 +85,7 @@ namespace Honeycomb::Math {
 		/// Normalizes this vector.
 		/// return : This normalized vector, pointing in the same direction as
 		///			 brefore, but with a magnitude of 1.
-		Vector4f normalize();
+		Vector4f& normalize();
 
 		/// Gets a normalized version of this vector, without modifying it.
 		/// return : A vector which points in the same direction as this 
@@ -78,37 +94,37 @@ namespace Honeycomb::Math {
 
 		/// Returns a vector which is equivalent to this vector, but scaled by
 		/// the specified scaling factor. This vector is not modified.
-		/// float scale : The constant by which to scale the vector.
+		/// const float &scale : The constant by which to scale the vector.
 		/// return : A copy of this vector, scaled by the constant.
 		Vector4f scale(const float &scale) const;
 
 		/// Scales this vector by specified scalar factor.
-		/// float scale : The constant by which to scale the vector.
+		/// const float &scale : The constant by which to scale the vector.
 		/// return : This scaled vector.
-		Vector4f scaleTo(const float &scale);
+		Vector4f& scaleTo(const float &scale);
 
 		/// Sets the x, y, z and w components of the vector.
-		/// float x : The new x-component.
-		/// float y : The new y-component.
-		/// float z : The new z-component.
-		/// float w : the new w-component.
+		/// const float &x : The new x-component.
+		/// const float &y : The new y-component.
+		/// const float &z : The new z-component.
+		/// const float &w : the new w-component.
 		void set(const float &x, const float &y, const float &z, 
 				const float &w);
 
 		/// Sets the x-component of the vector.
-		/// float y : The new x-component.
+		/// const float &x : The new x-component.
 		void setX(const float &x);
 
 		/// Sets the y-component of the vector.
-		/// float y : The new y-component.
+		/// const float &y : The new y-component.
 		void setY(const float &y);
 
 		/// Sets the z-component of the vector.
-		/// float y : The new z-component.
+		/// const float &z : The new z-component.
 		void setZ(const float &z);
 
 		/// Sets the w-component of the vector.
-		/// float w : The new w-component.
+		/// const float &w : The new w-component.
 		void setW(const float &w);
 
 		/// Overloads the mulitplication operator to return a vector instance
@@ -120,22 +136,24 @@ namespace Honeycomb::Math {
 
 		/// Overloads the multiplication set operator to set this vector equal 
 		/// to the scaled vector, and return it.
-		/// float scale : The constant by which to scale the vector.
+		/// const float &scale : The constant by which to scale the vector.
 		/// return : This scaled vector.
-		Vector4f operator*=(const float &scale);
+		Vector4f& operator*=(const float &scale);
 
 		/// Overloads the division operator to return a vector instance
 		/// which is equivalent to this vector, inversely scaled by the 
 		/// specified amount. This vector instance is not modified.
-		/// float scale : The inverse constant by which to scale the vector.
+		/// const float &scale : The inverse constant by which to scale the 
+		///						 vector.
 		/// return : The scaled vector.
 		Vector4f operator/(const float &scale) const;
 
 		/// Overloads the division set operator to set this vector to the 
 		/// inversely scaled vector. 
-		/// float scale : The inverse constant by which to scale this vector.
+		/// const float &scale : The inverse constant by which to scale this 
+		///						 vector.
 		/// return : This scaled vector.
-		Vector4f operator/=(const float &scale);
+		Vector4f& operator/=(const float &scale);
 
 		/// Overloads the addition operator to return a vector instance
 		/// which is equivalent to the resultant of this vector and the 
@@ -147,9 +165,9 @@ namespace Honeycomb::Math {
 
 		/// Overloads the addition set operator to set this vector equal to the
 		/// resultant of this and the specified vector, and return it.
-		/// Vector2f v2 : Reference to the second vector.
+		/// const Vector4f &v2 : Reference to the second vector.
 		/// return : This resultant vector.
-		Vector4f operator+=(const Vector4f &v2);
+		Vector4f& operator+=(const Vector4f &v2);
 
 		/// Unary operator overload which returns a vector instance which is
 		/// equivalent to this vector, negated. This vector is not modified.
@@ -167,9 +185,9 @@ namespace Honeycomb::Math {
 		/// Overloads the subtraction set operator to return this vector 
 		/// instance, equal to the resultant difference of this and the 
 		/// specified vector.
-		/// Vector2f v2 : Reference to the second vector.
+		/// const Vector4f &v2 : Reference to the second vector.
 		/// return : The resultant vector.
-		Vector4f operator-=(const Vector4f &v2);
+		Vector4f& operator-=(const Vector4f &v2);
 	private:
 		float x; // The x component
 		float y; // The y component

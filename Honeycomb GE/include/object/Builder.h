@@ -17,33 +17,33 @@ namespace Honeycomb::Object {
 
 		/// Builds a new Ambient Light GameObject. The game object will simply
 		/// be the object named "Ambient Light", with Transform and Ambient
-		/// Light components attached to it. The Transform will be the default
-		/// component, where as the Ambient Light will be initialized using a
-		/// BaseLight named "ambientLight", with 0.25F intensity and pure white
-		/// (1.0F, 1.0F, 1.0F, 1.0F) as the color.
+		/// Light components attached to it. Both components will use their
+		/// default initializations. The game object will automatically be
+		/// parented to the root object.
 		/// return : The new Ambient Light Object.
 		GameObject* newAmbientLight();
 
 		/// Builds a new Camera GameObject. The game object will simply be the
 		/// object named "Camera", with Transform and Camera Controller
-		/// components attached to it. Both the Transform and the Camera
-		/// Controller components will be the default initializations of them.
+		/// components attached to it. Both components will use their
+		/// default initializations. The game object will automatically be
+		/// parented to the root object.
 		/// return : The new Camera object.
 		GameObject* newCamera();
 
 		/// Builds a new Directional Light GameObject. The game object will
 		/// be the object named "Directional Light", with Transform and 
-		/// Directional Light components attached to it. The Transform will be 
-		/// the default component, where as the Directional Light will be 
-		/// initialized using a BaseLight named "directionalLight", with 1.00F 
-		/// intensity and pure white (1.0F, 1.0F, 1.0F, 1.0F) as the color.
+		/// Directional Light components attached to it. Both components will 
+		/// use their default initializations. The game object will 
+		///	automatically be parented to the root object.
 		/// return : The new Directional Light Object.
 		GameObject* newDirectionalLight();
 
 		/// Builds a new Cube GameObject. The game object will simply be the
 		/// object named "Cube", with MeshRenderer and Transform attached to
 		/// it. The Mesh and Material data will come from the file from which 
-		/// the Builder imports the cube.
+		/// the Builder imports the cube. The game object will automatically be
+		/// parented to the root object.
 		/// return : The new Cube Game Object.
 		GameObject* newCube();
 
@@ -55,48 +55,54 @@ namespace Honeycomb::Object {
 		/// component, initialized to the data extracted from the Model file.
 		/// If the model has been previously imported, a copy of the game obj.
 		/// from that model will be returned, rather than re-importing the 
-		/// entire model again.
+		/// entire model again. The game object will automatically be
+		/// parented to the root object.
 		/// return : The constructed Game Object.
 		GameObject* newModel(std::string path);
 
 		/// Builds a new Plane GameObject. The game object will simply be the
 		/// object named "Plane", with a MeshRenderer and Transform attached to
 		/// it. The Mesh and Material data will come from the file from which 
-		/// the Builder imports the plane.
+		/// the Builder imports the plane. The game object will automatically 
+		/// be parented to the root object.
 		/// return : The new Plane Game Object.
 		GameObject* newPlane();
 
 		/// Builds a new Point Light GameObject. The game object will be the
 		/// object named "Point Light", with the PointLight and Transform 
 		/// components attached to it. The PointLight and Transform will be the
-		/// default instances of their respective components.
+		/// default instances of their respective components. The game object 
+		/// will automatically be parented to the root object.
 		/// return : The new Point Light Game Object.
 		GameObject* newPointLight();
 
 		/// Builds a new Sphere GameObject. The game object will simply be the
 		/// object named "Sphere", with a MeshRenderer and Transform attached 
 		/// to it. The Mesh and Material data will come from the file from 
-		/// which the Builder imports the sphere.
+		/// which the Builder imports the sphere. The game object will 
+		/// automatically be parented to the root object.
 		/// return : The new Sphere Game Object.
 		GameObject* newSphere();
 
 		/// Builds a new Spot Light GameObject. The game object will be the
 		/// object named "Spot Light", with the SpotLight and Transform 
 		/// components attached to it. The SpotLight and Transform will be the
-		/// default instances of their respective components.
+		/// default instances of their respective components. The game object 
+		/// will automatically be parented to the root object.
 		/// return : The new Spot Light Game Object.
 		GameObject* newSpotLight();
 
 		/// Builds a new Suzanne (Blender Monkey) Game Object. The game object
 		/// will simply be the object named "Suzanne", with a MeshRenderer and
 		/// Transform attached to it.  The Mesh and Material data will come 
-		/// from the file from which the Builder imports the sphere.
+		/// from the file from which the Builder imports the sphere. The game
+		/// object will automatically be parented to the root object.
 		/// return : The new Suzanne Game Object. 
 		GameObject* newSuzanne();
 	private:
 		static Builder *instance; // The Builder Singleton instance
 
-		// Location of all of the Default Models
+		// File Location of all of the Default Models
 		const static std::string CUBE_LOCATION;
 		const static std::string PLANE_LOCATION;
 		const static std::string SPHERE_LOCATION;

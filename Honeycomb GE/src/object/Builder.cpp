@@ -49,9 +49,7 @@ namespace Honeycomb::Object {
 		GameObject *ambLight = new GameObject("Ambient Light");
 
 		// Initialize the Ambient Light Game Components
-		BaseLight bL = BaseLight("ambientLight", 0.25F,
-			Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
-		AmbientLight *aL = new AmbientLight(bL);
+		AmbientLight *aL = new AmbientLight();
 		Transform *trans = new Transform();
 
 		// Add the initialized components to the Ambient Light Game Object
@@ -81,13 +79,8 @@ namespace Honeycomb::Object {
 		GameObject *dirLight = new GameObject("Directional Light");
 
 		// Initialize the Directional Light Game Components
-		BaseLight bL = BaseLight("directionalLight", 1.0F,
-			Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
-		DirectionalLight *dL = new DirectionalLight(bL);
+		DirectionalLight *dL = new DirectionalLight();
 		Transform *trans = new Transform();
-
-		// very temporary TODOD
-		trans->rotate(trans->getLocalRight(), -3.1415926 / 2);
 
 		// Add the initialized components to the Directional Light Game Object
 		dirLight->addComponent(*dL);
@@ -104,7 +97,7 @@ namespace Honeycomb::Object {
 		// Create a Model and return the clone of it (again, do not delete the
 		// model so that the Model class may later reuse this model if needed).
 		GameObject* obj = Model::loadModel(path).getGameObjectClone();
-		GameObject::getRoot()->addChild(*obj);
+		GameObject::getRoot().addChild(*obj);
 
 		return obj;
 	}
@@ -118,9 +111,7 @@ namespace Honeycomb::Object {
 		GameObject *pntLight = new GameObject("Point Light");
 
 		// Initialize the Point Light Game Components
-		BaseLight bL = BaseLight("pointLight", 1.0F,
-			Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
-		PointLight *pL = new PointLight(bL, 5.0F, 1.0F, 0.22F, 0.20F); // todo; use default
+		PointLight *pL = new PointLight();
 		Transform *trans = new Transform();
 
 		// Add the initialized components to the Point Light Game Object
@@ -136,19 +127,17 @@ namespace Honeycomb::Object {
 
 	GameObject* Builder::newSpotLight() {
 		// Initialize the Spot Light Game Object
-		GameObject *pntLight = new GameObject("Point Light");
+		GameObject *sptLight = new GameObject("Spot Light");
 
 		// Initialize the Spot Light Game Components
-		BaseLight bL = BaseLight("spotLight", 1.0F,
-			Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
-		SpotLight *sL = new SpotLight(bL, 10.0F, 30.0F, 1.0F, 0.22F, 0.20F); // todo; use default
+		SpotLight *sL = new SpotLight();
 		Transform *trans = new Transform();
 
 		// Add the initialized components to the Spot Light Game Object
-		pntLight->addComponent(*sL);
-		pntLight->addComponent(*trans);
+		sptLight->addComponent(*sL);
+		sptLight->addComponent(*trans);
 
-		return pntLight; // Return the Spot Light Game Object
+		return sptLight; // Return the Spot Light Game Object
 	}
 
 	GameObject* Builder::newSuzanne() {
@@ -164,7 +153,7 @@ namespace Honeycomb::Object {
 		// it. Add the child to the root so that it may be instantiated.
 		GameObject *parent = Model::loadModel(path).getGameObjectClone();
 		GameObject *child = parent->getChild(name);
-		GameObject::getRoot()->addChild(*child);
+		GameObject::getRoot().addChild(*child);
 
 		// Recycle the parent and return the child (keep the Model since the
 		// Model class will use it to avoid re-importation of models).

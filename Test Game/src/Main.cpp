@@ -12,7 +12,7 @@ using Honeycomb::Base::BaseGame;
 using HoneycombTest::TestGame;
 
 int main(int argc, char** argv) {
-	TestGame *game = new TestGame(); // Initialize a test game to run
+	TestGame game = TestGame(); // Initialize a test game to run
 
 	Honeycomb::Base::BaseMain::start(game);
 	Honeycomb::Base::BaseMain::run();

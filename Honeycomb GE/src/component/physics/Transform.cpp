@@ -38,6 +38,10 @@ namespace Honeycomb::Component::Physics {
 		return this->changedEvent;
 	}
 
+	const Event& Transform::getChangedEvent() const {
+		return this->changedEvent;
+	}
+
 	const Vector3f& Transform::getLocalForward() const {
 		return this->localForward;
 	}
@@ -90,8 +94,8 @@ namespace Honeycomb::Component::Physics {
 		this->calculateTransformationMatrix();
 	}
 
-	void Transform::setRotation(Quaternion quat) {
-		this->rotation.set(quat.getX(), quat.getY(), quat.getZ(), quat.getW());
+	void Transform::setRotation(const Quaternion &quat) {
+		this->rotation = quat;
 
 		this->calculateOrientationMatrix();
 		this->calculateRotationMatrix();
@@ -100,8 +104,8 @@ namespace Honeycomb::Component::Physics {
 		this->changedEvent.onEvent();
 	}
 
-	void Transform::setScale(Vector3f vec) {
-		this->scale.set(vec.getX(), vec.getY(), vec.getZ());
+	void Transform::setScale(const Vector3f &vec) {
+		this->scale = vec;
 
 		this->calculateScaleMatrix();
 		this->calculateTransformationMatrix();
@@ -109,20 +113,24 @@ namespace Honeycomb::Component::Physics {
 		this->changedEvent.onEvent();
 	}
 
-	void Transform::setTranslation(Vector3f vec) {
-		this->translation.set(vec.getX(), vec.getY(), vec.getZ());
-
+	void Transform::setTranslation(const Vector3f &vec) {
+		this->translation = vec;
+		
 		this->calculateTranslationMatrix();
 		this->calculateTransformationMatrix();
 
 		this->changedEvent.onEvent();
 	}
 
-	void Transform::rotate(Vector3f axis, float rad) {
-		this->setRotation(Quaternion(axis, rad) * this->rotation);
+	void Transform::rotate(const Vector3f &axis, const float &rad) {
+		this->rotate(Quaternion(axis, rad));
 	}
 
-	void Transform::translate(Vector3f vec) {
+	void Transform::rotate(const Quaternion &quat) {
+		this->setRotation(quat * this->rotation);
+	}
+
+	void Transform::translate(const Vector3f &vec) {
 		this->setTranslation(this->translation + vec);
 	}
 

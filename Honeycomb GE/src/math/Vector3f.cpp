@@ -25,7 +25,7 @@ namespace Honeycomb::Math {
 		return Vector3f(this->x + v2.x, this->y + v2.y, this->z + v2.z);
 	}
 	
-	Vector3f Vector3f::addTo(const Vector3f& v2) {
+	Vector3f& Vector3f::addTo(const Vector3f& v2) {
 		Vector3f resultant = this->add(v2);
 
 		this->set(resultant.x, resultant.y, resultant.z);
@@ -50,7 +50,7 @@ namespace Honeycomb::Math {
 			this->x * v2.y - v2.x * this->y);
 	}
 
-	Vector3f Vector3f::crossTo(const Vector3f& v2) {
+	Vector3f& Vector3f::crossTo(const Vector3f& v2) {
 		Vector3f crossed = this->cross(v2);
 
 		this->set(crossed.x, crossed.y, crossed.z);
@@ -71,20 +71,32 @@ namespace Honeycomb::Math {
 		return forward;
 	}
 
+	Vector3f& Vector3f::getGlobalUp() {
+		return up;
+	}
+
 	Vector3f& Vector3f::getGlobalRight() {
 		return right;
 	}
 
-	Vector3f& Vector3f::getGlobalUp() {
-		return up;
+	float& Vector3f::getX() {
+		return this->x;
 	}
 
 	const float& Vector3f::getX() const {
 		return this->x;
 	}
 
+	float& Vector3f::getY() {
+		return this->y;
+	}
+
 	const float& Vector3f::getY() const {
 		return this->y;
+	}
+
+	float& Vector3f::getZ() {
+		return this->z;
 	}
 
 	const float& Vector3f::getZ() const {
@@ -95,7 +107,7 @@ namespace Honeycomb::Math {
 		return (float)sqrt(x * x + y * y + z * z);
 	}
 
-	Vector3f Vector3f::normalize() {
+	Vector3f& Vector3f::normalize() {
 		Vector3f normalized = this->normalized();
 
 		this->set(normalized.x, normalized.y, normalized.z);
@@ -128,14 +140,14 @@ namespace Honeycomb::Math {
 		return Vector3f(rotated.getX(), rotated.getY(), rotated.getZ());
 	}
 
-	Vector3f Vector3f::rotateTo(const Vector3f &axis, const float &rad) {
+	Vector3f& Vector3f::rotateTo(const Vector3f &axis, const float &rad) {
 		Vector3f rotated = this->rotate(axis, rad);
 
 		this->set(rotated.x, rotated.y, rotated.z);
 		return *this;
 	}
 
-	Vector3f Vector3f::rotateTo(const Quaternion &quat) {
+	Vector3f& Vector3f::rotateTo(const Quaternion &quat) {
 		Vector3f rotated = this->rotate(quat);
 
 		this->set(rotated.x, rotated.y, rotated.z);
@@ -146,7 +158,7 @@ namespace Honeycomb::Math {
 		return Vector3f(this->x * scale, this->y * scale, this->z * scale);
 	}
 
-	Vector3f Vector3f::scaleTo(const float &scale) {
+	Vector3f& Vector3f::scaleTo(const float &scale) {
 		Vector3f scaled = this->scale(scale);
 
 		this->set(scaled.x, scaled.y, scaled.z);
@@ -175,7 +187,7 @@ namespace Honeycomb::Math {
 		return this->scale(scale);
 	}
 
-	Vector3f Vector3f::operator*=(const float &scale) {
+	Vector3f& Vector3f::operator*=(const float &scale) {
 		return this->scaleTo(scale);
 	}
 
@@ -183,7 +195,7 @@ namespace Honeycomb::Math {
 		return this->scale(1.0F / scale);
 	}
 
-	Vector3f Vector3f::operator/=(const float &scale) {
+	Vector3f& Vector3f::operator/=(const float &scale) {
 		return this->scale(1.0F / scale);
 	}
 	
@@ -191,7 +203,7 @@ namespace Honeycomb::Math {
 		return this->add(v2);
 	}
 
-	Vector3f Vector3f::operator+=(const Vector3f &v2) {
+	Vector3f& Vector3f::operator+=(const Vector3f &v2) {
 		return this->addTo(v2);
 	}
 
@@ -203,7 +215,7 @@ namespace Honeycomb::Math {
 		return this->add(-v2);
 	}
 
-	Vector3f Vector3f::operator-=(const Vector3f &v2) {
+	Vector3f& Vector3f::operator-=(const Vector3f &v2) {
 		return this->addTo(-v2);
 	}
 }

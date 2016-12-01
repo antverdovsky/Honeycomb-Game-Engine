@@ -20,9 +20,9 @@ using namespace Honeycomb::File;
 
 namespace Honeycomb::Component::Render {
 	MeshRenderer::MeshRenderer(const Material &mat, const Mesh &mes, 
-			ShaderProgram &shad) 
-			: GameComponent("MeshRenderer"), material(&mat), mesh(&mes), 
-			  shader(&shad) {
+			ShaderProgram &shad) : 
+			GameComponent("MeshRenderer"), material(&mat), mesh(&mes), 
+			shader(&shad) {
 
 	}
 
@@ -31,7 +31,7 @@ namespace Honeycomb::Component::Render {
 	}
 
 	MeshRenderer* MeshRenderer::clone() const {
-		return new MeshRenderer(*this);
+		return new MeshRenderer(*this->material, *this->mesh, *this->shader);
 	}
 
 	const Mesh& MeshRenderer::getMesh() const {
@@ -51,9 +51,9 @@ namespace Honeycomb::Component::Render {
 			this->transform->getTransformationMatrix());
 
 		// Render the mesh using the shader and material provided.
-		this->shader->bindShaderProgram();
-		this->material->use();
-		this->mesh->draw();
+		if (this->shader != nullptr) this->shader->bindShaderProgram();
+		if (this->material != nullptr) this->material->use();
+		if (this->mesh != nullptr) this->mesh->draw();
 	}
 
 	void MeshRenderer::setMaterial(const Honeycomb::Graphics::Material &mat) {

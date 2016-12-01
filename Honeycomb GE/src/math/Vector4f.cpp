@@ -22,7 +22,7 @@ namespace Honeycomb::Math {
 			this->w + v2.w);
 	}
 
-	Vector4f Vector4f::addTo(const Vector4f &v2) {
+	Vector4f& Vector4f::addTo(const Vector4f &v2) {
 		Vector4f resultant = this->add(v2);
 
 		this->set(resultant.x, resultant.y, resultant.z, resultant.w);
@@ -41,27 +41,43 @@ namespace Honeycomb::Math {
 		w = this->w;
 	}
 
-	const float& Vector4f::getX() const {
-		return this->x;
-	}
-
-	const float& Vector4f::getY() const {
-		return this->y;
-	}
-
-	const float& Vector4f::getZ() const {
-		return this->z;
+	float& Vector4f::getW() {
+		return this->w;
 	}
 
 	const float& Vector4f::getW() const {
 		return this->w;
 	}
 
+	float& Vector4f::getX() {
+		return this->x;
+	}
+
+	const float& Vector4f::getX() const {
+		return this->x;
+	}
+
+	float& Vector4f::getY() {
+		return this->y;
+	}
+
+	const float& Vector4f::getY() const {
+		return this->y;
+	}
+
+	float& Vector4f::getZ() {
+		return this->z;
+	}
+
+	const float& Vector4f::getZ() const {
+		return this->z;
+	}
+
 	float Vector4f::magnitude() const {
 		return (float)sqrt(x * x + y * y + z * z);
 	}
 
-	Vector4f Vector4f::normalize() {
+	Vector4f& Vector4f::normalize() {
 		Vector4f normalized = this->normalized();
 
 		this->set(normalized.x, normalized.y, normalized.z, normalized.w);
@@ -80,7 +96,7 @@ namespace Honeycomb::Math {
 			this->w * scale);
 	}
 
-	Vector4f Vector4f::scaleTo(const float &scale) {
+	Vector4f& Vector4f::scaleTo(const float &scale) {
 		Vector4f scaled = this->scale(scale);
 
 		this->set(scaled.x, scaled.y, scaled.z, scaled.w);
@@ -115,7 +131,7 @@ namespace Honeycomb::Math {
 		return this->scale(scale);
 	}
 
-	Vector4f Vector4f::operator*=(const float &scale) {
+	Vector4f& Vector4f::operator*=(const float &scale) {
 		return this->scaleTo(scale);
 	}
 
@@ -123,7 +139,7 @@ namespace Honeycomb::Math {
 		return this->scale(1.0F / scale);
 	}
 
-	Vector4f Vector4f::operator/=(const float &scale) {
+	Vector4f& Vector4f::operator/=(const float &scale) {
 		return this->scale(1.0F / scale);
 	}
 
@@ -131,7 +147,7 @@ namespace Honeycomb::Math {
 		return this->add(v2);
 	}
 
-	Vector4f Vector4f::operator+=(const Vector4f &v2) {
+	Vector4f& Vector4f::operator+=(const Vector4f &v2) {
 		return this->addTo(v2);
 	}
 
@@ -143,7 +159,7 @@ namespace Honeycomb::Math {
 		return this->add(-v2);
 	}
 
-	Vector4f Vector4f::operator-=(const Vector4f &v2) {
+	Vector4f& Vector4f::operator-=(const Vector4f &v2) {
 		return this->addTo(-v2);
 	}
 }

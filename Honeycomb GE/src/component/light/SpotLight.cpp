@@ -1,21 +1,25 @@
 #include "..\..\..\include\component\light\SpotLight.h"
 
 #include "..\..\..\include\component\physics\Transform.h"
+#include "..\..\..\include\math\MathUtils.h"
 #include "..\..\..\include\object\GameObject.h"
 #include "..\..\..\include\shader\phong\PhongShader.h"
 
 using Honeycomb::Component::Physics::Transform;
+using Honeycomb::Math::Utils::PI;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Shader::Phong::PhongShader;
 
 namespace Honeycomb::Component::Light {
-	SpotLight::SpotLight()
-			: SpotLight(BaseLight(), 10.0F, 45.0F, 1.0F, 0.22F, 0.20F) {
+	SpotLight::SpotLight() : 
+			SpotLight(BaseLight("spotLight"), BaseLight::Attenuation(), 
+			10.0F, PI / 6.0F) {
 
 	}
 
-	SpotLight::SpotLight(BaseLight bL, float ran, float ang, float c, float l,
-			float q) : BaseLight(bL), attenuation(c, l, q) {
+	SpotLight::SpotLight(const BaseLight &bL, const BaseLight::Attenuation 
+			&atten, const float &ran, const float &ang) : 
+			BaseLight(bL), attenuation(atten) {
 		this->range = ran;
 		this->angle = ang;
 	}
@@ -25,7 +29,8 @@ namespace Honeycomb::Component::Light {
 	}
 
 	SpotLight* SpotLight::clone() const {
-		return new SpotLight(*this);
+		return new SpotLight(*this, this->attenuation, this->range, 
+			this->angle);
 	}
 
 	const float& SpotLight::getAngle() const {
@@ -48,19 +53,19 @@ namespace Honeycomb::Component::Light {
 		return this->range;
 	}
 
-	void SpotLight::setAngle(float ang) {
+	void SpotLight::setAngle(const float &ang) {
 		this->angle = ang;
 
 		this->writeToShader();
 	}
 
-	void SpotLight::setAttenuation(BaseLight::Attenuation atten) {
+	void SpotLight::setAttenuation(const BaseLight::Attenuation &atten) {
 		this->attenuation = atten;
 
 		this->writeToShader();
 	}
 
-	void SpotLight::setRange(float ran) {
+	void SpotLight::setRange(const float &ran) {
 		this->range = ran;
 
 		this->writeToShader();
@@ -76,14 +81,14 @@ namespace Honeycomb::Component::Light {
 		this->transformChange.addAction(
 			std::bind(&SpotLight::writeToShader, this));
 		this->getAttached()->getComponentOfType<Transform>("Transform")->
-			getChangedEvent().addEventHandler(&this->transformChange);
+			getChangedEvent().addEventHandler(this->transformChange);
 
 		// Subscribe to the Attenuation change event, so that the attenuation
 		// may be written to the shader each time it is changed.
 		this->attenuationChange.addAction(
 			std::bind(&SpotLight::writeToShader, this));
 		this->attenuation.getChangedEvent().
-			addEventHandler(&this->attenuationChange);
+			addEventHandler(this->attenuationChange);
 
 		// Get the position and direction from the Transform so that it may be 
 		// sent to the Phong Shader.

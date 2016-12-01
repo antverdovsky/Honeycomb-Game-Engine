@@ -129,7 +129,7 @@ namespace Honeycomb::Component::Render {
 		this->windowResizeHandler.addAction(
 			std::bind(&CameraController::setProjectionSizeToWindow, this));
 		GameWindow::getGameWindow()->getResizeEvent().addEventHandler(
-			&this->windowResizeHandler);
+			this->windowResizeHandler);
 		this->windowResizeHandler.addAction(
 			std::bind(&CameraController::calcProjectionView, this));
 		this->windowResizeHandler.addAction(
@@ -144,7 +144,7 @@ namespace Honeycomb::Component::Render {
 		this->transformChangeHandler.addAction(
 			std::bind(&CameraController::calcProjection, this));
 		this->transform->getChangedEvent().addEventHandler(
-			&this->transformChangeHandler);
+			this->transformChangeHandler);
 
 		this->setActive();
 	}
@@ -176,7 +176,7 @@ namespace Honeycomb::Component::Render {
 		return this->projectionOrien;
 	}
 
-	const Matrix4f& CameraController::calcProjectionOrthographic() {
+	const Matrix4f& CameraController::calcProjectionViewOrthographic() {
 		// Mathematics Explanation From:
 		// www.scratchapixel.com/lessons/3d-basic-rendering/
 		// perspective-and-orthographic-projection-matrix
@@ -204,7 +204,7 @@ namespace Honeycomb::Component::Render {
 		return this->projectionView;
 	}
 
-	const Matrix4f& CameraController::calcProjectionPerspective() {
+	const Matrix4f& CameraController::calcProjectionViewPerspective() {
 		// Mathematics Explanation From:
 		// www.scratchapixel.com/lessons/3d-basic-rendering/
 		// perspective-and-orthographic-projection-matrix
@@ -257,10 +257,10 @@ namespace Honeycomb::Component::Render {
 		// to the type of Camera.
 		switch (this->type) {
 		case CameraType::PERSPECTIVE:
-			this->projectionView = this->calcProjectionPerspective();
+			this->projectionView = this->calcProjectionViewPerspective();
 			break;
 		case CameraType::ORTHOGRAPHIC:
-			this->projectionView = this->calcProjectionOrthographic();
+			this->projectionView = this->calcProjectionViewOrthographic();
 			break;
 		}
 

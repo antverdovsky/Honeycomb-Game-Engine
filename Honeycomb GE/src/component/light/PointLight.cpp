@@ -9,13 +9,22 @@ using Honeycomb::Math::Vector3f;
 using Honeycomb::Shader::Phong::PhongShader;
 
 namespace Honeycomb::Component::Light {
-	PointLight::PointLight() 
-			: PointLight(BaseLight(), 5.0F, 1.0F, 0.22F, 0.20F) {
+	PointLight::PointLight() : 
+			PointLight(BaseLight("pointLight"), BaseLight::Attenuation(), 
+			10.0F) {
 
 	}
 
-	PointLight::PointLight(BaseLight bL, float ran, float c, float l, float q) 
-			: BaseLight(bL), attenuation(c, l, q) {
+	PointLight::PointLight(const BaseLight &bL, 
+			const BaseLight::Attenuation &atten, const float &ran) : 
+			BaseLight(bL), attenuation(atten) {
+		this->range = ran;
+	}
+
+	PointLight::PointLight(const std::string &nam, const float &inten, const
+			Honeycomb::Math::Vector4f &col, const float &atC, const float &atL,
+			const float &atQ, const float &ran) : 
+			BaseLight(nam, inten, col), attenuation(atC, atL, atQ) {
 		this->range = ran;
 	}
 
@@ -24,9 +33,7 @@ namespace Honeycomb::Component::Light {
 	}
 
 	PointLight* PointLight::clone() const {
-		// TODO, for all lights which use a transform pointer, the clone needs
-		// to get a new pointer.
-		return new PointLight(*this);
+		return new PointLight(*this, this->attenuation, this->range);
 	}
 
 	const BaseLight::Attenuation& PointLight::getAttenuation() const {
@@ -41,13 +48,13 @@ namespace Honeycomb::Component::Light {
 		return this->range;
 	}
 
-	void PointLight::setAttenuation(BaseLight::Attenuation atten) {
+	void PointLight::setAttenuation(const BaseLight::Attenuation &atten) {
 		this->attenuation = atten;
 
 		this->writeToShader();
 	}
 
-	void PointLight::setRange(float ran) {
+	void PointLight::setRange(const float &ran) {
 		this->range = ran;
 
 		this->writeToShader();
@@ -63,14 +70,14 @@ namespace Honeycomb::Component::Light {
 		this->transformChange.addAction(
 			std::bind(&PointLight::writeToShader, this));
 		this->getAttached()->getComponentOfType<Transform>("Transform")->
-			getChangedEvent().addEventHandler(&this->transformChange);
+			getChangedEvent().addEventHandler(this->transformChange);
 
 		// Subscribe to the Attenuation change event, so that the attenuation
 		// may be written to the shader each time it is changed.
 		this->attenuationChange.addAction(
 			std::bind(&PointLight::writeToShader, this));
 		this->attenuation.getChangedEvent().
-			addEventHandler(&this->attenuationChange);
+			addEventHandler(this->attenuationChange);
 
 		// Get the position from the Transform so that it may be sent to the
 		// Phong Shader.

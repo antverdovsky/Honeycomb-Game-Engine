@@ -11,7 +11,7 @@ namespace Honeycomb::Base::BaseMain {
 
 	bool isGameRunning = false; // Is the game loop running?
 	
-	BaseGame *game;
+	BaseGame *game; // The instance of the game
 	
 	void initializeOpenGL() {
 		glClearColor(0.0F, 0.0F, 0.0F, 0.0F); // Set clear color to black
@@ -91,18 +91,19 @@ namespace Honeycomb::Base::BaseMain {
 		} while (isGameRunning);
 	}
 
-	void start(BaseGame *g) {
+	void start(BaseGame &g) {
 		if (isGameRunning) return; // If already running -> No need to start!
 
 		// Initialize the GLFW, the Window, GLEW and OpenGL.
 		glfwInit();
 		GameWindow::getGameWindow(); // Initialize the Game Window (first time)
 		GameInput::getGameInput(); // Initialize the Game Input (first time)
-		glewExperimental = true; glewInit();
+		glewExperimental = true; 
+		glewInit();
 		initializeOpenGL();
 		
 		// Initialize the Game & Start!
-		game = g;
+		game = &g;
 		game->start();
 	}
 

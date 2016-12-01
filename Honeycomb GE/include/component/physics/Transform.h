@@ -8,18 +8,25 @@
 #include "..\..\..\include\math\Matrix4f.h"
 #include "..\..\..\include\math\Quaternion.h"
 
+/// [POSSIBLE TODO (NOV 30)]:
+/// There may be an issue with cloning classes who have events/event handlers
+/// attached. The event / handler may be duplicated but still possess the event
+/// or actions of the original class. 
+
 namespace Honeycomb::Component::Physics {
 	class Transform : public GameComponent {
 	public:
 		/// Default constructor which initializes the position, rotation and
-		/// scale of the transform to default values.
+		/// scale of the transform to default values. The position and rotation
+		/// will both be initialized with zeros values, however, the scale will
+		/// be initialized with ones values.
 		Transform();
 
 		/// Initializes an instance of the Transform object to the specified
 		/// position, rotation, and scale.
-		/// Vector3f pos : The position of the object.
-		/// Quaternion rot : The rotation of the object.
-		/// Vector3f scl : The scale of the object.
+		/// const Vector3f &pos : The position of the object.
+		/// const Quaternion &rot : The rotation of the object.
+		/// const Vector3f &scl : The scale of the object.
 		Transform(const Honeycomb::Math::Vector3f &pos, 
 			const Honeycomb::Math::Quaternion &rot, 
 			const Honeycomb::Math::Vector3f &scl);
@@ -27,13 +34,18 @@ namespace Honeycomb::Component::Physics {
 		/// Clones this Transform into a new, dynamically allocated Transform. 
 		/// This function should be used instead of the copy constructor to 
 		/// prevent object slicing.
-		/// return : The cloned Transform.
+		/// return : The pointer to the newly cloned Transform.
 		Transform* Transform::clone() const;
 
-		/// Gets an event which will be triggered once the transform is changed
-		/// in any way (scaled, translated or rotated).
-		/// return : The event.
+		/// Gets the event which will be triggered once the transform is 
+		/// changed in any way (scaled, translated or rotated).
+		/// return : The reference to the event.
 		Honeycomb::Conjuncture::Event& getChangedEvent();
+
+		/// Gets the event which will be triggered once the transform is 
+		/// changed in any way (scaled, translated or rotated).
+		/// return : The constant reference to the event.
+		const Honeycomb::Conjuncture::Event& getChangedEvent() const;
 
 		/// Gets the vector pointing in the local forward direction of this
 		/// transform.
@@ -86,29 +98,35 @@ namespace Honeycomb::Component::Physics {
 		void start();
 
 		/// Sets the rotation vector of this transform.
-		/// Quaternion quat : The new rotation quaternion.
-		void setRotation(Honeycomb::Math::Quaternion quat);
+		/// const Quaternion &quat : The new rotation quaternion.
+		void setRotation(const Honeycomb::Math::Quaternion &quat);
 
 		/// Sets the scale vector of this transform.
-		/// Vector3f vec : The new scale vector.
-		void setScale(Honeycomb::Math::Vector3f vec);
+		/// const Vector3f &vec : The new scale vector.
+		void setScale(const Honeycomb::Math::Vector3f &vec);
 
 		/// Sets the position vector of this transform.
-		/// Vector3f vec : The new position vector.
-		void setTranslation(Honeycomb::Math::Vector3f vec);
+		/// const Vector3f &vec : The new position vector.
+		void setTranslation(const Honeycomb::Math::Vector3f &vec);
 
 		/// Rotates this transform by the specified amount of radians on the
 		/// axis. A positive amount will rotate the transform counterclockwise,
 		/// and a negative amount will rotate the transform clockwise.
-		/// Vector3f axis : The axis on which to rotate the vector.
-		/// float rad : The amount by which to rotate the vector, in radians.
-		///				A positive amount rotates the vector counterclockwise,
-		///				and a negative amount rotates the angle clockwise.
-		void rotate(Honeycomb::Math::Vector3f axis, float rad);
+		/// const Vector3f &axis : The axis on which to rotate the vector.
+		/// const float &rad : The amount by which to rotate the vector, in 
+		///					   radians. A positive amount rotates the vector 
+		///					   counterclockwise, and a negative amount rotates 
+		///					   the angle clockwise.
+		void rotate(const Honeycomb::Math::Vector3f &axis, const float &rad);
+
+		/// Rotates this transform by the specified quaternion.
+		/// const Quaternion &quat : The quaternion with which to rotate this
+		///							 transform.
+		void rotate(const Honeycomb::Math::Quaternion &quat);
 
 		/// Translates this transform in the direction and distance specified.
-		/// Vector3f vec : The direction and distance to translate.
-		void translate(Honeycomb::Math::Vector3f vec);
+		/// const Vector3f &vec : The direction and distance to translate.
+		void translate(const Honeycomb::Math::Vector3f &vec);
 	private:
 		Honeycomb::Math::Vector3f translation; // Stores the local position
 		Honeycomb::Math::Quaternion rotation; // Local rotation quaternion

@@ -15,20 +15,24 @@ namespace Honeycomb::Conjuncture {
 		this->actions.push_back(f); // Add function to actions
 	}
 
-	EventHandler& EventHandler::operator+= (std::function<void()> f) {
+	void EventHandler::clearActions() {
+		this->actions.clear();
+	}
+
+	EventHandler& EventHandler::operator+=(std::function<void()> f) {
 		this->addAction(f);
 
 		return *this;
 	}
 
-	void EventHandler::onEvent() {
-		std::vector<std::function<void()>>::iterator i; // Get Iterator
+	void EventHandler::onEvent() const {
+		std::vector<std::function<void()>>::const_iterator i; // Get Iterator
 
 		// Call all of the functions which are binded to this event handler
 		for (i = this->actions.begin(); i < this->actions.end(); i++) (*i)();
 	}
 
-	void EventHandler::operator() () {
+	void EventHandler::operator()() const {
 		this->onEvent();
 	}
 }

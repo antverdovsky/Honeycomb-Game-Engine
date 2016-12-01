@@ -17,33 +17,42 @@ namespace Honeycomb::Conjuncture {
 
 		/// Adds the specified event handler to this event, so that it may be
 		/// notified once the event occurs.
-		/// EventHandler *eH : Pointer to the event handler to be added.
-		void addEventHandler(EventHandler *eH);
+		/// const EventHandler &eH : The event handler to be attached to this
+		///							 Event.
+		void addEventHandler(const EventHandler &eH);
+
+		/// Clears all of the event handlers attached to this event. The event
+		/// handlers will no longer be notified once the event occurs, however,
+		/// the event handler itself is not modified.
+		void clearEventHandlers();
 
 		/// Should be called when an event occurs. This will notify all event 
 		/// handlers that this event is occuring, in the order in which they
 		/// were added.
-		void onEvent();
+		void onEvent() const;
 
 		/// Removes the specified event handler from this event, so that it may
 		/// no longer be notified once the event occurs.
-		/// EventHandler *eH : Pointer to the event handler to be deleted.
-		void removeEventHandler(EventHandler *eH);
+		/// const EventHandler &eH : The event handler which is to be detached
+		///							 from this event.
+		void removeEventHandler(const EventHandler &eH);
 
 		/// Adds the specified event handler to this event, so that it may be
 		/// notified once the event occurs.
-		/// EventHandler *eH : The event handler to be added.
-		Event& operator+= (EventHandler *eH);
+		/// const EventHandler &eH : The event handler to be attached to this
+		///							 Event.
+		Event& operator+=(const EventHandler &eH);
 
 		/// Removes the specified event handler from this event, so that it may
 		/// no longer be notified once the event occurs.
-		/// EventHandler *eH : The event handler to be removed.
-		Event& operator-= (EventHandler *eH);
+		/// const EventHandler &eH : The event handler to be detached from this
+		///							 Event.
+		Event& operator-=(const EventHandler &eH);
 
 		/// Triggers the on event of this Event.
-		void operator() ();
+		void operator()();
 	private:
-		std::vector<EventHandler*> eHandlers; // All event handlers
+		std::vector<const EventHandler*> eHandlers; // All event handlers
 	};
 }
 

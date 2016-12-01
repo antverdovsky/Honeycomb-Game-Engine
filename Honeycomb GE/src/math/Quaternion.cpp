@@ -38,7 +38,7 @@ namespace Honeycomb::Math {
 
 	}
 
-	Quaternion Quaternion::conjugate() {
+	Quaternion& Quaternion::conjugate() {
 		Quaternion conjugated = this->conjugated();
 
 		this->set(conjugated.x, conjugated.y, conjugated.z, conjugated.w);
@@ -68,16 +68,32 @@ namespace Honeycomb::Math {
 		return Vector3f::getGlobalUp().rotate(*this);
 	}
 
+	float& Quaternion::getW() {
+		return this->w;
+	}
+
 	const float& Quaternion::getW() const {
 		return this->w;
+	}
+
+	float& Quaternion::getX() {
+		return this->x;
 	}
 
 	const float& Quaternion::getX() const {
 		return this->x;
 	}
 
+	float& Quaternion::getY() {
+		return this->y;
+	}
+
 	const float& Quaternion::getY() const {
 		return this->y;
+	}
+
+	float& Quaternion::getZ() {
+		return this->z;
 	}
 
 	const float& Quaternion::getZ() const {
@@ -114,20 +130,20 @@ namespace Honeycomb::Math {
 		return this->multiply(vecAsQuat);
 	}
 
-	Quaternion Quaternion::multiplyTo(const Quaternion &q2) {
+	Quaternion& Quaternion::multiplyTo(const Quaternion &q2) {
 		Quaternion multiplied = this->multiply(q2);
 
 		this->set(multiplied.x, multiplied.y, multiplied.z, multiplied.w);
 		return *this;
 	}
 
-	Quaternion Quaternion::multiplyTo(const Vector3f &v) {
+	Quaternion& Quaternion::multiplyTo(const Vector3f &v) {
 		Quaternion vecAsQuat = Quaternion(v.getX(), v.getY(), v.getZ(), 0.0F);
 
 		return this->multiplyTo(vecAsQuat);
 	}
 
-	Quaternion Quaternion::normalize() {
+	Quaternion& Quaternion::normalize() {
 		Quaternion normalized = this->normalized();
 
 		this->set(normalized.x, normalized.y, normalized.z, normalized.w);
@@ -192,11 +208,11 @@ namespace Honeycomb::Math {
 		return this->multiply(v);
 	}
 
-	Quaternion Quaternion::operator*=(const Quaternion &q2) {
+	Quaternion& Quaternion::operator*=(const Quaternion &q2) {
 		return this->multiplyTo(q2);
 	}
 
-	Quaternion Quaternion::operator*=(const Vector3f &v) {
+	Quaternion& Quaternion::operator*=(const Vector3f &v) {
 		return this->multiplyTo(v);
 	}
 }

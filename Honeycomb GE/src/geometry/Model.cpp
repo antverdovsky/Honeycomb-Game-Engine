@@ -36,9 +36,11 @@ namespace Honeycomb::Geometry {
 			delete this->textures.at(i);
 		for (int i = 0; i < this->materials.size(); i++)
 			delete this->materials.at(i);
+		for (int i = 0; i < this->meshes.size(); i++)
+			delete this->meshes.at(i);
 	}
 
-	const Model& Model::loadModel(std::string path) {
+	const Model& Model::loadModel(const std::string &path) {
 		for (int i = 0; i < imports.size(); i++)
 			if (imports.at(i)->path == path)
 				return *imports.at(i);
@@ -58,7 +60,7 @@ namespace Honeycomb::Geometry {
 		return this->path;
 	}
 
-	Model::Model(std::string path) {
+	Model::Model(const std::string &path) {
 		this->path = path;
 		this->loadFromPath();
 
@@ -83,7 +85,7 @@ namespace Honeycomb::Geometry {
 
 	Material* Model::processAiMeshMaterial(aiMaterial* aMat) {
 		aiString matName; // Name of the Material
-		Texture2D *texture = nullptr; // Albedo Texture of the Material
+		const Texture2D *texture = nullptr; // Albedo Texture of the Material
 		aiColor3D matAmbient; // Ambient Property of the Material
 		aiColor3D matDiffuse; // Diffuse Property of the Material
 		aiColor3D matSpecular; // Specular Property of the Material
@@ -105,7 +107,7 @@ namespace Honeycomb::Geometry {
 			
 			texture = new Texture2D(dir.C_Str());
 		} else {
-			texture = new Texture2D();
+			texture = &Texture2D::getNonTexture();
 		}
 
 		// Build the Material and return it
@@ -159,8 +161,11 @@ namespace Honeycomb::Geometry {
 		}
 
 		// Create a new Honeycomb Mesh with the fetched vertex and index data.
-		return new Mesh(&vertices[0], vertices.size(), 
+		Mesh *mes = new Mesh(&vertices[0], vertices.size(), 
 			&indices[0], indices.size());
+		this->meshes.push_back(mes);
+		
+		return mes;
 	}
 
 	GameObject* Model::processAiNode(aiNode *aNode) {

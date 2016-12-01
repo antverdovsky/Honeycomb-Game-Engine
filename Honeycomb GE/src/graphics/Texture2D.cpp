@@ -10,55 +10,26 @@
 using namespace Honeycomb::File;
 
 namespace Honeycomb::Graphics {
-	std::unordered_map<std::string, int> Texture2D::dirToID;
 	Texture2D *Texture2D::nonTexture = nullptr;
 
-	int Texture2D::instanceCount[] = { };
-
-	Texture2D::Texture2D()
-			: Texture2D(*Texture2D::getNonTexture()) {
-	
-	}
-
-	Texture2D::Texture2D(std::string file) {
+	Texture2D::Texture2D(const std::string &file) {
 		this->directory = file;
 
-		int texIDfromDir = Texture2D::textureIdFromDirectory(file);
-		if (texIDfromDir >= 0) {
-			this->textureID = texIDfromDir;
+		// Initialize Texture using OpenGL
+		GLuint texID;
+		glGenTextures(1, &texID);
+		this->textureID = texID;
 
-			Texture2D::instanceCount[this->textureID - 1]++;
-		} else {
-			GLuint texID;
-			glGenTextures(1, &texID); // Initialize Texture using OpenGL
-			this->textureID = texID;
-
-			this->setImageData(file, GL_RGB, GL_RGB);
-			this->setTextureFiltering(GL_NEAREST, GL_NEAREST);
-			this->setTextureWrap(GL_REPEAT, GL_REPEAT);
-			this->genMipMap();
-
-			Texture2D::instanceCount[this->textureID - 1] = 1;
-			Texture2D::dirToID.insert({ this->directory, this->textureID });
-		}
-	}
-
-	Texture2D::Texture2D(const Texture2D &tex) {
-		if (this != &tex) {
-			Texture2D::instanceCount[tex.textureID - 1]++;
-
-			this->textureID = tex.textureID;
-			this->directory = tex.directory;
-		}
+		// Default Texture2D settings
+		this->setImageData(file, GL_RGB, GL_RGB);
+		this->setTextureFiltering(GL_NEAREST, GL_NEAREST);
+		this->setTextureWrap(GL_REPEAT, GL_REPEAT);
+		this->genMipMap();
 	}
 
 	Texture2D::~Texture2D() {
-		if (--Texture2D::instanceCount[this->textureID - 1] <= 0) {
-			Texture2D::dirToID.erase(this->directory);			
-			
-			GLuint texID = this->textureID;
-			glDeleteTextures(1, &texID); // Delete Texture from OpenGL
-		}
+		GLuint texID = this->textureID;
+		glDeleteTextures(1, &texID); // Delete Texture from OpenGL
 	}
 
 	void Texture2D::bind() const {
@@ -73,31 +44,39 @@ namespace Honeycomb::Graphics {
 		this->unbind();
 	}
 
-	void Texture2D::setImageData(std::string file) {
+	const Texture2D& Texture2D::getNonTexture() {
+		if (Texture2D::nonTexture == nullptr) Texture2D::nonTexture = new 
+			Texture2D("..\\Honeycomb GE\\res\\textures\\default\\null.bmp");
+
+		return *Texture2D::nonTexture;
+	}
+
+	void Texture2D::setImageData(const std::string &file) {
 		this->setImageData(file, GL_RGB, GL_RGB);
 	}
 
-	void Texture2D::setImageData(std::string file, int inForm, int exForm) {
+	void Texture2D::setImageData(const std::string &file, const int &in, 
+			const int &ex) {
 		// Store the width, height and image data.
 		int width, height;
 		unsigned char *data = File::readImageToUChar(file, width, height);
 
-		this->setImageData(data, inForm, exForm, width, height);
+		this->setImageData(data, in, ex, width, height);
 		delete data;
 	}
 
-	void Texture2D::setImageData(unsigned char *data, int inForm, int exForm,
-			int w, int h) {
+	void Texture2D::setImageData(unsigned char *data, const int &in, 
+			const int &ex, const int &w, const int &h) {
 		this->bind();
 
 		// Pass in the Image to OpenGL using the given parameters
-		glTexImage2D(GL_TEXTURE_2D, 0, inForm, w, h, 0, exForm, 
-			GL_UNSIGNED_BYTE, data);
+		glTexImage2D(GL_TEXTURE_2D, 0, in, w, h, 0, ex, GL_UNSIGNED_BYTE, 
+			data);
 
 		this->unbind();
 	}
 
-	void Texture2D::setTextureFiltering(int min, int mag) {
+	void Texture2D::setTextureFiltering(const int &min, const int &mag) {
 		this->bind();
 
 		// Set the minifying and magnifying filter parameters
@@ -107,7 +86,7 @@ namespace Honeycomb::Graphics {
 		this->unbind();
 	}
 
-	void Texture2D::setTextureWrap(int s, int t) {
+	void Texture2D::setTextureWrap(const int &s, const int &t) {
 		this->bind();
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, s);
@@ -118,40 +97,5 @@ namespace Honeycomb::Graphics {
 
 	void Texture2D::unbind() {
 		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-
-	Texture2D& Texture2D::operator=(const Texture2D &tex) {
-		if (this != &tex) {
-			Texture2D::instanceCount[tex.textureID - 1]++;
-
-			this->textureID = tex.textureID;
-			this->directory = tex.directory;
-		}
-
-		std::cout << "created new tex with ID: " << this->textureID << std::endl;
-
-		int j = 32;
-
-		return *this;
-	}
-
-	Texture2D* Texture2D::getNonTexture() {
-		if (Texture2D::nonTexture == nullptr) {
-			Texture2D::nonTexture = new Texture2D(
-				"..\\Honeycomb GE\\res\\textures\\default\\null.bmp");
-		}
-
-		return Texture2D::nonTexture;
-	}
-
-	int Texture2D::textureIdFromDirectory(std::string dir) {
-		// Find the index of the texture with the specified directory
-		std::unordered_map<std::string, int>::const_iterator texIt =
-			Texture2D::dirToID.find(dir);
-
-		if (texIt != Texture2D::dirToID.end()) 
-			return texIt->second; // Return ID if found
-		
-		return -1; // Return negative if not found
 	}
 }

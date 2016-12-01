@@ -10,27 +10,27 @@ namespace Honeycomb::Base {
 		/// Gets the time between the current frame and the last frame in
 		/// milliseconds.
 		/// return : The time between the frames (in milliseconds).
-		float getDeltaTimeMS();
+		const float& getDeltaTimeMS() const;
 
 		/// Gets the time between the current frame and the last frame in
 		/// seconds.
 		/// return : The time between the frames (in s).
-		float getDeltaTimeS();
+		const float& getDeltaTimeS() const;
 
 		/// Gets the elapsed game time (since the start of the game) in 
 		/// milliseconds.
 		/// return : The game time (in ms).
-		float getElapsedTimeMS();
+		const float& getElapsedTimeMS() const;
 
 		/// Gets the elapsed game time (since the start of the game) in 
 		/// seconds.
 		/// return : The game time (in s).
-		float getElapsedTimeS();
+		const float& getElapsedTimeS() const;
 
 		/// Sets the time between the current frame and the last frame in
 		/// milliseconds.
 		/// The delta time (in ms).
-		void setDeltaTimeMS(float ms);
+		void setDeltaTimeMS(const float &ms); // todo: privatize...
 
 		/// Returns the Game Time instance of this Singleton.
 		/// return : The Game Time instance.
@@ -38,10 +38,14 @@ namespace Honeycomb::Base {
 	private:
 		static GameTime* gameTime; // Singleton Instance
 
-		float deltaTime; // The last known time between frames (in ms).
+		float deltaTime; // The time between frames (in ms) for the last
+						 // two frames rendered.
 
-		/// Constructs a new Game Time component.
+		/// Constructs a new Game Time instance.
 		GameTime();
+
+		/// Destructs this Game Time instance.
+		~GameTime();
 	};
 }
 

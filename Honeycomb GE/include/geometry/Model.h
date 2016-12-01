@@ -23,8 +23,8 @@ namespace Honeycomb::Geometry {
 
 		/// Loads a model from the specified path and returns it. If the model
 		/// has previously been loaded, it will be returned instead, to prevent.
-		/// string path : The path to the model.
-		static const Model& loadModel(std::string path);
+		/// const std::string &path : The path to the model.
+		static const Model& loadModel(const std::string &path);
 
 		/// Returns the Game Object loaded in from the Model. This game object
 		/// is directly linked to the Model and IS NOT independent of the
@@ -49,12 +49,16 @@ namespace Honeycomb::Geometry {
 		std::string path; // The system path to the model
 		Honeycomb::Object::GameObject *gameObject; // The built model object
 
-		std::vector<Honeycomb::Graphics::Texture2D*> textures; // Textures
-		std::vector<Honeycomb::Graphics::Material*> materials; // Materials
+		// These refer to the initialized components from the imported data.
+		// All game objects built from this model will reference these in some
+		// form.
+		std::vector<const Honeycomb::Geometry::Mesh*> meshes; // Meshes
+		std::vector<const Honeycomb::Graphics::Texture2D*> textures; // Textures
+		std::vector<const Honeycomb::Graphics::Material*> materials; // Materials
 
 		/// Initializes a new Model from the specified file path.
-		/// string path : The system file path to the model.
-		Model(std::string path);
+		/// const std::string &path : The system file path to the model.
+		Model(const std::string &path);
 
 		/// Loads the model object from the file path stored in this Model.
 		void loadFromPath();

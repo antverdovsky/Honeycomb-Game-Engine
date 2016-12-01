@@ -34,7 +34,7 @@ namespace Honeycomb::Math {
 		return sum;
 	}
 
-	Matrix4f Matrix4f::addTo(const Matrix4f& m2) {
+	Matrix4f& Matrix4f::addTo(const Matrix4f& m2) {
 		Matrix4f sum = this->add(m2);
 
 		sum.setMatrix(sum.matrix);
@@ -58,7 +58,7 @@ namespace Honeycomb::Math {
 		return oneDim;
 	}
 
-	float Matrix4f::getAt(const int &r, const int &c) const {
+	const float& Matrix4f::getAt(const int &r, const int &c) const {
 		return this->matrix[r][c];
 	}
 
@@ -80,7 +80,7 @@ namespace Honeycomb::Math {
 		return product;
 	}
 
-	Matrix4f Matrix4f::multiplyTo(const Matrix4f& m2) {
+	Matrix4f& Matrix4f::multiplyTo(const Matrix4f& m2) {
 		Matrix4f product = this->multiply(m2);
 
 		this->setMatrix(product.matrix);
@@ -99,7 +99,7 @@ namespace Honeycomb::Math {
 		return scaled;
 	}
 
-	Matrix4f Matrix4f::scaleTo(const float &scale) {
+	Matrix4f& Matrix4f::scaleTo(const float &scale) {
 		Matrix4f scaled = this->scale(scale);
 
 		this->setMatrix(scaled.matrix);
@@ -134,7 +134,7 @@ namespace Honeycomb::Math {
 		return this->scale(scale);
 	}
 
-	Matrix4f Matrix4f::operator*=(const float &scale) {
+	Matrix4f& Matrix4f::operator*=(const float &scale) {
 		return this->scaleTo(scale);
 	}
 
@@ -142,7 +142,7 @@ namespace Honeycomb::Math {
 		return this->multiply(m2);
 	}
 
-	Matrix4f Matrix4f::operator*=(const Matrix4f& m2) {
+	Matrix4f& Matrix4f::operator*=(const Matrix4f& m2) {
 		return this->multiplyTo(m2);
 	}
 
@@ -150,7 +150,7 @@ namespace Honeycomb::Math {
 		return this->scale(1.0F / scale);
 	}
 
-	Matrix4f Matrix4f::operator/=(const float &scale) {
+	Matrix4f& Matrix4f::operator/=(const float &scale) {
 		return this->scaleTo(1.0F / scale);
 	}
 
@@ -158,7 +158,7 @@ namespace Honeycomb::Math {
 		return this->add(m2);
 	}
 
-	Matrix4f Matrix4f::operator+=(const Matrix4f& m2) {
+	Matrix4f& Matrix4f::operator+=(const Matrix4f& m2) {
 		return this->addTo(m2);
 	}
 
@@ -173,7 +173,7 @@ namespace Honeycomb::Math {
 		return this->add(-m2);
 	}
 
-	Matrix4f Matrix4f::operator-=(const Matrix4f& m2) {
+	Matrix4f& Matrix4f::operator-=(const Matrix4f& m2) {
 		return this->addTo(-m2);
 	}
 }

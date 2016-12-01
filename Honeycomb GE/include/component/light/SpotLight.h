@@ -10,22 +10,19 @@
 namespace Honeycomb::Component::Light {
 	class SpotLight : public BaseLight {
 	public:
-		/// Initializes a Point Light with the default base, 1.0F for the
-		/// attenuation constant, 0.22F for the attenuation linear, 0.20F for
-		/// the attenuation quadratic, 10.0F for the range, and 45.0F degrees 
+		/// Initializes a Point Light with the default base, and a default
+		/// Attenuation, 10.0F for the Range, and PI / 6 radians (30.0 degrees)
 		/// for the spot angle.
 		SpotLight();
 
 		/// Initializes a new Point Light with the specified base, range, spot
 		/// angle and attenuation variables.
-		/// BaseLight bL : The base light of this Spot Light.
-		/// float ran : The range of the Spot Light.
-		/// float ang : The angle of the Spot Light in radians.
-		/// float c : The Attenuation constant factor.
-		/// float l : The Attenuation linear factor.
-		/// float q : The Attenuation quadratic factor.
-		SpotLight(BaseLight bL, float ran, float ang, float c, float l,
-			float q);
+		/// const BaseLight &bL : The base light of this Spot Light.
+		/// const Attenuation &atten : The attenuation of this Spot Light.
+		/// const float &ran : The range of this Spot Light.
+		/// const float &ang : The angle of this Spot Light, in radians.
+		SpotLight(const BaseLight &bL, const BaseLight::Attenuation &atten,
+				const float &ran, const float &ang);
 
 		/// Destroys this Spot Light.
 		~SpotLight();
@@ -57,16 +54,16 @@ namespace Honeycomb::Component::Light {
 		const float& getRange() const;
 
 		/// Sets the spot angle of the Spot Light.
-		/// return : The value of the spot angle.
-		void setAngle(float ang);
+		/// const float &ang : The new angle of this Spot Light.
+		void setAngle(const float &ang);
 
 		/// Sets the attenuation of this Spot Light.
-		/// Attenuation atten : The new attenuation of this Spot Light.
-		void setAttenuation(BaseLight::Attenuation atten);
+		/// const Attenuation &atten : The new attenuation of this Spot Light.
+		void setAttenuation(const BaseLight::Attenuation &atten);
 
 		/// Sets the range of this Spot Light.
-		/// float ran : The new range of the Spot Light.
-		void setRange(float ran);
+		/// const float &ran : The new range of the Spot Light.
+		void setRange(const float &ran);
 
 		/// Starts this Spot Light.
 		void start();

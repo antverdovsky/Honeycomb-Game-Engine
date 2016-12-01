@@ -19,14 +19,16 @@ namespace Honeycomb::Shader {
 		~ShaderProgram();
 
 		/// Links the Shader from the specified file to this Shader instance.
-		/// string file : The file path from which to read in the shader code.
-		/// int type : The type of shader to be added (GL_FRAGMENT_SHADER,
-		///			   GL_GEOMETRY_SHADER, GL_VERTEX_SHADER).
+		/// const string &file : The file path from which to read in the shader
+		///						 code.
+		/// const int &type : The type of shader to be added 
+		///					  (GL_FRAGMENT_SHADER, GL_GEOMETRY_SHADER, 
+		///					  GL_VERTEX_SHADER).
 		void addShader(const std::string &file, const int &type);
 
 		/// Adds the specified shader uniform (GLSL variable) to this shader 
 		/// program.
-		/// std::string uni : The uniform variable to be added.
+		/// const string &uni : The uniform variable to be added.
 		void addUniform(const std::string &uni);
 
 		/// Binds the shader program so that it may be used.
@@ -38,38 +40,48 @@ namespace Honeycomb::Shader {
 
 		/// Returns the pointer to the current active and bounded shader. If no
 		/// shader is bounded, a nullptr will be returned instead.
+		/// return : The currently active shader, or a nullptr if none is 
+		///			 bounded.
 		static ShaderProgram* getActiveShader();
 
-		/// Gets the uniform location of the specified uniform variable.
-		/// std::string uni : The name of the uniform variable.
-		/// return : The pointer to the location.
+		/// Gets the uniform location of the specified uniform variable. If the
+		/// uniform does not exist in this shader, a negative value will be
+		/// returned instead.
+		/// const string &uni : The name of the uniform variable.
+		/// return : The uniform location in the shader; or a negative value if
+		///			 the uniform does not exist.
 		int getUniformLocation(const std::string &uni);
 
-		/// Sets the specified uniform variable to the specified value.
-		/// std::string uni : The name of the uniform variable to be set.
-		/// float val : The new float value of the uniform.
+		/// Sets the specified uniform variable to the specified value. If the
+		/// uniform does not exist, no changes will be made.
+		/// const string &uni : The name of the uniform variable to be set.
+		/// const float &val : The new float value of the uniform.
 		void setUniform_f(const std::string &uni, const float &val);
 
-		/// Sets the specified uniform variable to the specified value.
-		/// std::string uni : The name of the uniform variable to be set.
-		/// int val : The new integer value of the uniform.
+		/// Sets the specified uniform variable to the specified value. If the
+		/// uniform does not exist, no changes will be made.
+		/// const string &uni : The name of the uniform variable to be set.
+		/// const int &val : The new integer value of the uniform.
 		void setUniform_i(const std::string &uni, const int &val);
 
-		/// Sets the specified uniform variable to the specified value.
-		/// std::string uni : The name of the uniform variable to be set.
-		/// Vector3f val : The new Vector3f value of the uniform.
+		/// Sets the specified uniform variable to the specified value. If the
+		/// uniform does not exist, no changes will be made.
+		/// const string &uni : The name of the uniform variable to be set.
+		/// const Vector3f &val : The new Vector3f value of the uniform.
 		void setUniform_vec3(const std::string &uni, 
 				const Honeycomb::Math::Vector3f &val);
 		
-		/// Sets the specified uniform variable to the specified value.
-		/// std::string uni : The name of the uniform variable to be set.
-		/// Vector4f val : The new Vector4f value of the uniform.
+		/// Sets the specified uniform variable to the specified value. If the
+		/// uniform does not exist, no changes will be made.
+		/// const string &uni : The name of the uniform variable to be set.
+		/// const Vector4f &val : The new Vector4f value of the uniform.
 		void setUniform_vec4(const std::string &uni, 
 				const Honeycomb::Math::Vector4f &val);
 
-		/// Sets the specified uniform variable to the specified value.
-		/// std::string uni : The name of the uniform variable to be set.
-		/// Matrix4f val : The new Matrix4f value of the uniform.
+		/// Sets the specified uniform variable to the specified value. If the
+		/// uniform does not exist, no changes will be made.
+		/// const string &uni : The name of the uniform variable to be set.
+		/// const Matrix4f &val : The new Matrix4f value of the uniform.
 		void setUniform_mat4(const std::string &uni, 
 				const Honeycomb::Math::Matrix4f &val);
 

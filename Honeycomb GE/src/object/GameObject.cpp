@@ -61,7 +61,7 @@ namespace Honeycomb::Object {
 		this->components.push_back(&c);
 		
 		if (c.getAttached() != nullptr) c.getAttached()->removeComponent(&c);
-		c.setAttached(this);
+		c.attached = this;
 	}
 
 	void GameObject::deparent() {
@@ -154,8 +154,8 @@ namespace Honeycomb::Object {
 		return this->parent;
 	}
 	
-	GameObject* GameObject::getRoot() {
-		return GameObject::root;
+	GameObject& GameObject::getRoot() {
+		return *GameObject::root;
 	}
 
 	void GameObject::input() {
@@ -180,7 +180,7 @@ namespace Honeycomb::Object {
 			std::remove(components.begin(), components.end(), c), 
 			components.end());
 
-		c->setAttached(nullptr);
+		c->attached = nullptr;
 	}
 
 	void GameObject::render() {

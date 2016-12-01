@@ -9,8 +9,9 @@ namespace Honeycomb::Component {
 
 	}
 
-	GameComponent::GameComponent(std::string name) {
+	GameComponent::GameComponent(const std::string &name) {
 		this->name = name;
+
 		this->isActive = false;
 		this->attached = nullptr;
 	}
@@ -21,15 +22,20 @@ namespace Honeycomb::Component {
 	}
 
 	GameComponent* GameComponent::clone() const {
-		return new GameComponent(*this);
+		return new GameComponent(this->name);
 	}
 
 	void GameComponent::detach() {
 		if (this->attached != nullptr) this->attached->removeComponent(this);
-		this->setAttached(nullptr); // Set NULL as the new attached object
+		
+		this->attached = nullptr;
 	}
 
 	GameObject* GameComponent::getAttached() {
+		return this->attached;
+	}
+
+	const GameObject* GameComponent::getAttached() const {
 		return this->attached;
 	}
 
@@ -37,7 +43,11 @@ namespace Honeycomb::Component {
 		return this->isActive;
 	}
 
-	std::string GameComponent::getName() const {
+	const bool& GameComponent::getIsActive() const {
+		return this->isActive;
+	}
+
+	const std::string& GameComponent::getName() const {
 		return this->name;
 	}
 
@@ -47,10 +57,6 @@ namespace Honeycomb::Component {
 
 	void GameComponent::render() {
 		
-	}
-
-	void GameComponent::setAttached(GameObject *o) {
-		this->attached = o;
 	}
 
 	void GameComponent::start() {

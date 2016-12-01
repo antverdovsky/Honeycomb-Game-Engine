@@ -10,19 +10,30 @@
 namespace Honeycomb::Component::Light {
 	class PointLight : public BaseLight {
 	public:
-		/// Initializes a new Point Light with a default base, 10.0F for the
-		/// range, 1.0F for the attenuation constant, 0.22F for the attenuation
-		/// linear and 0.20F for the attentuation quadratic.
+		/// Initializes a new Point Light with a default base and a default
+		/// Attenuation, and 10.0F for the range.
 		PointLight();
 
 		/// Initializes a new Point Light with the specified base, range, and 
-		/// attenuation variables.
-		/// BaseLight bL : The base light of this Point Light.
-		/// float ran : The range of the Point Light.
-		/// float c : The Attenuation constant factor.
-		/// float l : The Attenuation linear factor.
-		/// float q : The Attenuation quadratic factor.
-		PointLight(BaseLight bL, float ran, float c, float l, float q);
+		/// attenuation.
+		/// const BaseLight &bL : The base light of this Point Light.
+		/// const Attenuation &atten : The attenuation of this Point Light.
+		/// const float &ran : The range of the Point Light.
+		PointLight(const BaseLight &bL, const BaseLight::Attenuation &atten,
+				const float &ran);
+
+		/// Initializes a new Point Light with the specified name, intensity,
+		/// color, attenuation variables, and range.
+		/// const string &nam : The name of this light.
+		/// const float &inten : The intensity of this light.
+		/// const Vector4f &col : The color of this light.
+		/// const float &atC : The attenuation constant of this light.
+		/// const float &atL : The attenuation linear of this light.
+		/// const float &atQ : The attenuation quadratic of this light.
+		/// const float &ran : The range of this light.
+		PointLight(const std::string &nam, const float &inten, const
+				Honeycomb::Math::Vector4f &col, const float &atC,
+				const float &atL, const float &atQ, const float &ran);
 
 		/// Destroys this Point Light.
 		~PointLight();
@@ -46,12 +57,12 @@ namespace Honeycomb::Component::Light {
 		const float& getRange() const;
 
 		/// Sets the attenuation of this Point Light.
-		/// Attenuation atten : The new attenuation of this Point Light.
-		void setAttenuation(BaseLight::Attenuation atten);
+		/// const Attenuation &atten : The new attenuation of this Point Light.
+		void setAttenuation(const BaseLight::Attenuation &atten);
 
 		/// Sets the range of this Point Light.
-		/// float ran : The new range of the Point Light.
-		void setRange(float ran);
+		/// const float &ran : The new range of the Point Light.
+		void setRange(const float &ran);
 
 		/// Starts this Point Light.
 		void start();
