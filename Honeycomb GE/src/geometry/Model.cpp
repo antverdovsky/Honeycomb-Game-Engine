@@ -8,6 +8,7 @@
 
 #include "..\..\include\component\physics\Transform.h"
 #include "..\..\include\component\render\MeshRenderer.h"
+#include "..\..\include\debug\Logger.h"
 #include "..\..\include\geometry\Vertex.h"
 #include "..\..\include\graphics\Material.h"
 #include "..\..\include\graphics\Texture2D.h"
@@ -20,6 +21,7 @@ using Assimp::Importer;
 
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Component::Render::MeshRenderer;
+using Honeycomb::Debug::Logger;
 using Honeycomb::Graphics::Material;
 using Honeycomb::Graphics::Texture2D;
 using Honeycomb::Object::GameObject;
@@ -70,15 +72,18 @@ namespace Honeycomb::Geometry {
 	void Model::loadFromPath() {
 		// Import the Scene from ASSIMP and Check for Errors.
 		Importer aImp = Importer();
-		this->scene = aImp.ReadFile(path, aiProcess_Triangulate | aiProcess_GenNormals);
+		this->scene = aImp.ReadFile(path, aiProcess_Triangulate |
+			aiProcess_GenNormals);
 		if (this->scene == nullptr ||
-				this->scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE ||
-				this->scene->mRootNode == nullptr) {
-			std::cout << "ASSIMP Error: " << aImp.GetErrorString() << std::endl; // todo
+			this->scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE ||
+			this->scene->mRootNode == nullptr) {
+
+			// Logger::getLogger().logError(__FUNCTION__, __LINE__,
+			//  aImp.GetErrorString());
 
 			return;
 		}
-		
+
 		// Initialize the Model Object from the Scene Root node
 		this->gameObject = this->processAiNode(this->scene->mRootNode);
 	}
@@ -104,9 +109,10 @@ namespace Honeycomb::Geometry {
 			/// [will need to change the material class first]
 			aiString dir;
 			aMat->GetTexture(aiTextureType_DIFFUSE, 0, &dir);
-			
+
 			texture = new Texture2D(dir.C_Str());
-		} else {
+		}
+		else {
 			texture = &Texture2D::getNonTexture();
 		}
 
@@ -128,17 +134,17 @@ namespace Honeycomb::Geometry {
 		std::vector<Vertex> vertices; // Vertices Data
 		std::vector<int> indices; // Indices Data
 
-		// Go through all the vertices of the Mesh
+								  // Go through all the vertices of the Mesh
 		for (int i = 0; i < aMesh->mNumVertices; i++) {
 			// Get all of the normals, positions and UV coordinates for this
 			// vertex.
 			// TODO: Worry about the other 7 texture coordinates of the vertex?
 			aiVector3D vertNorms = aMesh->mNormals[i];
 			aiVector3D vertPos = aMesh->mVertices[i];
-			aiVector3D vertUV = aMesh->HasTextureCoords(0) ? 
+			aiVector3D vertUV = aMesh->HasTextureCoords(0) ?
 				aMesh->mTextureCoords[0][i] : // TODO: Multiple Texture Support
 				aiVector3D(0.0F, 0.0F, 0.0F);
-			
+
 			// Generate a Vertex using the fetched Vertex information
 			Vertex vertex = Vertex(
 				Vector3f(vertNorms.x, vertNorms.y, vertNorms.z),
@@ -161,10 +167,10 @@ namespace Honeycomb::Geometry {
 		}
 
 		// Create a new Honeycomb Mesh with the fetched vertex and index data.
-		Mesh *mes = new Mesh(&vertices[0], vertices.size(), 
+		Mesh *mes = new Mesh(&vertices[0], vertices.size(),
 			&indices[0], indices.size());
 		this->meshes.push_back(mes);
-		
+
 		return mes;
 	}
 
@@ -189,7 +195,8 @@ namespace Honeycomb::Geometry {
 			if (aMesh->mMaterialIndex >= 0) { // Get Material, if it exists
 				aMat = this->scene->mMaterials[aMesh->mMaterialIndex];
 				mat = this->processAiMeshMaterial(aMat);
-			} else { // Otherwise, create a default Material
+			}
+			else { // Otherwise, create a default Material
 				mat = new Material();
 			}
 

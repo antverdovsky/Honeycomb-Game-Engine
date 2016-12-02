@@ -7,16 +7,18 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
+#include "..\..\include\debug\Logger.h"
 #include "..\..\include\file\FileIO.h"
 
 using namespace Honeycomb::File;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
 using Honeycomb::Math::Matrix4f;
+using Honeycomb::Debug::Logger;
 
 namespace Honeycomb::Shader {
 	ShaderProgram *ShaderProgram::active = nullptr; // No active shader, yet
-	
+
 	ShaderProgram::ShaderProgram() {
 		// Create a pointer to the program ID for the shader
 		this->programID = glCreateProgram();
@@ -47,17 +49,18 @@ namespace Honeycomb::Shader {
 		glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &logLen);
 		glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
 		if (logLen > 0 && success == GL_FALSE) { // If something went wrong
-#if _DEBUG
-		// Get the message that OpenGL is trying to state, print it out and 
-		// discard the temporarily stored message from memory.
+			// Print the error, if any, and delete the shader
 			GLchar *logString = new char[logLen + 1];
 			glGetShaderInfoLog(shaderID, logLen, NULL, logString);
-			std::cout << "FAILED: " << std::endl << logString << std::endl;
-			delete[] logString;
 
+			Logger::getLogger().logError(__FUNCTION__, __LINE__,
+				"Shader Program " + std::to_string(this->programID) +
+				" failed to add shader " + "\"" + file + "\"" + "\n\t" +
+				std::string(logString));
+
+			delete[] logString;
 			glDeleteShader(shaderID);
 			return;
-#endif
 		}
 
 		// Attach the shader to this shader program & store its ID for later
@@ -73,14 +76,15 @@ namespace Honeycomb::Shader {
 		// Create the uniform on the GPU & get its location
 		int uniformLoc = glGetUniformLocation(this->programID, uni.c_str());
 
-		if (uniformLoc == -1) {
-#if _DEBUG
-			std::cout << "Unable to create uniform " << uni << std::endl;
+		if (uniformLoc < 0) {
+			// Notify the user that the uniform was NOT added
+			Logger::getLogger().logError(__FUNCTION__, __LINE__,
+				"Shader Program " + std::to_string(this->programID) +
+				" failed to add uniform " + "\"" + uni + "\"");
 
 			return;
-#endif
 		}
-		
+
 		// Bind the uniform name and its location to the HashMap so it can be
 		// referenced for future use.
 		uniforms.insert({ uni, uniformLoc });
@@ -104,9 +108,14 @@ namespace Honeycomb::Shader {
 		glGetProgramiv(this->programID, GL_LINK_STATUS, &success);
 		if (logLen > 0 && success == 0) {
 #if _DEBUG
+			// Print the error, if any
 			GLchar *logString = new char[logLen + 1];
 			glGetProgramInfoLog(this->programID, logLen, NULL, logString);
-			std::cout << "FAILED: " << std::endl << logString << std::endl;
+
+			Logger::getLogger().logError(__FUNCTION__, __LINE__,
+				"Shader Program " + std::to_string(this->programID) +
+				" failed to finalize!" + "\n\t" + std::string(logString));
+
 			delete[] logString;
 			return;
 #endif
@@ -119,12 +128,9 @@ namespace Honeycomb::Shader {
 		glGetProgramiv(this->programID, GL_VALIDATE_STATUS, &isValidated);
 
 		if (!isValidated) {
-#if _DEBUG
-			std::cout << "UNABLE TO VALIDATE PROGRAM: " << this->programID <<
-				std::endl;
-
-			return;
-#endif
+			Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
+				"Shader Program " + std::to_string(this->programID) +
+				" failed to validate!");
 		}
 
 		// Detach and delete each individual shader, as its no longer needed
@@ -141,13 +147,19 @@ namespace Honeycomb::Shader {
 	int ShaderProgram::getUniformLocation(const std::string &uni) {
 		std::unordered_map<std::string, int>::const_iterator it =
 			this->uniforms.find(uni);
-		
-		if (it == this->uniforms.end()) return -1;
+
+		if (it == this->uniforms.end()) {
+			Logger::getLogger().logError(__FUNCTION__, __LINE__,
+				"Unable to find uniform " + uni + " in Shader Program " +
+				std::to_string(this->programID));
+
+			return -1;
+		}
 		else return it->second;
 	}
 
-	void ShaderProgram::setUniform_f(const std::string &uni, 
-			const float &val) {
+	void ShaderProgram::setUniform_f(const std::string &uni,
+		const float &val) {
 		this->bindShaderProgram();
 
 		int loc = getUniformLocation(uni); // Get uniform location
@@ -160,34 +172,34 @@ namespace Honeycomb::Shader {
 		int loc = getUniformLocation(uni);
 		if (loc >= 0) glUniform1i(loc, val);
 	}
-	
-	void ShaderProgram::setUniform_vec3(const std::string &uni, 
-			const Vector3f &val) {
+
+	void ShaderProgram::setUniform_vec3(const std::string &uni,
+		const Vector3f &val) {
 		this->bindShaderProgram();
 
 		int loc = getUniformLocation(uni);
 		if (loc >= 0) glUniform3f(loc, val.getX(), val.getY(), val.getZ());
 	}
 
-	void ShaderProgram::setUniform_vec4(const std::string &uni, 
-			const Vector4f &val) {
+	void ShaderProgram::setUniform_vec4(const std::string &uni,
+		const Vector4f &val) {
 		this->bindShaderProgram();
 
 		int loc = getUniformLocation(uni);
-		if (loc >= 0) glUniform4f(loc, val.getX(), val.getY(), val.getZ(), 
+		if (loc >= 0) glUniform4f(loc, val.getX(), val.getY(), val.getZ(),
 			val.getW());
 	}
 
-	void ShaderProgram::setUniform_mat4(const std::string &uni, 
-			const Matrix4f &val) {
+	void ShaderProgram::setUniform_mat4(const std::string &uni,
+		const Matrix4f &val) {
 		this->bindShaderProgram();
 		int loc = getUniformLocation(uni);
-		
+
 		float *matPtr = &val.get()[0];
 		if (loc >= 0) glUniformMatrix4fv(loc, 1, true, matPtr);
 		delete matPtr;
 	}
-	
+
 	void ShaderProgram::unbindShaderProgram() {
 		glUseProgram(0);
 

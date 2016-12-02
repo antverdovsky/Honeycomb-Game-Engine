@@ -2,20 +2,23 @@
 #include <GLFW\glfw3.h>
 
 #include "..\..\include\base\BaseMain.h"
+#include "..\..\include\debug\Logger.h"
 
 #include <iostream>
+
+using Honeycomb::Debug::Logger;
 
 namespace Honeycomb::Base::BaseMain {
 	const int FRAME_CAP = 999; // The maximum Frames Per Second
 	const bool DRAW_BACK_FACES = false; // Draw back faces?
 
 	bool isGameRunning = false; // Is the game loop running?
-	
+
 	BaseGame *game; // The instance of the game
-	
+
 	void initializeOpenGL() {
 		glClearColor(0.0F, 0.0F, 0.0F, 0.0F); // Set clear color to black
-		
+
 		if (!DRAW_BACK_FACES) { // Should back faces be drawn?
 			glCullFace(GL_BACK); // Do not draw the back face (CW)
 			glEnable(GL_CULL_FACE); // Disable rendering unseen back faces
@@ -79,7 +82,8 @@ namespace Honeycomb::Base::BaseMain {
 				// we have the current number of frames for the last second.
 				// Reset the variables so the FPS can be calculated next frame.
 				if (timeSpentRenderingFrames >= GameTime::SECOND) {
-					std::cout << "FPS: " << framesRendered << std::endl;
+					Logger::getLogger().logEntry(__FUNCTION__, __LINE__,
+						"FPS: " + std::to_string(framesRendered));
 
 					timeSpentRenderingFrames = 0;
 					framesRendered = 0;
@@ -98,10 +102,13 @@ namespace Honeycomb::Base::BaseMain {
 		glfwInit();
 		GameWindow::getGameWindow(); // Initialize the Game Window (first time)
 		GameInput::getGameInput(); // Initialize the Game Input (first time)
-		glewExperimental = true; 
+		glewExperimental = true;
 		glewInit();
 		initializeOpenGL();
-		
+
+		Logger::getLogger().logEntry(__FUNCTION__, __LINE__,
+			"All GLEW and GLFW initializations complete!");
+
 		// Initialize the Game & Start!
 		game = &g;
 		game->start();
@@ -117,7 +124,7 @@ namespace Honeycomb::Base::BaseMain {
 	void update() {
 		game->input();
 		game->update();
-		
+
 		GameInput::getGameInput()->clear(); // Clear input in between frames
 	}
 }

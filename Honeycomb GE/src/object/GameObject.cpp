@@ -3,13 +3,16 @@
 #include <algorithm>
 #include <iostream>
 
+#include "..\..\include\debug\Logger.h"
+
 using Honeycomb::Component::GameComponent;
+using Honeycomb::Debug::Logger;
 
 namespace Honeycomb::Object {
 	GameObject *GameObject::root = new GameObject("Root", nullptr); // Root
 
 	GameObject::GameObject() : GameObject("GameObject") {
-		
+
 	}
 
 	GameObject::GameObject(const std::string &n, GameObject *p) {
@@ -21,11 +24,11 @@ namespace Honeycomb::Object {
 		if (p != nullptr) p->addChild(*this);
 	}
 
-	GameObject::GameObject(const GameObject& o) : 
-			GameObject("GameObject", nullptr) {
+	GameObject::GameObject(const GameObject& o) :
+		GameObject("GameObject", nullptr) {
 		this->isActive = o.isActive;
 		this->name = o.name;
-		
+
 		if (o.parent != nullptr) o.parent->addChild(*this);
 
 		// Copy over all of the children and the components, once duplicated
@@ -52,14 +55,14 @@ namespace Honeycomb::Object {
 
 	void GameObject::addChild(GameObject &o) {
 		this->children.push_back(&o);
-		
+
 		if (o.parent != nullptr) o.parent->removeChild(&o);
 		o.parent = this;
 	}
 
 	void GameObject::addComponent(GameComponent &c) {
 		this->components.push_back(&c);
-		
+
 		if (c.getAttached() != nullptr) c.getAttached()->removeComponent(&c);
 		c.attached = this;
 	}
@@ -81,6 +84,9 @@ namespace Honeycomb::Object {
 			}
 		}
 
+		Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
+			"Object " + this->name + " does not contain child " + name);
+
 		// If unable to find a matching child -> Return NULL
 		return nullptr;
 	}
@@ -92,6 +98,9 @@ namespace Honeycomb::Object {
 				return this->children.at(i);
 			}
 		}
+
+		Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
+			"Object " + this->name + " does not contain child " + name);
 
 		// If unable to find a matching child -> Return NULL
 		return nullptr;
@@ -113,18 +122,24 @@ namespace Honeycomb::Object {
 			}
 		}
 
+		Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
+			"Object " + this->name + " does not contain component " + name);
+
 		// If unable to find a matching component -> Return NULL
 		return NULL;
 	}
 
-	const GameComponent* GameObject::getComponent(const std::string &name) 
-			const {
+	const GameComponent* GameObject::getComponent(const std::string &name)
+		const {
 		// Go through all components and try to find one whose name matches
 		for (int i = 0; i < this->components.size(); i++) {
 			if (this->components.at(i)->getName() == name) {
 				return this->components.at(i);
 			}
 		}
+
+		Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
+			"Object " + this->name + " does not contain component " + name);
 
 		// If unable to find a matching component -> Return NULL
 		return NULL;
@@ -153,7 +168,7 @@ namespace Honeycomb::Object {
 	const GameObject* GameObject::getParent() const {
 		return this->parent;
 	}
-	
+
 	GameObject& GameObject::getRoot() {
 		return *GameObject::root;
 	}
@@ -177,7 +192,7 @@ namespace Honeycomb::Object {
 
 	void GameObject::removeComponent(GameComponent *c) {
 		components.erase( // Erase component from my components
-			std::remove(components.begin(), components.end(), c), 
+			std::remove(components.begin(), components.end(), c),
 			components.end());
 
 		c->attached = nullptr;
@@ -187,7 +202,7 @@ namespace Honeycomb::Object {
 		if (!this->isActive) return;
 
 		// Handle rendering for all children and components
-		for (int i = 0; i < this->children.size(); i++) 
+		for (int i = 0; i < this->children.size(); i++)
 			this->children.at(i)->render();
 		for (int i = 0; i < this->components.size(); i++)
 			this->components.at(i)->render();
