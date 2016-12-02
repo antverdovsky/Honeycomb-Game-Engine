@@ -78,8 +78,8 @@ namespace Honeycomb::Geometry {
 			this->scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE ||
 			this->scene->mRootNode == nullptr) {
 
-			// Logger::getLogger().logError(__FUNCTION__, __LINE__,
-			//  aImp.GetErrorString());
+			Logger::getLogger().logError(__FUNCTION__, __LINE__,
+				aImp.GetErrorString());
 
 			return;
 		}
@@ -179,7 +179,7 @@ namespace Honeycomb::Geometry {
 		// Transform, since all Objects get one. (DO NOT parent the object to
 		// root, or else it will become an instantiated Game Object once the
 		// game starts).
-		GameObject* object = new GameObject(aNode->mName.C_Str(), nullptr);
+		GameObject* object = new GameObject(aNode->mName.C_Str());
 		Transform* transf = new Transform();
 		object->addComponent(*transf); // TODO: Child Transformation
 

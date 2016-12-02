@@ -9,33 +9,14 @@ using Honeycomb::Component::GameComponent;
 using Honeycomb::Debug::Logger;
 
 namespace Honeycomb::Object {
-	GameObject *GameObject::root = new GameObject("Root", nullptr); // Root
-
 	GameObject::GameObject() : GameObject("GameObject") {
 
 	}
 
-	GameObject::GameObject(const std::string &n, GameObject *p) {
+	GameObject::GameObject(const std::string &n) {
 		this->name = n;
 		this->isActive = false;
-
-		// If parent is provided -> Parent this to specified object
 		this->parent = nullptr;
-		if (p != nullptr) p->addChild(*this);
-	}
-
-	GameObject::GameObject(const GameObject& o) :
-		GameObject("GameObject", nullptr) {
-		this->isActive = o.isActive;
-		this->name = o.name;
-
-		if (o.parent != nullptr) o.parent->addChild(*this);
-
-		// Copy over all of the children and the components, once duplicated
-		for (int i = 0; i < o.children.size(); i++)
-			this->addChild(*o.children.at(i)->clone());
-		for (int i = 0; i < o.components.size(); i++)
-			this->addComponent(*o.components.at(i)->clone());
 	}
 
 	GameObject::~GameObject() {
@@ -50,7 +31,20 @@ namespace Honeycomb::Object {
 	}
 
 	GameObject* GameObject::clone() const {
-		return new GameObject(*this);
+		GameObject *clone = new GameObject();
+
+		clone->name = this->name;
+		clone->isActive = this->isActive;
+
+		if (this->parent != nullptr) this->parent->addChild(*clone);
+
+		// Copy over all of the children and the components, once duplicated
+		for (int i = 0; i < this->children.size(); i++)
+			clone->addChild(*this->children.at(i)->clone());
+		for (int i = 0; i < this->components.size(); i++)
+			clone->addComponent(*this->components.at(i)->clone());
+
+		return clone;
 	}
 
 	void GameObject::addChild(GameObject &o) {
@@ -167,10 +161,6 @@ namespace Honeycomb::Object {
 
 	const GameObject* GameObject::getParent() const {
 		return this->parent;
-	}
-
-	GameObject& GameObject::getRoot() {
-		return *GameObject::root;
 	}
 
 	void GameObject::input() {

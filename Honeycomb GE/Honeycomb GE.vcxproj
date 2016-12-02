@@ -205,6 +205,7 @@
     <ClCompile Include="src\component\light\SpotLight.cpp" />
     <ClCompile Include="src\conjuncture\Event.cpp" />
     <ClCompile Include="src\conjuncture\EventHandler.cpp" />
+    <ClCompile Include="src\scene\GameScene.cpp" />
     <ClCompile Include="src\debug\Logger.cpp" />
     <ClCompile Include="src\file\FileIO.cpp" />
     <ClCompile Include="src\geometry\Model.cpp" />
@@ -241,6 +242,7 @@
     <ClInclude Include="include\component\light\SpotLight.h" />
     <ClInclude Include="include\conjuncture\Event.h" />
     <ClInclude Include="include\conjuncture\EventHandler.h" />
+    <ClInclude Include="include\scene\GameScene.h" />
     <ClInclude Include="include\debug\Logger.h" />
     <ClInclude Include="include\file\FileIO.h" />
     <ClInclude Include="include\geometry\Model.h" />

@@ -85,7 +85,7 @@ in vec3 out_vs_norm; // Take in the normal outputted by VS
 in vec3 out_vs_pos; // Take in the world position outputted by VS
 
 uniform AmbientLight ambientLight; // The ambient light
-uniform DirectionalLight directionalLight; // The directional light (TODO: ARRAY of many lights)
+uniform DirectionalLight directionalLight; // The directional light
 uniform PointLight pointLight; // The point light (TODO: ARRAY...)
 uniform SpotLight spotLight; // The spot light (TODO: ARRAY)
 uniform Material material; // The material

@@ -16,18 +16,9 @@ namespace Honeycomb::Object {
 		/// parent.
 		GameObject();
 
-		/// Instantializes a Game Object with the specified name and parent
-		/// (root by default).
+		/// Instantializes a Game Object with the specified name.
 		/// const string &n : The name of this Game Object.
-		/// Object p : The parent of this Game Object. If none is specified,
-		///			   the object will be parented to the root. NULL may also
-		///			   be provided but the object will have NO parent (use at
-		///			   own risk).
-		GameObject(const std::string &n, GameObject *p = root);
-
-		/// Copies the specified Game Object into a new Game Object.
-		/// GameObject &o : The Game Object to be copied into this game object.
-		GameObject::GameObject(const GameObject &o);
+		GameObject(const std::string &n);
 
 		/// Deletes this Game Object, its children and its components.
 		~GameObject();
@@ -140,10 +131,6 @@ namespace Honeycomb::Object {
 		/// return : The constant pointer to the parent.
 		const GameObject* getParent() const;
 
-		/// Returns the Root game object.
-		/// return : The Root object.
-		static GameObject& getRoot();
-
 		/// Handles any input events for this component, if necessary. This 
 		/// method will only do something if the object is active.
 		virtual void input();
@@ -177,13 +164,13 @@ namespace Honeycomb::Object {
 		/// Handles any update events for this component, if necessary. This 
 		/// method will only do something if the object is active.
 		virtual void update();
-	private:
-		static GameObject *root; // The root object of the game scene
-
+	protected:
 		bool isActive; // Is this object active?
-		GameObject* parent; // The parent of this Game Object
 		std::string name; // Name of this Game Object
+		
+		GameObject* parent; // The parent of this Game Object
 
+		// The children and components of this Game Object
 		std::vector<GameObject*> children;
 		std::vector<Honeycomb::Component::GameComponent*> components;
 	};

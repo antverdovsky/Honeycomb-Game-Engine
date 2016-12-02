@@ -12,11 +12,11 @@ using namespace HoneycombTest::Components;
 
 namespace HoneycombTest {
 	void TestGame::input() {
-		GameObject::getRoot().input();
+		this->gameScene.input();
 	}
 
 	void TestGame::render() {
-		GameObject::getRoot().render();
+		this->gameScene.render();
 	}
 
 	void TestGame::start() {
@@ -87,16 +87,26 @@ namespace HoneycombTest {
 		sphere->getComponentOfType<MeshRenderer>("MeshRenderer")->setMaterial(
 			*emerald);
 
-		GameObject::getRoot().start();
+		// Add all objects to the scene
+		this->gameScene.addChild(*cube);
+		this->gameScene.addChild(*plane);
+		this->gameScene.addChild(*sphere);
+		this->gameScene.addChild(*suzanne);
+		this->gameScene.addChild(*ambientLight);
+		this->gameScene.addChild(*directionalLight);
+		this->gameScene.addChild(*camera);
+
+		// Start the Game Scene
+		this->gameScene.start();
 	}
 
 	void TestGame::stop() {
-		GameObject::getRoot().stop();
+		this->gameScene.stop();
 	}
 
 	void TestGame::update() {
 		// Rotate the Directional Light to emulate sun light in the scene.
-		GameObject *sun = GameObject::getRoot().getChild("Directional Light");
+		GameObject *sun = this->gameScene.getChild("Directional Light");
 		DirectionalLight *sunLight = sun->getComponentOfType<DirectionalLight>
 			("directionalLight");
 		Transform *sunTrans = sun->getComponentOfType<Transform>("Transform");
@@ -104,6 +114,6 @@ namespace HoneycombTest {
 		sunTrans->rotate(sunTrans->getLocalRight(), 
 			0.333F * GameTime::getGameTime()->getDeltaTimeS());
 
-		GameObject::getRoot().update();
+		this->gameScene.update();
 	}
 }
