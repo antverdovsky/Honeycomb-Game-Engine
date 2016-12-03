@@ -7,40 +7,53 @@
 #include "..\..\include\base\GameWindow.h"
 #include "..\..\include\base\BaseGame.h"
 
-namespace Honeycomb::Base::BaseMain {
-	extern const int FRAME_CAP; // The Frame Per Second cap
-	extern const bool DRAW_BACK_FACES; // Draw back faces?
-	
-	extern bool isGameRunning; // Is the game loop running?
+namespace Honeycomb::Base {
+	class BaseMain {
+	public:
+		/// Returns the singleton instance of the BaseMain structure.
+		/// return : The reference to the singleton instance.
+		static BaseMain& getBaseMain();
 
-	extern BaseGame *game; // Reference to the current game
+		/// Starts running the specified game using the Honeycomb Game Engine.
+		/// BaseGame &game : The reference to the game which will be run.
+		void runGame(BaseGame &game);
+	private:
+		static BaseMain *baseMain; // The singleton instance of Base Main
 
-	/// Initializes OpenGL graphics settings for the game.
-	void initializeOpenGL();
+		BaseGame *game; // Pointer to the game that the engine is running
 
-	/// Renders the game and the game window. The method should only be called
-	/// once per frame.
-	void render();
+		bool isGameRunning; // Is the main game loop running?
 
-	/// The main game loop. Calls the appropriate render, update, and input
-	/// functions each frame, and regulates how many frames exist in a given
-	/// second. After this function is complete, the stop function should be
-	/// called to clean up the game.
-	void run();
+		const bool DRAW_BACK_FACES = false; // Draw back faces?
+		const int FRAME_RATE_CAP = 999; // The maximum frames per second to be 
+										// drawn (or zero for unlimited).
 
-	/// Starts the game by initializes the GLEW, Window and GLFW components (in
-	/// that particular order). After all initializations are complete, the
-	/// run function should be called to begin the game loop.
-	/// BaseGame &g : The game which will be used to run the engine.
-	void start(BaseGame &g);
+		/// Initializes OpenGL graphics settings for the game.
+		void initializeOpenGL();
 
-	/// Stops the game by destroying the game components and terminating the 
-	/// OpenGL libraries.
-	void stop();
+		/// Clears the game window, renders the game and updates the game 
+		/// window (in that particular order).
+		void render();
 
-	/// Updates the game and the game window. The method should only be called 
-	/// once per frame.
-	void update();
+		/// The main game loop. Calls the appropriate render, update, and input
+		/// functions each frame, and regulates how many frames exist in a 
+		/// given second. After this function is complete, the stop function 
+		/// should be called to clean up the game.
+		void run();
+
+		/// Starts the game by initializes the GLEW, Window and GLFW components
+		/// (in that particular order). After all initializations are complete,
+		/// the run function should be called to begin the game loop.
+		void start();
+
+		/// Stops the game by destroying the game components and terminating 
+		/// the OpenGL libraries.
+		void stop();
+
+		/// Updates the game and the game window. The method should only be 
+		/// called once per frame.
+		void update();
+	};
 }
 
 #endif

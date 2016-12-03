@@ -8,15 +8,24 @@
 
 using Honeycomb::Debug::Logger;
 
-namespace Honeycomb::Base::BaseMain {
-	const int FRAME_CAP = 999; // The maximum Frames Per Second
-	const bool DRAW_BACK_FACES = false; // Draw back faces?
+namespace Honeycomb::Base {
+	BaseMain* BaseMain::baseMain = nullptr;
 
-	bool isGameRunning = false; // Is the game loop running?
+	BaseMain& BaseMain::getBaseMain() {
+		if (baseMain == nullptr) baseMain = new BaseMain();
 
-	BaseGame *game; // The instance of the game
+		return *baseMain;
+	}
 
-	void initializeOpenGL() {
+	void BaseMain::runGame(BaseGame &game) {
+		this->game = &game;
+
+		this->start();
+		this->run();
+		this->stop();
+	}
+
+	void BaseMain::initializeOpenGL() {
 		glClearColor(0.0F, 0.0F, 0.0F, 0.0F); // Set clear color to black
 
 		if (!DRAW_BACK_FACES) { // Should back faces be drawn?
@@ -32,17 +41,19 @@ namespace Honeycomb::Base::BaseMain {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Blend Function
 	}
 
-	void render() {
+	void BaseMain::render() {
 		// Clear the Screen -> Render the Game -> Update the Screen
 		GameWindow::getGameWindow()->clear();
-		game->render();
+		this->game->render();
 		GameWindow::getGameWindow()->refresh();
 	}
 
-	void run() {
+	void BaseMain::run() {
 		// The expected time that we should spend rendering each frame in order
 		// to hit the desired FPS count.
-		const float msPerFrame = 1.0F / FRAME_CAP * GameTime::SECOND;
+		const float msPerFrame = (FRAME_RATE_CAP > 0) ?
+			1.0F / FRAME_RATE_CAP * GameTime::SECOND :
+			0.00000000001F;
 
 		// Last time a frame was renderered and the time between frame renders,
 		// both are in milliseconds.
@@ -95,7 +106,7 @@ namespace Honeycomb::Base::BaseMain {
 		} while (isGameRunning);
 	}
 
-	void start(BaseGame &g) {
+	void BaseMain::start() {
 		if (isGameRunning) return; // If already running -> No need to start!
 
 		// Initialize the GLFW, the Window, GLEW and OpenGL.
@@ -110,20 +121,19 @@ namespace Honeycomb::Base::BaseMain {
 			"All GLEW and GLFW initializations complete!");
 
 		// Initialize the Game & Start!
-		game = &g;
-		game->start();
+		this->game->start();
 	}
 
-	void stop() {
+	void BaseMain::stop() {
 		if (!isGameRunning) return; // If already stopped -> No need to stop!
 
 		game->stop();
 		glfwTerminate(); // Terminate GLFW
 	}
 
-	void update() {
-		game->input();
-		game->update();
+	void BaseMain::update() {
+		this->game->input();
+		this->game->update();
 
 		GameInput::getGameInput()->clear(); // Clear input in between frames
 	}

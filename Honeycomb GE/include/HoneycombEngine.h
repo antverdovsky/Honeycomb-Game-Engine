@@ -54,7 +54,6 @@
 
 namespace HoneycombEngine {
 	using namespace Honeycomb::Base;
-	using namespace Honeycomb::Base::BaseMain;
 
 	using namespace Honeycomb::Component;
 	using namespace Honeycomb::Component::Light;

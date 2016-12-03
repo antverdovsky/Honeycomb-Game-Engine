@@ -6,7 +6,6 @@
 #include "..\..\Honeycomb GE\include\base\BaseMain.h"
 #include "..\include\HoneycombTest.h"
 
-using namespace Honeycomb::Base::BaseMain;
 using Honeycomb::Base::BaseGame;
 
 using HoneycombTest::TestGame;
@@ -14,9 +13,7 @@ using HoneycombTest::TestGame;
 int main(int argc, char** argv) {
 	TestGame game = TestGame(); // Initialize a test game to run
 
-	Honeycomb::Base::BaseMain::start(game);
-	Honeycomb::Base::BaseMain::run();
-	Honeycomb::Base::BaseMain::stop();
+	Honeycomb::Base::BaseMain::getBaseMain().runGame(game);
 
 	return 0;
 }

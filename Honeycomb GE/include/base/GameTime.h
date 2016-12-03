@@ -4,6 +4,8 @@
 
 namespace Honeycomb::Base {
 	class GameTime {
+		friend class BaseMain; // Only allow BaseMain to set the delta time
+
 	public:
 		const static float SECOND; // Number of ms in a sec.
 		
@@ -27,11 +29,6 @@ namespace Honeycomb::Base {
 		/// return : The game time (in s).
 		const float& getElapsedTimeS() const;
 
-		/// Sets the time between the current frame and the last frame in
-		/// milliseconds.
-		/// The delta time (in ms).
-		void setDeltaTimeMS(const float &ms); // todo: privatize...
-
 		/// Returns the Game Time instance of this Singleton.
 		/// return : The Game Time instance.
 		static GameTime* getGameTime();
@@ -46,6 +43,11 @@ namespace Honeycomb::Base {
 
 		/// Destructs this Game Time instance.
 		~GameTime();
+
+		/// Sets the time between the current frame and the last frame in
+		/// milliseconds.
+		/// const float &ms : The delta time (in ms).
+		void setDeltaTimeMS(const float &ms);
 	};
 }
 
