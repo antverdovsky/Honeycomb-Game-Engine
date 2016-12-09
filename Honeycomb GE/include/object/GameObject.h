@@ -149,7 +149,8 @@ namespace Honeycomb::Object {
 
 		/// Handles any render events for this component, if necessary. This 
 		/// method will only do something if the object is active.
-		virtual void render();
+		/// ShaderProgram &shader : The shader to be used when rendering.
+		virtual void render(Honeycomb::Shader::ShaderProgram &shader);
 
 		/// Handles any starting events for this component, if necessary.
 		/// Additionally, this method will make this object active when

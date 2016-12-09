@@ -3,6 +3,8 @@
 using Honeycomb::Object::GameObject;
 
 namespace Honeycomb::Scene {
+	GameScene* GameScene::activeScene = nullptr;
+
 	GameScene::GameScene() : GameScene("GameScene") {
 
 	}
@@ -24,5 +26,13 @@ namespace Honeycomb::Scene {
 			clone->addComponent(*this->components.at(i)->clone());
 
 		return clone;
+	}
+
+	GameScene* GameScene::getActiveScene() {
+		return GameScene::activeScene;
+	}
+
+	void GameScene::setActiveScene(GameScene &scene) {
+		GameScene::activeScene = &scene;
 	}
 }

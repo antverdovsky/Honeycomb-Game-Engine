@@ -12,11 +12,11 @@ using namespace HoneycombTest::Components;
 
 namespace HoneycombTest {
 	void TestGame::input() {
-		this->gameScene.input();
+
 	}
 
 	void TestGame::render() {
-		this->gameScene.render();
+		
 	}
 
 	void TestGame::start() {
@@ -25,15 +25,17 @@ namespace HoneycombTest {
 		GameObject *plane = Builder::getBuilder()->newPlane();
 		GameObject *sphere = Builder::getBuilder()->newSphere();
 		GameObject *suzanne = Builder::getBuilder()->newSuzanne();
+		GameObject *challenger = Builder::getBuilder()->newModel(
+			"..\\Test Game\\res\\models\\dodge-challenger.fbx");
 
 		// Initialize the Light Objects & a Camera
 		GameObject *ambientLight = Builder::getBuilder()->newAmbientLight();
 		ambientLight->getComponentOfType<AmbientLight>("ambientLight")->
-			setIntensity(0.05F);
-		GameObject *directionalLight = Builder::getBuilder()->
-			newDirectionalLight();
-		directionalLight->getComponentOfType<DirectionalLight>
-			("directionalLight")->setIntensity(0.25F);
+			setIntensity(0.22F);
+		//GameObject *directionalLight = Builder::getBuilder()->
+		//	newDirectionalLight();
+		//directionalLight->getComponentOfType<DirectionalLight>
+		//	("directionalLight")->setIntensity(2.0F);
 		GameObject *camera = Builder::getBuilder()->newCamera();
 
 		// Initialize the Suzanne Components
@@ -53,9 +55,12 @@ namespace HoneycombTest {
 		suzSpotLight->setIntensity(10.0F);
 
 		// Add Suzanne's Components to Suzanne
-		suzanne->addComponent(*suzPointLight);
-		suzanne->addComponent(*suzSpotLight);
+		//suzanne->addComponent(*suzPointLight);
+		//suzanne->addComponent(*suzSpotLight);
 		suzanne->addComponent(*suzInputTransformable);
+		camera->addComponent(*(new DirectionalLight("directionalLight",
+			2.0F,
+			Vector4f(1.0F, 1.0F, 1.0F, 1.0F))));
 
 		// Allow the free movement of the camera
 		InputTransformable *camInputTransformable = new InputTransformable();
@@ -72,6 +77,10 @@ namespace HoneycombTest {
 			Vector3f(PI, PI, PI));
 		suzanne->getComponentOfType<Transform>("Transform")->setTranslation(
 			Vector3f(0.0F, 2.5F, 0.0F));
+		challenger->getChild("Body")->getComponentOfType<Transform>("Transform")->setScale(
+			Vector3f(2.5F, 2.5F, 2.5F));
+		challenger->getChild("Body")->getComponentOfType<Transform>("Transform")->setTranslation(
+			Vector3f(7.5F, 1.75F, -7.5F));
 
 		// Create a fancy Emerald Material (non-textured).
 		Material *emerald = new Material("material", 
@@ -93,11 +102,12 @@ namespace HoneycombTest {
 		this->gameScene.addChild(*sphere);
 		this->gameScene.addChild(*suzanne);
 		this->gameScene.addChild(*ambientLight);
-		this->gameScene.addChild(*directionalLight);
 		this->gameScene.addChild(*camera);
-
+		this->gameScene.addChild(*challenger);
+		GameScene::setActiveScene(this->gameScene);
+		
 		// Start the Game Scene
-		this->gameScene.start();
+		//this->gameScene.start();
 	}
 
 	void TestGame::stop() {
@@ -105,6 +115,7 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::update() {
+		/*
 		// Rotate the Directional Light to emulate sun light in the scene.
 		GameObject *sun = this->gameScene.getChild("Directional Light");
 		DirectionalLight *sunLight = sun->getComponentOfType<DirectionalLight>
@@ -113,7 +124,6 @@ namespace HoneycombTest {
 		
 		sunTrans->rotate(sunTrans->getLocalRight(), 
 			0.333F * GameTime::getGameTime()->getDeltaTimeS());
-
-		this->gameScene.update();
+		*/
 	}
 }

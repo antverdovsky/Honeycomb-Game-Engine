@@ -4,9 +4,11 @@
 #include <iostream>
 
 #include "..\..\include\debug\Logger.h"
+#include "..\..\include\shader\ShaderProgram.h"
 
 using Honeycomb::Component::GameComponent;
 using Honeycomb::Debug::Logger;
+using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb::Object {
 	GameObject::GameObject() : GameObject("GameObject") {
@@ -188,14 +190,14 @@ namespace Honeycomb::Object {
 		c->attached = nullptr;
 	}
 
-	void GameObject::render() {
+	void GameObject::render(ShaderProgram &shader) {
 		if (!this->isActive) return;
 
 		// Handle rendering for all children and components
 		for (int i = 0; i < this->children.size(); i++)
-			this->children.at(i)->render();
+			this->children.at(i)->render(shader);
 		for (int i = 0; i < this->components.size(); i++)
-			this->components.at(i)->render();
+			this->components.at(i)->render(shader);
 	}
 
 	void GameObject::start() {

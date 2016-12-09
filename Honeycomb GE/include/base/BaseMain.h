@@ -28,9 +28,6 @@ namespace Honeycomb::Base {
 		const int FRAME_RATE_CAP = 999; // The maximum frames per second to be 
 										// drawn (or zero for unlimited).
 
-		/// Initializes OpenGL graphics settings for the game.
-		void initializeOpenGL();
-
 		/// Clears the game window, renders the game and updates the game 
 		/// window (in that particular order).
 		void render();

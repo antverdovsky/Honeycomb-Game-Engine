@@ -25,8 +25,17 @@ namespace Honeycomb::Scene {
 		/// be duplicated into the new scene, as well.
 		/// return : The pointer to the cloned Game Scene.
 		GameScene* clone() const;
+
+		/// Returns the pointer to the active game scene.
+		/// return : The pointer to the active Game Scene.
+		static GameScene* getActiveScene();
+
+		/// Sets the active game scene for which rendering, updating, etc. will
+		/// be handled.
+		/// GameScene &scene : The reference to the new active game scene.
+		static void setActiveScene(GameScene &scene);
 	private:
-		
+		static GameScene *activeScene; // The active game scene
 	};
 }
 

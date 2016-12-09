@@ -149,7 +149,7 @@ namespace Honeycomb::Shader {
 			this->uniforms.find(uni);
 
 		if (it == this->uniforms.end()) {
-			Logger::getLogger().logError(__FUNCTION__, __LINE__,
+			Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
 				"Unable to find uniform " + uni + " in Shader Program " +
 				std::to_string(this->programID));
 

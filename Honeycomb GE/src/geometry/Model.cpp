@@ -116,8 +116,8 @@ namespace Honeycomb::Geometry {
 			texture = &Texture2D::getNonTexture();
 		}
 
-		// Build the Material and return it
-		Material *mat = new Material(matName.C_Str(), *texture,
+		// Build the Material and return it [TODO, use material name not sub!]
+		Material *mat = new Material("material", *texture,
 			Vector4f(matAmbient.r, matAmbient.g, matAmbient.b, 1.0F),
 			Vector4f(matDiffuse.r, matDiffuse.g, matDiffuse.b, 1.0F),
 			Vector4f(matSpecular.r, matSpecular.g, matSpecular.b, 1.0F),
@@ -202,8 +202,7 @@ namespace Honeycomb::Geometry {
 
 			// Create a Mesh Renderer with the mesh and material extracted.
 			// TODO: Shader???
-			MeshRenderer *meshRen = new MeshRenderer(*mat, *mesh,
-				*PhongShader::getPhongShader());
+			MeshRenderer *meshRen = new MeshRenderer(*mat, *mesh);
 			object->addComponent(*meshRen);
 		}
 

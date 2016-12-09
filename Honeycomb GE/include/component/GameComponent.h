@@ -6,6 +6,8 @@
 
 namespace Honeycomb::Object { class GameObject; }
 
+#include "..\shader\ShaderProgram.h"
+
 namespace Honeycomb::Component {
 	class GameComponent {
 		friend class Honeycomb::Object::GameObject;
@@ -62,7 +64,9 @@ namespace Honeycomb::Component {
 
 		/// Handles any render events for this component, if necessary. This 
 		/// method will only do something if the object is active.
-		virtual void render();
+		/// ShaderProgram &shader : The shader to be used when rendering
+		///							this game component.
+		virtual void render(Honeycomb::Shader::ShaderProgram &shader);
 		
 		/// Handles any starting events for this component, if necessary.
 		/// Additionally, this method will make this component active when

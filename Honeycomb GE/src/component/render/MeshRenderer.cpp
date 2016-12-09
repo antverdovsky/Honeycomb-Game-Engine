@@ -19,10 +19,8 @@ using Honeycomb::Shader::ShaderProgram;
 using namespace Honeycomb::File;
 
 namespace Honeycomb::Component::Render {
-	MeshRenderer::MeshRenderer(const Material &mat, const Mesh &mes, 
-			ShaderProgram &shad) : 
-			GameComponent("MeshRenderer"), material(&mat), mesh(&mes), 
-			shader(&shad) {
+	MeshRenderer::MeshRenderer(const Material &mat, const Mesh &mes) : 
+			GameComponent("MeshRenderer"), material(&mat), mesh(&mes) {
 
 	}
 
@@ -31,27 +29,23 @@ namespace Honeycomb::Component::Render {
 	}
 
 	MeshRenderer* MeshRenderer::clone() const {
-		return new MeshRenderer(*this->material, *this->mesh, *this->shader);
+		return new MeshRenderer(*this->material, *this->mesh);
 	}
 
 	const Mesh& MeshRenderer::getMesh() const {
 		return *this->mesh;
 	}
 
-	const ShaderProgram& MeshRenderer::getShader() const {
-		return *this->shader;
-	}
-
 	const Material& MeshRenderer::getMaterial() const {
 		return *this->material;
 	}
 
-	void MeshRenderer::render() {
-		this->shader->setUniform_mat4("objTransform",
+	void MeshRenderer::render(ShaderProgram &shader) {
+		shader.setUniform_mat4("objTransform",
 			this->transform->getTransformationMatrix());
 
 		// Render the mesh using the shader and material provided.
-		if (this->shader != nullptr) this->shader->bindShaderProgram();
+		shader.bindShaderProgram();
 		if (this->material != nullptr) this->material->use();
 		if (this->mesh != nullptr) this->mesh->draw();
 	}
@@ -62,10 +56,6 @@ namespace Honeycomb::Component::Render {
 
 	void MeshRenderer::setMesh(const Honeycomb::Geometry::Mesh &mes) {
 		this->mesh = &mes;
-	}
-
-	void MeshRenderer::setShader(Honeycomb::Shader::ShaderProgram &shad) {
-		this->shader = &shad;
 	}
 
 	void MeshRenderer::start() {

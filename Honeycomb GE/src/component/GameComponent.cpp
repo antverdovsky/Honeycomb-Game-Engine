@@ -3,6 +3,7 @@
 #include "..\..\include\object\GameObject.h"
 
 using Honeycomb::Object::GameObject;
+using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb::Component {
 	GameComponent::GameComponent() : GameComponent("GameComponent") {
@@ -55,7 +56,7 @@ namespace Honeycomb::Component {
 
 	}
 
-	void GameComponent::render() {
+	void GameComponent::render(ShaderProgram &shader) {
 		
 	}
 

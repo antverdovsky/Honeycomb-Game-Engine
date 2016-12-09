@@ -2,11 +2,17 @@
 #include <GLFW\glfw3.h>
 
 #include "..\..\include\base\BaseMain.h"
+#include "..\..\include\core\RenderEngine.h"
 #include "..\..\include\debug\Logger.h"
+#include "..\..\include\scene\GameScene.h"
+#include "..\..\include\shader\phong\PhongShader.h" // VERY TEMPORARY
 
 #include <iostream>
 
+using Honeycomb::Core::RenderEngine;
 using Honeycomb::Debug::Logger;
+using Honeycomb::Scene::GameScene;
+using Honeycomb::Shader::Phong::PhongShader;
 
 namespace Honeycomb::Base {
 	BaseMain* BaseMain::baseMain = nullptr;
@@ -25,26 +31,14 @@ namespace Honeycomb::Base {
 		this->stop();
 	}
 
-	void BaseMain::initializeOpenGL() {
-		glClearColor(0.0F, 0.0F, 0.0F, 0.0F); // Set clear color to black
-
-		if (!DRAW_BACK_FACES) { // Should back faces be drawn?
-			glCullFace(GL_BACK); // Do not draw the back face (CW)
-			glEnable(GL_CULL_FACE); // Disable rendering unseen back faces
-		}
-
-		glEnable(GL_MULTISAMPLE); // Enable MSAA
-		glEnable(GL_TEXTURE_2D); // Enable 2D texturing
-		glShadeModel(GL_SMOOTH); // Smooth Shading
-		glEnable(GL_DEPTH_TEST); // Enable depth perception for drawing order
-		glEnable(GL_BLEND); // Enable blending for transparency
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Blend Function
-	}
-
 	void BaseMain::render() {
 		// Clear the Screen -> Render the Game -> Update the Screen
 		GameWindow::getGameWindow()->clear();
+
 		this->game->render();
+		if (GameScene::getActiveScene()) GameScene::getActiveScene()->
+			render(*PhongShader::getPhongShader()); // CLEAN!!! todo & shaders
+		
 		GameWindow::getGameWindow()->refresh();
 	}
 
@@ -109,31 +103,41 @@ namespace Honeycomb::Base {
 	void BaseMain::start() {
 		if (isGameRunning) return; // If already running -> No need to start!
 
-		// Initialize the GLFW, the Window, GLEW and OpenGL.
+		// Initialize the GLFW, and the components which rely on GLFW (Window
+		// & Input).
 		glfwInit();
 		GameWindow::getGameWindow(); // Initialize the Game Window (first time)
 		GameInput::getGameInput(); // Initialize the Game Input (first time)
+
+		// Initialize GLEW and OpenGL.
 		glewExperimental = true;
 		glewInit();
-		initializeOpenGL();
+		RenderEngine::getRenderEngine(); // Initialize Render Engine (^^^)
+		//initializeOpenGL();
 
 		Logger::getLogger().logEntry(__FUNCTION__, __LINE__,
 			"All GLEW and GLFW initializations complete!");
 
 		// Initialize the Game & Start!
 		this->game->start();
+		if (GameScene::getActiveScene()) GameScene::getActiveScene()->start();
 	}
 
 	void BaseMain::stop() {
 		if (!isGameRunning) return; // If already stopped -> No need to stop!
 
-		game->stop();
+		this->game->stop();
+		if (GameScene::getActiveScene()) GameScene::getActiveScene()->stop();
+		
 		glfwTerminate(); // Terminate GLFW
 	}
 
 	void BaseMain::update() {
 		this->game->input();
+		if (GameScene::getActiveScene()) GameScene::getActiveScene()->input();
+
 		this->game->update();
+		if (GameScene::getActiveScene()) GameScene::getActiveScene()->update();
 
 		GameInput::getGameInput()->clear(); // Clear input in between frames
 	}
