@@ -1,10 +1,8 @@
 #include "..\..\include\graphics\Material.h"
 
-#include "..\..\include\shader\phong\PhongShader.h"
-
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
-using Honeycomb::Shader::Phong::PhongShader;
+using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb::Graphics {
 	Material::Material()
@@ -13,7 +11,7 @@ namespace Honeycomb::Graphics {
 	}
 
 	Material::Material(const Texture2D &tex)
-		: Material("material", tex, Vector4f(1.0F, 1.0F, 1.0F, 1.0F),
+		: Material("ufs_Material", tex, Vector4f(1.0F, 1.0F, 1.0F, 1.0F),
 			Vector4f(1.0F, 1.0F, 1.0F, 1.0F),
 			Vector4f(1.0F, 1.0F, 1.0F, 1.0F), 1.0F) {
 
@@ -26,11 +24,11 @@ namespace Honeycomb::Graphics {
 		this->name = nam;
 		this->shininess = shine;
 
-		PhongShader::getPhongShader()->addUniform_Material(*this);
+		//PhongShader::getPhongShader()->addUniform_Material(*this);
 	}
 
 	Material::~Material() {
-		int j = 3;
+		
 	}
 
 	const Texture2D& Material::getAlbedoTexture() const {
@@ -93,9 +91,14 @@ namespace Honeycomb::Graphics {
 		this->specularColor = col;
 	}
 
-	void Material::use() const {
+	void Material::use(ShaderProgram &shader) const {
 		this->albedoTexture->bind();
 
-		PhongShader::getPhongShader()->setUniform_Material(*this);
+		/// TODO: CLEAN!!!
+		shader.setUniform_vec4("ufs_Material.ambientColor", this->ambientColor);
+		shader.setUniform_vec4("ufs_Material.diffuseColor", this->diffuseColor);
+		shader.setUniform_vec4("ufs_Material.specularColor", this->specularColor);
+		shader.setUniform_f("ufs_Material.shininess", this->shininess);
+
 	}
 }

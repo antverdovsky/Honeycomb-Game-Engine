@@ -5,14 +5,14 @@
 #include "..\..\include\core\RenderEngine.h"
 #include "..\..\include\debug\Logger.h"
 #include "..\..\include\scene\GameScene.h"
-#include "..\..\include\shader\phong\PhongShader.h" // VERY TEMPORARY
+#include "..\..\include\shader\standard\GeometryShader.h"
 
 #include <iostream>
 
 using Honeycomb::Core::RenderEngine;
 using Honeycomb::Debug::Logger;
 using Honeycomb::Scene::GameScene;
-using Honeycomb::Shader::Phong::PhongShader;
+using Honeycomb::Shader::Standard::GeometryShader;
 
 namespace Honeycomb::Base {
 	BaseMain* BaseMain::baseMain = nullptr;
@@ -36,9 +36,11 @@ namespace Honeycomb::Base {
 		GameWindow::getGameWindow()->clear();
 
 		this->game->render();
-		if (GameScene::getActiveScene()) GameScene::getActiveScene()->
-			render(*PhongShader::getPhongShader()); // CLEAN!!! todo & shaders
-		
+	//	if (GameScene::getActiveScene()) GameScene::getActiveScene()->
+	//		render(*PhongShader::getPhongShader()); // CLEAN!!! todo & shaders
+		RenderEngine::getRenderEngine()->render(
+			*GeometryShader::getGeometryShader());
+
 		GameWindow::getGameWindow()->refresh();
 	}
 
@@ -112,7 +114,7 @@ namespace Honeycomb::Base {
 		// Initialize GLEW and OpenGL.
 		glewExperimental = true;
 		glewInit();
-		RenderEngine::getRenderEngine(); // Initialize Render Engine (^^^)
+		RenderEngine::getRenderEngine(); // Initialize Render Engine (^^^) todo
 		//initializeOpenGL();
 
 		Logger::getLogger().logEntry(__FUNCTION__, __LINE__,

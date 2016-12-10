@@ -3,6 +3,10 @@
 using Honeycomb::Scene::GameScene;
 using Honeycomb::Shader::ShaderProgram;
 
+// TODO: temp
+#include "..\..\include\component\render\CameraController.h"
+using Honeycomb::Component::Render::CameraController;
+
 namespace Honeycomb::Core {
 	RenderEngine* RenderEngine::renderEngine = nullptr;
 
@@ -13,7 +17,16 @@ namespace Honeycomb::Core {
 		return renderEngine;
 	}
 
+	void RenderEngine::render(ShaderProgram &shader) {
+		if (GameScene::getActiveScene() != nullptr)
+			this->render(*GameScene::getActiveScene(), shader);
+	}
+
 	void RenderEngine::render(GameScene &scene, ShaderProgram &shader) {
+		// todo: temp
+		shader.setUniform_mat4("uvs_Projection", 
+			CameraController::getActiveCamera()->getProjection());
+
 		scene.render(shader);
 	}
 
@@ -40,7 +53,7 @@ namespace Honeycomb::Core {
 		glEnable(GL_TEXTURE_2D); // Enable 2D texturing
 		glShadeModel(GL_SMOOTH); // Smooth Shading
 		glEnable(GL_DEPTH_TEST); // Enable depth perception for drawing order
-		glEnable(GL_BLEND); // Enable blending for transparency
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Blend Function
+//		glEnable(GL_BLEND); // Enable blending for transparency
+//		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Blend Function
 	}
 }
