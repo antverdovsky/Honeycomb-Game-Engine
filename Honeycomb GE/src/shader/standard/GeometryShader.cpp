@@ -7,9 +7,9 @@ using Honeycomb::Math::Matrix4f;
 namespace Honeycomb::Shader::Standard {
 	GeometryShader* GeometryShader::geometryShader = nullptr;
 	const std::string GeometryShader::FRAG_FILE_LOC = 
-		"..\\Honeycomb GE\\res\\shaders\\deferred\\fragmentShader.glsl";
+		"..\\Honeycomb GE\\res\\shaders\\standard\\geometryFragment.glsl";
 	const std::string GeometryShader::VERT_FILE_LOC =
-		"..\\Honeycomb GE\\res\\shaders\\deferred\\vertexShader.glsl";
+		"..\\Honeycomb GE\\res\\shaders\\standard\\geometryVertex.glsl";
 	
 	GeometryShader* GeometryShader::getGeometryShader() {
 		if (geometryShader == nullptr)

@@ -17,8 +17,6 @@ using Honeycomb::Math::Matrix4f;
 using Honeycomb::Debug::Logger;
 
 namespace Honeycomb::Shader {
-	ShaderProgram *ShaderProgram::active = nullptr; // No active shader, yet
-
 	ShaderProgram::ShaderProgram() {
 		// Create a pointer to the program ID for the shader
 		this->programID = glCreateProgram();
@@ -92,8 +90,6 @@ namespace Honeycomb::Shader {
 
 	void ShaderProgram::bindShaderProgram() {
 		glUseProgram(this->programID);
-
-		ShaderProgram::active = this;
 	}
 
 	void ShaderProgram::finalizeShaderProgram() {
@@ -138,10 +134,6 @@ namespace Honeycomb::Shader {
 			glDetachShader(this->programID, shaderID);
 			glDeleteShader(shaderID);
 		}
-	}
-
-	ShaderProgram* ShaderProgram::getActiveShader() {
-		return ShaderProgram::active;
 	}
 
 	int ShaderProgram::getUniformLocation(const std::string &uni) {
@@ -202,7 +194,5 @@ namespace Honeycomb::Shader {
 
 	void ShaderProgram::unbindShaderProgram() {
 		glUseProgram(0);
-
-		// ShaderProgram::active = nullptr; TODO
 	}
 }

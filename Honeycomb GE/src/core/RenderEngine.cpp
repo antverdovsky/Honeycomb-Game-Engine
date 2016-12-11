@@ -4,11 +4,25 @@ using Honeycomb::Scene::GameScene;
 using Honeycomb::Shader::ShaderProgram;
 
 // TODO: temp
+#include "..\..\include\component\light\DirectionalLight.h"
 #include "..\..\include\component\render\CameraController.h"
+#include "..\..\include\component\physics\Transform.h"
+#include "..\..\include\shader\standard\GeometryShader.h"
+#include "..\..\include\shader\standard\DirectionalShader.h"
+#include "..\..\include\object\GameObject.h"
+#include "..\..\include\object\Builder.h"
+using Honeycomb::Component::Light::DirectionalLight;
+using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Component::Render::CameraController;
+using Honeycomb::Shader::Standard::GeometryShader;
+using Honeycomb::Shader::Standard::DirectionalShader;
+using Honeycomb::Object::GameObject;
+using Honeycomb::Object::Builder;
 
 namespace Honeycomb::Core {
 	RenderEngine* RenderEngine::renderEngine = nullptr;
+
+	GameObject *dirLight = Builder::getBuilder()->newDirectionalLight();
 
 	RenderEngine* RenderEngine::getRenderEngine() {
 		if (renderEngine == nullptr)
@@ -17,17 +31,39 @@ namespace Honeycomb::Core {
 		return renderEngine;
 	}
 
-	void RenderEngine::render(ShaderProgram &shader) {
+	void RenderEngine::render() {
 		if (GameScene::getActiveScene() != nullptr)
-			this->render(*GameScene::getActiveScene(), shader);
+			this->render(*GameScene::getActiveScene());
 	}
 
-	void RenderEngine::render(GameScene &scene, ShaderProgram &shader) {
+	void RenderEngine::render(GameScene &scene) {
 		// todo: temp
-		shader.setUniform_mat4("uvs_Projection", 
+		GeometryShader::getGeometryShader()->setProjection(
 			CameraController::getActiveCamera()->getProjection());
+		DirectionalShader::getDirectionalShader()->setProjection(
+			CameraController::getActiveCamera()->getProjection());
+		DirectionalShader::getDirectionalShader()->setUniform_DirectionalLight(
+			*dirLight->getComponentOfType<DirectionalLight>("directionalLight"));
 
-		scene.render(shader);
+		// 1st Pass: Render the Mesh and its Texture
+		//
+		scene.render(*GeometryShader::getGeometryShader());
+
+		// 2nd Pass: Render the Scene Directional Lights
+		//
+		///*
+		glEnable(GL_BLEND); // Enable Blending
+		glBlendFunc(GL_ONE, GL_ONE); // Additive Blending (Light is additive)
+		glDepthMask(GL_FALSE); // Disable Depth Buffer
+		glDepthFunc(GL_EQUAL); // Do not take into account depth
+		//*/
+		scene.render(*DirectionalShader::getDirectionalShader());
+
+		///*
+		glDepthFunc(GL_LESS); // Take into account depth
+		glDepthMask(GL_TRUE); // Enable Depth Buffer
+		glDisable(GL_BLEND); // Additive Blending no longer necessary
+		//*/
 	}
 
 	RenderEngine::RenderEngine() {

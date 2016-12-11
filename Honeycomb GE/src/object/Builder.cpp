@@ -10,6 +10,7 @@
 #include "..\..\include\component\physics\Transform.h"
 #include "..\..\include\component\render\CameraController.h"
 #include "..\..\include\math\Vector4f.h"
+#include "..\..\include\math\Quaternion.h" // todo temp
 
 using Honeycomb::Component::Light::AmbientLight;
 using Honeycomb::Component::Light::BaseLight;
@@ -20,6 +21,7 @@ using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Component::Render::CameraController;
 using Honeycomb::Geometry::Model;
 using Honeycomb::Math::Vector4f;
+using Honeycomb::Math::Quaternion; // todo temp
 
 namespace Honeycomb::Object {
 	Builder* Builder::instance = nullptr; // Nullptr before being initialized
@@ -85,6 +87,10 @@ namespace Honeycomb::Object {
 		// Add the initialized components to the Directional Light Game Object
 		dirLight->addComponent(*dL);
 		dirLight->addComponent(*trans);
+
+		// TODO TODO TODO
+		dirLight->start();
+		trans->rotate(Quaternion(trans->getLocalRight(), -3.1415926 / 2.0F));
 
 		return dirLight; // Return the Directional Light Game Object
 	}

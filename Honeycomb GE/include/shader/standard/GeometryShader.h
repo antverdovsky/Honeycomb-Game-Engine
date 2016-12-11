@@ -12,6 +12,16 @@ namespace Honeycomb::Shader::Standard {
 		/// class.
 		/// return : The pointer to the singleton instance.
 		static GeometryShader* getGeometryShader();
+
+		/// Sets the projection matrix of the Deferred Rendering Geometry
+		/// Shader to the specified matrix.
+		/// const Matrix4f &proj : The projection matrix.
+		void setProjection(const Honeycomb::Math::Matrix4f &proj);
+
+		/// Sets the transformation matrix of the Deferred Rendering Geometry
+		/// Shader to the specified matrix.
+		/// const Matrix4f &trans : The transformation matrix.
+		void setTransformation(const Honeycomb::Math::Matrix4f &trans);
 	private:
 		static GeometryShader *geometryShader; // Singleton instance
 		
@@ -25,16 +35,6 @@ namespace Honeycomb::Shader::Standard {
 
 		/// Deletes this instance of the Deferred Rendering Geometry Shader.
 		~GeometryShader();
-
-		/// Sets the projection matrix of the Deferred Rendering Geometry
-		/// Shader to the specified matrix.
-		/// const Matrix4f &proj : The projection matrix.
-		void setProjection(const Honeycomb::Math::Matrix4f &proj);
-
-		/// Sets the transformation matrix of the Deferred Rendering Geometry
-		/// Shader to the specified matrix.
-		/// const Matrix4f &trans : The transformation matrix.
-		void setTransformation(const Honeycomb::Math::Matrix4f &trans);
 	};
 }
 

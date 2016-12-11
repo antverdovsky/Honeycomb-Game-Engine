@@ -15,16 +15,12 @@ namespace Honeycomb::Core {
 		/// return : The pointer to the singleton.
 		static RenderEngine* getRenderEngine();
 
-		/// Renders the current active scene, if it is not null, using the
-		/// specified shader.
-		/// ShaderProgram &shader : The shader to be used when rendering.
-		void render(Honeycomb::Shader::ShaderProgram &shader);
+		/// Renders the current active scene, if it is not null.
+		void render();
 
-		/// Renders the specified scene using the specified shader.
+		/// Renders the specified scene.
 		/// GameScene &scene : The game scene to be rendered.
-		/// ShaderProgram &shader : The shader to be used when rendering.
-		void render(Honeycomb::Scene::GameScene &scene,
-			Honeycomb::Shader::ShaderProgram &shader);
+		void render(Honeycomb::Scene::GameScene &scene);
 	private:
 		static RenderEngine *renderEngine; // Singleton instance
 

@@ -38,8 +38,7 @@ namespace Honeycomb::Base {
 		this->game->render();
 	//	if (GameScene::getActiveScene()) GameScene::getActiveScene()->
 	//		render(*PhongShader::getPhongShader()); // CLEAN!!! todo & shaders
-		RenderEngine::getRenderEngine()->render(
-			*GeometryShader::getGeometryShader());
+		RenderEngine::getRenderEngine()->render();
 
 		GameWindow::getGameWindow()->refresh();
 	}

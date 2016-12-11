@@ -38,12 +38,6 @@ namespace Honeycomb::Shader {
 		/// the program and validates that everything was done correctly.
 		void finalizeShaderProgram();
 
-		/// Returns the pointer to the current active and bounded shader. If no
-		/// shader is bounded, a nullptr will be returned instead.
-		/// return : The currently active shader, or a nullptr if none is 
-		///			 bounded.
-		static ShaderProgram* getActiveShader();
-
 		/// Gets the uniform location of the specified uniform variable. If the
 		/// uniform does not exist in this shader, a negative value will be
 		/// returned instead.
@@ -88,8 +82,6 @@ namespace Honeycomb::Shader {
 		/// Unbinds the shader program so that it may not be used anymore.
 		void unbindShaderProgram();
 	private:
-		static ShaderProgram *active; // The current bounded shader, if any
-
 		int programID; // "Pointer" ID to this shader program in the driver
 		std::vector<int> shaders; // "Pointer" IDs to the individual shaders
 		std::unordered_map<std::string, int> uniforms; // Hash Map of uniforms
