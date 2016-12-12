@@ -205,7 +205,9 @@
     <ClCompile Include="src\component\light\SpotLight.cpp" />
     <ClCompile Include="src\conjuncture\Event.cpp" />
     <ClCompile Include="src\conjuncture\EventHandler.cpp" />
-    <ClCompile Include="src\core\RenderEngine.cpp" />
+    <ClCompile Include="src\render\LegacyForwardRenderer.cpp" />
+    <ClCompile Include="src\render\Renderer.cpp" />
+    <ClCompile Include="src\render\RenderingEngine.cpp" />
     <ClCompile Include="src\scene\GameScene.cpp" />
     <ClCompile Include="src\debug\Logger.cpp" />
     <ClCompile Include="src\file\FileIO.cpp" />
@@ -243,7 +245,9 @@
     <ClInclude Include="include\component\light\SpotLight.h" />
     <ClInclude Include="include\conjuncture\Event.h" />
     <ClInclude Include="include\conjuncture\EventHandler.h" />
-    <ClInclude Include="include\core\RenderEngine.h" />
+    <ClInclude Include="include\render\LegacyForwardRenderer.h" />
+    <ClInclude Include="include\render\Renderer.h" />
+    <ClInclude Include="include\render\RenderingEngine.h" />
     <ClInclude Include="include\scene\GameScene.h" />
     <ClInclude Include="include\debug\Logger.h" />
     <ClInclude Include="include\file\FileIO.h" />

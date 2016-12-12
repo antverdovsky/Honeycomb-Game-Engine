@@ -2,17 +2,13 @@
 #include <GLFW\glfw3.h>
 
 #include "..\..\include\base\BaseMain.h"
-#include "..\..\include\core\RenderEngine.h"
 #include "..\..\include\debug\Logger.h"
+#include "..\..\include\render\RenderingEngine.h"
 #include "..\..\include\scene\GameScene.h"
-#include "..\..\include\shader\phong\PhongShader.h" // VERY TEMPORARY
 
-#include <iostream>
-
-using Honeycomb::Core::RenderEngine;
 using Honeycomb::Debug::Logger;
+using Honeycomb::Render::RenderingEngine;
 using Honeycomb::Scene::GameScene;
-using Honeycomb::Shader::Phong::PhongShader;
 
 namespace Honeycomb::Base {
 	BaseMain* BaseMain::baseMain = nullptr;
@@ -36,8 +32,8 @@ namespace Honeycomb::Base {
 		GameWindow::getGameWindow()->clear();
 
 		this->game->render();
-		if (GameScene::getActiveScene()) GameScene::getActiveScene()->
-			render(*PhongShader::getPhongShader()); // CLEAN!!! todo & shaders
+		if (GameScene::getActiveScene() != nullptr)
+			this->renderEngine->render(*GameScene::getActiveScene());
 		
 		GameWindow::getGameWindow()->refresh();
 	}
@@ -112,8 +108,7 @@ namespace Honeycomb::Base {
 		// Initialize GLEW and OpenGL.
 		glewExperimental = true;
 		glewInit();
-		RenderEngine::getRenderEngine(); // Initialize Render Engine (^^^)
-		//initializeOpenGL();
+		this->renderEngine = RenderingEngine::getRenderingEngine();
 
 		Logger::getLogger().logEntry(__FUNCTION__, __LINE__,
 			"All GLEW and GLFW initializations complete!");

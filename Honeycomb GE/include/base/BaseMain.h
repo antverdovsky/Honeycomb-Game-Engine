@@ -6,6 +6,7 @@
 #include "..\..\include\base\GameTime.h"
 #include "..\..\include\base\GameWindow.h"
 #include "..\..\include\base\BaseGame.h"
+#include "..\..\include\render\RenderingEngine.h"
 
 namespace Honeycomb::Base {
 	class BaseMain {
@@ -21,6 +22,8 @@ namespace Honeycomb::Base {
 		static BaseMain *baseMain; // The singleton instance of Base Main
 
 		BaseGame *game; // Pointer to the game that the engine is running
+		Honeycomb::Render::RenderingEngine 
+			*renderEngine; // Pointer to the rendering engine
 
 		bool isGameRunning; // Is the main game loop running?
 
