@@ -232,8 +232,6 @@
     <ClCompile Include="src\shader\phong\PhongShader.cpp" />
     <ClCompile Include="src\shader\simple\SimpleShader.cpp" />
     <ClCompile Include="src\shader\ShaderProgram.cpp" />
-    <ClCompile Include="src\shader\standard\DirectionalShader.cpp" />
-    <ClCompile Include="src\shader\standard\GeometryShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\base\BaseGame.h" />
@@ -273,20 +271,12 @@
     <ClInclude Include="include\shader\phong\PhongShader.h" />
     <ClInclude Include="include\shader\Simple\SimpleShader.h" />
     <ClInclude Include="include\shader\ShaderProgram.h" />
-    <ClInclude Include="include\shader\standard\DirectionalShader.h" />
-    <ClInclude Include="include\shader\standard\GeometryShader.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\deferred\fragmentShader.glsl" />
-    <None Include="res\shaders\deferred\vertexShader.glsl" />
     <None Include="res\shaders\phong\fragShader.glsl" />
     <None Include="res\shaders\phong\vertexShader.glsl" />
     <None Include="res\shaders\simple\fragShader.glsl" />
     <None Include="res\shaders\simple\vertexShader.glsl" />
-    <None Include="res\shaders\standard\directionalFragment.glsl" />
-    <None Include="res\shaders\standard\directionalVertex.glsl" />
-    <None Include="res\shaders\standard\geometryFragment.glsl" />
-    <None Include="res\shaders\standard\geometryVertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

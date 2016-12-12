@@ -3,6 +3,7 @@
 #define DIRECTIONAL_LIGHT
 
 #include "BaseLight.h"
+#include "..\..\conjuncture\EventHandler.h"
 #include "..\..\math\Vector3f.h"
 
 namespace Honeycomb::Component::Light {
@@ -39,8 +40,14 @@ namespace Honeycomb::Component::Light {
 
 		/// Starts this Directional Light.
 		void start();
+
+		/// Writes this Directional Light to the Phong Shader.
+		void writeToShader();
 	private:
 		const Honeycomb::Math::Vector3f *direction; // Transform Direction
+
+		// Event handler for the change in the transform (for direction)
+		Honeycomb::Conjuncture::EventHandler transformChange;
 	};
 }
 

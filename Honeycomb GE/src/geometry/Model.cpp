@@ -117,7 +117,7 @@ namespace Honeycomb::Geometry {
 		}
 
 		// Build the Material and return it [TODO, use material name not sub!]
-		Material *mat = new Material("ufs_Material", *texture,
+		Material *mat = new Material("material", *texture,
 			Vector4f(matAmbient.r, matAmbient.g, matAmbient.b, 1.0F),
 			Vector4f(matDiffuse.r, matDiffuse.g, matDiffuse.b, 1.0F),
 			Vector4f(matSpecular.r, matSpecular.g, matSpecular.b, 1.0F),

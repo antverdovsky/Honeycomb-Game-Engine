@@ -26,7 +26,7 @@ namespace Honeycomb::Component::Light {
 	}
 
 	DirectionalLight::~DirectionalLight() {
-		int j = 32;
+
 	}
 
 	DirectionalLight* DirectionalLight::clone() const {
@@ -38,12 +38,26 @@ namespace Honeycomb::Component::Light {
 	}
 
 	void DirectionalLight::start() {
-		if (this->isActive) return;
-		this->isActive = true;
+		// Add the Directional Light to the Phong Shader
+		PhongShader::getPhongShader()->addUniform_DirectionalLight(*this);
+
+		// Subscribe to the Transform change event, so that the direction of
+		// the light may be written to the shader each time the transform
+		// changes.
+		this->transformChange.addAction(
+			std::bind(&DirectionalLight::writeToShader, this));
+		this->getAttached()->getComponentOfType<Transform>("Transform")->
+			getChangedEvent().addEventHandler(this->transformChange);
 
 		// Get the direction from the Transform so that it may be sent to the
 		// Phong Shader.
 		this->direction = &this->getAttached()->
 			getComponentOfType<Transform>("Transform")->getLocalForward();
+
+		writeToShader(); // Write the default Transform direction to Shader
+	}
+
+	void DirectionalLight::writeToShader() {
+		PhongShader::getPhongShader()->setUniform_DirectionalLight(*this);
 	}
 }

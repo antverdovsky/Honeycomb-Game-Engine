@@ -123,12 +123,6 @@
     <ClCompile Include="src\core\RenderEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\shader\standard\GeometryShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\shader\standard\DirectionalShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\math\Vector2f.h">
@@ -242,23 +236,11 @@
     <ClInclude Include="include\core\RenderEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\shader\standard\GeometryShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\shader\standard\DirectionalShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\phong\fragShader.glsl" />
     <None Include="res\shaders\phong\vertexShader.glsl" />
     <None Include="res\shaders\simple\fragShader.glsl" />
     <None Include="res\shaders\simple\vertexShader.glsl" />
-    <None Include="res\shaders\deferred\vertexShader.glsl" />
-    <None Include="res\shaders\deferred\fragmentShader.glsl" />
-    <None Include="res\shaders\standard\directionalFragment.glsl" />
-    <None Include="res\shaders\standard\directionalVertex.glsl" />
-    <None Include="res\shaders\standard\geometryFragment.glsl" />
-    <None Include="res\shaders\standard\geometryVertex.glsl" />
   </ItemGroup>
 </Project>

@@ -41,12 +41,12 @@ namespace Honeycomb::Component::Render {
 	}
 
 	void MeshRenderer::render(ShaderProgram &shader) {
-		shader.setUniform_mat4("uvs_Transformation",
+		shader.setUniform_mat4("objTransform",
 			this->transform->getTransformationMatrix());
 
 		// Render the mesh using the shader and material provided.
 		shader.bindShaderProgram();
-		if (this->material != nullptr) this->material->use(shader);
+		if (this->material != nullptr) this->material->use();
 		if (this->mesh != nullptr) this->mesh->draw();
 	}
 
