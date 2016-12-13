@@ -8,6 +8,7 @@
 
 using Honeycomb::Debug::Logger;
 using Honeycomb::Render::RenderingEngine;
+using Honeycomb::Render::RenderingType; // todo
 using Honeycomb::Scene::GameScene;
 
 namespace Honeycomb::Base {
@@ -109,6 +110,7 @@ namespace Honeycomb::Base {
 		glewExperimental = true;
 		glewInit();
 		this->renderEngine = RenderingEngine::getRenderingEngine();
+		this->renderEngine->setRenderingType(RenderingType::TYPE_FORWARD_RENDERER_MULTI);
 
 		Logger::getLogger().logEntry(__FUNCTION__, __LINE__,
 			"All GLEW and GLFW initializations complete!");

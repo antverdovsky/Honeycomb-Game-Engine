@@ -13,6 +13,7 @@
 
 using Honeycomb::Geometry::Vertex;
 using Honeycomb::Math::Vector3f;
+using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb::Geometry {
 	Mesh::Mesh() {
@@ -46,7 +47,9 @@ namespace Honeycomb::Geometry {
 		glDeleteBuffers(1, &vbo);
 	}
 
-	void Mesh::draw() const {
+	void Mesh::draw(ShaderProgram &shader) const {
+		shader.bindShaderProgram();
+
 		// Enable attribute arrays for the vertices
 		glEnableVertexAttribArray(0); // The position
 		glEnableVertexAttribArray(1); // The texture coordinates

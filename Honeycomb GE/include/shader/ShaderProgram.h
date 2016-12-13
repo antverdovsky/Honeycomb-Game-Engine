@@ -87,8 +87,10 @@ namespace Honeycomb::Shader {
 
 		/// Unbinds the shader program so that it may not be used anymore.
 		void unbindShaderProgram();
-	private:
+	protected:
 		static ShaderProgram *active; // The current bounded shader, if any
+
+		std::string name; // The name of this Shader
 
 		int programID; // "Pointer" ID to this shader program in the driver
 		std::vector<int> shaders; // "Pointer" IDs to the individual shaders

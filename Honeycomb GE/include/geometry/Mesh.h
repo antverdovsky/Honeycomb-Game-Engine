@@ -5,6 +5,7 @@
 #include <string>
 
 #include "Vertex.h"
+#include "..\shader\ShaderProgram.h"
 
 namespace Honeycomb::Geometry {
 	class Mesh {
@@ -24,7 +25,8 @@ namespace Honeycomb::Geometry {
 		~Mesh();
 
 		/// Draws this Mesh to the screen using the vertex data.
-		void draw() const;
+		/// ShaderProgram &shader : The shader which will draw the mesh.
+		void draw(Honeycomb::Shader::ShaderProgram &shader) const;
 	private:
 		int vertexBufferObj; // VBO "Pointer"
 		int vertCount; // The count of vertices stored for this mesh

@@ -3,7 +3,7 @@
 using Honeycomb::Math::Vector4f;
 
 namespace Honeycomb::Component::Light {
-	AmbientLight::AmbientLight() : AmbientLight(BaseLight("ambientLight")) {
+	AmbientLight::AmbientLight() : AmbientLight(BaseLight("AmbientLight")) {
 
 	}
 

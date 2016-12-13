@@ -6,11 +6,11 @@
 #include "..\shader\ShaderProgram.h"
 
 namespace Honeycomb::Render {
-	class LegacyForwardRenderer : public Renderer {
+	class ForwardRendererSingle : public Renderer {
 	public:
 		/// Returns the singleton instance of the Legacy Forward Renderer.
 		/// return : The pointer to the singleton instance.
-		static LegacyForwardRenderer* getLegacyForwardRenderer();
+		static ForwardRendererSingle* getLegacyForwardRenderer();
 
 		/// Returns the shader which this Legacy Forward Renderer uses to
 		/// render a scene.
@@ -27,16 +27,16 @@ namespace Honeycomb::Render {
 		/// ShaderProgram* shader : The pointer to the Shader Program.
 		void setShader(Honeycomb::Shader::ShaderProgram *shader);
 	private:
-		static LegacyForwardRenderer *legacyForwardRenderer; // Singleton
+		static ForwardRendererSingle *legacyForwardRenderer; // Singleton
 		
 		// Shader with which the scene is to be drawn
 		Honeycomb::Shader::ShaderProgram *shader;
 
 		/// Initializes a new instance of the Legacy Forward Renderer.
-		LegacyForwardRenderer();
+		ForwardRendererSingle();
 
 		/// Destroys this instance of the Legacy Forward Renderer.
-		~LegacyForwardRenderer();
+		~ForwardRendererSingle();
 	};
 }
 

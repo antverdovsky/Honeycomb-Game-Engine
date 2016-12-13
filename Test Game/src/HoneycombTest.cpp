@@ -7,6 +7,8 @@
 #include <iostream>
 #include <ctime>
 
+/// NOTE: NO LIGHTS UNDER FORWARD_RENDERING_MULTI AT THIS POINT.
+
 using namespace HoneycombEngine;
 using namespace HoneycombTest::Components;
 
@@ -29,9 +31,9 @@ namespace HoneycombTest {
 			"..\\Test Game\\res\\models\\dodge-challenger.fbx");
 
 		// Initialize the Light Objects & a Camera
-		GameObject *ambientLight = Builder::getBuilder()->newAmbientLight();
-		ambientLight->getComponentOfType<AmbientLight>("ambientLight")->
-			setIntensity(0.22F);
+		//GameObject *ambientLight = Builder::getBuilder()->newAmbientLight();
+		//ambientLight->getComponentOfType<AmbientLight>("ambientLight")->
+		//	setIntensity(0.22F);
 		//GameObject *directionalLight = Builder::getBuilder()->
 		//	newDirectionalLight();
 		//directionalLight->getComponentOfType<DirectionalLight>
@@ -47,20 +49,20 @@ namespace HoneycombTest {
 			GameInput::KEY_CODE_F, GameInput::KEY_CODE_G,
 			GameInput::KEY_CODE_V, GameInput::KEY_CODE_B,
 			5.0F, 5.0F);
-		PointLight *suzPointLight = new PointLight();
-		suzPointLight->setColor(Vector4f(1.0F, 0.0F, 0.0F, 1.0F));
-		suzPointLight->setIntensity(10.0F);
-		SpotLight *suzSpotLight = new SpotLight();
-		suzSpotLight->setColor(Vector4f(0.0F, 0.0F, 1.0F, 1.0F));
-		suzSpotLight->setIntensity(10.0F);
+		//PointLight *suzPointLight = new PointLight();
+		//suzPointLight->setColor(Vector4f(1.0F, 0.0F, 0.0F, 1.0F));
+		//suzPointLight->setIntensity(10.0F);
+		//SpotLight *suzSpotLight = new SpotLight();
+		//suzSpotLight->setColor(Vector4f(0.0F, 0.0F, 1.0F, 1.0F));
+		//suzSpotLight->setIntensity(10.0F);
 
 		// Add Suzanne's Components to Suzanne
 		//suzanne->addComponent(*suzPointLight);
 		//suzanne->addComponent(*suzSpotLight);
 		suzanne->addComponent(*suzInputTransformable);
-		camera->addComponent(*(new DirectionalLight("directionalLight",
-			2.0F,
-			Vector4f(1.0F, 1.0F, 1.0F, 1.0F))));
+		//camera->addComponent(*(new DirectionalLight("directionalLight",
+		//	2.0F,
+		//	Vector4f(1.0F, 1.0F, 1.0F, 1.0F))));
 
 		// Allow the free movement of the camera
 		InputTransformable *camInputTransformable = new InputTransformable();
@@ -85,7 +87,7 @@ namespace HoneycombTest {
 		// Create a fancy Emerald Material (non-textured).
 		Material *emerald = new Material("material", 
 			Texture2D::getNonTexture(),
-			Vector4f(0.0215F, 0.1745F, 0.0215F, 1.0F),
+			Vector4f(1.0F, 1.0F, 1.0F, 1.0F),
 			Vector4f(0.07568F, 0.61424F, 0.07568F, 1.0F),
 			Vector4f(0.633F, 0.727811F, 0.633F, 1.0F),
 			0.6F * 128.0F);
@@ -101,7 +103,7 @@ namespace HoneycombTest {
 		this->gameScene.addChild(*plane);
 		this->gameScene.addChild(*sphere);
 		this->gameScene.addChild(*suzanne);
-		this->gameScene.addChild(*ambientLight);
+		//this->gameScene.addChild(*ambientLight);
 		this->gameScene.addChild(*camera);
 		this->gameScene.addChild(*challenger);
 		GameScene::setActiveScene(this->gameScene);

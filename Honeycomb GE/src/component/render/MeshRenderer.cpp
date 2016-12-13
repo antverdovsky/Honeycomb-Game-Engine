@@ -45,9 +45,8 @@ namespace Honeycomb::Component::Render {
 			this->transform->getTransformationMatrix());
 
 		// Render the mesh using the shader and material provided.
-		shader.bindShaderProgram();
-		if (this->material != nullptr) this->material->use();
-		if (this->mesh != nullptr) this->mesh->draw();
+		if (this->material != nullptr) this->material->use(shader);
+		if (this->mesh != nullptr) this->mesh->draw(shader);
 	}
 
 	void MeshRenderer::setMaterial(const Honeycomb::Graphics::Material &mat) {

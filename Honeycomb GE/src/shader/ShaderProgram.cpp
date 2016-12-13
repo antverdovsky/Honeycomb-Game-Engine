@@ -20,6 +20,8 @@ namespace Honeycomb::Shader {
 	ShaderProgram *ShaderProgram::active = nullptr; // No active shader, yet
 
 	ShaderProgram::ShaderProgram() {
+		this->name = "ShaderProgram";
+
 		// Create a pointer to the program ID for the shader
 		this->programID = glCreateProgram();
 

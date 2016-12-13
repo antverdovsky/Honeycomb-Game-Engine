@@ -1,9 +1,11 @@
 #include "..\..\include\render\RenderingEngine.h"
 
-#include "..\..\include\render\LegacyForwardRenderer.h"
+#include "..\..\include\render\ForwardRendererSingle.h"
+#include "..\..\include\render\ForwardRendererMulti.h"
 
 using Honeycomb::Scene::GameScene;
-using Honeycomb::Render::LegacyForwardRenderer;
+using Honeycomb::Render::ForwardRendererSingle;
+using Honeycomb::Render::ForwardRendererMulti;
 
 namespace Honeycomb::Render {
 	RenderingEngine *RenderingEngine::renderingEngine = nullptr;
@@ -21,13 +23,17 @@ namespace Honeycomb::Render {
 
 	void RenderingEngine::setRenderingType(const RenderingType &type) {
 		switch (type) {
-		case RenderingType::TYPE_LEGACY_FORWARD_RENDERER:
-			this->renderer = LegacyForwardRenderer::getLegacyForwardRenderer();
+		case RenderingType::TYPE_FORWARD_RENDERER_SINGLE:
+			this->renderer = ForwardRendererSingle::getLegacyForwardRenderer();
+			break;
+		case RenderingType::TYPE_FORWARD_RENDERER_MULTI:
+			this->renderer = ForwardRendererMulti::getForwardRendererMulti();
+			break;
 		}
 	}
 	
 	RenderingEngine::RenderingEngine() {
-		this->setRenderingType(RenderingType::TYPE_LEGACY_FORWARD_RENDERER);
+		//this->setRenderingType(RenderingType::TYPE_FORWARD_RENDERER_SINGLE);
 	}
 
 	RenderingEngine::~RenderingEngine() {

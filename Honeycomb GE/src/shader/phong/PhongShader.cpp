@@ -1,5 +1,9 @@
 #include "..\..\..\include\shader\phong\PhongShader.h"
 
+/// TODO:
+/// Implement Uniform Arrays into the Phong Shader to allow for multiple lights
+/// using the ForwardRendererSingle...
+
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
@@ -18,9 +22,9 @@ namespace Honeycomb::Shader::Phong {
 	PhongShader *PhongShader::instance = NULL; // Null instance at first
 
 	std::string VERTEX_SHADER_LOC =
-		"..\\Honeycomb GE\\res\\shaders\\phong\\vertexShader.glsl";
+		"..\\Honeycomb GE\\res\\shaders\\phong\\phongVertex.glsl";
 	std::string FRAGMENT_SHADER_LOC =
-		"..\\Honeycomb GE\\res\\shaders\\phong\\fragShader.glsl";
+		"..\\Honeycomb GE\\res\\shaders\\phong\\phongFragment.glsl";
 
 	PhongShader::~PhongShader() {
 
@@ -44,6 +48,8 @@ namespace Honeycomb::Shader::Phong {
 		addUniform("objTransform");
 
 		addUniform("cameraPos");
+
+		this->name = "PhongShader";
 	}
 
 	void PhongShader::addUniform_AmbientLight(const AmbientLight &aL) {
