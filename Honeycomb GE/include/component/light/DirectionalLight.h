@@ -40,9 +40,6 @@ namespace Honeycomb::Component::Light {
 
 		/// Starts this Directional Light.
 		void start();
-
-		/// Writes this Directional Light to the Phong Shader.
-		void writeToShader();
 	private:
 		const Honeycomb::Math::Vector3f *direction; // Transform Direction
 

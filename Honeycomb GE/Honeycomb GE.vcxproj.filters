@@ -135,6 +135,9 @@
     <ClCompile Include="src\shader\phong\PhongAmbientShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\shader\phong\PhongDirectionalShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\math\Vector2f.h">
@@ -258,6 +261,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\shader\phong\PhongAmbientShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shader\phong\PhongDirectionalShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -35,12 +35,15 @@ namespace Honeycomb::Render {
 		/// TEMPORARY LIGHTS ///
 		Honeycomb::Object::GameObject ambientLightObject1;
 		Honeycomb::Object::GameObject ambientLightObject2;
+		Honeycomb::Object::GameObject directionalLightObject1;
+		Honeycomb::Object::GameObject directionalLightObject2;
 		////////////////////////
 
 		static ForwardRendererMulti* forwardRendererMulti; // Singleton
 
 		// The shaders which will be used to render a certain type of light.
-		Honeycomb::Shader::ShaderProgram* ambientShader;
+		Honeycomb::Shader::ShaderProgram *ambientShader;
+		Honeycomb::Shader::ShaderProgram *directionalShader;
 
 		/// Instantiates a new instance of the Forward Renderer Mutli-pass
 		/// Renderer.

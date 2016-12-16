@@ -121,9 +121,6 @@ namespace Honeycomb::Component::Light {
 
 		/// Starts this base light.
 		virtual void start();
-
-		/// Writes the uniforms of this light to the Phong Shader.
-		virtual void writeToShader();
 	protected:
 		float intensity; // The intensity of the light
 		Honeycomb::Math::Vector4f color; // The color of the light

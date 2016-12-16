@@ -233,6 +233,7 @@
     <ClCompile Include="src\component\physics\Transform.cpp" />
     <ClCompile Include="src\component\render\CameraController.cpp" />
     <ClCompile Include="src\shader\phong\PhongAmbientShader.cpp" />
+    <ClCompile Include="src\shader\phong\PhongDirectionalShader.cpp" />
     <ClCompile Include="src\shader\phong\PhongShader.cpp" />
     <ClCompile Include="src\shader\simple\SimpleShader.cpp" />
     <ClCompile Include="src\shader\ShaderProgram.cpp" />
@@ -276,6 +277,7 @@
     <ClInclude Include="include\component\physics\Transform.h" />
     <ClInclude Include="include\component\render\CameraController.h" />
     <ClInclude Include="include\shader\phong\PhongAmbientShader.h" />
+    <ClInclude Include="include\shader\phong\PhongDirectionalShader.h" />
     <ClInclude Include="include\shader\phong\PhongShader.h" />
     <ClInclude Include="include\shader\Simple\SimpleShader.h" />
     <ClInclude Include="include\shader\ShaderProgram.h" />

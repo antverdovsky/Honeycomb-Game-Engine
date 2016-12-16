@@ -108,23 +108,13 @@ namespace Honeycomb::Component::Light {
 
 	void BaseLight::setColor(const Vector4f &c) {
 		this->color = c;
-
-		this->writeToShader();
 	}
 
 	void BaseLight::setIntensity(const float &i) {
 		this->intensity = i;
-
-		this->writeToShader();
 	}
 	
 	void BaseLight::start() {
-		PhongShader::getPhongShader()->addUniform_BaseLight(*this);
-
-		this->writeToShader();
-	}
-
-	void BaseLight::writeToShader() {
-		PhongShader::getPhongShader()->setUniform_BaseLight(*this);
+		
 	}
 }

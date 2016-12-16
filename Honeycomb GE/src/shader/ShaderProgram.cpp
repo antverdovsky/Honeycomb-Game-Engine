@@ -149,7 +149,7 @@ namespace Honeycomb::Shader {
 	int ShaderProgram::getUniformLocation(const std::string &uni) {
 		std::unordered_map<std::string, int>::const_iterator it =
 			this->uniforms.find(uni);
-
+		
 		if (it == this->uniforms.end()) {
 			Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
 				"Unable to find uniform " + uni + " in Shader Program " +
