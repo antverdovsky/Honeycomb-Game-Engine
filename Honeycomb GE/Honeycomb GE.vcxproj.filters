@@ -138,6 +138,9 @@
     <ClCompile Include="src\shader\phong\PhongDirectionalShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\shader\phong\PhongPointShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\math\Vector2f.h">
@@ -266,11 +269,22 @@
     <ClInclude Include="include\shader\phong\PhongDirectionalShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\shader\phong\PhongPointShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\phong\fragShader.glsl" />
     <None Include="res\shaders\phong\vertexShader.glsl" />
     <None Include="res\shaders\simple\fragShader.glsl" />
     <None Include="res\shaders\simple\vertexShader.glsl" />
+    <None Include="res\shaders\phong\phongAmbientFragment.glsl" />
+    <None Include="res\shaders\phong\phongAmbientVertex.glsl" />
+    <None Include="res\shaders\phong\phongDirectionalFragment.glsl" />
+    <None Include="res\shaders\phong\phongDirectionalVertex.glsl" />
+    <None Include="res\shaders\phong\phongFragment.glsl" />
+    <None Include="res\shaders\phong\phongPointFragment.glsl" />
+    <None Include="res\shaders\phong\phongPointVertex.glsl" />
+    <None Include="res\shaders\phong\phongVertex.glsl" />
   </ItemGroup>
 </Project>

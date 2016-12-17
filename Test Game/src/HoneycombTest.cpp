@@ -72,7 +72,7 @@ namespace HoneycombTest {
 		cube->getComponentOfType<Transform>("Transform")->setTranslation(
 			Vector3f(-2.5F, 1.0F, -2.5F));
 		plane->getComponentOfType<Transform>("Transform")->setScale(
-			Vector3f(25.0F, 25.0F, 25.0F));
+			Vector3f(50.0, 1.0F, 50.0F));
 		sphere->getComponentOfType<Transform>("Transform")->setScale(
 			Vector3f(PI, PI, PI));
 		sphere->getComponentOfType<Transform>("Transform")->setTranslation(

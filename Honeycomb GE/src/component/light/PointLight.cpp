@@ -10,7 +10,7 @@ using Honeycomb::Shader::Phong::PhongShader;
 
 namespace Honeycomb::Component::Light {
 	PointLight::PointLight() : 
-			PointLight(BaseLight("pointLight"), BaseLight::Attenuation(), 
+			PointLight(BaseLight("PointLight"), BaseLight::Attenuation(), 
 			10.0F) {
 
 	}
