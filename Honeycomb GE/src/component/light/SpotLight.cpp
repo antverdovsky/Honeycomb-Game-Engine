@@ -12,7 +12,7 @@ using Honeycomb::Shader::Phong::PhongShader;
 
 namespace Honeycomb::Component::Light {
 	SpotLight::SpotLight() : 
-			SpotLight(BaseLight("spotLight"), BaseLight::Attenuation(), 
+			SpotLight(BaseLight("SpotLight"), BaseLight::Attenuation(), 
 			10.0F, PI / 6.0F) {
 
 	}
@@ -55,20 +55,14 @@ namespace Honeycomb::Component::Light {
 
 	void SpotLight::setAngle(const float &ang) {
 		this->angle = ang;
-
-		this->writeToShader();
 	}
 
 	void SpotLight::setAttenuation(const BaseLight::Attenuation &atten) {
 		this->attenuation = atten;
-
-		this->writeToShader();
 	}
 
 	void SpotLight::setRange(const float &ran) {
 		this->range = ran;
-
-		this->writeToShader();
 	}
 
 	void SpotLight::start() {
@@ -78,17 +72,17 @@ namespace Honeycomb::Component::Light {
 		// Subscribe to the Transform change event, so that the position and 
 		// direction of the light may be written to the shader each time the 
 		// transform changes.
-		this->transformChange.addAction(
-			std::bind(&SpotLight::writeToShader, this));
-		this->getAttached()->getComponentOfType<Transform>("Transform")->
-			getChangedEvent().addEventHandler(this->transformChange);
+//		this->transformChange.addAction(
+//			std::bind(&SpotLight::writeToShader, this));
+//		this->getAttached()->getComponentOfType<Transform>("Transform")->
+//			getChangedEvent().addEventHandler(this->transformChange);
 
 		// Subscribe to the Attenuation change event, so that the attenuation
 		// may be written to the shader each time it is changed.
-		this->attenuationChange.addAction(
-			std::bind(&SpotLight::writeToShader, this));
-		this->attenuation.getChangedEvent().
-			addEventHandler(this->attenuationChange);
+//		this->attenuationChange.addAction(
+//			std::bind(&SpotLight::writeToShader, this));
+//		this->attenuation.getChangedEvent().
+//			addEventHandler(this->attenuationChange);
 
 		// Get the position and direction from the Transform so that it may be 
 		// sent to the Phong Shader.
@@ -96,11 +90,5 @@ namespace Honeycomb::Component::Light {
 			getComponentOfType<Transform>("Transform")->getTranslation();
 		this->direction = &this->getAttached()->
 			getComponentOfType<Transform>("Transform")->getLocalForward();
-
-		writeToShader(); // Write the default Transform direction to Shader
-	}
-
-	void SpotLight::writeToShader() {
-		PhongShader::getPhongShader()->setUniform_SpotLight(*this);
 	}
 }

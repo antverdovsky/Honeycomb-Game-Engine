@@ -67,9 +67,6 @@ namespace Honeycomb::Component::Light {
 
 		/// Starts this Spot Light.
 		void start();
-
-		/// Writes this Spot Light to the Phong Shader.
-		void writeToShader();
 	private:
 		const Honeycomb::Math::Vector3f *position; // Transform Position
 		const Honeycomb::Math::Vector3f *direction; // Transform Direction

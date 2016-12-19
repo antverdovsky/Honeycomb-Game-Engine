@@ -6,17 +6,23 @@ using Honeycomb::Scene::GameScene;
 using Honeycomb::Shader::ShaderProgram;
 
 /// TEMPORARY ///
+#include <cmath>
+
 #include "..\..\include\shader\phong\PhongAmbientShader.h"
 using Honeycomb::Shader::Phong::PhongAmbientShader;
 #include "..\..\include\shader\phong\PhongDirectionalShader.h"
 using Honeycomb::Shader::Phong::PhongDirectionalShader;
 #include "..\..\include\shader\phong\PhongPointShader.h"
 using Honeycomb::Shader::Phong::PhongPointShader;
+#include "..\..\include\shader\phong\PhongSpotShader.h"
+using Honeycomb::Shader::Phong::PhongSpotShader;
 
 #include "..\..\include\component\render\CameraController.h"
 using Honeycomb::Component::Render::CameraController;
 #include "..\..\include\component\light\PointLight.h"
 using Honeycomb::Component::Light::PointLight;
+#include "..\..\include\component\light\SpotLight.h"
+using Honeycomb::Component::Light::SpotLight;
 #include "..\..\include\component\light\DirectionalLight.h"
 using Honeycomb::Component::Light::DirectionalLight;
 #include "..\..\include\math\Vector3f.h";
@@ -52,7 +58,9 @@ namespace Honeycomb::Render {
 			CameraController::getActiveCamera()->getProjection());
 		this->pointShader->setUniform_mat4("camProjection",
 			CameraController::getActiveCamera()->getProjection());
-		
+		this->spotShader->setUniform_mat4("camProjection",
+			CameraController::getActiveCamera()->getProjection());
+
 		/// TEMPORARY TODO: SOME METHOD TO MAKE THIS EASIER ///
 		this->ambientShader->setUniform_vec4("ambientLight.base.color",
 			ambientLightObject1.getComponentOfType<AmbientLight>("AmbientLight")->
@@ -94,7 +102,7 @@ namespace Honeycomb::Render {
 			getLocalForward());
 		//scene.render(*this->directionalShader);
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 12; i++) {
 			this->pointShader->setUniform_vec4("pointLight.base.color",
 				pointLights[i].getComponentOfType<PointLight>("PointLight")->
 				getColor());
@@ -119,6 +127,38 @@ namespace Honeycomb::Render {
 
 			scene.render(*this->pointShader);
 		}
+
+		for (int i = 0; i < 8; i++) {
+			this->spotShader->setUniform_vec4("spotLight.base.color",
+				spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
+				getColor());
+			this->spotShader->setUniform_f("spotLight.base.intensity",
+				spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
+				getIntensity());
+			this->spotShader->setUniform_f("spotLight.attenuation.constant",
+				spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
+				getAttenuation().getAttenuationConstant());
+			this->spotShader->setUniform_f("spotLight.attenuation.linear",
+				spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
+				getAttenuation().getAttenuationLinear());
+			this->spotShader->setUniform_f("spotLight.attenuation.quadratic",
+				spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
+				getAttenuation().getAttenuationQuadratic());
+			this->spotShader->setUniform_vec3("spotLight.position",
+				spotLights[i].getComponentOfType<Transform>("Transform")->
+				getTranslation());
+			this->spotShader->setUniform_vec3("spotLight.direction",
+				spotLights[i].getComponentOfType<Transform>("Transform")->
+				getLocalForward());
+			this->spotShader->setUniform_f("spotLight.range",
+				spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
+				getRange());
+			this->spotShader->setUniform_f("spotLight.cosAngle",
+				cos(spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
+				getAngle()));
+
+			scene.render(*this->spotShader);
+		}
 		
 		// Re-enable regular settings
 		glDepthFunc(GL_LESS);
@@ -136,6 +176,7 @@ namespace Honeycomb::Render {
 		this->ambientShader = PhongAmbientShader::getPhongAmbientShader();
 		this->directionalShader = PhongDirectionalShader::getPhongDirectionalShader();
 		this->pointShader = PhongPointShader::getPhongPointShader();
+		this->spotShader = PhongSpotShader::getPhongSpotShader();
 
 		/// TEMPORARY LIGHT INITIALIZATION ///
 		this->ambientLightObject1 = *Honeycomb::Object::Builder::getBuilder()->
@@ -162,7 +203,7 @@ namespace Honeycomb::Render {
 		this->directionalLightObject2.getComponentOfType<DirectionalLight>("DirectionalLight")->
 			setColor(Vector4f(0.0F, 1.0F, 0.0F, 1.0F));
 
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 12; i++) {
 			this->pointLights[i] = *Honeycomb::Object::Builder::getBuilder()->
 				newPointLight();
 
@@ -171,6 +212,20 @@ namespace Honeycomb::Render {
 			this->pointLights[i].getComponentOfType<PointLight>("PointLight")->
 				setIntensity(2.5F);
 			this->pointLights[i].getComponentOfType<PointLight>("PointLight")->
+				setColor(Vector4f(sin(i), 1.0F, cos(i), 1.0F));
+		}
+
+		for (int i = 0; i < 8; i++) {
+			this->spotLights[i] = *Honeycomb::Object::Builder::getBuilder()->
+				newSpotLight();
+
+			this->spotLights[i].getComponentOfType<Transform>("Transform")->
+				translate(Vector3f(25 * cos(i), 1.5F, 25 * sin(i)));
+			this->spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
+				setIntensity(20.0F);
+			this->spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
+				setRange(10.0F);
+			this->spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
 				setColor(Vector4f(sin(i), 1.0F, cos(i), 1.0F));
 		}
 		/////////////////////////////////////

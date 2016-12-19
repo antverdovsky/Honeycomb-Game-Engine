@@ -236,6 +236,7 @@
     <ClCompile Include="src\shader\phong\PhongDirectionalShader.cpp" />
     <ClCompile Include="src\shader\phong\PhongPointShader.cpp" />
     <ClCompile Include="src\shader\phong\PhongShader.cpp" />
+    <ClCompile Include="src\shader\phong\PhongSpotShader.cpp" />
     <ClCompile Include="src\shader\simple\SimpleShader.cpp" />
     <ClCompile Include="src\shader\ShaderProgram.cpp" />
   </ItemGroup>
@@ -281,6 +282,7 @@
     <ClInclude Include="include\shader\phong\PhongDirectionalShader.h" />
     <ClInclude Include="include\shader\phong\PhongPointShader.h" />
     <ClInclude Include="include\shader\phong\PhongShader.h" />
+    <ClInclude Include="include\shader\phong\PhongSpotShader.h" />
     <ClInclude Include="include\shader\Simple\SimpleShader.h" />
     <ClInclude Include="include\shader\ShaderProgram.h" />
   </ItemGroup>
@@ -293,6 +295,8 @@
     <None Include="res\shaders\phong\phongFragment.glsl" />
     <None Include="res\shaders\phong\phongPointFragment.glsl" />
     <None Include="res\shaders\phong\phongPointVertex.glsl" />
+    <None Include="res\shaders\phong\phongSpotFragment.glsl" />
+    <None Include="res\shaders\phong\phongSpotVertex.glsl" />
     <None Include="res\shaders\phong\phongVertex.glsl" />
     <None Include="res\shaders\phong\vertexShader.glsl" />
     <None Include="res\shaders\simple\fragShader.glsl" />

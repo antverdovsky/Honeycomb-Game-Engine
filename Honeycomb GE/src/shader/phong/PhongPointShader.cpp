@@ -43,7 +43,7 @@ namespace Honeycomb::Shader::Phong {
 		addUniform("material.specularColor");
 		addUniform("material.shininess");
 
-		this->name = "PhongDirectionalShader";
+		this->name = "PhongPointShader";
 	}
 
 	PhongPointShader::~PhongPointShader() {

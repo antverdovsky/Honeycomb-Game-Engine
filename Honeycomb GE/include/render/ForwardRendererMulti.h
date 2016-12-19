@@ -37,7 +37,8 @@ namespace Honeycomb::Render {
 		Honeycomb::Object::GameObject ambientLightObject2;
 		Honeycomb::Object::GameObject directionalLightObject1;
 		Honeycomb::Object::GameObject directionalLightObject2;
-		Honeycomb::Object::GameObject pointLights[10];
+		Honeycomb::Object::GameObject pointLights[12];
+		Honeycomb::Object::GameObject spotLights[8];
 		////////////////////////
 
 		static ForwardRendererMulti* forwardRendererMulti; // Singleton
@@ -46,6 +47,7 @@ namespace Honeycomb::Render {
 		Honeycomb::Shader::ShaderProgram *ambientShader;
 		Honeycomb::Shader::ShaderProgram *directionalShader;
 		Honeycomb::Shader::ShaderProgram *pointShader;
+		Honeycomb::Shader::ShaderProgram *spotShader;
 
 		/// Instantiates a new instance of the Forward Renderer Mutli-pass
 		/// Renderer.
