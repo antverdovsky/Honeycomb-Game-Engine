@@ -94,14 +94,13 @@ namespace Honeycomb::Graphics {
 		this->specularColor = col;
 	}
 
-	void Material::use(ShaderProgram &shader) const {
+	void Material::toShader(ShaderProgram &shader, const std::string &uni) 
+			const {
 		this->albedoTexture->bind();
 
-		// TODO:::
-		//PhongShader::getPhongShader()->setUniform_Material(*this);
-		shader.setUniform_vec4("material.ambientColor", this->ambientColor);
-		shader.setUniform_vec4("material.diffuseColor", this->diffuseColor);
-		shader.setUniform_vec4("material.specularColor", this->specularColor);
-		shader.setUniform_f("material.shininess", this->shininess);
+		shader.setUniform_vec4(uni + ".ambientColor", this->ambientColor);
+		shader.setUniform_vec4(uni + ".diffuseColor", this->diffuseColor);
+		shader.setUniform_vec4(uni + ".specularColor", this->specularColor);
+		shader.setUniform_f(uni + ".shininess", this->shininess);
 	}
 }

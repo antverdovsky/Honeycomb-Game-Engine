@@ -120,6 +120,12 @@ namespace Honeycomb::Component::Render {
 
 		/// Updates this camera instance.
 		void update();
+
+		/// Writes the parameters of this Camera Controller to the specified
+		/// shader.
+		/// ShaderProgram &shader : The shader to which the Camera Controller
+		///							should be written to.
+		void toShader(Honeycomb::Shader::ShaderProgram &shader);
 	private:
 		static CameraController *activeCamera; // The active camera
 

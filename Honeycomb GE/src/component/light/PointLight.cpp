@@ -2,11 +2,10 @@
 
 #include "..\..\..\include\component\physics\Transform.h"
 #include "..\..\..\include\object\GameObject.h"
-#include "..\..\..\include\shader\phong\PhongShader.h"
 
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Vector3f;
-using Honeycomb::Shader::Phong::PhongShader;
+using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb::Component::Light {
 	PointLight::PointLight() : 
@@ -50,44 +49,23 @@ namespace Honeycomb::Component::Light {
 
 	void PointLight::setAttenuation(const BaseLight::Attenuation &atten) {
 		this->attenuation = atten;
-
-		this->writeToShader();
 	}
 
 	void PointLight::setRange(const float &ran) {
 		this->range = ran;
-
-		this->writeToShader();
 	}
 
 	void PointLight::start() {
-		// Add the Point Light to the Phong Shader
-		PhongShader::getPhongShader()->addUniform_PointLight(*this);
-
-		// Subscribe to the Transform change event, so that the position of
-		// the light may be written to the shader each time the transform
-		// changes.
-		this->transformChange.addAction(
-			std::bind(&PointLight::writeToShader, this));
-		this->getAttached()->getComponentOfType<Transform>("Transform")->
-			getChangedEvent().addEventHandler(this->transformChange);
-
-		// Subscribe to the Attenuation change event, so that the attenuation
-		// may be written to the shader each time it is changed.
-		this->attenuationChange.addAction(
-			std::bind(&PointLight::writeToShader, this));
-		this->attenuation.getChangedEvent().
-			addEventHandler(this->attenuationChange);
-
-		// Get the position from the Transform so that it may be sent to the
-		// Phong Shader.
+		// Get the position from the Transform.
 		this->position = &this->getAttached()->
 			getComponentOfType<Transform>("Transform")->getTranslation();
-
-		writeToShader(); // Write the default Transform direction to Shader
 	}
 
-	void PointLight::writeToShader() {
-		PhongShader::getPhongShader()->setUniform_PointLight(*this);
+	void PointLight::toShader(ShaderProgram &shader, const std::string &uni) {
+		BaseLight::toShader(shader, uni + ".base");
+		this->attenuation.toShader(shader, uni + ".attenuation");
+
+		shader.setUniform_vec3(uni + ".position", *this->position);
+		shader.setUniform_f(uni + ".range", this->range);
 	}
 }

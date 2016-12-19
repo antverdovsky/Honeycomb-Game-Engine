@@ -5,6 +5,7 @@
 #include "..\..\component\GameComponent.h"
 #include "..\..\conjuncture\Event.h"
 #include "..\..\math\Vector4f.h"
+#include "..\..\shader\ShaderProgram.h"
 
 namespace Honeycomb::Component::Light {
 	class BaseLight : public Honeycomb::Component::GameComponent {
@@ -67,6 +68,14 @@ namespace Honeycomb::Component::Light {
 			/// Sets the quadratic term in the attenuation equation.
 			/// const float &q : The new value of the quadratic term.
 			void setAttenuationQuadratic(const float &q);
+
+			/// Writes this attenuation to the specified Shader.
+			/// ShaderProgram &shader : Reference to the shader to which the 
+			///							attenuation is to be written to.
+			/// const string &uni : Name of the attenuation uniform in the 
+			///						shader.
+			void toShader(Honeycomb::Shader::ShaderProgram &shader, const 
+					std::string &uni);
 		protected:
 			/// Variables for the Attenuation calculation
 			float attenConstant;
@@ -121,11 +130,16 @@ namespace Honeycomb::Component::Light {
 
 		/// Starts this base light.
 		virtual void start();
+
+		/// Writes the parameters of this base light into the specified shader.
+		/// ShaderProgram &shader : Reference to the shader to which the light
+		///							is to be written to.
+		/// const string &uni : Name of the light uniform in the shader.
+		virtual void toShader(Honeycomb::Shader::ShaderProgram &shader,
+			const std::string &uni);
 	protected:
 		float intensity; // The intensity of the light
 		Honeycomb::Math::Vector4f color; // The color of the light
-	private:
-		std::string baseName; // The name of the light + ".base"
 	};
 }
 

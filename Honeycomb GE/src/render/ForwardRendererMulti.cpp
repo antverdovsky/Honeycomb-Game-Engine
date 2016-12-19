@@ -52,110 +52,33 @@ namespace Honeycomb::Render {
 	void ForwardRendererMulti::render(GameScene &scene) {
 		//glDisable(GL_BLEND);
 		
-		this->ambientShader->setUniform_mat4("camProjection",
-			CameraController::getActiveCamera()->getProjection());
-		this->directionalShader->setUniform_mat4("camProjection",
-			CameraController::getActiveCamera()->getProjection());
-		this->pointShader->setUniform_mat4("camProjection",
-			CameraController::getActiveCamera()->getProjection());
-		this->spotShader->setUniform_mat4("camProjection",
-			CameraController::getActiveCamera()->getProjection());
-
-		/// TEMPORARY TODO: SOME METHOD TO MAKE THIS EASIER ///
-		this->ambientShader->setUniform_vec4("ambientLight.base.color",
-			ambientLightObject1.getComponentOfType<AmbientLight>("AmbientLight")->
-			getColor());
-		this->ambientShader->setUniform_f("ambientLight.base.intensity",
-			ambientLightObject1.getComponentOfType<AmbientLight>("AmbientLight")->
-			getIntensity());
+		CameraController::getActiveCamera()->toShader(*this->ambientShader);
+		this->ambientLightObject1.getComponentOfType<AmbientLight>("AmbientLight")->
+			toShader(*this->ambientShader, "ambientLight");
 		scene.render(*this->ambientShader);
-
-	
-		this->directionalShader->setUniform_vec3("cameraPos",
-			CameraController::getActiveCamera()->getAttached()->
-			getComponentOfType<Transform>("Transform")->getTranslation());
 
 		glEnable(GL_BLEND); // Blend light contributions from various sources
 		glBlendFunc(GL_ONE, GL_ONE); // Blend full contribution of both sources
 		glDepthMask(GL_FALSE); // Disable Rendering to Depth Buffer
 		glDepthFunc(GL_EQUAL); // Only render if same depth
 
-		this->directionalShader->setUniform_vec4("directionalLight.base.color",
-			directionalLightObject1.getComponentOfType<DirectionalLight>("DirectionalLight")->
-			getColor());
-		this->directionalShader->setUniform_f("directionalLight.base.intensity",
-			directionalLightObject1.getComponentOfType<DirectionalLight>("DirectionalLight")->
-			getIntensity());
-		this->directionalShader->setUniform_vec3("directionalLight.direction",
-			directionalLightObject1.getComponentOfType<Transform>("Transform")->
-			getLocalForward());
-		//scene.render(*this->directionalShader);
-
-		this->directionalShader->setUniform_vec4("directionalLight.base.color",
-			directionalLightObject2.getComponentOfType<DirectionalLight>("DirectionalLight")->
-			getColor());
-		this->directionalShader->setUniform_f("directionalLight.base.intensity",
-			directionalLightObject2.getComponentOfType<DirectionalLight>("DirectionalLight")->
-			getIntensity());
-		this->directionalShader->setUniform_vec3("directionalLight.direction",
-			directionalLightObject2.getComponentOfType<Transform>("Transform")->
-			getLocalForward());
-		//scene.render(*this->directionalShader);
+		CameraController::getActiveCamera()->toShader(*this->directionalShader);
+		this->directionalLightObject1.getComponentOfType<DirectionalLight>("DirectionalLight")->
+			toShader(*this->directionalShader, "directionalLight");
+		scene.render(*this->directionalShader);
 
 		for (int i = 0; i < 12; i++) {
-			this->pointShader->setUniform_vec4("pointLight.base.color",
-				pointLights[i].getComponentOfType<PointLight>("PointLight")->
-				getColor());
-			this->pointShader->setUniform_f("pointLight.base.intensity",
-				pointLights[i].getComponentOfType<PointLight>("PointLight")->
-				getIntensity());
-			this->pointShader->setUniform_f("pointLight.attenuation.constant",
-				pointLights[i].getComponentOfType<PointLight>("PointLight")->
-				getAttenuation().getAttenuationConstant());
-			this->pointShader->setUniform_f("pointLight.attenuation.linear",
-				pointLights[i].getComponentOfType<PointLight>("PointLight")->
-				getAttenuation().getAttenuationLinear());
-			this->pointShader->setUniform_f("pointLight.attenuation.quadratic",
-				pointLights[i].getComponentOfType<PointLight>("PointLight")->
-				getAttenuation().getAttenuationQuadratic());
-			this->pointShader->setUniform_vec3("pointLight.position",
-				pointLights[i].getComponentOfType<Transform>("Transform")->
-				getTranslation());
-			this->pointShader->setUniform_f("pointLight.range",
-				pointLights[i].getComponentOfType<PointLight>("PointLight")->
-				getRange());
+			CameraController::getActiveCamera()->toShader(*this->pointShader);
+			this->pointLights[i].getComponentOfType<PointLight>("PointLight")->
+				toShader(*this->pointShader, "pointLight");
 
 			scene.render(*this->pointShader);
 		}
 
 		for (int i = 0; i < 8; i++) {
-			this->spotShader->setUniform_vec4("spotLight.base.color",
-				spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
-				getColor());
-			this->spotShader->setUniform_f("spotLight.base.intensity",
-				spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
-				getIntensity());
-			this->spotShader->setUniform_f("spotLight.attenuation.constant",
-				spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
-				getAttenuation().getAttenuationConstant());
-			this->spotShader->setUniform_f("spotLight.attenuation.linear",
-				spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
-				getAttenuation().getAttenuationLinear());
-			this->spotShader->setUniform_f("spotLight.attenuation.quadratic",
-				spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
-				getAttenuation().getAttenuationQuadratic());
-			this->spotShader->setUniform_vec3("spotLight.position",
-				spotLights[i].getComponentOfType<Transform>("Transform")->
-				getTranslation());
-			this->spotShader->setUniform_vec3("spotLight.direction",
-				spotLights[i].getComponentOfType<Transform>("Transform")->
-				getLocalForward());
-			this->spotShader->setUniform_f("spotLight.range",
-				spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
-				getRange());
-			this->spotShader->setUniform_f("spotLight.cosAngle",
-				cos(spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
-				getAngle()));
+			CameraController::getActiveCamera()->toShader(*this->spotShader);
+			this->spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
+				toShader(*this->spotShader, "spotLight");
 
 			scene.render(*this->spotShader);
 		}
@@ -181,12 +104,16 @@ namespace Honeycomb::Render {
 		/// TEMPORARY LIGHT INITIALIZATION ///
 		this->ambientLightObject1 = *Honeycomb::Object::Builder::getBuilder()->
 			newAmbientLight();
+		this->ambientLightObject1.start();
 		this->ambientLightObject2 = *Honeycomb::Object::Builder::getBuilder()->
 			newAmbientLight();
+		this->ambientLightObject2.start();
 		this->directionalLightObject1 = *Honeycomb::Object::Builder::getBuilder()->
 			newDirectionalLight();
+		this->directionalLightObject1.start();
 		this->directionalLightObject2 = *Honeycomb::Object::Builder::getBuilder()->
 			newDirectionalLight();
+		this->directionalLightObject2.start();
 		//////////////////////////////////////
 
 		/// TEMPORARY LIGHT CUSTOMIZATION ///
@@ -213,6 +140,8 @@ namespace Honeycomb::Render {
 				setIntensity(2.5F);
 			this->pointLights[i].getComponentOfType<PointLight>("PointLight")->
 				setColor(Vector4f(sin(i), 1.0F, cos(i), 1.0F));
+
+			this->pointLights[i].start();
 		}
 
 		for (int i = 0; i < 8; i++) {
@@ -227,6 +156,8 @@ namespace Honeycomb::Render {
 				setRange(10.0F);
 			this->spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
 				setColor(Vector4f(sin(i), 1.0F, cos(i), 1.0F));
+
+			this->spotLights[i].start();
 		}
 		/////////////////////////////////////
 	}

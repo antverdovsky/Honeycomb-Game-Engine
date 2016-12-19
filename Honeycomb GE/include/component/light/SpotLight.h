@@ -5,7 +5,6 @@
 #include "BaseLight.h"
 
 #include "..\..\math\Vector3f.h"
-#include "..\..\conjuncture\EventHandler.h"
 
 namespace Honeycomb::Component::Light {
 	class SpotLight : public BaseLight {
@@ -67,6 +66,13 @@ namespace Honeycomb::Component::Light {
 
 		/// Starts this Spot Light.
 		void start();
+
+		/// Writes the parameters of this spot light into the specified shader.
+		/// ShaderProgram &shader : Reference to the shader to which the light
+		///							is to be written to.
+		/// const string &uni : Name of the light uniform in the shader.
+		void toShader(Honeycomb::Shader::ShaderProgram &shader, 
+				const std::string &uni);
 	private:
 		const Honeycomb::Math::Vector3f *position; // Transform Position
 		const Honeycomb::Math::Vector3f *direction; // Transform Direction
@@ -74,10 +80,6 @@ namespace Honeycomb::Component::Light {
 		BaseLight::Attenuation attenuation; // The attenuation of the Light
 		float angle; // The spot angle of the Spot Light (entire light).
 		float range; // The range of the Spot Light
-
-		// Event handlers for the change in the transform and attenuation
-		Honeycomb::Conjuncture::EventHandler transformChange;
-		Honeycomb::Conjuncture::EventHandler attenuationChange;
 	};
 }
 

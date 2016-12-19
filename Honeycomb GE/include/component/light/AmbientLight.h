@@ -30,6 +30,14 @@ namespace Honeycomb::Component::Light {
 		/// constructor to prevent object slicing.
 		/// return : The cloned Ambient Light.
 		AmbientLight* clone() const;
+
+		/// Writes the parameters of this ambient light into the specified 
+		///	shader.
+		/// ShaderProgram &shader : Reference to the shader to which the light
+		///							is to be written to.
+		/// const string &uni : Name of the light uniform in the shader.
+		void toShader(Honeycomb::Shader::ShaderProgram &shader, 
+			const std::string &uni);
 	};
 }
 

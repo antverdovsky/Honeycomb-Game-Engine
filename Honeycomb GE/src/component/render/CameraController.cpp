@@ -153,13 +153,15 @@ namespace Honeycomb::Component::Render {
 		if (!this->isActive) return;
 	}
 
+	void CameraController::toShader(ShaderProgram &shader) {
+		shader.setUniform_mat4("camProjection", this->projection);
+		shader.setUniform_vec3("cameraPos", this->transform->getTranslation());
+	}
+
 	const Matrix4f& CameraController::calcProjection() {
 		this->projection = this->getProjectionView() *
 			this->getProjectionOrientation() *
 			this->getProjectionTranslation();
-
-//		ShaderProgram::getActiveShader()->setUniform_mat4("camProjection",
-//			this->getProjection());
 
 		return this->getProjection();
 	}
@@ -244,10 +246,6 @@ namespace Honeycomb::Component::Render {
 		this->projectionTrans.setAt(0, 3, -this->projectionTrans.getAt(0, 3));
 		this->projectionTrans.setAt(1, 3, -this->projectionTrans.getAt(1, 3));
 		this->projectionTrans.setAt(2, 3, -this->projectionTrans.getAt(2, 3));
-
-		// todo
-//		ShaderProgram::getActiveShader()->setUniform_vec3("cameraPos",
-//			this->transform->getTranslation());
 
 		return this->projectionTrans;
 	}

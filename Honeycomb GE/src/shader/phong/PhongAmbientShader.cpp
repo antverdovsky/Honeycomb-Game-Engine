@@ -26,6 +26,7 @@ namespace Honeycomb::Shader::Phong {
 		finalizeShaderProgram();
 
 		// Add Shader Uniforms TODO:::
+		addUniform("cameraPos");
 		addUniform("camProjection");
 		addUniform("objTransform");
 		addUniform("ambientLight.base.color");

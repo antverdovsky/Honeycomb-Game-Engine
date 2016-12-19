@@ -3,12 +3,11 @@
 #include "..\..\..\include\component\physics\Transform.h"
 #include "..\..\..\include\math\MathUtils.h"
 #include "..\..\..\include\object\GameObject.h"
-#include "..\..\..\include\shader\phong\PhongShader.h"
 
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Utils::PI;
 using Honeycomb::Math::Vector3f;
-using Honeycomb::Shader::Phong::PhongShader;
+using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb::Component::Light {
 	SpotLight::SpotLight() : 
@@ -66,29 +65,20 @@ namespace Honeycomb::Component::Light {
 	}
 
 	void SpotLight::start() {
-		// Add the Spot Light to the Phong Shader
-		PhongShader::getPhongShader()->addUniform_SpotLight(*this);
-
-		// Subscribe to the Transform change event, so that the position and 
-		// direction of the light may be written to the shader each time the 
-		// transform changes.
-//		this->transformChange.addAction(
-//			std::bind(&SpotLight::writeToShader, this));
-//		this->getAttached()->getComponentOfType<Transform>("Transform")->
-//			getChangedEvent().addEventHandler(this->transformChange);
-
-		// Subscribe to the Attenuation change event, so that the attenuation
-		// may be written to the shader each time it is changed.
-//		this->attenuationChange.addAction(
-//			std::bind(&SpotLight::writeToShader, this));
-//		this->attenuation.getChangedEvent().
-//			addEventHandler(this->attenuationChange);
-
-		// Get the position and direction from the Transform so that it may be 
-		// sent to the Phong Shader.
+		// Get the position and direction.
 		this->position = &this->getAttached()->
 			getComponentOfType<Transform>("Transform")->getTranslation();
 		this->direction = &this->getAttached()->
 			getComponentOfType<Transform>("Transform")->getLocalForward();
+	}
+
+	void SpotLight::toShader(ShaderProgram &shader, const std::string &uni) {
+		BaseLight::toShader(shader, uni + ".base");
+		this->attenuation.toShader(shader, uni + ".attenuation");
+
+		shader.setUniform_vec3(uni + ".position", *this->position);
+		shader.setUniform_vec3(uni + ".direction", *this->direction);
+		shader.setUniform_f(uni + ".range", this->range);
+		shader.setUniform_f(uni + ".cosAngle", cos(this->angle));
 	}
 }

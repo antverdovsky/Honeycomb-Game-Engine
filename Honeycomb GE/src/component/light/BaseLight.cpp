@@ -1,10 +1,8 @@
 #include "..\..\..\include\component\light\BaseLight.h"
 
-#include "..\..\..\include\shader\phong\PhongShader.h"
-
 using Honeycomb::Conjuncture::Event;
 using Honeycomb::Math::Vector4f;
-using Honeycomb::Shader::Phong::PhongShader;
+using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb::Component::Light {
 	BaseLight::Attenuation::Attenuation()
@@ -72,7 +70,14 @@ namespace Honeycomb::Component::Light {
 		this->attenuationChange();
 	}
 
-	BaseLight::BaseLight() : BaseLight("light", 1.0F, 
+	void BaseLight::Attenuation::toShader(ShaderProgram &shader, const 
+			std::string &uni) {
+		shader.setUniform_f(uni + ".constant", this->attenConstant);
+		shader.setUniform_f(uni + ".linear", this->attenLinear);
+		shader.setUniform_f(uni + ".quadratic", this->attenQuadratic);
+	}
+
+	BaseLight::BaseLight() : BaseLight("BaseLight", 1.0F, 
 			Vector4f(1.0F, 1.0F, 1.0F, 1.0F)) {
 
 	}
@@ -86,8 +91,6 @@ namespace Honeycomb::Component::Light {
 			const Vector4f &col) : GameComponent(nam) {
 		this->intensity = inten;
 		this->color = col;
-
-		this->baseName = nam + ".base";
 	}
 
 	BaseLight::~BaseLight() {
@@ -116,5 +119,10 @@ namespace Honeycomb::Component::Light {
 	
 	void BaseLight::start() {
 		
+	}
+
+	void BaseLight::toShader(ShaderProgram &shader, const std::string &uni) {
+		shader.setUniform_f(uni + ".intensity", this->intensity);
+		shader.setUniform_vec4(uni + ".color", this->color);
 	}
 }

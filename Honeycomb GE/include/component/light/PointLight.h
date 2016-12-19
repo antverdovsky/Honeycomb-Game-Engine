@@ -4,7 +4,6 @@
 
 #include "BaseLight.h"
 
-#include "..\..\conjuncture\EventHandler.h"
 #include "..\..\math\Vector3f.h"
 
 namespace Honeycomb::Component::Light {
@@ -67,17 +66,18 @@ namespace Honeycomb::Component::Light {
 		/// Starts this Point Light.
 		void start();
 
-		/// Writes this Point Light to the Phong Shader.
-		void writeToShader();
+		/// Writes the parameters of this point light into the specified 
+		/// shader.
+		/// ShaderProgram &shader : Reference to the shader to which the light
+		///							is to be written to.
+		/// const string &uni : Name of the light uniform in the shader.
+		void toShader(Honeycomb::Shader::ShaderProgram &shader,
+			const std::string &uni);
 	private:
 		const Honeycomb::Math::Vector3f *position; // Transform Position
 
 		BaseLight::Attenuation attenuation; // The attenuation of the Light
 		float range; // The sphere-like radius range of the Point Light
-
-		// Event handlers for the change in the transform & attenuation
-		Honeycomb::Conjuncture::EventHandler transformChange;
-		Honeycomb::Conjuncture::EventHandler attenuationChange;
 	};
 }
 

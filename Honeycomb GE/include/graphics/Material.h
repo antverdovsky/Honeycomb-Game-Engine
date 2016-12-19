@@ -104,12 +104,12 @@ namespace Honeycomb::Graphics {
 		/// const Vector4f &col : The new Specular Color.
 		void setSpecularColor(const Honeycomb::Math::Vector4f& col);
 
-		/// Uses this Material to draw something. The texture of this material
-		/// will be binded, and the color will be sent to the active Shader
-		/// program.
+		/// Writes the parameters of this material to the specified shader.
 		/// ShaderProgram &shader : The shader for which this material will be
 		///							used for.
-		void use(Honeycomb::Shader::ShaderProgram &shader) const;
+		/// const string &uni : The uniform name of the material in the shader.
+		void toShader(Honeycomb::Shader::ShaderProgram &shader, const 
+				std::string &name) const;
 	private:
 		std::string name; // The name of this material.
 

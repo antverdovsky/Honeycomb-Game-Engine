@@ -1,6 +1,7 @@
 #include "..\..\..\include\component\light\AmbientLight.h"
 
 using Honeycomb::Math::Vector4f;
+using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb::Component::Light {
 	AmbientLight::AmbientLight() : AmbientLight(BaseLight("AmbientLight")) {
@@ -22,5 +23,10 @@ namespace Honeycomb::Component::Light {
 
 	AmbientLight* AmbientLight::clone() const {
 		return new AmbientLight(*this);
+	}
+
+	void AmbientLight::toShader(ShaderProgram &shader, const std::string 
+			&uni) {
+		BaseLight::toShader(shader, uni + ".base");
 	}
 }
