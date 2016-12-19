@@ -66,6 +66,9 @@ namespace Honeycomb::Component::Light {
 
 		/// Starts this Spot Light.
 		void start();
+		
+		/// Stops this Spot Light.
+		void stop();
 
 		/// Writes the parameters of this spot light into the specified shader.
 		/// ShaderProgram &shader : Reference to the shader to which the light

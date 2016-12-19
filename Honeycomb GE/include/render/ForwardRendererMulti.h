@@ -6,13 +6,6 @@
 #include "..\scene\GameScene.h"
 #include "..\shader\ShaderProgram.h"
 
-#include "..\object\GameObject.h" // TEMPORARY
-#include "..\object\Builder.h" // TEMPORARY
-
-/// TODO:
-/// Make some sort of "Standard" Shader which has support for Ambient Lights,
-/// Materials, etc; since the ShaderProgram doesn't have any of that.
-
 namespace Honeycomb::Render {
 	class ForwardRendererMulti : public Renderer {
 	public:
@@ -32,15 +25,6 @@ namespace Honeycomb::Render {
 		///						    ambient light pass will be rendered.
 		void setAmbientLightShader(Honeycomb::Shader::ShaderProgram *shader);
 	private:
-		/// TEMPORARY LIGHTS ///
-		Honeycomb::Object::GameObject ambientLightObject1;
-		Honeycomb::Object::GameObject ambientLightObject2;
-		Honeycomb::Object::GameObject directionalLightObject1;
-		Honeycomb::Object::GameObject directionalLightObject2;
-		Honeycomb::Object::GameObject pointLights[12];
-		Honeycomb::Object::GameObject spotLights[8];
-		////////////////////////
-
 		static ForwardRendererMulti* forwardRendererMulti; // Singleton
 
 		// The shaders which will be used to render a certain type of light.

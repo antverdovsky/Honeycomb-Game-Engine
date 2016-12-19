@@ -7,8 +7,6 @@
 #include <iostream>
 #include <ctime>
 
-/// NOTE: NO LIGHTS UNDER FORWARD_RENDERING_MULTI AT THIS POINT.
-
 using namespace HoneycombEngine;
 using namespace HoneycombTest::Components;
 
@@ -29,16 +27,23 @@ namespace HoneycombTest {
 		GameObject *suzanne = Builder::getBuilder()->newSuzanne();
 		GameObject *challenger = Builder::getBuilder()->newModel(
 			"..\\Test Game\\res\\models\\dodge-challenger.fbx");
+		GameObject *aPointLight = Builder::getBuilder()->newPointLight();
 
 		// Initialize the Light Objects & a Camera
-		//GameObject *ambientLight = Builder::getBuilder()->newAmbientLight();
-		//ambientLight->getComponentOfType<AmbientLight>("ambientLight")->
-		//	setIntensity(0.22F);
-		//GameObject *directionalLight = Builder::getBuilder()->
-		//	newDirectionalLight();
-		//directionalLight->getComponentOfType<DirectionalLight>
-		//	("directionalLight")->setIntensity(2.0F);
+		GameObject *ambientLight = Builder::getBuilder()->newAmbientLight();
+		ambientLight->getComponentOfType<AmbientLight>("AmbientLight")->
+			setIntensity(0.22F);
+		GameObject *directionalLight = Builder::getBuilder()->
+			newDirectionalLight();
+		directionalLight->getComponentOfType<DirectionalLight>
+			("DirectionalLight")->setIntensity(2.0F);
 		GameObject *camera = Builder::getBuilder()->newCamera();
+		aPointLight->getComponentOfType<Transform>("Transform")->translate(
+			Vector3f(0.0F, 5.0F, 0.0F));
+		aPointLight->getComponentOfType<PointLight>("PointLight")->setIntensity(
+			10.0F);
+		aPointLight->getComponentOfType<PointLight>("PointLight")->setColor(
+			Vector4f(0.0F, 0.0F, 1.0F, 1.0F));
 
 		// Initialize the Suzanne Components
 		InputTransformable *suzInputTransformable = new InputTransformable(
@@ -49,20 +54,20 @@ namespace HoneycombTest {
 			GameInput::KEY_CODE_F, GameInput::KEY_CODE_G,
 			GameInput::KEY_CODE_V, GameInput::KEY_CODE_B,
 			5.0F, 5.0F);
-		//PointLight *suzPointLight = new PointLight();
-		//suzPointLight->setColor(Vector4f(1.0F, 0.0F, 0.0F, 1.0F));
-		//suzPointLight->setIntensity(10.0F);
-		//SpotLight *suzSpotLight = new SpotLight();
-		//suzSpotLight->setColor(Vector4f(0.0F, 0.0F, 1.0F, 1.0F));
-		//suzSpotLight->setIntensity(10.0F);
+		PointLight *suzPointLight = new PointLight();
+		suzPointLight->setColor(Vector4f(1.0F, 0.0F, 0.0F, 1.0F));
+		suzPointLight->setIntensity(10.0F);
+		SpotLight *suzSpotLight = new SpotLight();
+		suzSpotLight->setColor(Vector4f(0.0F, 0.0F, 1.0F, 1.0F));
+		suzSpotLight->setIntensity(10.0F);
 
 		// Add Suzanne's Components to Suzanne
-		//suzanne->addComponent(*suzPointLight);
-		//suzanne->addComponent(*suzSpotLight);
+		suzanne->addComponent(*suzPointLight);
+		suzanne->addComponent(*suzSpotLight);
 		suzanne->addComponent(*suzInputTransformable);
-		//camera->addComponent(*(new DirectionalLight("directionalLight",
-		//	2.0F,
-		//	Vector4f(1.0F, 1.0F, 1.0F, 1.0F))));
+		camera->addComponent(*(new DirectionalLight("DirectionalLight",
+			2.0F,
+			Vector4f(1.0F, 1.0F, 1.0F, 1.0F))));
 
 		// Allow the free movement of the camera
 		InputTransformable *camInputTransformable = new InputTransformable();
@@ -103,13 +108,14 @@ namespace HoneycombTest {
 		this->gameScene.addChild(*plane);
 		this->gameScene.addChild(*sphere);
 		this->gameScene.addChild(*suzanne);
-		//this->gameScene.addChild(*ambientLight);
+		this->gameScene.addChild(*ambientLight);
 		this->gameScene.addChild(*camera);
 		this->gameScene.addChild(*challenger);
+		this->gameScene.addChild(*aPointLight);
 		GameScene::setActiveScene(this->gameScene);
 		
 		// Start the Game Scene
-		//this->gameScene.start();
+		this->gameScene.start();
 	}
 
 	void TestGame::stop() {

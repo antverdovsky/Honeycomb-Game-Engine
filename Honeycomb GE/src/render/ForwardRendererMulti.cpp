@@ -50,36 +50,37 @@ namespace Honeycomb::Render {
 	}
 
 	void ForwardRendererMulti::render(GameScene &scene) {
-		//glDisable(GL_BLEND);
-		
+		/// Render the scene with the Ambient Light Shader
 		CameraController::getActiveCamera()->toShader(*this->ambientShader);
-		this->ambientLightObject1.getComponentOfType<AmbientLight>("AmbientLight")->
-			toShader(*this->ambientShader, "ambientLight");
-		scene.render(*this->ambientShader);
+		for (AmbientLight *aL : scene.getAmbientLights()) {
+			aL->toShader(*this->ambientShader, "ambientLight");
+			scene.render(*this->ambientShader);
+		}
 
 		glEnable(GL_BLEND); // Blend light contributions from various sources
 		glBlendFunc(GL_ONE, GL_ONE); // Blend full contribution of both sources
 		glDepthMask(GL_FALSE); // Disable Rendering to Depth Buffer
 		glDepthFunc(GL_EQUAL); // Only render if same depth
 
-		CameraController::getActiveCamera()->toShader(*this->directionalShader);
-		this->directionalLightObject1.getComponentOfType<DirectionalLight>("DirectionalLight")->
-			toShader(*this->directionalShader, "directionalLight");
-		scene.render(*this->directionalShader);
+		/// Render the scene with the Directional Light Shader
+		CameraController::getActiveCamera()->toShader(*this->
+			directionalShader);
+		for (DirectionalLight *dL : scene.getDirectionalLights()) {
+			dL->toShader(*this->directionalShader, "directionalLight");
+			scene.render(*this->directionalShader);
+		}
 
-		for (int i = 0; i < 12; i++) {
-			CameraController::getActiveCamera()->toShader(*this->pointShader);
-			this->pointLights[i].getComponentOfType<PointLight>("PointLight")->
-				toShader(*this->pointShader, "pointLight");
-
+		/// Render the scene with the Point Light Shader
+		CameraController::getActiveCamera()->toShader(*this->pointShader);
+		for (PointLight *pL : scene.getPointLights()) {
+			pL->toShader(*this->pointShader, "pointLight");
 			scene.render(*this->pointShader);
 		}
 
-		for (int i = 0; i < 8; i++) {
-			CameraController::getActiveCamera()->toShader(*this->spotShader);
-			this->spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
-				toShader(*this->spotShader, "spotLight");
-
+		/// Render the scene with the Point Light Shader
+		CameraController::getActiveCamera()->toShader(*this->spotShader);
+		for (SpotLight *sL : scene.getSpotLights()) {
+			sL->toShader(*this->spotShader, "spotLight");
 			scene.render(*this->spotShader);
 		}
 		
@@ -95,71 +96,12 @@ namespace Honeycomb::Render {
 
 	ForwardRendererMulti::ForwardRendererMulti() : Renderer() {
 		srand(time(NULL));
-		
+
 		this->ambientShader = PhongAmbientShader::getPhongAmbientShader();
-		this->directionalShader = PhongDirectionalShader::getPhongDirectionalShader();
 		this->pointShader = PhongPointShader::getPhongPointShader();
 		this->spotShader = PhongSpotShader::getPhongSpotShader();
-
-		/// TEMPORARY LIGHT INITIALIZATION ///
-		this->ambientLightObject1 = *Honeycomb::Object::Builder::getBuilder()->
-			newAmbientLight();
-		this->ambientLightObject1.start();
-		this->ambientLightObject2 = *Honeycomb::Object::Builder::getBuilder()->
-			newAmbientLight();
-		this->ambientLightObject2.start();
-		this->directionalLightObject1 = *Honeycomb::Object::Builder::getBuilder()->
-			newDirectionalLight();
-		this->directionalLightObject1.start();
-		this->directionalLightObject2 = *Honeycomb::Object::Builder::getBuilder()->
-			newDirectionalLight();
-		this->directionalLightObject2.start();
-		//////////////////////////////////////
-
-		/// TEMPORARY LIGHT CUSTOMIZATION ///
-		this->ambientLightObject1.getComponentOfType<AmbientLight>("AmbientLight")->
-			setColor(Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
-		this->ambientLightObject1.getComponentOfType<AmbientLight>("AmbientLight")->
-			setIntensity(0.1F);
-		this->ambientLightObject2.getComponentOfType<AmbientLight>("AmbientLight")->
-			setColor(Vector4f(0.0F, 0.0F, 1.0F, 1.0F));
-		this->ambientLightObject2.getComponentOfType<AmbientLight>("AmbientLight")->
-			setIntensity(0.1F);
-		this->directionalLightObject2.getComponentOfType<Transform>("Transform")->
-			rotate(Quaternion(Vector3f::getGlobalRight(), -3.1415926 / 2.0F));
-		this->directionalLightObject2.getComponentOfType<DirectionalLight>("DirectionalLight")->
-			setColor(Vector4f(0.0F, 1.0F, 0.0F, 1.0F));
-
-		for (int i = 0; i < 12; i++) {
-			this->pointLights[i] = *Honeycomb::Object::Builder::getBuilder()->
-				newPointLight();
-
-			this->pointLights[i].getComponentOfType<Transform>("Transform")->
-				translate(Vector3f(25 * cos(i), 2.5F, 25 * sin(i)));
-			this->pointLights[i].getComponentOfType<PointLight>("PointLight")->
-				setIntensity(2.5F);
-			this->pointLights[i].getComponentOfType<PointLight>("PointLight")->
-				setColor(Vector4f(sin(i), 1.0F, cos(i), 1.0F));
-
-			this->pointLights[i].start();
-		}
-
-		for (int i = 0; i < 8; i++) {
-			this->spotLights[i] = *Honeycomb::Object::Builder::getBuilder()->
-				newSpotLight();
-
-			this->spotLights[i].getComponentOfType<Transform>("Transform")->
-				translate(Vector3f(25 * cos(i), 1.5F, 25 * sin(i)));
-			this->spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
-				setIntensity(20.0F);
-			this->spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
-				setRange(10.0F);
-			this->spotLights[i].getComponentOfType<SpotLight>("SpotLight")->
-				setColor(Vector4f(sin(i), 1.0F, cos(i), 1.0F));
-
-			this->spotLights[i].start();
-		}
-		/////////////////////////////////////
+		this->directionalShader = 
+			PhongDirectionalShader::getPhongDirectionalShader();
 	}
 
 	ForwardRendererMulti::~ForwardRendererMulti() {

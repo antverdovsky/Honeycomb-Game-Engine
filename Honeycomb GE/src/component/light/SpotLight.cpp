@@ -1,8 +1,11 @@
 #include "..\..\..\include\component\light\SpotLight.h"
 
+#include <algorithm>
+
 #include "..\..\..\include\component\physics\Transform.h"
 #include "..\..\..\include\math\MathUtils.h"
 #include "..\..\..\include\object\GameObject.h"
+#include "..\..\..\include\scene\GameScene.h"
 
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Utils::PI;
@@ -70,6 +73,15 @@ namespace Honeycomb::Component::Light {
 			getComponentOfType<Transform>("Transform")->getTranslation();
 		this->direction = &this->getAttached()->
 			getComponentOfType<Transform>("Transform")->getLocalForward();
+
+		this->getAttached()->getScene()->spotLights.push_back(this);
+	}
+
+	void SpotLight::stop() {
+		std::vector<SpotLight*> &sLs =
+			this->getAttached()->getScene()->spotLights;
+
+		sLs.erase(std::remove(sLs.begin(), sLs.end(), this), sLs.end());
 	}
 
 	void SpotLight::toShader(ShaderProgram &shader, const std::string &uni) {

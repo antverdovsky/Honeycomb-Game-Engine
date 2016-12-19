@@ -9,6 +9,7 @@
 using Honeycomb::Component::GameComponent;
 using Honeycomb::Debug::Logger;
 using Honeycomb::Shader::ShaderProgram;
+using Honeycomb::Scene::GameScene;
 
 namespace Honeycomb::Object {
 	GameObject::GameObject() : GameObject("GameObject") {
@@ -19,6 +20,7 @@ namespace Honeycomb::Object {
 		this->name = n;
 		this->isActive = false;
 		this->parent = nullptr;
+		this->scene = nullptr;
 	}
 
 	GameObject::~GameObject() {
@@ -163,6 +165,14 @@ namespace Honeycomb::Object {
 
 	const GameObject* GameObject::getParent() const {
 		return this->parent;
+	}
+
+	GameScene* GameObject::getScene() {
+		return this->scene;
+	}
+
+	const GameScene* GameObject::getScene() const {
+		return this->scene;
 	}
 
 	void GameObject::input() {

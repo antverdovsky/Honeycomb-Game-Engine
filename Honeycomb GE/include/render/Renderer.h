@@ -1,6 +1,6 @@
 #pragma once
-#ifndef RENDER_ENGINE_H
-#define RENDER_ENGINE_H
+#ifndef RENDERER_H
+#define RENDERER_H
 
 #include "..\math\Vector4f.h"
 #include "..\scene\GameScene.h"

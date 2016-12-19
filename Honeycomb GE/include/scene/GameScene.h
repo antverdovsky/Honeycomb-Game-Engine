@@ -3,8 +3,14 @@
 #define GAME_SCENE_H
 
 #include <string>
+#include <vector>
 
 #include "..\component\GameComponent.h"
+#include "..\component\light\AmbientLight.h"
+#include "..\component\light\BaseLight.h"
+#include "..\component\light\DirectionalLight.h"
+#include "..\component\light\PointLight.h"
+#include "..\component\light\SpotLight.h"
 #include "..\object\GameObject.h"
 
 namespace Honeycomb::Scene {
@@ -12,6 +18,11 @@ namespace Honeycomb::Scene {
 	/// to which all game objects in the scene should be added to, in order for
 	/// them to be updated, rendered, etc.
 	class GameScene : public Honeycomb::Object::GameObject {
+		friend class Honeycomb::Component::Light::AmbientLight;
+		friend class Honeycomb::Component::Light::BaseLight;
+		friend class Honeycomb::Component::Light::DirectionalLight;
+		friend class Honeycomb::Component::Light::PointLight;
+		friend class Honeycomb::Component::Light::SpotLight;
 	public:
 		/// Initializes an empty Game Scene with the name "GameScene".
 		GameScene();
@@ -20,11 +31,63 @@ namespace Honeycomb::Scene {
 		/// const string &nam : The name of the game scene.
 		GameScene(const std::string &nam);
 
+		/// Adds the specified object as a child to this game object.
+		/// Object &o : The object to be parented to this game object.
+		void addChild(Honeycomb::Object::GameObject &o);
+
 		/// Clones this Game Scene into a new, dynamically allocated, 
 		/// independent game scene. All game objects and game components will
 		/// be duplicated into the new scene, as well.
 		/// return : The pointer to the cloned Game Scene.
 		GameScene* clone() const;
+
+		/// Returns the list of the ambient lights of this game scene.
+		/// return : The list of pointers to all the ambient light components 
+		///			 of this scene.
+		std::vector<Honeycomb::Component::Light::AmbientLight*>& 
+				getAmbientLights();
+
+		/// Returns the list of the ambient lights of this game scene.
+		/// return : The list of constant pointers to all the ambient light
+		///			 components of this scene.
+		const std::vector<Honeycomb::Component::Light::AmbientLight*>&
+				getAmbientLights() const;
+
+		/// Returns the list of the directional lights of this game scene.
+		/// return : The list of pointers to all the directional light 
+		///			 components of this scene.
+		std::vector<Honeycomb::Component::Light::DirectionalLight*>&
+			getDirectionalLights();
+
+		/// Returns the list of the directional lights of this game scene.
+		/// return : The list of constant pointers to all the directional light
+		///			 components of this scene.
+		const std::vector<Honeycomb::Component::Light::DirectionalLight*>&
+			getDirectionalLights() const;
+
+		/// Returns the list of the point lights of this game scene.
+		/// return : The list of pointers to all the point light components 
+		///			 of this scene.
+		std::vector<Honeycomb::Component::Light::PointLight*>&
+			getPointLights();
+
+		/// Returns the list of the point lights of this game scene.
+		/// return : The list of constant pointers to all the point light
+		///			 components of this scene.
+		const std::vector<Honeycomb::Component::Light::PointLight*>&
+			getPointLights() const;
+
+		/// Returns the list of the spot lights of this game scene.
+		/// return : The list of pointers to all the spot light 
+		///			 components of this scene.
+		std::vector<Honeycomb::Component::Light::SpotLight*>&
+			getSpotLights();
+
+		/// Returns the list of the spot lights of this game scene.
+		/// return : The list of constant pointers to all the spot light
+		///			 components of this scene.
+		const std::vector<Honeycomb::Component::Light::SpotLight*>&
+			getSpotLights() const;
 
 		/// Returns the pointer to the active game scene.
 		/// return : The pointer to the active Game Scene.
@@ -36,6 +99,13 @@ namespace Honeycomb::Scene {
 		static void setActiveScene(GameScene &scene);
 	private:
 		static GameScene *activeScene; // The active game scene
+
+		// Lists of all the active scene lights.
+		std::vector<Honeycomb::Component::Light::AmbientLight*> ambientLights;
+		std::vector<Honeycomb::Component::Light::PointLight*> pointLights;
+		std::vector<Honeycomb::Component::Light::SpotLight*> spotLights;
+		std::vector<Honeycomb::Component::Light::DirectionalLight*>
+			directionalLights;
 	};
 }
 

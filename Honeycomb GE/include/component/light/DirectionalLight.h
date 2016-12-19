@@ -40,6 +40,9 @@ namespace Honeycomb::Component::Light {
 		/// Starts this Directional Light.
 		void start();
 
+		/// Stops this Directional Light.
+		void stop();
+
 		/// Writes the parameters of this directional light into the specified 
 		/// shader.
 		/// ShaderProgram &shader : Reference to the shader to which the light

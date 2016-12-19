@@ -1,7 +1,10 @@
 #include "..\..\..\include\component\light\DirectionalLight.h"
 
+#include <algorithm>
+
 #include "..\..\..\include\component\physics\Transform.h"
 #include "..\..\..\include\object\GameObject.h"
+#include "..\..\..\include\scene\GameScene.h"
 
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Vector3f;
@@ -40,6 +43,15 @@ namespace Honeycomb::Component::Light {
 		// Get the direction from the Transform
 		this->direction = &this->getAttached()->
 			getComponentOfType<Transform>("Transform")->getLocalForward();
+
+		this->getAttached()->getScene()->directionalLights.push_back(this);
+	}
+
+	void DirectionalLight::stop() {
+		std::vector<DirectionalLight*> &dLs =
+			this->getAttached()->getScene()->directionalLights;
+
+		dLs.erase(std::remove(dLs.begin(), dLs.end(), this), dLs.end());
 	}
 
 	void DirectionalLight::toShader(ShaderProgram &shader, const std::string 

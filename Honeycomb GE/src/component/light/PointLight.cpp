@@ -1,7 +1,10 @@
 #include "..\..\..\include\component\light\PointLight.h"
 
+#include <algorithm>
+
 #include "..\..\..\include\component\physics\Transform.h"
 #include "..\..\..\include\object\GameObject.h"
+#include "..\..\..\include\scene\GameScene.h"
 
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Vector3f;
@@ -59,6 +62,15 @@ namespace Honeycomb::Component::Light {
 		// Get the position from the Transform.
 		this->position = &this->getAttached()->
 			getComponentOfType<Transform>("Transform")->getTranslation();
+	
+		this->getAttached()->getScene()->pointLights.push_back(this);
+	}
+
+	void PointLight::stop() {
+		std::vector<PointLight*> &pLs =
+			this->getAttached()->getScene()->pointLights;
+
+		pLs.erase(std::remove(pLs.begin(), pLs.end(), this), pLs.end());
 	}
 
 	void PointLight::toShader(ShaderProgram &shader, const std::string &uni) {

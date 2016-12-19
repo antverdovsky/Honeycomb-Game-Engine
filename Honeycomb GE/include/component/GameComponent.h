@@ -4,9 +4,9 @@
 
 #include <string>
 
-namespace Honeycomb::Object { class GameObject; }
-
 #include "..\shader\ShaderProgram.h"
+
+namespace Honeycomb::Object { class GameObject; }
 
 namespace Honeycomb::Component {
 	class GameComponent {

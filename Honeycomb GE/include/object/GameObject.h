@@ -8,9 +8,12 @@
 #include "..\component\GameComponent.h"
 
 namespace Honeycomb::Component { class GameComponent; }
+namespace Honeycomb::Scene { class GameScene; }
 
 namespace Honeycomb::Object {
 	class GameObject {
+		friend class Honeycomb::Scene::GameScene;
+		
 	public:
 		/// Initializes a Game Object with the "GameObject" name and root as
 		/// parent.
@@ -131,6 +134,14 @@ namespace Honeycomb::Object {
 		/// return : The constant pointer to the parent.
 		const GameObject* getParent() const;
 
+		/// Returns the scene of this Game Object.
+		/// return : The pointer to the Game Scene.
+		Honeycomb::Scene::GameScene* getScene();
+
+		/// Returns the scene of this Game Object.
+		/// return : The constant pointer to the Game Scene.
+		const Honeycomb::Scene::GameScene* getScene() const;
+
 		/// Handles any input events for this component, if necessary. This 
 		/// method will only do something if the object is active.
 		virtual void input();
@@ -169,7 +180,8 @@ namespace Honeycomb::Object {
 		bool isActive; // Is this object active?
 		std::string name; // Name of this Game Object
 		
-		GameObject* parent; // The parent of this Game Object
+		GameObject *parent; // The parent of this Game Object
+		Honeycomb::Scene::GameScene *scene; // Scene to which this belongs to
 
 		// The children and components of this Game Object
 		std::vector<GameObject*> children;
