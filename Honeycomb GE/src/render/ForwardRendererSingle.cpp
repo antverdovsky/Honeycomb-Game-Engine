@@ -2,6 +2,10 @@
 
 #include "..\..\include\shader\phong\PhongShader.h"
 
+/////////////////////////////////////
+/// CURRENTLY BROKEN - DO NOT USE ///
+/////////////////////////////////////
+
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Scene::GameScene;
 

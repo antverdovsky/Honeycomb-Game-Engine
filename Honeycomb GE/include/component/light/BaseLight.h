@@ -81,7 +81,7 @@ namespace Honeycomb::Component::Light {
 			float attenConstant;
 			float attenLinear;
 			float attenQuadratic;
-
+			
 			// Attenuation change (constant, linear, or quadratic) event.
 			Honeycomb::Conjuncture::Event attenuationChange;
 		};
@@ -114,11 +114,15 @@ namespace Honeycomb::Component::Light {
 
 		/// Gets the color of the base light.
 		/// return : The color.
-		virtual const Honeycomb::Math::Vector4f& getColor() const;
+		const Honeycomb::Math::Vector4f& getColor() const;
 
 		/// Gets the intensity of this base light.
 		/// return : The intensity.
-		virtual const float& getIntensity() const;
+		const float& getIntensity() const;
+
+		/// Gets the Shader of this base light.
+		/// return : The pointer to the Shader.
+		Honeycomb::Shader::ShaderProgram* getShader();
 
 		/// Sets the color of this base light.
 		/// const Vector4f &col : The constant reference to the color.
@@ -131,13 +135,17 @@ namespace Honeycomb::Component::Light {
 		/// Starts this base light.
 		virtual void start();
 
-		/// Writes the parameters of this base light into the specified shader.
-		/// ShaderProgram &shader : Reference to the shader to which the light
-		///							is to be written to.
-		/// const string &uni : Name of the light uniform in the shader.
-		virtual void toShader(Honeycomb::Shader::ShaderProgram &shader,
-			const std::string &uni);
+		/// Stops this base light.
+		virtual void stop();
+
+		/// Writes the parameters of this base light into its preferred shader.
+		virtual void toShader();
 	protected:
+		// The Shader with which this Light prefers to be rendered, and the
+		// uniform name of this light within said shader.
+		Honeycomb::Shader::ShaderProgram *shader;
+		std::string shaderUniform;
+
 		float intensity; // The intensity of the light
 		Honeycomb::Math::Vector4f color; // The color of the light
 	};

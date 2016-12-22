@@ -66,16 +66,9 @@ namespace Honeycomb::Component::Light {
 
 		/// Starts this Spot Light.
 		void start();
-		
-		/// Stops this Spot Light.
-		void stop();
 
-		/// Writes the parameters of this spot light into the specified shader.
-		/// ShaderProgram &shader : Reference to the shader to which the light
-		///							is to be written to.
-		/// const string &uni : Name of the light uniform in the shader.
-		void toShader(Honeycomb::Shader::ShaderProgram &shader, 
-				const std::string &uni);
+		/// Writes the parameters of this spot light into the preferred shader.
+		void toShader();
 	private:
 		const Honeycomb::Math::Vector3f *position; // Transform Position
 		const Honeycomb::Math::Vector3f *direction; // Transform Direction

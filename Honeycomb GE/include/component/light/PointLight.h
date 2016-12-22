@@ -66,16 +66,9 @@ namespace Honeycomb::Component::Light {
 		/// Starts this Point Light.
 		void start();
 
-		/// Stops this Point Light.
-		void stop();
-
-		/// Writes the parameters of this point light into the specified 
+		/// Writes the parameters of this point light into its preferred
 		/// shader.
-		/// ShaderProgram &shader : Reference to the shader to which the light
-		///							is to be written to.
-		/// const string &uni : Name of the light uniform in the shader.
-		void toShader(Honeycomb::Shader::ShaderProgram &shader,
-			const std::string &uni);
+		void toShader();
 	private:
 		const Honeycomb::Math::Vector3f *position; // Transform Position
 

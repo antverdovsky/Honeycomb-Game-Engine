@@ -5,10 +5,12 @@
 #include "..\..\..\include\component\physics\Transform.h"
 #include "..\..\..\include\object\GameObject.h"
 #include "..\..\..\include\scene\GameScene.h"
+#include "..\..\..\include\shader\phong\PhongPointShader.h"
 
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Shader::ShaderProgram;
+using Honeycomb::Shader::Phong::PhongPointShader;
 
 namespace Honeycomb::Component::Light {
 	PointLight::PointLight() : 
@@ -18,16 +20,21 @@ namespace Honeycomb::Component::Light {
 	}
 
 	PointLight::PointLight(const BaseLight &bL, 
-			const BaseLight::Attenuation &atten, const float &ran) : 
-			BaseLight(bL), attenuation(atten) {
-		this->range = ran;
+		const BaseLight::Attenuation &atten, const float &ran) : 
+			PointLight(bL.getName(), bL.getIntensity(), bL.getColor(),
+			atten.getAttenuationConstant(), atten.getAttenuationLinear(),
+			atten.getAttenuationQuadratic(), ran) {
+		
 	}
 
 	PointLight::PointLight(const std::string &nam, const float &inten, const
-			Honeycomb::Math::Vector4f &col, const float &atC, const float &atL,
-			const float &atQ, const float &ran) : 
+		Honeycomb::Math::Vector4f &col, const float &atC, const float &atL,
+		const float &atQ, const float &ran) : 
 			BaseLight(nam, inten, col), attenuation(atC, atL, atQ) {
 		this->range = ran;
+
+		this->shader = PhongPointShader::getPhongPointShader();
+		this->shaderUniform = "pointLight";
 	}
 
 	PointLight::~PointLight() {
@@ -63,21 +70,17 @@ namespace Honeycomb::Component::Light {
 		this->position = &this->getAttached()->
 			getComponentOfType<Transform>("Transform")->getTranslation();
 	
-		this->getAttached()->getScene()->pointLights.push_back(this);
+		BaseLight::start();
 	}
 
-	void PointLight::stop() {
-		std::vector<PointLight*> &pLs =
-			this->getAttached()->getScene()->pointLights;
+	void PointLight::toShader() {
+		BaseLight::toShader();
 
-		pLs.erase(std::remove(pLs.begin(), pLs.end(), this), pLs.end());
-	}
-
-	void PointLight::toShader(ShaderProgram &shader, const std::string &uni) {
-		BaseLight::toShader(shader, uni + ".base");
-		this->attenuation.toShader(shader, uni + ".attenuation");
-
-		shader.setUniform_vec3(uni + ".position", *this->position);
-		shader.setUniform_f(uni + ".range", this->range);
+		this->attenuation.toShader(*this->shader, 
+			this->shaderUniform + ".attenuation");
+		this->shader->setUniform_vec3(this->shaderUniform + ".position", 
+			*this->position);
+		this->shader->setUniform_f(this->shaderUniform + ".range", 
+			this->range);
 	}
 }

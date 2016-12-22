@@ -40,16 +40,9 @@ namespace Honeycomb::Component::Light {
 		/// Starts this Directional Light.
 		void start();
 
-		/// Stops this Directional Light.
-		void stop();
-
-		/// Writes the parameters of this directional light into the specified 
+		/// Writes the parameters of this directional light into its preferred
 		/// shader.
-		/// ShaderProgram &shader : Reference to the shader to which the light
-		///							is to be written to.
-		/// const string &uni : Name of the light uniform in the shader.
-		void toShader(Honeycomb::Shader::ShaderProgram &shader,
-			const std::string &uni);
+		void toShader();
 	private:
 		const Honeycomb::Math::Vector3f *direction; // Transform Direction
 	};

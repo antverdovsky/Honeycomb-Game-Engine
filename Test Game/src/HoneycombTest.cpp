@@ -4,9 +4,6 @@
 
 #include "..\include\components\InputTransformable.h"
 
-#include <iostream>
-#include <ctime>
-
 using namespace HoneycombEngine;
 using namespace HoneycombTest::Components;
 
@@ -108,10 +105,10 @@ namespace HoneycombTest {
 		this->gameScene.addChild(*plane);
 		this->gameScene.addChild(*sphere);
 		this->gameScene.addChild(*suzanne);
+		this->gameScene.addChild(*aPointLight);
 		this->gameScene.addChild(*ambientLight);
 		this->gameScene.addChild(*camera);
 		this->gameScene.addChild(*challenger);
-		this->gameScene.addChild(*aPointLight);
 		GameScene::setActiveScene(this->gameScene);
 		
 		// Start the Game Scene

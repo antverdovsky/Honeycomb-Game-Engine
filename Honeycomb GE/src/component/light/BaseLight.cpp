@@ -1,5 +1,12 @@
 #include "..\..\..\include\component\light\BaseLight.h"
 
+#include <algorithm>
+
+#include "..\..\..\include\debug\Logger.h"
+#include "..\..\..\include\object\GameObject.h"
+#include "..\..\..\include\scene\GameScene.h"
+
+using Honeycomb::Debug::Logger;
 using Honeycomb::Conjuncture::Event;
 using Honeycomb::Math::Vector4f;
 using Honeycomb::Shader::ShaderProgram;
@@ -109,6 +116,10 @@ namespace Honeycomb::Component::Light {
 		return this->intensity;
 	}
 
+	ShaderProgram* BaseLight::getShader() {
+		return this->shader;
+	}
+
 	void BaseLight::setColor(const Vector4f &c) {
 		this->color = c;
 	}
@@ -118,11 +129,26 @@ namespace Honeycomb::Component::Light {
 	}
 	
 	void BaseLight::start() {
-		
+		this->getAttached()->getScene()->activeLights.push_back(this);
 	}
 
-	void BaseLight::toShader(ShaderProgram &shader, const std::string &uni) {
-		shader.setUniform_f(uni + ".intensity", this->intensity);
-		shader.setUniform_vec4(uni + ".color", this->color);
+	void BaseLight::stop() {
+		std::vector<BaseLight*> &lights =
+			this->getAttached()->getScene()->activeLights;
+
+		lights.erase(std::remove(lights.begin(), lights.end(), this),
+			lights.end());
+	}
+
+	void BaseLight::toShader() {
+		if (this->shader == nullptr) {
+			Logger::getLogger().logError(__FUNCTION__, __LINE__, "Shader has "
+				"not been initialized in light " + this->name);
+		}
+
+		this->shader->setUniform_f(this->shaderUniform + ".base.intensity", 
+			this->intensity);
+		this->shader->setUniform_vec4(this->shaderUniform + ".base.color",
+			this->color);
 	}
 }

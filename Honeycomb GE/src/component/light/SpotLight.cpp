@@ -6,11 +6,13 @@
 #include "..\..\..\include\math\MathUtils.h"
 #include "..\..\..\include\object\GameObject.h"
 #include "..\..\..\include\scene\GameScene.h"
+#include "..\..\..\include\shader\phong\PhongSpotShader.h"
 
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Utils::PI;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Shader::ShaderProgram;
+using Honeycomb::Shader::Phong::PhongSpotShader;
 
 namespace Honeycomb::Component::Light {
 	SpotLight::SpotLight() : 
@@ -20,10 +22,13 @@ namespace Honeycomb::Component::Light {
 	}
 
 	SpotLight::SpotLight(const BaseLight &bL, const BaseLight::Attenuation 
-			&atten, const float &ran, const float &ang) : 
+		&atten, const float &ran, const float &ang) : 
 			BaseLight(bL), attenuation(atten) {
 		this->range = ran;
 		this->angle = ang;
+
+		this->shader = PhongSpotShader::getPhongSpotShader();
+		this->shaderUniform = "spotLight";
 	}
 
 	SpotLight::~SpotLight() {
@@ -74,23 +79,21 @@ namespace Honeycomb::Component::Light {
 		this->direction = &this->getAttached()->
 			getComponentOfType<Transform>("Transform")->getLocalForward();
 
-		this->getAttached()->getScene()->spotLights.push_back(this);
+		BaseLight::start();
 	}
 
-	void SpotLight::stop() {
-		std::vector<SpotLight*> &sLs =
-			this->getAttached()->getScene()->spotLights;
+	void SpotLight::toShader() {
+		BaseLight::toShader();
+		this->attenuation.toShader(*this->shader, 
+			this->shaderUniform + ".attenuation");
 
-		sLs.erase(std::remove(sLs.begin(), sLs.end(), this), sLs.end());
-	}
-
-	void SpotLight::toShader(ShaderProgram &shader, const std::string &uni) {
-		BaseLight::toShader(shader, uni + ".base");
-		this->attenuation.toShader(shader, uni + ".attenuation");
-
-		shader.setUniform_vec3(uni + ".position", *this->position);
-		shader.setUniform_vec3(uni + ".direction", *this->direction);
-		shader.setUniform_f(uni + ".range", this->range);
-		shader.setUniform_f(uni + ".cosAngle", cos(this->angle));
+		this->shader->setUniform_vec3(this->shaderUniform + ".position", 
+			*this->position);
+		this->shader->setUniform_vec3(this->shaderUniform + ".direction", 
+			*this->direction);
+		this->shader->setUniform_f(this->shaderUniform + ".range",
+			this->range);
+		this->shader->setUniform_f(this->shaderUniform + ".cosAngle",
+			cos(this->angle));
 	}
 }

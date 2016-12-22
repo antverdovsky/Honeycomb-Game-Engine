@@ -18,20 +18,8 @@ namespace Honeycomb::Render {
 		/// shaders stored in this instance.
 		/// GameScene &scene : The reference to the scene to be rendered.
 		void render(Honeycomb::Scene::GameScene &scene);
-
-		/// Sets the shader with which this renderer should render ambient
-		/// light.
-		/// ShaderProgram *shader : The pointer to the shader with which the
-		///						    ambient light pass will be rendered.
-		void setAmbientLightShader(Honeycomb::Shader::ShaderProgram *shader);
 	private:
 		static ForwardRendererMulti* forwardRendererMulti; // Singleton
-
-		// The shaders which will be used to render a certain type of light.
-		Honeycomb::Shader::ShaderProgram *ambientShader;
-		Honeycomb::Shader::ShaderProgram *directionalShader;
-		Honeycomb::Shader::ShaderProgram *pointShader;
-		Honeycomb::Shader::ShaderProgram *spotShader;
 
 		/// Instantiates a new instance of the Forward Renderer Mutli-pass
 		/// Renderer.

@@ -1,10 +1,7 @@
 #include "..\..\include\scene\GameScene.h"
 
 using Honeycomb::Object::GameObject;
-using Honeycomb::Component::Light::AmbientLight;
-using Honeycomb::Component::Light::DirectionalLight;
-using Honeycomb::Component::Light::PointLight;
-using Honeycomb::Component::Light::SpotLight;
+using Honeycomb::Component::Light::BaseLight;
 
 namespace Honeycomb::Scene {
 	GameScene* GameScene::activeScene = nullptr;
@@ -42,37 +39,12 @@ namespace Honeycomb::Scene {
 		return GameScene::activeScene;
 	}
 
-	std::vector<AmbientLight*>& GameScene::getAmbientLights() {
-		return this->ambientLights;
+	std::vector<BaseLight*>& GameScene::getActiveLights() {
+		return this->activeLights;
 	}
 
-	const std::vector<AmbientLight*>& GameScene::getAmbientLights() const {
-		return this->ambientLights;
-	}
-
-	std::vector<DirectionalLight*>& GameScene::getDirectionalLights() {
-		return this->directionalLights;
-	}
-
-	const std::vector<DirectionalLight*>& GameScene::getDirectionalLights() 
-			const {
-		return this->directionalLights;
-	}
-
-	std::vector<PointLight*>& GameScene::getPointLights() {
-		return this->pointLights;
-	}
-
-	const std::vector<PointLight*>& GameScene::getPointLights() const {
-		return this->pointLights;
-	}
-
-	std::vector<SpotLight*>& GameScene::getSpotLights() {
-		return this->spotLights;
-	}
-
-	const std::vector<SpotLight*>& GameScene::getSpotLights() const {
-		return this->spotLights;
+	const std::vector<BaseLight*>& GameScene::getActiveLights() const {
+		return this->activeLights;
 	}
 
 	void GameScene::setActiveScene(GameScene &scene) {

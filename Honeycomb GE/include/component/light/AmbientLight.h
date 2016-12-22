@@ -31,19 +31,9 @@ namespace Honeycomb::Component::Light {
 		/// return : The cloned Ambient Light.
 		AmbientLight* clone() const;
 
-		/// Starts this instance of the Ambient Light component.
-		void start();
-
-		/// Stops this instance of the Ambient Light component.
-		void stop();
-
-		/// Writes the parameters of this ambient light into the specified 
-		///	shader.
-		/// ShaderProgram &shader : Reference to the shader to which the light
-		///							is to be written to.
-		/// const string &uni : Name of the light uniform in the shader.
-		void toShader(Honeycomb::Shader::ShaderProgram &shader, 
-			const std::string &uni);
+		/// Writes the parameters of this ambient light into its preferred
+		/// shader.
+		void toShader();
 	};
 }
 

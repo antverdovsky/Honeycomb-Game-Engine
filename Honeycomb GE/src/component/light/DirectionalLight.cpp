@@ -5,26 +5,29 @@
 #include "..\..\..\include\component\physics\Transform.h"
 #include "..\..\..\include\object\GameObject.h"
 #include "..\..\..\include\scene\GameScene.h"
+#include "..\..\..\include\shader\phong\PhongDirectionalShader.h"
 
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
 using Honeycomb::Shader::ShaderProgram;
+using Honeycomb::Shader::Phong::PhongDirectionalShader;
 
 namespace Honeycomb::Component::Light {
-	DirectionalLight::DirectionalLight() 
-			: DirectionalLight(BaseLight("DirectionalLight")){
+	DirectionalLight::DirectionalLight() : 
+			DirectionalLight(BaseLight("DirectionalLight")){
 
 	}
 
-	DirectionalLight::DirectionalLight(const BaseLight &bL) 
-			: BaseLight(bL) {
+	DirectionalLight::DirectionalLight(const BaseLight &bL) : 
+			DirectionalLight(bL.getName(), bL.getIntensity(), bL.getColor()) {
 
 	}
 
 	DirectionalLight::DirectionalLight(const std::string &nam, const float
 			&inten, const Vector4f &col) : BaseLight(nam, inten, col) {
-
+		this->shader = PhongDirectionalShader::getPhongDirectionalShader();
+		this->shaderUniform = "directionalLight";
 	}
 
 	DirectionalLight::~DirectionalLight() {
@@ -44,20 +47,13 @@ namespace Honeycomb::Component::Light {
 		this->direction = &this->getAttached()->
 			getComponentOfType<Transform>("Transform")->getLocalForward();
 
-		this->getAttached()->getScene()->directionalLights.push_back(this);
+		BaseLight::start();
 	}
 
-	void DirectionalLight::stop() {
-		std::vector<DirectionalLight*> &dLs =
-			this->getAttached()->getScene()->directionalLights;
+	void DirectionalLight::toShader() {
+		BaseLight::toShader();
 
-		dLs.erase(std::remove(dLs.begin(), dLs.end(), this), dLs.end());
-	}
-
-	void DirectionalLight::toShader(ShaderProgram &shader, const std::string 
-			&uni) {
-		BaseLight::toShader(shader, uni + ".base");
-
-		shader.setUniform_vec3(uni + ".direction", *this->direction);
+		this->shader->setUniform_vec3(this->shaderUniform + ".direction", 
+			*this->direction);
 	}
 }
