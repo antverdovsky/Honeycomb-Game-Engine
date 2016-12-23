@@ -44,8 +44,8 @@ namespace Honeycomb::Component::Light {
 
 	void DirectionalLight::start() {
 		// Get the direction from the Transform
-		this->direction = &this->getAttached()->
-			getComponentOfType<Transform>("Transform")->getLocalForward();
+		this->direction = &this->getAttached()->getComponent<Transform>()->
+			getLocalForward();
 
 		BaseLight::start();
 	}

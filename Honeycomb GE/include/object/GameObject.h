@@ -6,6 +6,7 @@
 #include <string>
 
 #include "..\component\GameComponent.h"
+#include "..\debug\Logger.h"
 
 namespace Honeycomb::Component { class GameComponent; }
 namespace Honeycomb::Scene { class GameScene; }
@@ -76,21 +77,28 @@ namespace Honeycomb::Object {
 		/// return : The component object.
 		const Honeycomb::Component::GameComponent*
 				getComponent(const std::string &name) const;
-		
-		/// Gets the component with the specified name, downcast to the
-		/// specific type of component.
-		/// class Type : The type of the component.
-		/// const string &name : The name of the component.
-		/// return : The pointer to the component object.
-		template<class Type>
-		inline Type* getComponentOfType(const std::string &name) {
-			Honeycomb::Component::GameComponent *comp =
-				this->getComponent(name); // Get component
 
-			// If the component does not exist -> Return NULL.
-			// Otherwise, return the component, cast down to its specific type.
-			if (comp == NULL) return NULL;
-			else return dynamic_cast<Type*>(this->getComponent(name));
+		template<class Type>
+		const inline Type* getComponent() const {
+			// Go through all components and try to find one whose type matches
+			for (int i = 0; i < this->components.size(); i++) {
+				if (dynamic_cast<Type*>(this->components.at(i)) != nullptr) {
+					return dynamic_cast<const Type*>(this->components.at(i));
+				}
+			}
+
+			// If unable to find a matching component -> Print Warning & Return
+			// a nullptr
+			Honeycomb::Debug::Logger::getLogger().logWarning(
+				__FUNCTION__, __LINE__, "Object " + this->name + " does not "
+				"contain component " + typeid(Type).name());
+			return nullptr;
+		}
+
+		template<class Type>
+		inline Type* getComponent() {
+			return const_cast<Type*>(static_cast<const GameObject*>
+				(this)->getComponent<Type>());
 		}
 
 		/// Gets the component with the specified name, downcast to the
@@ -99,14 +107,30 @@ namespace Honeycomb::Object {
 		/// const string &name : The name of the component.
 		/// return : The constant pointer to the component object.
 		template<class Type>
-		const inline Type* getComponentOfType(const std::string &name) const {
-			Honeycomb::Component::GameComponent *comp = 
+		const inline Type* getComponent(const std::string &name) const {
+			const Honeycomb::Component::GameComponent *comp =
 				this->getComponent(name); // Get component
 
-			// If the component does not exist -> Return NULL.
+			// If the component does not exist -> Print Warning & Return NULL.
 			// Otherwise, return the component, cast down to its specific type.
-			if (comp == NULL) return NULL;
-			else return dynamic_cast<Type*>(this->getComponent(name));
+			if (comp == nullptr) {
+				Honeycomb::Debug::Logger::getLogger().logWarning(
+					__FUNCTION__, __LINE__, "Object " + this->name + " does "
+					"not contain component " + name);
+				
+				return nullptr;
+			} else return dynamic_cast<const Type*>(this->getComponent(name));
+		}
+		
+		/// Gets the component with the specified name, downcast to the
+		/// specific type of component.
+		/// class Type : The type of the component.
+		/// const string &name : The name of the component.
+		/// return : The pointer to the component object.
+		template<class Type>
+		inline Type* getComponent(const std::string &name) {
+			return const_cast<Type*>(static_cast<const GameObject*>
+				(this)->getComponent<Type>(name));
 		}
 
 		/// Gets all the components of this game object.

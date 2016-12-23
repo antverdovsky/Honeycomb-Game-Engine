@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <iostream>
 
-#include "..\..\include\debug\Logger.h"
 #include "..\..\include\shader\ShaderProgram.h"
 
 using Honeycomb::Component::GameComponent;
@@ -75,18 +74,8 @@ namespace Honeycomb::Object {
 	}
 
 	GameObject* GameObject::getChild(const std::string &name) {
-		// Go through all components and try to find one whose name matches
-		for (int i = 0; i < this->children.size(); i++) {
-			if (this->children.at(i)->getName() == name) {
-				return this->children.at(i);
-			}
-		}
-
-		Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
-			"Object " + this->name + " does not contain child " + name);
-
-		// If unable to find a matching child -> Return NULL
-		return nullptr;
+		return const_cast<GameObject*>(static_cast<const GameObject*>
+			(this)->getChild(name));
 	}
 
 	const GameObject* GameObject::getChild(const std::string &name) const {
@@ -113,18 +102,8 @@ namespace Honeycomb::Object {
 	}
 
 	GameComponent* GameObject::getComponent(const std::string &name) {
-		// Go through all components and try to find one whose name matches
-		for (int i = 0; i < this->components.size(); i++) {
-			if (this->components.at(i)->getName() == name) {
-				return this->components.at(i);
-			}
-		}
-
-		Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
-			"Object " + this->name + " does not contain component " + name);
-
-		// If unable to find a matching component -> Return NULL
-		return NULL;
+		return const_cast<GameComponent*>(static_cast<const GameObject*>
+			(this)->getComponent(name));
 	}
 
 	const GameComponent* GameObject::getComponent(const std::string &name)

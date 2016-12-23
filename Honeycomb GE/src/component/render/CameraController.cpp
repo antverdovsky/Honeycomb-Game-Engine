@@ -114,8 +114,7 @@ namespace Honeycomb::Component::Render {
 	}
 
 	void CameraController::start() {
-		this->transform = this->getAttached()->
-			getComponentOfType<Transform>("Transform");
+		this->transform = this->getAttached()->getComponent<Transform>();
 
 		// Calculate the initial projection orientation, translation and view
 		// matricies; use the matricies to calculate the projection matrix.

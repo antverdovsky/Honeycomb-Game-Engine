@@ -60,7 +60,7 @@ namespace HoneycombTest::Components {
 	void InputTransformable::input() {
 		// Get the Transform which will be modified, and a pointer to the Input
 		Transform *transform = 
-			this->attached->getComponentOfType<Transform>("Transform");
+			this->attached->getComponent<Transform>();
 		GameInput *input = GameInput::getGameInput();
 
 		// Adjust the speed values for the frame rate

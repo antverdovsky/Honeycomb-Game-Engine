@@ -28,18 +28,18 @@ namespace HoneycombTest {
 
 		// Initialize the Light Objects & a Camera
 		GameObject *ambientLight = Builder::getBuilder()->newAmbientLight();
-		ambientLight->getComponentOfType<AmbientLight>("AmbientLight")->
+		ambientLight->getComponent<AmbientLight>()->
 			setIntensity(0.22F);
 		GameObject *directionalLight = Builder::getBuilder()->
 			newDirectionalLight();
-		directionalLight->getComponentOfType<DirectionalLight>
-			("DirectionalLight")->setIntensity(2.0F);
+		directionalLight->getComponent<DirectionalLight>
+			()->setIntensity(2.0F);
 		GameObject *camera = Builder::getBuilder()->newCamera();
-		aPointLight->getComponentOfType<Transform>("Transform")->translate(
+		aPointLight->getComponent<Transform>()->translate(
 			Vector3f(0.0F, 5.0F, 0.0F));
-		aPointLight->getComponentOfType<PointLight>("PointLight")->setIntensity(
+		aPointLight->getComponent<PointLight>()->setIntensity(
 			10.0F);
-		aPointLight->getComponentOfType<PointLight>("PointLight")->setColor(
+		aPointLight->getComponent<PointLight>()->setColor(
 			Vector4f(0.0F, 0.0F, 1.0F, 1.0F));
 
 		// Initialize the Suzanne Components
@@ -71,19 +71,19 @@ namespace HoneycombTest {
 		camera->addComponent(*camInputTransformable);
 
 		// Transform the objects in the scene.
-		cube->getComponentOfType<Transform>("Transform")->setTranslation(
+		cube->getComponent<Transform>()->setTranslation(
 			Vector3f(-2.5F, 1.0F, -2.5F));
-		plane->getComponentOfType<Transform>("Transform")->setScale(
+		plane->getComponent<Transform>()->setScale(
 			Vector3f(50.0, 1.0F, 50.0F));
-		sphere->getComponentOfType<Transform>("Transform")->setScale(
+		sphere->getComponent<Transform>()->setScale(
 			Vector3f(PI, PI, PI));
-		sphere->getComponentOfType<Transform>("Transform")->setTranslation(
+		sphere->getComponent<Transform>()->setTranslation(
 			Vector3f(PI, PI, PI));
-		suzanne->getComponentOfType<Transform>("Transform")->setTranslation(
+		suzanne->getComponent<Transform>()->setTranslation(
 			Vector3f(0.0F, 2.5F, 0.0F));
-		challenger->getChild("Body")->getComponentOfType<Transform>("Transform")->setScale(
+		challenger->getChild("Body")->getComponent<Transform>()->setScale(
 			Vector3f(2.5F, 2.5F, 2.5F));
-		challenger->getChild("Body")->getComponentOfType<Transform>("Transform")->setTranslation(
+		challenger->getChild("Body")->getComponent<Transform>()->setTranslation(
 			Vector3f(7.5F, 1.75F, -7.5F));
 
 		// Create a fancy Emerald Material (non-textured).
@@ -95,9 +95,9 @@ namespace HoneycombTest {
 			0.6F * 128.0F);
 		
 		// Give Suzanne & the Sphere the Emerald Material
-		suzanne->getComponentOfType<MeshRenderer>("MeshRenderer")->setMaterial(
+		suzanne->getComponent<MeshRenderer>()->setMaterial(
 			*emerald);
-		sphere->getComponentOfType<MeshRenderer>("MeshRenderer")->setMaterial(
+		sphere->getComponent<MeshRenderer>()->setMaterial(
 			*emerald);
 
 		// Add all objects to the scene
