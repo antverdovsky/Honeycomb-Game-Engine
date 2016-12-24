@@ -18,8 +18,8 @@ namespace HoneycombTest {
 
 	void TestGame::start() {
 		// SHADER INCLUDE SYSTEM TESTING...
-		ShaderProgram *includeTest = new ShaderProgram();
-		includeTest->addShader("..\\Honeycomb GE\\res\\shaders\\includeTest\\main\\main.glsl", 0);
+		//ShaderProgram *includeTest = new ShaderProgram();
+		//includeTest->addShader("..\\Honeycomb GE\\res\\shaders\\includeTest\\main\\main.glsl", 0);
 		//
 
 

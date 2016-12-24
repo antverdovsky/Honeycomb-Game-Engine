@@ -208,8 +208,12 @@ namespace Honeycomb::Shader {
 		std::string *content = new std::string();
 		std::ifstream ifs(file);
 
-		if (!ifs) 
+		if (!ifs) {
+			Logger::getLogger().logError(__FUNCTION__, __LINE__,
+				"Unable to Import Shader Source from " + file);
+
 			return nullptr; // Return null if file is not found
+		}
 		
 		// Read in line by line, adding the new line character at the end
 		// of each line to go on to the next.

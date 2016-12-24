@@ -6,25 +6,9 @@
 
 #version 330 core
 
+#include <standard\stdPhongLight.glsl>
+
 uniform sampler2D textureSampler; // Texture Sampler
-
-///
-/// The material structure.
-///
-struct Material {
-    vec4 ambientColor; // Color under ambient light
-    vec4 diffuseColor; // Color under diffuse light.
-    vec4 specularColor; // Color under specular light
-    float shininess; // Shininess for the Specular Spread
-};
-
-///
-/// The basic structure for all lights.
-/// 
-struct BaseLight {
-    vec4 color; // The color of the light
-    float intensity; // The intensity of the light
-};
 
 ///
 /// The directional light structure.
@@ -47,29 +31,6 @@ uniform vec3 cameraPos; // TEMP TEMP TEMP TODO!
 /// Forward Declarations
 vec4 calculateDirectionalLight(DirectionalLight dL, Material mat, vec3 cP,
     vec3 wP, vec3 norm);
-vec4 calculateSpecularReflection(BaseLight bL, Material mat, vec3 cP, vec3 wP,
-    vec3 dir, vec3 norm);
-
-/// Calculates the diffuse light which should be applied to this fragment, 
-/// given some base light which shines on it.
-/// BaseLight bL : The base light which should be calculated.
-/// Material mat : The material for which the light should be calculated.
-/// vec3 dir : The direction with which the BaseLight shines upon the surface.
-/// vec3 norm : The normal of the surface on which the BaseLight shines upon.
-///             This should be normalized, prior to being passed in.
-/// return : The vector which can be used to add or detract lighting from the
-///          fragment.
-vec4 calculateDiffuseLight(BaseLight bL, Material mat, vec3 dir, vec3 norm) {
-    float diff = max(dot(-dir, norm), 0.0F);
-    
-    // Calculate the diffuse light but do NOT apply the intensity to the W
-    // component, so that the surface does not become transparent if the
-    // intensity is less than 1.0F.
-    return vec4(
-        vec3(diff * bL.intensity * bL.color.xyz * mat.diffuseColor.xyz * 
-            bL.color.w * mat.diffuseColor.w),
-        bL.color.w * mat.diffuseColor.w);
-}
 
 /// Calculates the light which should be applied to this fragment, given the
 /// directional light which shines on it and the normal of the surface.
@@ -92,32 +53,6 @@ vec4 calculateDirectionalLight(DirectionalLight dL, Material mat, vec3 cP,
     
     // Return the blend of the Diffuse and Specular lighting
     return diffuse + specular;
-}
-
-/// Calculates the specular reflection for this fragment given the light for
-/// which the reflection is being computed, the material of the surface and the
-/// coordinates of the camera and the fragment.
-/// BaseLight bL : The light for which the reflection is being computed.
-/// Material mat : The material of the surface.
-/// vec3 cP : The "position" of the camera in the world.
-/// vec3 wP : The position of the fragment in the world.
-/// vec3 dir : The direction with which the light hits the surface.
-/// vec3 norm : The normal to the surface.
-vec4 calculateSpecularReflection(BaseLight bL, Material mat, vec3 cP, vec3 wP,
-        vec3 dir, vec3 norm) {
-    vec3 direction = normalize(cP - wP); // Direction from Cam to Frag
-    vec3 reflection = normalize(reflect(dir, norm)); // Get the reflection
-    
-    // Calculate the specular reflection factor
-    float spec = pow(max(dot(direction, reflection), 0.0F), mat.shininess);
-    
-    // Calculate the specular light but do NOT apply the intensity to the W
-    // component, so that the surface does not become transparent if the
-    // intensity is less than 1.0F.
-    return vec4(
-        vec3(spec * bL.intensity * bL.color.xyz * mat.specularColor.xyz *
-            bL.color.w * mat.specularColor.w),
-        bL.color.w * mat.specularColor.w);
 }
 
 void main() {
