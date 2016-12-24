@@ -38,12 +38,6 @@ namespace Honeycomb::Shader {
 		/// the program and validates that everything was done correctly.
 		void finalizeShaderProgram();
 
-		/// Returns the pointer to the current active and bounded shader. If no
-		/// shader is bounded, a nullptr will be returned instead.
-		/// return : The currently active shader, or a nullptr if none is 
-		///			 bounded.
-		static ShaderProgram* getActiveShader();
-
 		/// Gets the uniform location of the specified uniform variable. If the
 		/// uniform does not exist in this shader, a negative value will be
 		/// returned instead.
@@ -88,13 +82,23 @@ namespace Honeycomb::Shader {
 		/// Unbinds the shader program so that it may not be used anymore.
 		void unbindShaderProgram();
 	protected:
-		static ShaderProgram *active; // The current bounded shader, if any
+		// Command in a Shader Program for including other Shader Programs
+		const static std::string INCLUDE_DIRECTIVE;
 
 		std::string name; // The name of this Shader
 
 		int programID; // "Pointer" ID to this shader program in the driver
 		std::vector<int> shaders; // "Pointer" IDs to the individual shaders
 		std::unordered_map<std::string, int> uniforms; // Hash Map of uniforms
+
+		/// Imports the source code from the specified file. Any dependencies
+		/// found in the file are automatically imported as well.
+		/// const string &file : The file from which source code is to be
+		///						 imported.
+		/// return : The pointer to the string of the source imported. The
+		///			 string is dynamically allocated and should be deleted
+		///			 after being used.
+		static std::string* importSource(const std::string &file);
 	};
 }
 

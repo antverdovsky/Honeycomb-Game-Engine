@@ -17,7 +17,8 @@ namespace Honeycomb::File {
 	
 	/// Reads in the file from the specified file path and returns a pointer to
 	/// its contents. The contents are dynamically allocated and should be
-	/// deleted after being used.
+	/// deleted after being used. If the file was not found, a nullptr is
+	/// returned instead.
 	/// const std::string &file : The path to the file which is to be read in.
 	/// return : The pointer to the contents of the file.
 	std::string* readFileToStr(const std::string &file);

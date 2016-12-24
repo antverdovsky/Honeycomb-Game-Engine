@@ -1,8 +1,9 @@
 #include "..\..\include\shader\ShaderProgram.h"
 
 #include <algorithm>
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <sstream>
 
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
@@ -17,7 +18,7 @@ using Honeycomb::Math::Matrix4f;
 using Honeycomb::Debug::Logger;
 
 namespace Honeycomb::Shader {
-	ShaderProgram *ShaderProgram::active = nullptr; // No active shader, yet
+	const std::string ShaderProgram::INCLUDE_DIRECTIVE = "#include ";
 
 	ShaderProgram::ShaderProgram() {
 		this->name = "ShaderProgram";
@@ -38,7 +39,7 @@ namespace Honeycomb::Shader {
 		this->bindShaderProgram();
 
 		// Read in the source from the file provided and get a pointer to it
-		std::string *src = readFileToStr(file);
+		std::string *src = ShaderProgram::importSource(file);
 		const char *srcPtr = src->c_str();
 
 		GLuint shaderID = glCreateShader(type);
@@ -94,8 +95,6 @@ namespace Honeycomb::Shader {
 
 	void ShaderProgram::bindShaderProgram() {
 		glUseProgram(this->programID);
-
-		ShaderProgram::active = this;
 	}
 
 	void ShaderProgram::finalizeShaderProgram() {
@@ -140,10 +139,6 @@ namespace Honeycomb::Shader {
 			glDetachShader(this->programID, shaderID);
 			glDeleteShader(shaderID);
 		}
-	}
-
-	ShaderProgram* ShaderProgram::getActiveShader() {
-		return ShaderProgram::active;
 	}
 
 	int ShaderProgram::getUniformLocation(const std::string &uni) {
@@ -204,7 +199,65 @@ namespace Honeycomb::Shader {
 
 	void ShaderProgram::unbindShaderProgram() {
 		glUseProgram(0);
+	}
 
-		// ShaderProgram::active = nullptr; TODO
+	// TODO: Written late at night, it was tested and works, but could probably
+	//		 be made better in the future :-)...
+	std::string* ShaderProgram::importSource(const std::string &file) {
+		// Variable to store the content and a stream to read it in
+		std::string *content = new std::string();
+		std::ifstream ifs(file);
+
+		if (!ifs) 
+			return nullptr; // Return null if file is not found
+		
+		// Read in line by line, adding the new line character at the end
+		// of each line to go on to the next.
+		std::string ln = "";
+		while (std::getline(ifs, ln)) {
+			if (ln.substr(0, INCLUDE_DIRECTIVE.size()) == INCLUDE_DIRECTIVE) {
+				// Find the two angle brackets which indicate the beginning and
+				// end of the file of the shader to be imported.
+				int fileBegin = ln.find("<") + 1;
+				int fileLen = ln.find(">") - fileBegin;
+
+				// Get the directory of file as it appears in the include
+				// statement.
+				std::string importFileLocal = ln.substr(fileBegin, fileLen);
+				
+				// Get the folder in which this file was located.
+				std::string importFileGlobal = file.substr(0,
+					file.find_last_of("\\"));
+
+				// While there are "..\" symbols in the string, move the
+				// directory back one folder.
+				while (importFileLocal.substr(0, 3) == "..\\") {
+					importFileLocal = importFileLocal.substr(3);
+					importFileGlobal = importFileGlobal.substr(0,
+						importFileGlobal.find_last_of("\\"));
+				}
+
+				// Append the name of the file once the final folder has been
+				// reached. This is the global name of the file to be imported.
+				importFileGlobal += "\\" + importFileLocal;
+
+				// Import the source code from the full system path.
+				std::string *importSrc = importSource(importFileGlobal);
+				
+				// Copy the import source into the current line (so that it may
+				// be appended regularly) and remove the imported source code
+				// string pointer.
+				ln = *importSrc;
+				delete importSrc;
+			}
+			
+			content->append(ln + '\n'); // Append the Line
+		}
+
+		std::string test = *content;
+
+		// Close stream & return the code (or empty if it couldn't be read).
+		ifs.close();
+		return content;
 	}
 }

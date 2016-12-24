@@ -78,6 +78,10 @@ namespace Honeycomb::Object {
 		const Honeycomb::Component::GameComponent*
 				getComponent(const std::string &name) const;
 
+		/// Returns the first component in the components list of this Game
+		/// Object which has the same type as specified. If the object does not
+		/// have said component, a nullptr is returned instead.
+		/// return : The component object constant pointer.
 		template<class Type>
 		const inline Type* getComponent() const {
 			// Go through all components and try to find one whose type matches
@@ -95,6 +99,10 @@ namespace Honeycomb::Object {
 			return nullptr;
 		}
 
+		/// Returns the first component in the components list of this Game
+		/// Object which has the same type as specified. If the object does not
+		/// have said component, a nullptr is returned instead.
+		/// return : The component object pointer.
 		template<class Type>
 		inline Type* getComponent() {
 			return const_cast<Type*>(static_cast<const GameObject*>
