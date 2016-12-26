@@ -1,12 +1,6 @@
-///
-/// Phong Fragment Shader.
-///
-/// Calculates the lighting on a fragment, and shades it to emulate lighting.
-///
-
 #version 330 core
 
-#include <standard\stdPhongLight.glsl>
+#include <..\..\include\stdLight.glh>
 
 uniform sampler2D textureSampler; // Texture Sampler
 
@@ -42,7 +36,7 @@ vec4 calculateAmbientLight(AmbientLight aL, Material mat) {
     return vec4(
         vec3(aL.base.intensity * aL.base.color.xyz * mat.ambientColor.xyz *
             aL.base.color.w * mat.ambientColor.w),
-        aL.base.color.w * mat.ambientColor.w);             
+        aL.base.color.w * mat.ambientColor.w);
 }
 
 

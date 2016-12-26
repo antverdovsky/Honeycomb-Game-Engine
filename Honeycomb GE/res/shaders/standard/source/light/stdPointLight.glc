@@ -1,14 +1,8 @@
-///
-/// Phong Fragment Shader.
-///
-/// Calculates the lighting on a fragment, and shades it to emulate lighting.
-///
-
 #version 330 core
 
 uniform sampler2D textureSampler; // Texture Sampler
 
-#include <standard\stdPhongLight.glsl>
+#include <..\..\include\stdLight.glh>
 
 ///
 /// The point light structure.

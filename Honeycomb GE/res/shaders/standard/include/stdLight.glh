@@ -1,4 +1,4 @@
-#include <stdPhongMaterial.glsl>
+#include <stdMaterial.glh>
 
 ///
 /// The basic structure for all lights.
