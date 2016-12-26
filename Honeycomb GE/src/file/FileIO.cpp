@@ -6,6 +6,10 @@
 #include <fstream>
 #include <string>
 
+#include "..\..\include\debug\Logger.h"
+
+using Honeycomb::Debug::Logger;
+
 namespace Honeycomb::File {
 	unsigned char* readImageToUChar(const std::string &img, int &w, int &h) {
 		// Use the SOIL library to load in the image and return its data
@@ -13,18 +17,35 @@ namespace Honeycomb::File {
 	}
 
 	std::string* readFileToStr(const std::string &file) {
+		// Read the file to string with no line modifications (empty vector).
+		return readFileToStr(file, std::vector<lineOperatorFunc>());
+	}
+
+	std::string* readFileToStr(const std::string &file, 
+			const std::vector<lineOperatorFunc> &lnFs) {
 		// Variable to store the content and a stream to read it in
 		std::string *content = new std::string();
 		std::ifstream ifs(file);
 
-		if (ifs) { // If the file has been found and is good -> Read in
-			// Read in line by line, adding the new line character at the end
-			// of each line to go on to the next.
-			std::string curLine = "";
-			while (std::getline(ifs, curLine)) content->append(curLine + '\n');
+		if (!ifs) { // If not found -> Print error and return.
+			Logger::getLogger().logError(__FUNCTION__, __LINE__,
+				"Unable to read in file contents from " + file + "!");
+
+			return nullptr;
 		}
-		
-		// Close stream & return the code (or empty if it couldn't be read).
+
+		std::string line = ""; // The current line which was read in
+		while (std::getline(ifs, line)) {
+			// Call the line operation functions passed in, allowing them to
+			// modify or process the line as they wish.
+			for (int i = 0; i < lnFs.size(); i++)
+				(*lnFs.at(i))(line, file);
+
+			// Append the final result to the content
+			content->append(line + '\n');
+		}
+
+		// Close stream & return the contents
 		ifs.close();
 		return content;
 	}

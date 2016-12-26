@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <sstream>
 
@@ -19,6 +20,10 @@ using Honeycomb::Debug::Logger;
 
 namespace Honeycomb::Shader {
 	const std::string ShaderProgram::INCLUDE_DIRECTIVE = "#include ";
+
+	std::vector<lineOperatorFunc> ShaderProgram::lineOpFuncs = {
+		&ShaderProgram::importDependency
+	};
 
 	ShaderProgram::ShaderProgram() {
 		this->name = "ShaderProgram";
@@ -39,7 +44,7 @@ namespace Honeycomb::Shader {
 		this->bindShaderProgram();
 
 		// Read in the source from the file provided and get a pointer to it
-		std::string *src = ShaderProgram::importSource(file);
+		std::string *src = File::readFileToStr(file, lineOpFuncs);
 		const char *srcPtr = src->c_str();
 
 		GLuint shaderID = glCreateShader(type);
@@ -201,67 +206,52 @@ namespace Honeycomb::Shader {
 		glUseProgram(0);
 	}
 
-	// TODO: Written late at night, it was tested and works, but could probably
-	//		 be made better in the future :-)...
-	std::string* ShaderProgram::importSource(const std::string &file) {
-		// Variable to store the content and a stream to read it in
-		std::string *content = new std::string();
-		std::ifstream ifs(file);
+	void ShaderProgram::importDependency(std::string &line, const std::string
+			&file) {
+		// If the line does not begin with the include directive -> return
+		if (line.substr(0, INCLUDE_DIRECTIVE.size()) != INCLUDE_DIRECTIVE)
+			return;
 
-		if (!ifs) {
-			Logger::getLogger().logError(__FUNCTION__, __LINE__,
-				"Unable to Import Shader Source from " + file);
+		// Find the two angle brackets which indicate the beginning and
+		// end of the file of the shader to be imported.
+		int fileBegin = line.find("<") + 1;
+		int fileLen = line.find(">") - fileBegin;
 
-			return nullptr; // Return null if file is not found
-		}
-		
-		// Read in line by line, adding the new line character at the end
-		// of each line to go on to the next.
-		std::string ln = "";
-		while (std::getline(ifs, ln)) {
-			if (ln.substr(0, INCLUDE_DIRECTIVE.size()) == INCLUDE_DIRECTIVE) {
-				// Find the two angle brackets which indicate the beginning and
-				// end of the file of the shader to be imported.
-				int fileBegin = ln.find("<") + 1;
-				int fileLen = ln.find(">") - fileBegin;
+		// If the angle brackets are messed up for some reason -> return
+		if (fileBegin >= fileLen)
+			return;
 
-				// Get the directory of file as it appears in the include
-				// statement.
-				std::string importFileLocal = ln.substr(fileBegin, fileLen);
-				
-				// Get the folder in which this file was located.
-				std::string importFileGlobal = file.substr(0,
-					file.find_last_of("\\"));
+		// Get the directory of file as it appears in the include statement.
+		std::string importFileLocal = line.substr(fileBegin, fileLen);
 
-				// While there are "..\" symbols in the string, move the
-				// directory back one folder.
-				while (importFileLocal.substr(0, 3) == "..\\") {
-					importFileLocal = importFileLocal.substr(3);
-					importFileGlobal = importFileGlobal.substr(0,
-						importFileGlobal.find_last_of("\\"));
-				}
+		// Get the folder in which this file was located.
+		std::string importFileGlobal = file.substr(0,
+			file.find_last_of("\\"));
 
-				// Append the name of the file once the final folder has been
-				// reached. This is the global name of the file to be imported.
-				importFileGlobal += "\\" + importFileLocal;
-
-				// Import the source code from the full system path.
-				std::string *importSrc = importSource(importFileGlobal);
-				
-				// Copy the import source into the current line (so that it may
-				// be appended regularly) and remove the imported source code
-				// string pointer.
-				ln = *importSrc;
-				delete importSrc;
-			}
-			
-			content->append(ln + '\n'); // Append the Line
+		// While there are "..\" symbols in the string, move the
+		// directory back one folder.
+		while (importFileLocal.substr(0, 3) == "..\\") {
+			importFileLocal = importFileLocal.substr(3);
+			importFileGlobal = importFileGlobal.substr(0,
+				importFileGlobal.find_last_of("\\"));
 		}
 
-		std::string test = *content;
+		// Append the name of the file once the final folder has been
+		// reached. This is the global name of the file to be imported.
+		importFileGlobal += "\\" + importFileLocal;
 
-		// Close stream & return the code (or empty if it couldn't be read).
-		ifs.close();
-		return content;
+		// Import the source code from the full system path.
+		std::string *importSrc = File::readFileToStr(importFileGlobal,
+			ShaderProgram::lineOpFuncs);
+
+		// If the source code could not be imported -> return
+		if (importSrc == nullptr)
+			return;
+
+		// Copy the import source into the current line (so that it may
+		// be appended regularly) and remove the imported source code
+		// string pointer.
+		line = *importSrc;
+		delete importSrc;
 	}
 }

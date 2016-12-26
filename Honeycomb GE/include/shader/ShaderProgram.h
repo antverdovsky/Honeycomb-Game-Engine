@@ -5,6 +5,7 @@
 #include <vector>
 #include <unordered_map>
 
+#include "..\file\FileIO.h"
 #include "..\math\Vector3f.h"
 #include "..\math\Vector4f.h"
 #include "..\math\Matrix4f.h"
@@ -85,20 +86,25 @@ namespace Honeycomb::Shader {
 		// Command in a Shader Program for including other Shader Programs
 		const static std::string INCLUDE_DIRECTIVE;
 
+		// The operations done to each line of source code when imported
+		// (ex: include exterenal dependencies).
+		static std::vector<File::lineOperatorFunc> lineOpFuncs;
+
 		std::string name; // The name of this Shader
 
 		int programID; // "Pointer" ID to this shader program in the driver
 		std::vector<int> shaders; // "Pointer" IDs to the individual shaders
 		std::unordered_map<std::string, int> uniforms; // Hash Map of uniforms
 
-		/// Imports the source code from the specified file. Any dependencies
-		/// found in the file are automatically imported as well.
-		/// const string &file : The file from which source code is to be
-		///						 imported.
-		/// return : The pointer to the string of the source imported. The
-		///			 string is dynamically allocated and should be deleted
-		///			 after being used.
-		static std::string* importSource(const std::string &file);
+		/// Imports a dependent file found in the specified line. The line
+		/// must be written in the format of INCLUDE_DIRECTIVE <FILE>, in order
+		/// for the import to occur. If the import is successful, the line will
+		/// be replaced with the imported source code. If the import is not
+		/// succesful, the line will not be modified.
+		/// string &line : The line with the import dependency.
+		/// const string &file : The file which contains the import dependency.
+		static void importDependency(std::string &line, const std::string 
+				&file);
 	};
 }
 
