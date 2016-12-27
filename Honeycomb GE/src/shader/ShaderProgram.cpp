@@ -21,10 +21,6 @@ using Honeycomb::Debug::Logger;
 namespace Honeycomb::Shader {
 	const std::string ShaderProgram::INCLUDE_DIRECTIVE = "#include ";
 
-	std::vector<lineOperatorFunc> ShaderProgram::lineOpFuncs = {
-		&ShaderProgram::importDependency
-	};
-
 	ShaderProgram::ShaderProgram() {
 		this->name = "ShaderProgram";
 
@@ -44,7 +40,7 @@ namespace Honeycomb::Shader {
 		this->bindShaderProgram();
 
 		// Read in the source from the file provided and get a pointer to it
-		std::string *src = File::readFileToStr(file, lineOpFuncs);
+		std::string *src = File::readFileToStr(file, *this);
 		const char *srcPtr = src->c_str();
 
 		GLuint shaderID = glCreateShader(type);
@@ -160,6 +156,11 @@ namespace Honeycomb::Shader {
 		else return it->second;
 	}
 
+	void ShaderProgram::lineOperation(const std::string &file, std::string
+			&line) {
+		this->importDependency(file, line);
+	}
+
 	void ShaderProgram::setUniform_f(const std::string &uni,
 		const float &val) {
 		this->bindShaderProgram();
@@ -206,8 +207,8 @@ namespace Honeycomb::Shader {
 		glUseProgram(0);
 	}
 
-	void ShaderProgram::importDependency(std::string &line, const std::string
-			&file) {
+	void ShaderProgram::importDependency(const std::string &file, std::string 
+			&line) {
 		// If the line does not begin with the include directive -> return
 		if (line.substr(0, INCLUDE_DIRECTIVE.size()) != INCLUDE_DIRECTIVE)
 			return;
@@ -242,7 +243,7 @@ namespace Honeycomb::Shader {
 
 		// Import the source code from the full system path.
 		std::string *importSrc = File::readFileToStr(importFileGlobal,
-			ShaderProgram::lineOpFuncs);
+			*this);
 
 		// If the source code could not be imported -> return
 		if (importSrc == nullptr)

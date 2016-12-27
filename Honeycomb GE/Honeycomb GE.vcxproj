@@ -205,6 +205,7 @@
     <ClCompile Include="src\component\light\SpotLight.cpp" />
     <ClCompile Include="src\conjuncture\Event.cpp" />
     <ClCompile Include="src\conjuncture\EventHandler.cpp" />
+    <ClCompile Include="src\file\LineOperation.cpp" />
     <ClCompile Include="src\render\ForwardRendererMulti.cpp" />
     <ClCompile Include="src\render\ForwardRendererSingle.cpp" />
     <ClCompile Include="src\render\Renderer.cpp" />
@@ -250,6 +251,7 @@
     <ClInclude Include="include\component\light\SpotLight.h" />
     <ClInclude Include="include\conjuncture\Event.h" />
     <ClInclude Include="include\conjuncture\EventHandler.h" />
+    <ClInclude Include="include\file\LineOperation.h" />
     <ClInclude Include="include\render\ForwardRendererMulti.h" />
     <ClInclude Include="include\render\ForwardRendererSingle.h" />
     <ClInclude Include="include\render\Renderer.h" />

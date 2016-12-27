@@ -6,12 +6,13 @@
 #include <unordered_map>
 
 #include "..\file\FileIO.h"
+#include "..\file\LineOperation.h"
 #include "..\math\Vector3f.h"
 #include "..\math\Vector4f.h"
 #include "..\math\Matrix4f.h"
 
 namespace Honeycomb::Shader {
-	class ShaderProgram {
+	class ShaderProgram : Honeycomb::File::LineOperation {
 	public:
 		/// Initializes the Shader instance.
 		ShaderProgram();
@@ -46,6 +47,13 @@ namespace Honeycomb::Shader {
 		/// return : The uniform location in the shader; or a negative value if
 		///			 the uniform does not exist.
 		int getUniformLocation(const std::string &uni);
+
+		/// Processes the specified line of shader source code. This method
+		/// will call the importDependencies method to replace the given line
+		/// with the imported source code.
+		/// const string &file : The file which contains the import dependency.
+		/// string &line : The line with the import dependency.
+		void lineOperation(const std::string &file, std::string &line);
 
 		/// Sets the specified uniform variable to the specified value. If the
 		/// uniform does not exist, no changes will be made.
@@ -86,10 +94,6 @@ namespace Honeycomb::Shader {
 		// Command in a Shader Program for including other Shader Programs
 		const static std::string INCLUDE_DIRECTIVE;
 
-		// The operations done to each line of source code when imported
-		// (ex: include exterenal dependencies).
-		static std::vector<File::lineOperatorFunc> lineOpFuncs;
-
 		std::string name; // The name of this Shader
 
 		int programID; // "Pointer" ID to this shader program in the driver
@@ -101,10 +105,9 @@ namespace Honeycomb::Shader {
 		/// for the import to occur. If the import is successful, the line will
 		/// be replaced with the imported source code. If the import is not
 		/// succesful, the line will not be modified.
-		/// string &line : The line with the import dependency.
 		/// const string &file : The file which contains the import dependency.
-		static void importDependency(std::string &line, const std::string 
-				&file);
+		/// string &line : The line with the import dependency.
+		void importDependency(const std::string &file, std::string &line);
 	};
 }
 

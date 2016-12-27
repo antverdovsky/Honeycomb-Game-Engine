@@ -17,12 +17,11 @@ namespace Honeycomb::File {
 	}
 
 	std::string* readFileToStr(const std::string &file) {
-		// Read the file to string with no line modifications (empty vector).
-		return readFileToStr(file, std::vector<lineOperatorFunc>());
+		// Read the file to string with no line modifications (empty instance).
+		return readFileToStr(file, LineOperation());
 	}
 
-	std::string* readFileToStr(const std::string &file, 
-			const std::vector<lineOperatorFunc> &lnFs) {
+	std::string* readFileToStr(const std::string &file, LineOperation &lnOp) {
 		// Variable to store the content and a stream to read it in
 		std::string *content = new std::string();
 		std::ifstream ifs(file);
@@ -36,13 +35,8 @@ namespace Honeycomb::File {
 
 		std::string line = ""; // The current line which was read in
 		while (std::getline(ifs, line)) {
-			// Call the line operation functions passed in, allowing them to
-			// modify or process the line as they wish.
-			for (int i = 0; i < lnFs.size(); i++)
-				(*lnFs.at(i))(line, file);
-
-			// Append the final result to the content
-			content->append(line + '\n');
+			lnOp.lineOperation(file, line); // Call line operation for the line
+			content->append(line + '\n'); // Append the result to the content
 		}
 
 		// Close stream & return the contents
