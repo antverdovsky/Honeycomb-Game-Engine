@@ -30,9 +30,9 @@ namespace Honeycomb::Shader::Phong {
 		finalizeShaderProgram();
 
 		// Add Shader Uniforms TODO:::
-		addUniform("camProjection");
-		addUniform("objTransform");
-		addUniform("cameraPos");
+		//addUniform("camProjection");
+		//addUniform("objTransform");
+		//addUniform("cameraPos");
 		addUniform("pointLight.base.color");
 		addUniform("pointLight.base.intensity");
 		addUniform("pointLight.attenuation.constant");

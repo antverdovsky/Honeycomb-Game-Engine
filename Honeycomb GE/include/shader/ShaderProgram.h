@@ -94,11 +94,18 @@ namespace Honeycomb::Shader {
 		// Command in a Shader Program for including other Shader Programs
 		const static std::string INCLUDE_DIRECTIVE;
 
+		// Command in a Shader Program for initializing a uniform
+		const static std::string UNIFORM_DIRECTIVE;
+
 		std::string name; // The name of this Shader
 
 		int programID; // "Pointer" ID to this shader program in the driver
 		std::vector<int> shaders; // "Pointer" IDs to the individual shaders
 		std::unordered_map<std::string, int> uniforms; // Hash Map of uniforms
+
+		// probably temporary... todo
+		// List of uniforms, by name, detected using the autoAddUniform method.
+		std::vector<std::string> detectedUniforms;
 
 		/// Imports a dependent file found in the specified line. The line
 		/// must be written in the format of INCLUDE_DIRECTIVE <FILE>, in order
@@ -108,6 +115,16 @@ namespace Honeycomb::Shader {
 		/// const string &file : The file which contains the import dependency.
 		/// string &line : The line with the import dependency.
 		void importDependency(const std::string &file, std::string &line);
+
+		/// Adds the uniform found in the specified line to a list of uniforms
+		/// which will be added once the shader is finalized. The line must be
+		/// written in the format of UNIFORM_DIRECTIVE TYPE NAME, in order for
+		/// the import to occur, though the line may have additional characters
+		/// for initializations, comments, etc. The line is not modified in
+		/// any way.
+		/// const string &file : The file which contains the import dependency.
+		/// string &line : The line with the import dependency.
+		void autoAddUniform(const std::string &file, std::string &line);
 	};
 }
 

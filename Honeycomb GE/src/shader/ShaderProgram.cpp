@@ -20,6 +20,7 @@ using Honeycomb::Debug::Logger;
 
 namespace Honeycomb::Shader {
 	const std::string ShaderProgram::INCLUDE_DIRECTIVE = "#include ";
+	const std::string ShaderProgram::UNIFORM_DIRECTIVE = "uniform ";
 
 	ShaderProgram::ShaderProgram() {
 		this->name = "ShaderProgram";
@@ -140,6 +141,12 @@ namespace Honeycomb::Shader {
 			glDetachShader(this->programID, shaderID);
 			glDeleteShader(shaderID);
 		}
+
+		/// temporary probably;
+		// Add all of the detected uniforms after the shader is finalized.
+		for (std::string uniform : this->detectedUniforms) {
+			this->addUniform(uniform);
+		}
 	}
 
 	int ShaderProgram::getUniformLocation(const std::string &uni) {
@@ -158,6 +165,7 @@ namespace Honeycomb::Shader {
 
 	void ShaderProgram::lineOperation(const std::string &file, std::string
 			&line) {
+		this->autoAddUniform(file, line);
 		this->importDependency(file, line);
 	}
 
@@ -254,5 +262,36 @@ namespace Honeycomb::Shader {
 		// string pointer.
 		line = *importSrc;
 		delete importSrc;
+	}
+
+	void ShaderProgram::autoAddUniform(const std::string &file, 
+			std::string &line) {
+		// If the line does not contain a uniform initialized -> return
+		if (line.substr(0, UNIFORM_DIRECTIVE.size()) != UNIFORM_DIRECTIVE)
+			return;
+
+		// Get the indices at which the type of the uniform and the name of the
+		// uniform start in the passed in line.
+		size_t typeIndex = line.find(' ', UNIFORM_DIRECTIVE.size() - 1) + 1;
+		size_t nameIndex = line.find(' ', typeIndex) + 1;
+
+		// Use the type and name indices to retrieve the type and name 
+		// substrings from the passed in line.
+		std::string type = line.substr(typeIndex, nameIndex - typeIndex - 1);
+		std::string name = line.substr(nameIndex);
+
+		// Parse the name string to retain only what is part of the name
+		// (trim semicolon, comments, initial value, etc).
+		for (int i = 0; i < name.size(); i++) {
+			// Variables cannot contain alphanumeric letters, therefore the
+			// variable name must end here.
+			if (!isalnum(name.at(i))) {
+				name = name.substr(0, i);
+
+				break;
+			}
+		}
+
+		this->detectedUniforms.push_back(name);
 	}
 }
