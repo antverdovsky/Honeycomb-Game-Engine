@@ -12,7 +12,7 @@
 #include "..\math\Matrix4f.h"
 
 namespace Honeycomb::Shader {
-	class ShaderProgram : Honeycomb::File::LineOperation {
+	class ShaderProgram {
 	public:
 		/// Initializes the Shader instance.
 		ShaderProgram();
@@ -47,13 +47,6 @@ namespace Honeycomb::Shader {
 		/// return : The uniform location in the shader; or a negative value if
 		///			 the uniform does not exist.
 		int getUniformLocation(const std::string &uni);
-
-		/// Processes the specified line of shader source code. This method
-		/// will call the importDependencies method to replace the given line
-		/// with the imported source code.
-		/// const string &file : The file which contains the import dependency.
-		/// string &line : The line with the import dependency.
-		void lineOperation(const std::string &file, std::string &line);
 
 		/// Sets the specified uniform variable to the specified value. If the
 		/// uniform does not exist, no changes will be made.
@@ -103,28 +96,29 @@ namespace Honeycomb::Shader {
 		std::vector<int> shaders; // "Pointer" IDs to the individual shaders
 		std::unordered_map<std::string, int> uniforms; // Hash Map of uniforms
 
-		// probably temporary... todo
-		// List of uniforms, by name, detected using the autoAddUniform method.
-		std::vector<std::string> detectedUniforms;
+		std::vector<std::string> detectedUniforms; // Detected Uniforms List
 
-		/// Imports a dependent file found in the specified line. The line
-		/// must be written in the format of INCLUDE_DIRECTIVE <FILE>, in order
-		/// for the import to occur. If the import is successful, the line will
-		/// be replaced with the imported source code. If the import is not
-		/// succesful, the line will not be modified.
-		/// const string &file : The file which contains the import dependency.
-		/// string &line : The line with the import dependency.
-		void importDependency(const std::string &file, std::string &line);
+		/// Processes the Shader source code imported from the specified file.
+		/// Any include directives will be replaced with imported source code
+		/// and any uniforms found will automatically be added to this Shader
+		/// Program. The imported source code is dynamically allocated and
+		/// should be removed after use.
+		/// const string &file : The directory from which to import the source.
+		std::string* getProcessedSource(const std::string &file);
 
-		/// Adds the uniform found in the specified line to a list of uniforms
-		/// which will be added once the shader is finalized. The line must be
-		/// written in the format of UNIFORM_DIRECTIVE TYPE NAME, in order for
-		/// the import to occur, though the line may have additional characters
-		/// for initializations, comments, etc. The line is not modified in
-		/// any way.
-		/// const string &file : The file which contains the import dependency.
-		/// string &line : The line with the import dependency.
-		void autoAddUniform(const std::string &file, std::string &line);
+		/// Detects any uniforms in the specified source code and adds them to
+		/// the detected uniforms vector list.
+		/// const string &source : The source code for which uniforms are to be
+		///						   detected.
+		void detectUniforms(const std::string &source);
+
+		/// Finds any include directives in the specified source code and
+		/// replaces the directive with the included source code.
+		/// const string &file : The directory of the file for which the source
+		///						 was passed in.
+		/// string &source : The source code for which the dependencies are to
+		///					 be included.
+		void includeDependencies(const std::string &file, std::string &source);
 	};
 }
 

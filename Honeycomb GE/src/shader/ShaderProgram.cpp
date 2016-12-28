@@ -41,7 +41,7 @@ namespace Honeycomb::Shader {
 		this->bindShaderProgram();
 
 		// Read in the source from the file provided and get a pointer to it
-		std::string *src = File::readFileToStr(file, *this);
+		std::string *src = this->getProcessedSource(file);
 		const char *srcPtr = src->c_str();
 
 		GLuint shaderID = glCreateShader(type);
@@ -142,8 +142,6 @@ namespace Honeycomb::Shader {
 			glDeleteShader(shaderID);
 		}
 
-		/// temporary probably;
-		// Add all of the detected uniforms after the shader is finalized.
 		for (std::string uniform : this->detectedUniforms) {
 			this->addUniform(uniform);
 		}
@@ -152,7 +150,7 @@ namespace Honeycomb::Shader {
 	int ShaderProgram::getUniformLocation(const std::string &uni) {
 		std::unordered_map<std::string, int>::const_iterator it =
 			this->uniforms.find(uni);
-		
+
 		if (it == this->uniforms.end()) {
 			Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
 				"Unable to find uniform " + uni + " in Shader Program " +
@@ -161,12 +159,6 @@ namespace Honeycomb::Shader {
 			return -1;
 		}
 		else return it->second;
-	}
-
-	void ShaderProgram::lineOperation(const std::string &file, std::string
-			&line) {
-		this->autoAddUniform(file, line);
-		this->importDependency(file, line);
 	}
 
 	void ShaderProgram::setUniform_f(const std::string &uni,
@@ -215,83 +207,112 @@ namespace Honeycomb::Shader {
 		glUseProgram(0);
 	}
 
-	void ShaderProgram::importDependency(const std::string &file, std::string 
-			&line) {
-		// If the line does not begin with the include directive -> return
-		if (line.substr(0, INCLUDE_DIRECTIVE.size()) != INCLUDE_DIRECTIVE)
-			return;
+	void ShaderProgram::includeDependencies(const std::string &file,
+		std::string &source) {
+		// Variables defining the position of the last found include directive
+		// and the offset from the beginning of the source code at which the
+		// search should begin the next iteration.
+		int pos = 0;
+		int offset = 0;
 
-		// Find the two angle brackets which indicate the beginning and
-		// end of the file of the shader to be imported.
-		int fileBegin = line.find("<") + 1;
-		int fileLen = line.find(">") - fileBegin;
+		// While an include directive has been found at some valid position
+		while ((pos = source.find(INCLUDE_DIRECTIVE, offset)) != source.npos) {
+			// Find the two angle brackets which indicate the beginning and
+			// end of the file of the shader to be imported.
+			int fileBegin = source.find("<", pos) + 1; // Starting Index
+			int fileEnd = source.find(">", fileBegin); // Ending Index
+			int fileLen = fileEnd - fileBegin; // File Length
 
-		// If the angle brackets are messed up for some reason -> return
-		if (fileBegin >= fileLen)
-			return;
+			// Get the directory of file as it appears in the include statement
+			std::string importFileLocal = source.substr(fileBegin, fileLen);
 
-		// Get the directory of file as it appears in the include statement.
-		std::string importFileLocal = line.substr(fileBegin, fileLen);
+			// Get the directory in which this file (not the import) is located
+			std::string importFileGlobal = file.substr(0,
+				file.find_last_of("\\"));
 
-		// Get the folder in which this file was located.
-		std::string importFileGlobal = file.substr(0,
-			file.find_last_of("\\"));
+			// While there are "..\" symbols in the local file directory, move 
+			// the directory back one folder (like standard C imports).
+			while (importFileLocal.substr(0, 3) == "..\\") {
+				// Remove the "..\" symbols from the local file directory
+				importFileLocal = importFileLocal.substr(3);
 
-		// While there are "..\" symbols in the string, move the
-		// directory back one folder.
-		while (importFileLocal.substr(0, 3) == "..\\") {
-			importFileLocal = importFileLocal.substr(3);
-			importFileGlobal = importFileGlobal.substr(0,
-				importFileGlobal.find_last_of("\\"));
+				// Delete the the last folder directory from the full directory
+				// (like "cd ..\")
+				importFileGlobal = importFileGlobal.substr(0,
+					importFileGlobal.find_last_of("\\"));
+			}
+
+			// Append the name of the file once the final folder has been
+			// reached. This is the global directory of the file which is to be
+			// imported.
+			importFileGlobal += "\\" + importFileLocal;
+
+			// Import the source code from the full system path and process it
+			std::string *importSrc = this->getProcessedSource(
+				importFileGlobal);
+
+			// Replace the include directive with the imported source code &
+			// delete the imported source code.
+			source.replace(pos, fileEnd + 1 - pos, importSrc->c_str());
+			delete importSrc;
+
+			// Set the new position from which to look for the next include
+			// directive as the end of this include directive.
+			offset = fileLen + 1;
 		}
-
-		// Append the name of the file once the final folder has been
-		// reached. This is the global name of the file to be imported.
-		importFileGlobal += "\\" + importFileLocal;
-
-		// Import the source code from the full system path.
-		std::string *importSrc = File::readFileToStr(importFileGlobal,
-			*this);
-
-		// If the source code could not be imported -> return
-		if (importSrc == nullptr)
-			return;
-
-		// Copy the import source into the current line (so that it may
-		// be appended regularly) and remove the imported source code
-		// string pointer.
-		line = *importSrc;
-		delete importSrc;
 	}
 
-	void ShaderProgram::autoAddUniform(const std::string &file, 
-			std::string &line) {
-		// If the line does not contain a uniform initialized -> return
-		if (line.substr(0, UNIFORM_DIRECTIVE.size()) != UNIFORM_DIRECTIVE)
-			return;
+	void ShaderProgram::detectUniforms(const std::string &source) {
+		// Variables defining the position of the last found uniform directive
+		// and the offset from the beginning of the source code at which the
+		// search should begin the next iteration.
+		int pos = 0;
+		int offset = 0;
 
-		// Get the indices at which the type of the uniform and the name of the
-		// uniform start in the passed in line.
-		size_t typeIndex = line.find(' ', UNIFORM_DIRECTIVE.size() - 1) + 1;
-		size_t nameIndex = line.find(' ', typeIndex) + 1;
+		// While a uniform directive has been found at some valid position
+		while ((pos = source.find(UNIFORM_DIRECTIVE, offset)) != source.npos) {
+			// Declare variables for the indices of the beginning and end of
+			// the uniform declaration statements. Use them to find the length
+			// for substrings.
+			int declBegin = pos;
+			int declEnd = source.find(";", pos);
+			int declLen = declEnd - declBegin;
 
-		// Use the type and name indices to retrieve the type and name 
-		// substrings from the passed in line.
-		std::string type = line.substr(typeIndex, nameIndex - typeIndex - 1);
-		std::string name = line.substr(nameIndex);
+			// Get the entire declaration substring and feed it to the string
+			// stream to be split up and processed.
+			std::string declaration = source.substr(declBegin, declLen);
+			std::stringstream sS(declaration);
+			std::string token = "";
 
-		// Parse the name string to retain only what is part of the name
-		// (trim semicolon, comments, initial value, etc).
-		for (int i = 0; i < name.size(); i++) {
-			// Variables cannot contain alphanumeric letters, therefore the
-			// variable name must end here.
-			if (!isalnum(name.at(i))) {
-				name = name.substr(0, i);
+			std::string type; // The type of uniform this is
 
-				break;
+			int tokenNumber = -1; // The token number in the declaration
+			while (std::getline(sS, token, ' ')) { // Split declaration by ' '
+				tokenNumber++; // New Token -> Increment Token Number
+
+				switch (tokenNumber) {
+				case 0:	// The first token should be the word uniform; skip it
+					continue;
+				case 1: // The second token should be the uniform type
+					type = token;
+					break;
+				case 2: // The third token is the uniform name; add it
+					this->detectedUniforms.push_back(token);
+					break;
+				}
 			}
-		}
 
-		this->detectedUniforms.push_back(name);
+			offset = declEnd + 1;
+		}
+	}
+
+	std::string* ShaderProgram::getProcessedSource(const std::string &file) {
+		std::string *importSrc = File::readFileToStr(file); // Import Source
+		
+		// Process the imported source code
+		this->includeDependencies(file, *importSrc);
+		this->detectUniforms(*importSrc);
+
+		return importSrc;
 	}
 }
