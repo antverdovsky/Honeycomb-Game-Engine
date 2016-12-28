@@ -90,6 +90,16 @@ namespace Honeycomb::Shader {
 		// Command in a Shader Program for initializing a uniform
 		const static std::string UNIFORM_DIRECTIVE;
 
+		// Strings which indicate the beginning and end of a single line 
+		// comment in a Shader Program.
+		const static std::string SINGLE_LINE_COMMENT_BEGIN;
+		const static std::string SINGLE_LINE_COMMENT_END;
+
+		// Strings which indicate the beginning and end of a multi line comment
+		// in a Shader Program.
+		const static std::string MULTI_LINE_COMMENT_BEGIN;
+		const static std::string MULTI_LINE_COMMENT_END;
+
 		std::string name; // The name of this Shader
 
 		int programID; // "Pointer" ID to this shader program in the driver
@@ -98,13 +108,14 @@ namespace Honeycomb::Shader {
 
 		std::vector<std::string> detectedUniforms; // Detected Uniforms List
 
-		/// Processes the Shader source code imported from the specified file.
-		/// Any include directives will be replaced with imported source code
-		/// and any uniforms found will automatically be added to this Shader
-		/// Program. The imported source code is dynamically allocated and
-		/// should be removed after use.
-		/// const string &file : The directory from which to import the source.
-		std::string* getProcessedSource(const std::string &file);
+		/// Removes C-style (//, /* */) comments from the specified source 
+		/// code. It is strongly advised that this method be run before
+		/// uniforms are detected or dependencies are imported as any comments
+		/// containing uniform or include directives may be seen as actual
+		/// directives!
+		/// string &source : The source from which comments are to be removed
+		///					 from.
+		void deleteComments(std::string &source);
 
 		/// Detects any uniforms in the specified source code and adds them to
 		/// the detected uniforms vector list.
@@ -119,6 +130,14 @@ namespace Honeycomb::Shader {
 		/// string &source : The source code for which the dependencies are to
 		///					 be included.
 		void includeDependencies(const std::string &file, std::string &source);
+
+		/// Processes the Shader source code imported from the specified file.
+		/// Any include directives will be replaced with imported source code
+		/// and any uniforms found will automatically be added to this Shader
+		/// Program. The imported source code is dynamically allocated and
+		/// should be removed after use.
+		/// const string &file : The directory from which to import the source.
+		std::string* processSource(const std::string &file);
 	};
 }
 

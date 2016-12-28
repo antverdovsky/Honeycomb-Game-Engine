@@ -21,6 +21,10 @@ using Honeycomb::Debug::Logger;
 namespace Honeycomb::Shader {
 	const std::string ShaderProgram::INCLUDE_DIRECTIVE = "#include ";
 	const std::string ShaderProgram::UNIFORM_DIRECTIVE = "uniform ";
+	const std::string ShaderProgram::SINGLE_LINE_COMMENT_BEGIN = "//";
+	const std::string ShaderProgram::SINGLE_LINE_COMMENT_END = "\n";
+	const std::string ShaderProgram::MULTI_LINE_COMMENT_BEGIN = "/*";
+	const std::string ShaderProgram::MULTI_LINE_COMMENT_END = "*/";
 
 	ShaderProgram::ShaderProgram() {
 		this->name = "ShaderProgram";
@@ -41,7 +45,7 @@ namespace Honeycomb::Shader {
 		this->bindShaderProgram();
 
 		// Read in the source from the file provided and get a pointer to it
-		std::string *src = this->getProcessedSource(file);
+		std::string *src = this->processSource(file);
 		const char *srcPtr = src->c_str();
 
 		GLuint shaderID = glCreateShader(type);
@@ -207,6 +211,38 @@ namespace Honeycomb::Shader {
 		glUseProgram(0);
 	}
 
+	void ShaderProgram::deleteComments(std::string &source) {
+		// Indices at which a comment begins and ends
+		int startIndex = 0;
+		int endIndex = 0;
+
+		while (true) { // Will keep going until start index becomes invalid
+			// Find the starting index and ending index by searching starting
+			// from the last comment's starting index (do not use the last
+			// comment's ending index as the file length has changed after the
+			// last comment's deletion).
+			startIndex = source.find(SINGLE_LINE_COMMENT_BEGIN, startIndex);
+			endIndex = source.find(SINGLE_LINE_COMMENT_END, startIndex);
+			
+			if (startIndex == source.npos) break;
+			else source.erase(startIndex, endIndex - startIndex + 
+				SINGLE_LINE_COMMENT_END.size());
+		}
+
+		// Reset back to the start of the file for Multi Line Comment Search
+		startIndex = 0;
+		endIndex = 0;
+
+		while (true) { // See Above
+			startIndex = source.find(MULTI_LINE_COMMENT_BEGIN, startIndex);
+			endIndex = source.find(MULTI_LINE_COMMENT_END, startIndex);
+
+			if (startIndex == source.npos) break;
+			else source.erase(startIndex, endIndex - startIndex + 
+				MULTI_LINE_COMMENT_END.size());
+		}
+	}
+
 	void ShaderProgram::includeDependencies(const std::string &file,
 		std::string &source) {
 		// Variables defining the position of the last found include directive
@@ -248,7 +284,7 @@ namespace Honeycomb::Shader {
 			importFileGlobal += "\\" + importFileLocal;
 
 			// Import the source code from the full system path and process it
-			std::string *importSrc = this->getProcessedSource(
+			std::string *importSrc = this->processSource(
 				importFileGlobal);
 
 			// Replace the include directive with the imported source code &
@@ -306,10 +342,11 @@ namespace Honeycomb::Shader {
 		}
 	}
 
-	std::string* ShaderProgram::getProcessedSource(const std::string &file) {
+	std::string* ShaderProgram::processSource(const std::string &file) {
 		std::string *importSrc = File::readFileToStr(file); // Import Source
 		
 		// Process the imported source code
+		this->deleteComments(*importSrc);
 		this->includeDependencies(file, *importSrc);
 		this->detectUniforms(*importSrc);
 
