@@ -33,7 +33,7 @@ namespace Honeycomb::Shader::Phong {
 		//addUniform("camProjection");
 		//addUniform("objTransform");
 		//addUniform("cameraPos");
-		addUniform("spotLight.base.color");
+		/*addUniform("spotLight.base.color");
 		addUniform("spotLight.base.intensity");
 		addUniform("spotLight.attenuation.constant");
 		addUniform("spotLight.attenuation.linear");
@@ -45,7 +45,7 @@ namespace Honeycomb::Shader::Phong {
 		addUniform("material.ambientColor");
 		addUniform("material.diffuseColor");
 		addUniform("material.specularColor");
-		addUniform("material.shininess");
+		addUniform("material.shininess");*/
 
 		this->name = "PhongSpotShader";
 	}

@@ -302,7 +302,7 @@ namespace Honeycomb::Shader {
 		}
 	}
 
-	// TODO: probably in need of a good cleanup & refactoring :-)
+	// TODO: definitely in need of a good cleanup & refactoring; its a mess :-(
 	void ShaderProgram::detectStructs(const std::string &source) {
 		// Variables defining the position of the last found struct directive
 		// and the offset from the beginning of the source code at which the
@@ -372,7 +372,25 @@ namespace Honeycomb::Shader {
 						type = token;
 						break;
 					case 1: // The second token is the name of the variable
-						variables.push_back(token);
+						// If the type is a struct defined somewhere in the shader,
+						// instead of just adding the variable name, all of the
+						// variables in the struct have to be added to the variable
+						// name.
+						if (this->detectedStructs.count(type)) {
+							// Get all of the variables of the struct
+							std::vector<std::string> vars =
+								this->detectedStructs[type];
+
+							for (int i = 0; i < vars.size(); i++) {
+								// The full name of the variable (struct.var).
+								std::string fullName = token + "." + vars.at(i);
+
+								// Add the full variable name to struct variables
+								variables.push_back(fullName);
+							}
+						}
+						else // If regular variable -> Just add the name
+							variables.push_back(token);
 						break;
 					}
 				}
@@ -423,7 +441,24 @@ namespace Honeycomb::Shader {
 					type = token;
 					break;
 				case 2: // The third token is the uniform name; add it
-					this->detectedUniforms.push_back(token);
+					// If the type is a struct defined somewhere in the shader,
+					// instead of just adding the uniform name, all of the
+					// variables in the struct have to be added to the uniform
+					// name.
+					if (this->detectedStructs.count(type)) {
+						// Get all of the variables of the struct
+						std::vector<std::string> vars = 
+							this->detectedStructs[type];
+						
+						for (int i = 0; i < vars.size(); i++) {
+							// The full name of the uniform (uniform.var).
+							std::string fullName = token + "." + vars.at(i);
+
+							// Add the full uniform name to detected uniforms
+							this->detectedUniforms.push_back(fullName);
+						}
+					} else // If regular uniform -> Just add the name
+						this->detectedUniforms.push_back(token);
 					break;
 				}
 			}

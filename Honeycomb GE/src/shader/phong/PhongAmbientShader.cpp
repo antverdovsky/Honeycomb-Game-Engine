@@ -31,12 +31,12 @@ namespace Honeycomb::Shader::Phong {
 		//addUniform("cameraPos");
 		//addUniform("camProjection");
 		//addUniform("objTransform");
-		addUniform("ambientLight.base.color");
-		addUniform("ambientLight.base.intensity");
-		addUniform("material.ambientColor");
-		addUniform("material.diffuseColor");
-		addUniform("material.specularColor");
-		addUniform("material.shininess");
+		//addUniform("ambientLight.base.color");
+		//addUniform("ambientLight.base.intensity");
+		//addUniform("material.ambientColor");
+		//addUniform("material.diffuseColor");
+		//addUniform("material.specularColor");
+		//addUniform("material.shininess");
 
 		this->name = "PhongAmbientShader";
 	}

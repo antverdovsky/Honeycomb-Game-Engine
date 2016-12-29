@@ -29,17 +29,17 @@ namespace Honeycomb::Shader::Phong {
 		addShader(FRAG_FILE_LOC, GL_FRAGMENT_SHADER);
 		finalizeShaderProgram();
 
-		// Add Shader Uniforms TODO:::
-		//addUniform("camProjection");
-		//addUniform("objTransform");
-		//addUniform("cameraPos");
-		addUniform("directionalLight.base.color");
-		addUniform("directionalLight.base.intensity");
-		addUniform("directionalLight.direction");
-		addUniform("material.ambientColor");
-		addUniform("material.diffuseColor");
-		addUniform("material.specularColor");
-		addUniform("material.shininess");
+		//// Add Shader Uniforms TODO:::
+		////addUniform("camProjection");
+		////addUniform("objTransform");
+		////addUniform("cameraPos");
+		//addUniform("directionalLight.base.color");
+		//addUniform("directionalLight.base.intensity");
+		//addUniform("directionalLight.direction");
+		//addUniform("material.ambientColor");
+		//addUniform("material.diffuseColor");
+		//addUniform("material.specularColor");
+		//addUniform("material.shininess");
 
 		this->name = "PhongDirectionalShader";
 	}

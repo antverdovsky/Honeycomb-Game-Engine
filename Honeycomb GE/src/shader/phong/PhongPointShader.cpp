@@ -29,21 +29,21 @@ namespace Honeycomb::Shader::Phong {
 		addShader(FRAG_FILE_LOC, GL_FRAGMENT_SHADER);
 		finalizeShaderProgram();
 
-		// Add Shader Uniforms TODO:::
-		//addUniform("camProjection");
-		//addUniform("objTransform");
-		//addUniform("cameraPos");
-		addUniform("pointLight.base.color");
-		addUniform("pointLight.base.intensity");
-		addUniform("pointLight.attenuation.constant");
-		addUniform("pointLight.attenuation.linear");
-		addUniform("pointLight.attenuation.quadratic");
-		addUniform("pointLight.position");
-		addUniform("pointLight.range");
-		addUniform("material.ambientColor");
-		addUniform("material.diffuseColor");
-		addUniform("material.specularColor");
-		addUniform("material.shininess");
+		//// Add Shader Uniforms TODO:::
+		////addUniform("camProjection");
+		////addUniform("objTransform");
+		////addUniform("cameraPos");
+		//addUniform("pointLight.base.color");
+		//addUniform("pointLight.base.intensity");
+		//addUniform("pointLight.attenuation.constant");
+		//addUniform("pointLight.attenuation.linear");
+		//addUniform("pointLight.attenuation.quadratic");
+		//addUniform("pointLight.position");
+		//addUniform("pointLight.range");
+		//addUniform("material.ambientColor");
+		//addUniform("material.diffuseColor");
+		//addUniform("material.specularColor");
+		//addUniform("material.shininess");
 
 		this->name = "PhongPointShader";
 	}
