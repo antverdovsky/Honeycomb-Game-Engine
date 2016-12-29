@@ -6,6 +6,7 @@
 #include <functional>
 #include <iostream>
 #include <locale>
+#include <regex>
 #include <sstream>
 
 #include <GL\glew.h>
@@ -216,37 +217,15 @@ namespace Honeycomb::Shader {
 	}
 
 	void ShaderProgram::deleteComments(std::string &source) {
-		// Indices at which a comment begins and ends
-		int startIndex = 0;
-		int endIndex = 0;
+		// Regex for finding single line and multi line C-style comments
+		// The first group deals with matching single line comments (//), and
+		// the second group deals with matching multi line comments (/* */).
+		std::regex regex = std::regex("(//.*)|(/\\*[^]*?\\*/)");
 
-		while (true) { // Will keep going until start index becomes invalid
-			// Find the starting index and ending index by searching starting
-			// from the last comment's starting index (do not use the last
-			// comment's ending index as the file length has changed after the
-			// last comment's deletion).
-			startIndex = source.find(SINGLE_LINE_COMMENT_BEGIN, startIndex);
-			endIndex = source.find(SINGLE_LINE_COMMENT_END, startIndex);
-			
-			if (startIndex == source.npos) break;
-			else source.erase(startIndex, endIndex - startIndex + 
-				SINGLE_LINE_COMMENT_END.size());
-		}
-
-		// Reset back to the start of the file for Multi Line Comment Search
-		startIndex = 0;
-		endIndex = 0;
-
-		while (true) { // See Above
-			startIndex = source.find(MULTI_LINE_COMMENT_BEGIN, startIndex);
-			endIndex = source.find(MULTI_LINE_COMMENT_END, startIndex);
-
-			if (startIndex == source.npos) break;
-			else source.erase(startIndex, endIndex - startIndex + 
-				MULTI_LINE_COMMENT_END.size());
-		}
+		// Search using the regex and remove any findings
+		source = std::regex_replace(source, regex, "");
 	}
-
+	
 	void ShaderProgram::includeDependencies(const std::string &file,
 		std::string &source) {
 		// Variables defining the position of the last found include directive
