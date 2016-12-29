@@ -90,6 +90,9 @@ namespace Honeycomb::Shader {
 		// Command in a Shader Program for initializing a uniform
 		const static std::string UNIFORM_DIRECTIVE;
 
+		// Command in a Shader Program for defining a struct(ure)
+		const static std::string STRUCT_DIRECTIVE;
+
 		// Strings which indicate the beginning and end of a single line 
 		// comment in a Shader Program.
 		const static std::string SINGLE_LINE_COMMENT_BEGIN;
@@ -107,6 +110,8 @@ namespace Honeycomb::Shader {
 		std::unordered_map<std::string, int> uniforms; // Hash Map of uniforms
 
 		std::vector<std::string> detectedUniforms; // Detected Uniforms List
+		std::unordered_map<std::string, std::vector<std::string>> 
+			detectedStructs; // Detected Struct's Name & their variables
 
 		/// Removes C-style (//, /* */) comments from the specified source 
 		/// code. It is strongly advised that this method be run before
@@ -116,6 +121,13 @@ namespace Honeycomb::Shader {
 		/// string &source : The source from which comments are to be removed
 		///					 from.
 		void deleteComments(std::string &source);
+
+		/// Detects any structs defined in the specified source code and adds
+		/// the name of the struct to the detected structs vector list as the
+		/// key, and  adds the names of the variables of the struct to the 
+		/// detected structs vector list as the value of the key.
+		/// const string &source : The source code of the Shader.
+		void detectStructs(const std::string &source);
 
 		/// Detects any uniforms in the specified source code and adds them to
 		/// the detected uniforms vector list.

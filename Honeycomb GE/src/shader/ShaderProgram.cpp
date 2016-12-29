@@ -1,9 +1,11 @@
 #include "..\..\include\shader\ShaderProgram.h"
 
 #include <algorithm>
+#include <cctype>
 #include <fstream>
 #include <functional>
 #include <iostream>
+#include <locale>
 #include <sstream>
 
 #include <GL\glew.h>
@@ -21,6 +23,8 @@ using Honeycomb::Debug::Logger;
 namespace Honeycomb::Shader {
 	const std::string ShaderProgram::INCLUDE_DIRECTIVE = "#include ";
 	const std::string ShaderProgram::UNIFORM_DIRECTIVE = "uniform ";
+	const std::string ShaderProgram::STRUCT_DIRECTIVE = "struct ";
+
 	const std::string ShaderProgram::SINGLE_LINE_COMMENT_BEGIN = "//";
 	const std::string ShaderProgram::SINGLE_LINE_COMMENT_END = "\n";
 	const std::string ShaderProgram::MULTI_LINE_COMMENT_BEGIN = "/*";
@@ -298,6 +302,92 @@ namespace Honeycomb::Shader {
 		}
 	}
 
+	// TODO: probably in need of a good cleanup & refactoring :-)
+	void ShaderProgram::detectStructs(const std::string &source) {
+		// Variables defining the position of the last found struct directive
+		// and the offset from the beginning of the source code at which the
+		// search should begin the next iteration.
+		int pos = 0;
+		int offset = 0;
+
+		// While a struct directive has been found at some valid position
+		while ((pos = source.find(STRUCT_DIRECTIVE, offset)) != source.npos) {
+			std::string name; // The name of this struct
+			std::vector<std::string> variables; // The variables of this struct
+
+			// Declare variables for the indices of the beginning and end of
+			// the struct declaration (just the substring containing the word
+			// struct followed by the name of the struct).
+			int declBegin = pos;
+			int declEnd = source.find("{", pos);
+			int declLen = declEnd - declBegin;
+
+			// Get the entire declaration line (from the struct keyword right
+			// up the opening brace).
+			std::string declaration = source.substr(declBegin, declLen);
+			
+			// Find the space which occurs between the struct keyword and the
+			// name of the struct; gets starting index of the name substring;
+			// use starting index to get the name of the struct.
+			int space = declaration.find(' ');
+			name = declaration.substr(space + 1, declLen - space - 2);
+
+			// Declare variables for the indices of the beginning and end of
+			// the struct variable declarations (all the variables declared
+			// inside of the struct).
+			int varsBegin = declEnd;
+			int varsEnd = source.find('}', declEnd);
+			int varsLen = varsEnd - varsBegin;
+
+			// Get a string which contains all of the struct variables defined.
+			std::string structVars = source.substr(varsBegin + 1, varsLen);
+			
+			// Go through the struct's variable list string and look for the
+			// variable declaration end (;), present after each variable
+			// declaration.
+			int varDeclBegin = structVars.find_first_not_of(" \t\r\n"); // Index after the variable declaration end
+			int varDeclEnd = 0; // Index of variable declaration end (;)
+			int varDeclLen = 0; // Length of variable declaration
+			while ((varDeclEnd = structVars.find(';', varDeclBegin)) != 
+					structVars.npos) {
+				// Get the length of the variable declaration line and use it
+				// to get the declaration substring.
+				varDeclLen = varDeclEnd - varDeclBegin;
+				std::string varDecl = structVars.substr(varDeclBegin, 
+					varDeclLen);
+
+				// String Stream which will split the declaration on spaces in
+				// order to identify the type of variable & its name
+				std::stringstream sS(varDecl);
+				std::string token = "";
+
+				std::string type = ""; // The type of variable this is
+
+				int tokenNumber = -1;
+				while (std::getline(sS, token, ' ')) {
+					tokenNumber++;
+
+					switch (tokenNumber) {
+					case 0: // The first token is the type of the variable
+						type = token;
+						break;
+					case 1: // The second token is the name of the variable
+						variables.push_back(token);
+						break;
+					}
+				}
+
+				// The next declaration should begin right after the semicolon
+				// which ended this declaration.
+				varDeclBegin = varDeclEnd + 1;
+				varDeclBegin = structVars.find_first_not_of(" \t\r\n", varDeclBegin);
+			}
+
+			this->detectedStructs.insert({ name, variables });
+			offset = declEnd + 1;
+		}
+	}
+
 	void ShaderProgram::detectUniforms(const std::string &source) {
 		// Variables defining the position of the last found uniform directive
 		// and the offset from the beginning of the source code at which the
@@ -348,6 +438,7 @@ namespace Honeycomb::Shader {
 		// Process the imported source code
 		this->deleteComments(*importSrc);
 		this->includeDependencies(file, *importSrc);
+		this->detectStructs(*importSrc);
 		this->detectUniforms(*importSrc);
 
 		return importSrc;
