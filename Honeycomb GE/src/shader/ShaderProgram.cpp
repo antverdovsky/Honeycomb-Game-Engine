@@ -227,57 +227,58 @@ namespace Honeycomb::Shader {
 	}
 	
 	void ShaderProgram::includeDependencies(const std::string &file,
-		std::string &source) {
-		// Variables defining the position of the last found include directive
-		// and the offset from the beginning of the source code at which the
-		// search should begin the next iteration.
-		int pos = 0;
-		int offset = 0;
+			std::string &source) {
+		// Get the directory of this file, by trimming the file name off of the
+		// full import directory.
+		std::string thisDir = file.substr(0, file.find_last_of("\\"));
+		
+		// Regex for automatically detecting the file directory which is to be 
+		// included. The regex will identify any string containing the word
+		// #include, followed by at least one space, followed by the directory
+		// of the file (1st group) surrounded by matching angle brackets.
+		std::regex regex = std::regex("#include\\s+<(.*)>");
 
-		// While an include directive has been found at some valid position
-		while ((pos = source.find(INCLUDE_DIRECTIVE, offset)) != source.npos) {
-			// Find the two angle brackets which indicate the beginning and
-			// end of the file of the shader to be imported.
-			int fileBegin = source.find("<", pos) + 1; // Starting Index
-			int fileEnd = source.find(">", fileBegin); // Ending Index
-			int fileLen = fileEnd - fileBegin; // File Length
+		std::sregex_iterator include(source.cbegin(), source.cend(),
+			regex); // Iterator through all the includes in the source
+		std::sregex_iterator end; // End defined by Default Constructor
 
-			// Get the directory of file as it appears in the include statement
-			std::string importFileLocal = source.substr(fileBegin, fileLen);
+		while (include != end) { // Go through all matched includes
+			// Get the raw directory, as it appears between the angle brackets
+			std::string rawDir = include->str(1);
+											
+			// By default, assume that the file which is going to be included
+			// is located in the same folder as this file (like with C).
+			std::string includeDir = thisDir;
 
-			// Get the directory in which this file (not the import) is located
-			std::string importFileGlobal = file.substr(0,
-				file.find_last_of("\\"));
-
-			// While there are "..\" symbols in the local file directory, move 
-			// the directory back one folder (like standard C imports).
-			while (importFileLocal.substr(0, 3) == "..\\") {
-				// Remove the "..\" symbols from the local file directory
-				importFileLocal = importFileLocal.substr(3);
-
-				// Delete the the last folder directory from the full directory
-				// (like "cd ..\")
-				importFileGlobal = importFileGlobal.substr(0,
-					importFileGlobal.find_last_of("\\"));
+			// If the raw directory contains any back trace symbols (..\), move
+			// one directory back (by trimming the back trace symbol, and
+			// removing the last folder from the include directory), for each 
+			// back trace symbol.
+			while (rawDir.substr(0, 3) == "..\\") {
+				rawDir = rawDir.substr(3);
+				includeDir = includeDir.substr(0, 
+					includeDir.find_last_of("..\\"));
 			}
 
-			// Append the name of the file once the final folder has been
-			// reached. This is the global directory of the file which is to be
-			// imported.
-			importFileGlobal += "\\" + importFileLocal;
+			// The full include file path is the directory where the file
+			// is located with the name of the file appended at the end.
+			std::string includeFile = includeDir + "\\" + rawDir;
 
-			// Import the source code from the full system path and process it
-			std::string *importSrc = this->processSource(
-				importFileGlobal);
+			// Import the source and process it.
+			std::string* includeSrc = this->processSource(includeFile);
 
-			// Replace the include directive with the imported source code &
-			// delete the imported source code.
-			source.replace(pos, fileEnd + 1 - pos, importSrc->c_str());
-			delete importSrc;
+			// Delete the entire include declaration and replace it with the
+			// imported source code.
+			source.replace(include->position(), include->length(), 
+				includeSrc->c_str());
 
-			// Set the new position from which to look for the next include
-			// directive as the end of this include directive.
-			offset = fileLen + 1;
+			// Since the iterator has been invalidated, rebuild it (but this
+			// time, offset the iterator to begin after the included source
+			// code, for obvious performance reasons).
+			include = std::sregex_iterator(
+				source.begin() + includeSrc->size(), source.end(), regex);
+
+			delete includeSrc; // Clean up the included source
 		}
 	}
 
@@ -390,7 +391,7 @@ namespace Honeycomb::Shader {
 		// will identify any string containing the word uniform followed by at
 		// least one space, followed by a word (1st group: uniform type),
 		// followed by at least one space, followed by a word (2nd group:
-		// uniform name), followed by a semicolon.
+		// uniform name).
 		std::regex regex = std::regex("uniform\\s+(\\w+)\\s+(\\w+)");
 		
 		std::sregex_iterator uniform(source.cbegin(), source.cend(),
