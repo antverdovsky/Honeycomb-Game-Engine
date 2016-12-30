@@ -386,63 +386,36 @@ namespace Honeycomb::Shader {
 	}
 
 	void ShaderProgram::detectUniforms(const std::string &source) {
-		// Variables defining the position of the last found uniform directive
-		// and the offset from the beginning of the source code at which the
-		// search should begin the next iteration.
-		int pos = 0;
-		int offset = 0;
+		// Regex for automatically detecting uniform type and name. The regex
+		// will identify any string containing the word uniform followed by at
+		// least one space, followed by a word (1st group: uniform type),
+		// followed by at least one space, followed by a word (2nd group:
+		// uniform name), followed by a semicolon.
+		std::regex regex = std::regex("uniform\\s+(\\w+)\\s+(\\w+)");
+		
+		std::sregex_iterator uniform(source.cbegin(), source.cend(),
+			regex); // Iterator through all the uniforms in the source
+		std::sregex_iterator end; // End defined by Default Constructor
 
-		// While a uniform directive has been found at some valid position
-		while ((pos = source.find(UNIFORM_DIRECTIVE, offset)) != source.npos) {
-			// Declare variables for the indices of the beginning and end of
-			// the uniform declaration statements. Use them to find the length
-			// for substrings.
-			int declBegin = pos;
-			int declEnd = source.find(";", pos);
-			int declLen = declEnd - declBegin;
+		for (; uniform != end; uniform++) { // Go through all matched uniforms
+			// The first group represents the uniform type; the second the
+			// uniform name (see regex description).
+			std::string type = uniform->str(1);
+			std::string name = uniform->str(2);
 
-			// Get the entire declaration substring and feed it to the string
-			// stream to be split up and processed.
-			std::string declaration = source.substr(declBegin, declLen);
-			std::stringstream sS(declaration);
-			std::string token = "";
+			// If the uniform type is a type of a user defined struct
+			if (this->detectedStructs.count(type)) {
+				// Get all of the variables of the struct
+				std::vector<std::string> vars = this->detectedStructs[type];
 
-			std::string type; // The type of uniform this is
-
-			int tokenNumber = -1; // The token number in the declaration
-			while (std::getline(sS, token, ' ')) { // Split declaration by ' '
-				tokenNumber++; // New Token -> Increment Token Number
-
-				switch (tokenNumber) {
-				case 0:	// The first token should be the word uniform; skip it
-					continue;
-				case 1: // The second token should be the uniform type
-					type = token;
-					break;
-				case 2: // The third token is the uniform name; add it
-					// If the type is a struct defined somewhere in the shader,
-					// instead of just adding the uniform name, all of the
-					// variables in the struct have to be added to the uniform
-					// name.
-					if (this->detectedStructs.count(type)) {
-						// Get all of the variables of the struct
-						std::vector<std::string> vars = 
-							this->detectedStructs[type];
-						
-						for (int i = 0; i < vars.size(); i++) {
-							// The full name of the uniform (uniform.var).
-							std::string fullName = token + "." + vars.at(i);
-
-							// Add the full uniform name to detected uniforms
-							this->detectedUniforms.push_back(fullName);
-						}
-					} else // If regular uniform -> Just add the name
-						this->detectedUniforms.push_back(token);
-					break;
+				for (int i = 0; i < vars.size(); i++) {
+					// Add the full uniform name (uniform name + variable name)
+					// to detected uniforms.
+					this->detectedUniforms.push_back(name + "." + vars.at(i));
 				}
+			} else { // If the uniform type is not a user defined struct
+				this->detectedUniforms.push_back(name);
 			}
-
-			offset = declEnd + 1;
 		}
 	}
 
