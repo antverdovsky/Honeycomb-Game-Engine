@@ -282,107 +282,60 @@ namespace Honeycomb::Shader {
 		}
 	}
 
-	// TODO: definitely in need of a good cleanup & refactoring; its a mess :-(
 	void ShaderProgram::detectStructs(const std::string &source) {
-		// Variables defining the position of the last found struct directive
-		// and the offset from the beginning of the source code at which the
-		// search should begin the next iteration.
-		int pos = 0;
-		int offset = 0;
+		// Regex for detecting an entire struct declaration (from the struct
+		// keyword to the closing brace and semicolon which ends the struct).
+		// The regex will detect any string containing the word struct followed
+		// by at least one space, followed by the name of the struct (1st
+		// group), followed by some text until the struct end (}) is found.
+		std::regex structRegex = std::regex("struct\\s+(\\w+)[^]*?\\}");
 
-		// While a struct directive has been found at some valid position
-		while ((pos = source.find(STRUCT_DIRECTIVE, offset)) != source.npos) {
-			std::string name; // The name of this struct
-			std::vector<std::string> variables; // The variables of this struct
+		// Regex for detecting variables inside of a struct. The regex will
+		// detect any string containing a word defining the type of variable
+		// (1st group), followed by at least one space, followed by another
+		// word defining the name of the variable (2nd group).
+		std::regex varRegex = std::regex("(\\w+)\\s+(\\w+);");
 
-			// Declare variables for the indices of the beginning and end of
-			// the struct declaration (just the substring containing the word
-			// struct followed by the name of the struct).
-			int declBegin = pos;
-			int declEnd = source.find("{", pos);
-			int declLen = declEnd - declBegin;
+		std::sregex_iterator structDecl(source.cbegin(), source.cend(), 
+			structRegex); // Iterator through all of the structs of the source
+		std::sregex_iterator end; // Default End Iterator
 
-			// Get the entire declaration line (from the struct keyword right
-			// up the opening brace).
-			std::string declaration = source.substr(declBegin, declLen);
+		for (; structDecl != end; structDecl++) {
+			// Get the name of the structure from the first group and define a
+			// vector to store all of the variables.
+			std::string sName = structDecl->str(1);
+			std::vector<std::string> vars;
+
+			// Get the string iterator for the beginning and end of the struct
+			// within the source code.
+			auto structBegin = source.cbegin() + structDecl->position();
+			auto structEnd = structBegin + structDecl->length();
+
+			// Iterator through all of the variables of this struct
+			std::sregex_iterator varDecl(structBegin, structEnd, varRegex);
 			
-			// Find the space which occurs between the struct keyword and the
-			// name of the struct; gets starting index of the name substring;
-			// use starting index to get the name of the struct.
-			int space = declaration.find(' ');
-			name = declaration.substr(space + 1, declLen - space - 2);
+			for (; varDecl != end; varDecl++) {
+				// Get the type of the variable (first group) and the name of
+				// the variable (second group).
+				std::string vType = varDecl->str(1);
+				std::string vName = varDecl->str(2);
 
-			// Declare variables for the indices of the beginning and end of
-			// the struct variable declarations (all the variables declared
-			// inside of the struct).
-			int varsBegin = declEnd;
-			int varsEnd = source.find('}', declEnd);
-			int varsLen = varsEnd - varsBegin;
+				// If the variable has the type of a previously defined struct
+				// then append each of the variables from that struct to this
+				// variable (due to how GLSL works).
+				if (this->detectedStructs.count(vType)) {
+					std::vector<std::string> detectedStructVars =
+						this->detectedStructs[vType];
 
-			// Get a string which contains all of the struct variables defined.
-			std::string structVars = source.substr(varsBegin + 1, varsLen);
-			
-			// Go through the struct's variable list string and look for the
-			// variable declaration end (;), present after each variable
-			// declaration.
-			int varDeclBegin = structVars.find_first_not_of(" \t\r\n"); // Index after the variable declaration end
-			int varDeclEnd = 0; // Index of variable declaration end (;)
-			int varDeclLen = 0; // Length of variable declaration
-			while ((varDeclEnd = structVars.find(';', varDeclBegin)) != 
-					structVars.npos) {
-				// Get the length of the variable declaration line and use it
-				// to get the declaration substring.
-				varDeclLen = varDeclEnd - varDeclBegin;
-				std::string varDecl = structVars.substr(varDeclBegin, 
-					varDeclLen);
-
-				// String Stream which will split the declaration on spaces in
-				// order to identify the type of variable & its name
-				std::stringstream sS(varDecl);
-				std::string token = "";
-
-				std::string type = ""; // The type of variable this is
-
-				int tokenNumber = -1;
-				while (std::getline(sS, token, ' ')) {
-					tokenNumber++;
-
-					switch (tokenNumber) {
-					case 0: // The first token is the type of the variable
-						type = token;
-						break;
-					case 1: // The second token is the name of the variable
-						// If the type is a struct defined somewhere in the shader,
-						// instead of just adding the variable name, all of the
-						// variables in the struct have to be added to the variable
-						// name.
-						if (this->detectedStructs.count(type)) {
-							// Get all of the variables of the struct
-							std::vector<std::string> vars =
-								this->detectedStructs[type];
-
-							for (int i = 0; i < vars.size(); i++) {
-								// The full name of the variable (struct.var).
-								std::string fullName = token + "." + vars.at(i);
-
-								// Add the full variable name to struct variables
-								variables.push_back(fullName);
-							}
-						}
-						else // If regular variable -> Just add the name
-							variables.push_back(token);
-						break;
-					}
+					for (int i = 0; i < detectedStructVars.size(); i++)
+						vars.push_back(vName + "." + detectedStructVars.at(i));
+				} else { // Otherwise, just add the variable
+					vars.push_back(vName);
 				}
-
-				// The next declaration should begin right after the semicolon
-				// which ended this declaration.
-				varDeclBegin = varDeclEnd + 1;
-				varDeclBegin = structVars.find_first_not_of(" \t\r\n", varDeclBegin);
 			}
-
-			this->detectedStructs.insert({ name, variables });
-			offset = declEnd + 1;
+			
+			// Add the detected structure name with all of its detected vars
+			this->detectedStructs.insert({ sName, vars });
 		}
 	}
 
