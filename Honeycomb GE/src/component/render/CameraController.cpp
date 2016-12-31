@@ -1,4 +1,4 @@
-#include "..\..\..\include\component\render\CameraController.h";
+#include "..\..\..\include\component\render\CameraController.h"
 
 #include <math.h>
 #include <iostream>
@@ -20,8 +20,8 @@ namespace Honeycomb::Component::Render {
 
 	CameraController::CameraController()
 		: CameraController(CameraType::PERSPECTIVE, 75.0F, 100.0F, 0.03F,
-			GameWindow::getGameWindow()->getWindowHeight(),
-			GameWindow::getGameWindow()->getWindowWidth()) {
+			(float)GameWindow::getGameWindow()->getWindowHeight(),
+			(float)GameWindow::getGameWindow()->getWindowWidth()) {
 
 	}
 
@@ -100,7 +100,7 @@ namespace Honeycomb::Component::Render {
 		CameraController::activeCamera = this;
 	}
 
-	void CameraController::setProjectionSize(int h, int w) {
+	void CameraController::setProjectionSize(float h, float w) {
 		// Write the new values into the Camera instance
 		this->projectionHeight = h;
 		this->projectionWidth = w;
@@ -109,8 +109,9 @@ namespace Honeycomb::Component::Render {
 	}
 
 	void CameraController::setProjectionSizeToWindow() {
-		this->setProjectionSize(GameWindow::getGameWindow()->getWindowHeight(),
-			GameWindow::getGameWindow()->getWindowWidth());
+		this->setProjectionSize(
+			(float)GameWindow::getGameWindow()->getWindowHeight(),
+			(float)GameWindow::getGameWindow()->getWindowWidth());
 	}
 
 	void CameraController::start() {

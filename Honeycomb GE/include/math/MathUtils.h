@@ -3,7 +3,8 @@
 #define MATH_UTILS_H
 
 namespace Honeycomb::Math::Utils {
-	const double PI = 3.14159265358979323846; // Mathematical PI
+	const double PId = 3.14159265358979323846; // Mathematical PI
+	const float PI = 3.14159265F;
 
 	/// Converts the specified angle in degrees to radians.
 	/// const float &deg : The input angle (in degrees).

@@ -196,7 +196,7 @@ namespace Honeycomb::Math {
 	}
 
 	Vector3f& Vector3f::operator/=(const float &scale) {
-		return this->scale(1.0F / scale);
+		return this->scaleTo(1.0F / scale);
 	}
 	
 	Vector3f Vector3f::operator+(const Vector3f &v2) const {

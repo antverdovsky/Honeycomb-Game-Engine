@@ -17,17 +17,17 @@ namespace Honeycomb::Base {
 		/// Gets the time between the current frame and the last frame in
 		/// seconds.
 		/// return : The time between the frames (in s).
-		const float& getDeltaTimeS() const;
+		float getDeltaTimeS() const;
 
 		/// Gets the elapsed game time (since the start of the game) in 
 		/// milliseconds.
 		/// return : The game time (in ms).
-		const float& getElapsedTimeMS() const;
+		float getElapsedTimeMS() const;
 
 		/// Gets the elapsed game time (since the start of the game) in 
 		/// seconds.
 		/// return : The game time (in s).
-		const float& getElapsedTimeS() const;
+		float getElapsedTimeS() const;
 
 		/// Returns the Game Time instance of this Singleton.
 		/// return : The Game Time instance.

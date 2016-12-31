@@ -90,6 +90,8 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\C-lib\ASSIMP\include;C:\C-lib\SOIL\src;C:\C-lib\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\include;C:\C-lib\OpenGL\GLEW\glew-2.0.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/std:c++latest /FS %(AdditionalOptions)</AdditionalOptions>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -105,6 +107,8 @@
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>C:\C-lib\ASSIMP\build\code\Debug;C:\C-lib\SOIL\lib;C:\C-lib\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\C-lib\OpenGL\GLEW\glew-2.0.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/IGNORE:4006,4221 %(AdditionalOptions)</AdditionalOptions>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -116,6 +120,8 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>C:\C-lib\ASSIMP\include;C:\C-lib\SOIL\src;C:\C-lib\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\include;C:\C-lib\OpenGL\GLEW\glew-2.0.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/std:c++latest /FS %(AdditionalOptions)</AdditionalOptions>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -131,6 +137,8 @@
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>C:\C-lib\ASSIMP\build\code\Debug;C:\C-lib\SOIL\lib;C:\C-lib\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\C-lib\OpenGL\GLEW\glew-2.0.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/IGNORE:4006,4221 %(AdditionalOptions)</AdditionalOptions>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -145,6 +153,8 @@
       <AdditionalIncludeDirectories>C:\C-lib\ASSIMP\include;C:\C-lib\SOIL\src;C:\C-lib\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\include;C:\C-lib\OpenGL\GLEW\glew-2.0.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/std:c++latest /FS %(AdditionalOptions)</AdditionalOptions>
       <MinimalRebuild>true</MinimalRebuild>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -162,6 +172,8 @@
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>C:\C-lib\ASSIMP\build\code\Debug;C:\C-lib\SOIL\lib;C:\C-lib\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\C-lib\OpenGL\GLEW\glew-2.0.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/IGNORE:4006,4221 %(AdditionalOptions)</AdditionalOptions>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -176,6 +188,8 @@
       <AdditionalIncludeDirectories>C:\C-lib\ASSIMP\include;C:\C-lib\SOIL\src;C:\C-lib\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\include;C:\C-lib\OpenGL\GLEW\glew-2.0.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalOptions>/std:c++latest /FS %(AdditionalOptions)</AdditionalOptions>
       <MinimalRebuild>true</MinimalRebuild>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -193,6 +207,8 @@
     </Lib>
     <Lib>
       <AdditionalLibraryDirectories>C:\C-lib\ASSIMP\build\code\Debug;C:\C-lib\SOIL\lib;C:\C-lib\OpenGL\GLFW\glfw-3.2.1.bin.WIN32\lib-vc2015;C:\C-lib\OpenGL\GLEW\glew-2.0.0\lib\Release\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/IGNORE:4006,4221 %(AdditionalOptions)</AdditionalOptions>
+      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

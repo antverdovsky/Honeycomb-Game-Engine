@@ -14,8 +14,8 @@ namespace Honeycomb::Math {
 
 	Quaternion::Quaternion(const Vector3f &axis, const float &rad) {
 		// Calculate the sin and cos of the half angle.
-		float sinHalfAngle = sin(rad / 2);
-		float cosHalfAngle = cos(rad / 2);
+		float sinHalfAngle = (float)sin(rad / 2);
+		float cosHalfAngle = (float)cos(rad / 2);
 
 		// Construct a Rotation Quaternion
 		this->x = axis.getX() * sinHalfAngle;

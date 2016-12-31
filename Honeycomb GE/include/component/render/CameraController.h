@@ -105,9 +105,9 @@ namespace Honeycomb::Component::Render {
 
 		/// Sets the projection width and height for the Camera. The projection
 		/// matrix will be automatically updated.
-		/// int h : The new height of the projection size.
-		/// int w : The new width of the projection size.
-		void setProjectionSize(int h, int w);
+		/// float h : The new height of the projection size.
+		/// float w : The new width of the projection size.
+		void setProjectionSize(float h, float w);
 
 		/// Sets the projection width and height for the Camera to the current
 		/// game window width and height. The projection matrix will be 

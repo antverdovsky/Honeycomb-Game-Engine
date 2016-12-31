@@ -17,12 +17,6 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::start() {
-		// SHADER INCLUDE SYSTEM TESTING...
-		//ShaderProgram *includeTest = new ShaderProgram();
-		//includeTest->addShader("..\\Honeycomb GE\\res\\shaders\\includeTest\\main\\main.glsl", 0);
-		//
-
-
 		// Load in all of the Models.
 		GameObject *cube = Builder::getBuilder()->newCube();
 		GameObject *plane = Builder::getBuilder()->newPlane();

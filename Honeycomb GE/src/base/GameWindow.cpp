@@ -40,7 +40,7 @@ namespace Honeycomb::Base {
 		return this->width;
 	}
 
-	const bool& GameWindow::isCloseRequested() const {
+	bool GameWindow::isCloseRequested() const {
 		// If the GLFW reports that the user is trying to close the window,
 		// then consider it as a "close requested" event.
 		return glfwWindowShouldClose(this->glfwWindow) == 1 ? true : false;

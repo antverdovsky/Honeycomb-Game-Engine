@@ -191,8 +191,8 @@ namespace Honeycomb::Shader {
 					std::vector<std::string> detectedStructVars =
 						this->detStructs[vType];
 
-					for (int i = 0; i < detectedStructVars.size(); i++)
-						vars.push_back(vName + "." + detectedStructVars.at(i));
+					for (const std::string &structVar : detectedStructVars)
+						vars.push_back(vName + "." + structVar);
 				}
 				else { // Otherwise, just add the variable
 					vars.push_back(vName);
@@ -225,12 +225,12 @@ namespace Honeycomb::Shader {
 			// If the uniform type is a type of a user defined struct
 			if (this->detStructs.count(type)) {
 				// Get all of the variables of the struct
-				std::vector<std::string> vars = this->detStructs[type];
+				std::vector<std::string> structVars = this->detStructs[type];
 
-				for (int i = 0; i < vars.size(); i++) {
+				for (const std::string& structVar : structVars) {
 					// Add the full uniform name (uniform name + variable name)
 					// to detected uniforms.
-					this->detUniforms.push_back(name + "." + vars.at(i));
+					this->detUniforms.push_back(name + "." + structVar);
 				}
 			}
 			else { // If the uniform type is not a user defined struct

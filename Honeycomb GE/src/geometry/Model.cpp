@@ -34,18 +34,22 @@ namespace Honeycomb::Geometry {
 	std::vector<Model*> Model::imports = std::vector<Model*>();
 
 	Model::~Model() {
-		for (int i = 0; i < this->textures.size(); i++)
-			delete this->textures.at(i);
-		for (int i = 0; i < this->materials.size(); i++)
-			delete this->materials.at(i);
-		for (int i = 0; i < this->meshes.size(); i++)
-			delete this->meshes.at(i);
+		for (const Texture2D *tex : this->textures)
+			delete tex;
+		for (const Material *mat : this->materials)
+			delete mat;
+		for (const Mesh *mesh : this->meshes)
+			delete mesh;
+
+		this->textures.clear();
+		this->materials.clear();
+		this->meshes.clear();
 	}
 
 	const Model& Model::loadModel(const std::string &path) {
-		for (int i = 0; i < imports.size(); i++)
-			if (imports.at(i)->path == path)
-				return *imports.at(i);
+		for (const Model* mod : Model::imports)
+			if (mod->path == path)
+				return *mod;
 
 		return *(new Model(path));
 	}
@@ -134,8 +138,8 @@ namespace Honeycomb::Geometry {
 		std::vector<Vertex> vertices; // Vertices Data
 		std::vector<int> indices; // Indices Data
 
-								  // Go through all the vertices of the Mesh
-		for (int i = 0; i < aMesh->mNumVertices; i++) {
+		// Go through all the vertices of the Mesh
+		for (unsigned int i = 0; i < aMesh->mNumVertices; i++) {
 			// Get all of the normals, positions and UV coordinates for this
 			// vertex.
 			// TODO: Worry about the other 7 texture coordinates of the vertex?
@@ -156,11 +160,11 @@ namespace Honeycomb::Geometry {
 		}
 
 		// Go through all the faces of the Mesh
-		for (int i = 0; i < aMesh->mNumFaces; i++) {
+		for (unsigned int i = 0; i < aMesh->mNumFaces; i++) {
 			aiFace face = aMesh->mFaces[i]; // Get the face
 
 			// Go through all the indices of the Face
-			for (int j = 0; j < face.mNumIndices; j++) {
+			for (unsigned int j = 0; j < face.mNumIndices; j++) {
 				int indx = face.mIndices[j]; // Get the index
 				indices.push_back(indx); // Add the index to Mesh data
 			}
@@ -184,7 +188,7 @@ namespace Honeycomb::Geometry {
 		object->addComponent(*transf); // TODO: Child Transformation
 
 		// Process all of the Meshes of the Object
-		for (int i = 0; i < aNode->mNumMeshes; i++) {
+		for (unsigned int i = 0; i < aNode->mNumMeshes; i++) {
 			// Convert the ASSIMP Mesh Geometry into Honeycomb Mesh Geometry
 			aiMesh *aMesh = this->scene->mMeshes[aNode->mMeshes[i]];
 			Mesh *mesh = this->processAiMeshGeometry(aMesh);
@@ -207,7 +211,7 @@ namespace Honeycomb::Geometry {
 		}
 
 		// Process all of the Children of the Object
-		for (int i = 0; i < aNode->mNumChildren; i++) {
+		for (unsigned int i = 0; i < aNode->mNumChildren; i++) {
 			// Convert each child into a new Game Object.
 			aiNode *childNode = aNode->mChildren[i];
 			GameObject *childObj = this->processAiNode(childNode);

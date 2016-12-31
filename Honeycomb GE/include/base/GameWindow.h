@@ -43,7 +43,7 @@ namespace Honeycomb::Base {
 		/// Checks if the window is requesting to be closed (the user has
 		/// pressed the 'X' button on the window).
 		/// return : True if the user has pressed 'X'; False otherwise.
-		const bool& isCloseRequested() const;
+		bool isCloseRequested() const;
 
 		/// Refreshes the game window.
 		void refresh();

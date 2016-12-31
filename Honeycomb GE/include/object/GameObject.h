@@ -32,11 +32,13 @@ namespace Honeycomb::Object {
 		/// return : The cloned Game Object.
 		GameObject* clone() const;
 
-		/// Adds the specified object as a child to this game object.
+		/// Adds the specified object as a child to this game object, if it is
+		/// not already a child of this game object.
 		/// Object &o : The object to be parented to this game object.
 		void addChild(GameObject &o);
 
-		/// Adds the specified component to this game object.
+		/// Adds the specified component to this game object, if it is not
+		/// already a child of this game object.
 		/// Component &c : The component to be parented to this game object.
 		void addComponent(Honeycomb::Component::GameComponent &c);
 
@@ -84,12 +86,9 @@ namespace Honeycomb::Object {
 		/// return : The component object constant pointer.
 		template<class Type>
 		const inline Type* getComponent() const {
-			// Go through all components and try to find one whose type matches
-			for (int i = 0; i < this->components.size(); i++) {
-				if (dynamic_cast<Type*>(this->components.at(i)) != nullptr) {
-					return dynamic_cast<const Type*>(this->components.at(i));
-				}
-			}
+			for (Honeycomb::Component::GameComponent *comp : this->components)
+				if (dynamic_cast<Type*>(comp) != nullptr)
+					return dynamic_cast<const Type*>(comp);
 
 			// If unable to find a matching component -> Print Warning & Return
 			// a nullptr
@@ -173,6 +172,19 @@ namespace Honeycomb::Object {
 		/// Returns the scene of this Game Object.
 		/// return : The constant pointer to the Game Scene.
 		const Honeycomb::Scene::GameScene* getScene() const;
+
+		/// Checks if this Game Object has the specified child.
+		/// const GameObject &child : The game object which is to be checked.
+		/// return : True if the specified game object is a child of this.
+		///			 False otherwise.
+		bool hasChild(const GameObject &child) const;
+
+		/// Checks if this Game Object has the specified component.
+		/// const GameComponent &comp : The component which is to be checked.
+		/// return : True if the specified game component is a child of this.
+		///			 False otherwise.
+		bool hasComponent(const Honeycomb::Component::GameComponent &comp) 
+				const;
 
 		/// Handles any input events for this component, if necessary. This 
 		/// method will only do something if the object is active.

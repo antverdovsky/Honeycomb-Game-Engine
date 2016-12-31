@@ -39,18 +39,18 @@ namespace Honeycomb::Object {
 		clone->name = this->name;
 		clone->isActive = this->isActive;
 
-		if (this->parent != nullptr) this->parent->addChild(*clone);
-
 		// Copy over all of the children and the components, once duplicated
-		for (int i = 0; i < this->children.size(); i++)
-			clone->addChild(*this->children.at(i)->clone());
-		for (int i = 0; i < this->components.size(); i++)
-			clone->addComponent(*this->components.at(i)->clone());
-
+		for (const GameObject *child : this->children)
+			clone->addChild(*child->clone());
+		for (const GameComponent *comp : this->components)
+			clone->addComponent(*comp->clone());
+		
 		return clone;
 	}
 
 	void GameObject::addChild(GameObject &o) {
+		if (this->hasChild(o)) return;
+
 		this->children.push_back(&o);
 
 		if (o.parent != nullptr) o.parent->removeChild(&o);
@@ -58,6 +58,8 @@ namespace Honeycomb::Object {
 	}
 
 	void GameObject::addComponent(GameComponent &c) {
+		if (this->hasComponent(c)) return;
+
 		this->components.push_back(&c);
 
 		if (c.getAttached() != nullptr) c.getAttached()->removeComponent(&c);
@@ -80,12 +82,10 @@ namespace Honeycomb::Object {
 
 	const GameObject* GameObject::getChild(const std::string &name) const {
 		// Go through all components and try to find one whose name matches
-		for (int i = 0; i < this->children.size(); i++) {
-			if (this->children.at(i)->getName() == name) {
-				return this->children.at(i);
-			}
-		}
-
+		for (const GameObject* child : this->children)
+			if (child->getName() == name)
+				return child;
+		
 		Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
 			"Object " + this->name + " does not contain child " + name);
 
@@ -107,13 +107,11 @@ namespace Honeycomb::Object {
 	}
 
 	const GameComponent* GameObject::getComponent(const std::string &name)
-		const {
+			const {
 		// Go through all components and try to find one whose name matches
-		for (int i = 0; i < this->components.size(); i++) {
-			if (this->components.at(i)->getName() == name) {
-				return this->components.at(i);
-			}
-		}
+		for (const GameComponent* comp : this->components)
+			if (comp->getName() == name)
+				return comp;
 
 		Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
 			"Object " + this->name + " does not contain component " + name);
@@ -154,14 +152,24 @@ namespace Honeycomb::Object {
 		return this->scene;
 	}
 
+	bool GameObject::hasChild(const GameObject &child) const {
+		return std::find(this->children.begin(), this->children.end(), &child)
+			!= this->children.end();
+	}
+
+	bool GameObject::hasComponent(const GameComponent &comp) const {
+		return std::find(this->components.begin(), this->components.end(),
+			&comp) != this->components.end();
+	}
+
 	void GameObject::input() {
 		if (!this->isActive) return; // If not active -> It should not update!
 
 		// Handle input for all children and components
-		for (int i = 0; i < this->children.size(); i++)
-			this->children.at(i)->input();
-		for (int i = 0; i < this->components.size(); i++)
-			this->components.at(i)->input();
+		for (GameObject *child : this->children)
+			child->input();
+		for (GameComponent *comp : this->components)
+			comp->input();
 	}
 
 	void GameObject::removeChild(GameObject *o) {
@@ -183,10 +191,10 @@ namespace Honeycomb::Object {
 		if (!this->isActive) return;
 
 		// Handle rendering for all children and components
-		for (int i = 0; i < this->children.size(); i++)
-			this->children.at(i)->render(shader);
-		for (int i = 0; i < this->components.size(); i++)
-			this->components.at(i)->render(shader);
+		for (GameObject *child : this->children)
+			child->render(shader);
+		for (GameComponent *comp : this->components)
+			comp->render(shader);
 	}
 
 	void GameObject::start() {
@@ -194,10 +202,10 @@ namespace Honeycomb::Object {
 		this->isActive = true;
 
 		// Handle starting for all children and components
-		for (int i = 0; i < this->children.size(); i++)
-			this->children.at(i)->start();
-		for (int i = 0; i < this->components.size(); i++)
-			this->components.at(i)->start();
+		for (GameObject *child : this->children)
+			child->start();
+		for (GameComponent *comp : this->components)
+			comp->start();
 	}
 
 	void GameObject::stop() {
@@ -205,19 +213,19 @@ namespace Honeycomb::Object {
 		this->isActive = false;
 
 		// Handle starting for all children and components
-		for (int i = 0; i < this->children.size(); i++)
-			this->children.at(i)->stop();
-		for (int i = 0; i < this->components.size(); i++)
-			this->components.at(i)->stop();
+		for (GameObject *child : this->children)
+			child->stop();
+		for (GameComponent *comp : this->components)
+			comp->stop();
 	}
 
 	void GameObject::update() {
 		if (!this->isActive) return;
 
 		// Handle updating for all children and components
-		for (int i = 0; i < this->children.size(); i++)
-			this->children.at(i)->update();
-		for (int i = 0; i < this->components.size(); i++)
-			this->components.at(i)->update();
+		for (GameObject *child : this->children)
+			child->update();
+		for (GameComponent *comp : this->components)
+			comp->update();
 	}
 }

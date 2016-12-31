@@ -118,14 +118,14 @@ namespace Honeycomb::Base {
 		/// return : True if the button is currently down; False otherwise, or 
 		///			 if the button code is not within the range supported by 
 		///			 the engine.
-		const bool& getButtonDown(const int &button) const;
+		bool getButtonDown(const int &button) const;
 
 		/// Checks if the specified mouse button has just been released.
 		/// const int &button : The code of the mouse button to be checked.
 		/// return : True if the button has just been released this frame;
 		///			 False otherwise, or if the button code is not within the 
 		///			 range supported by the engine.
-		const bool& getButtonReleased(const int &button) const;
+		bool getButtonReleased(const int &button) const;
 
 		/// Gets the active game input instance possessed by this singleton.
 		/// return : The singleton game input instance.
@@ -136,14 +136,14 @@ namespace Honeycomb::Base {
 		/// return : True if the key is currently down; False otherwise, or 
 		///			 if the key code is not within the range supported by the 
 		///			 engine.
-		const bool& getKeyDown(const int &key) const;
+		bool getKeyDown(const int &key) const;
 
 		/// Checks if the specified keyboard key has just been released.
 		/// const int &key : The code of the key to be checked.
 		/// return : True if the button has just been released this frame;
 		///			 False otherwise, or if the button code is not within the 
 		///			 range supported by the engine.
-		const bool& getKeyReleased(const int &key) const;
+		bool getKeyReleased(const int &key) const;
 
 		/// Gets the mouse position within the game window (in pixels).
 		/// return : The mouse position 2D vector.

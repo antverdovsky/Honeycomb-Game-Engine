@@ -1,5 +1,6 @@
 #include "..\..\include\scene\GameScene.h"
 
+using Honeycomb::Component::GameComponent;
 using Honeycomb::Object::GameObject;
 using Honeycomb::Component::Light::BaseLight;
 
@@ -27,10 +28,10 @@ namespace Honeycomb::Scene {
 		clone->isActive = this->isActive;
 
 		// Copy over all of the children and the components, once duplicated
-		for (int i = 0; i < this->children.size(); i++)
-			clone->addChild(*this->children.at(i)->clone());
-		for (int i = 0; i < this->components.size(); i++)
-			clone->addComponent(*this->components.at(i)->clone());
+		for (const GameObject *child : this->children)
+			clone->addChild(*child->clone());
+		for (const GameComponent *comp : this->components)
+			clone->addComponent(*comp->clone());
 
 		return clone;
 	}

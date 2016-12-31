@@ -52,9 +52,9 @@ namespace Honeycomb::Geometry {
 		// These refer to the initialized components from the imported data.
 		// All game objects built from this model will reference these in some
 		// form.
-		std::vector<const Honeycomb::Geometry::Mesh*> meshes; // Meshes
-		std::vector<const Honeycomb::Graphics::Texture2D*> textures; // Textures
-		std::vector<const Honeycomb::Graphics::Material*> materials; // Materials
+		std::vector<const Honeycomb::Geometry::Mesh*> meshes;
+		std::vector<const Honeycomb::Graphics::Texture2D*> textures;
+		std::vector<const Honeycomb::Graphics::Material*> materials;
 
 		/// Initializes a new Model from the specified file path.
 		/// const std::string &path : The system file path to the model.

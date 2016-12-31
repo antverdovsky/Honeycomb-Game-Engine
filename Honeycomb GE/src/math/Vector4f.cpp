@@ -140,7 +140,7 @@ namespace Honeycomb::Math {
 	}
 
 	Vector4f& Vector4f::operator/=(const float &scale) {
-		return this->scale(1.0F / scale);
+		return this->scaleTo(1.0F / scale);
 	}
 
 	Vector4f Vector4f::operator+(const Vector4f &v2) const {

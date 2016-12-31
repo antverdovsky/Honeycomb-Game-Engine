@@ -44,11 +44,10 @@ namespace Honeycomb::Render {
 		glDepthFunc(GL_EQUAL); // Only render if same depth
 
 		// Render the scene for the remaining lights
-		for (int i = 1; i < activeLights.size(); i++) {
-			activeLights.at(i)->toShader();
-			CameraController::getActiveCamera()->toShader(
-				*activeLights.at(i)->getShader());
-			scene.render(*activeLights.at(i)->getShader());
+		for (BaseLight *bL : activeLights) {
+			bL->toShader();
+			CameraController::getActiveCamera()->toShader(*bL->getShader());
+			scene.render(*bL->getShader());
 		}
 
 		// Enable Regular Rendering for the first pass only

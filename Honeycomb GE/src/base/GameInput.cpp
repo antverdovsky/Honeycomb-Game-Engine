@@ -9,13 +9,13 @@ using Honeycomb::Math::Vector2f;
 namespace Honeycomb::Base {
 	GameInput *GameInput::gameInput = nullptr;
 
-	const bool& GameInput::getButtonDown(const int &button) const {
+	bool GameInput::getButtonDown(const int &button) const {
 		if (button < 0 || button > MAX_NUM_BUTTONS) return false; // In range?
 
 		return buttonsDown[button];
 	}
 
-	const bool& GameInput::getButtonReleased(const int &button) const {
+	bool GameInput::getButtonReleased(const int &button) const {
 		if (button < 0 || button > MAX_NUM_BUTTONS) return false; // In range?
 
 		return buttonsReleased[button];
@@ -27,13 +27,13 @@ namespace Honeycomb::Base {
 		return gameInput;
 	}
 
-	const bool& GameInput::getKeyDown(const int &key) const {
+	bool GameInput::getKeyDown(const int &key) const {
 		if (key < 0 || key > MAX_NUM_KEYS) return false; // In range?
 
 		return keysDown[key];
 	}
 
-	const bool& GameInput::getKeyReleased(const int &key) const {
+	bool GameInput::getKeyReleased(const int &key) const {
 		if (key < 0 || key > MAX_NUM_KEYS) return false; // In range?
 
 		return keysReleased[key];

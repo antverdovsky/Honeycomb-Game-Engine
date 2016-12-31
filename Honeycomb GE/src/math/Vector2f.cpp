@@ -73,8 +73,8 @@ namespace Honeycomb::Math {
 	}
 
 	Vector2f Vector2f::rotate(const float &rad) const {
-		float cosRad = cos(rad);
-		float sinRad = sin(rad);
+		float cosRad = (float)cos(rad);
+		float sinRad = (float)sin(rad);
 
 		// Use the Euclidean space rotation formula
 		return Vector2f(x * cosRad - y * sinRad, x * sinRad + y * cosRad);
@@ -124,7 +124,7 @@ namespace Honeycomb::Math {
 	}
 
 	Vector2f& Vector2f::operator/=(const float &scale) {
-		return this->scale(1.0F / scale);
+		return this->scaleTo(1.0F / scale);
 	}
 
 	Vector2f Vector2f::operator+(const Vector2f &v2) const {
