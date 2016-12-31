@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <unordered_map>
+#include <regex>
 
 namespace Honeycomb::Shader {
 	class ShaderSourceProperties {
@@ -32,6 +33,8 @@ namespace Honeycomb::Shader {
 	};
 
 	class ShaderSource {
+		friend class ShaderProgram;
+
 	public:
 		/// If the Shader Source has not been previously imported (or if it's
 		/// import had been deleted), this will (re)import the Shader Source
@@ -78,9 +81,15 @@ namespace Honeycomb::Shader {
 		std::string file; // File which this Shader Source represents
 		std::string source; // The source code of this Shader Source File
 
-		// Map to the full variable names of variables detected in some named
-		// struct; a list of all of the uniforms detected.
-		std::unordered_map<std::string, std::vector<std::string>> detStructs;
+		// Map of the name of the struct to a list of the variables in the
+		// struct. The list of variables is made up of an array with two
+		// elements, where the first element represents the type of the
+		// variable and the second element represents the name of the variable.
+		std::unordered_map<std::string, std::vector<std::string*>> detStructs;
+		
+		// List of all of the uniforms detected in the shader source code. For
+		// uniforms with a user defined struct type, a uniform with the name of
+		// the variable appended at the end will be added instead.
 		std::vector<std::string> detUniforms;
 
 		/// Initializes a new instance of the Shader Source class for the
@@ -93,6 +102,30 @@ namespace Honeycomb::Shader {
 		///										 import the source code.
 		ShaderSource(const std::string &file, const ShaderSourceProperties 
 				&prop);
+
+		/// Removes C-style (//, /* */) comments from this source code. It is 
+		/// strongly advised that this method be run before uniforms are 
+		/// detected or dependencies are imported as any comments containing 
+		/// uniform or include directives may be seen as actual directives!
+		void deleteComments();
+
+		/// Detects any structs defined in this source code and adds the name 
+		/// of the struct to the detected structs vector list as the key, and 
+		/// adds the names of the variables of the struct to the detected 
+		/// structs vector list as the value of the key.
+		void detectStructs();
+
+		/// Detects any uniforms in this source code and adds them to the 
+		/// detected uniforms vector list.
+		void detectUniforms();
+
+		/// Finds any include directives in this source code and replaces the 
+		/// directive with the included source code.
+		void includeDependencies();
+
+		/// Creates uniforms out of struct variables for some declared uniform.
+		/// todo... this method may not be necessary?
+		void detectStructUniform(std::string type, std::string name, std::string fullUni);
 	};
 }
 

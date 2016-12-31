@@ -22,15 +22,6 @@ using Honeycomb::Math::Matrix4f;
 using Honeycomb::Debug::Logger;
 
 namespace Honeycomb::Shader {
-	const std::string ShaderProgram::INCLUDE_DIRECTIVE = "#include ";
-	const std::string ShaderProgram::UNIFORM_DIRECTIVE = "uniform ";
-	const std::string ShaderProgram::STRUCT_DIRECTIVE = "struct ";
-
-	const std::string ShaderProgram::SINGLE_LINE_COMMENT_BEGIN = "//";
-	const std::string ShaderProgram::SINGLE_LINE_COMMENT_END = "\n";
-	const std::string ShaderProgram::MULTI_LINE_COMMENT_BEGIN = "/*";
-	const std::string ShaderProgram::MULTI_LINE_COMMENT_END = "*/";
-
 	ShaderProgram::ShaderProgram() {
 		this->name = "ShaderProgram";
 
@@ -49,9 +40,11 @@ namespace Honeycomb::Shader {
 	void ShaderProgram::addShader(const std::string &file, const int &type) {
 		this->bindShaderProgram();
 
-		// Read in the source from the file provided and get a pointer to it
-		std::string *src = this->processSource(file);
-		const char *srcPtr = src->c_str();
+		// Read in & process the source code from the file specified, and get
+		// its raw source code string.
+		ShaderSource *source = ShaderSource::getShaderSource(file);
+		this->sources.push_back(source);
+		const char *srcPtr = source->getSource().c_str();
 
 		GLuint shaderID = glCreateShader(type);
 		glShaderSource(shaderID, 1, &srcPtr, NULL);
@@ -80,8 +73,6 @@ namespace Honeycomb::Shader {
 		// Attach the shader to this shader program & store its ID for later
 		glAttachShader(this->programID, shaderID);
 		this->shaders.push_back(shaderID);
-
-		delete src; // Done using the imported contents
 	}
 
 	void ShaderProgram::addUniform(const std::string &uni) {
@@ -151,8 +142,10 @@ namespace Honeycomb::Shader {
 			glDeleteShader(shaderID);
 		}
 
-		for (std::string uniform : this->detectedUniforms) {
-			this->addUniform(uniform);
+		for (ShaderSource *src : this->sources) {
+			for (std::string uniform : src->detUniforms) {
+				this->addUniform(uniform);
+			}
 		}
 	}
 
@@ -214,174 +207,5 @@ namespace Honeycomb::Shader {
 
 	void ShaderProgram::unbindShaderProgram() {
 		glUseProgram(0);
-	}
-
-	void ShaderProgram::deleteComments(std::string &source) {
-		// Regex for finding single line and multi line C-style comments
-		// The first group deals with matching single line comments (//), and
-		// the second group deals with matching multi line comments (/* */).
-		std::regex regex = std::regex("(//.*)|(/\\*[^]*?\\*/)");
-
-		// Search using the regex and remove any findings
-		source = std::regex_replace(source, regex, "");
-	}
-	
-	void ShaderProgram::includeDependencies(const std::string &file,
-			std::string &source) {
-		// Get the directory of this file, by trimming the file name off of the
-		// full import directory.
-		std::string thisDir = file.substr(0, file.find_last_of("\\"));
-		
-		// Regex for automatically detecting the file directory which is to be 
-		// included. The regex will identify any string containing the word
-		// #include, followed by at least one space, followed by the directory
-		// of the file (1st group) surrounded by matching angle brackets.
-		std::regex regex = std::regex("#include\\s+<(.*)>");
-
-		std::sregex_iterator include(source.cbegin(), source.cend(),
-			regex); // Iterator through all the includes in the source
-		std::sregex_iterator end; // End defined by Default Constructor
-
-		while (include != end) { // Go through all matched includes
-			// Get the raw directory, as it appears between the angle brackets
-			std::string rawDir = include->str(1);
-											
-			// By default, assume that the file which is going to be included
-			// is located in the same folder as this file (like with C).
-			std::string includeDir = thisDir;
-
-			// If the raw directory contains any back trace symbols (..\), move
-			// one directory back (by trimming the back trace symbol, and
-			// removing the last folder from the include directory), for each 
-			// back trace symbol.
-			while (rawDir.substr(0, 3) == "..\\") {
-				rawDir = rawDir.substr(3);
-				includeDir = includeDir.substr(0, 
-					includeDir.find_last_of("..\\"));
-			}
-
-			// The full include file path is the directory where the file
-			// is located with the name of the file appended at the end.
-			std::string includeFile = includeDir + "\\" + rawDir;
-
-			// Import the source and process it.
-			std::string* includeSrc = this->processSource(includeFile);
-
-			// Delete the entire include declaration and replace it with the
-			// imported source code.
-			source.replace(include->position(), include->length(), 
-				includeSrc->c_str());
-
-			// Since the iterator has been invalidated, rebuild it (but this
-			// time, offset the iterator to begin after the included source
-			// code, for obvious performance reasons).
-			include = std::sregex_iterator(
-				source.begin() + includeSrc->size(), source.end(), regex);
-
-			delete includeSrc; // Clean up the included source
-		}
-	}
-
-	void ShaderProgram::detectStructs(const std::string &source) {
-		// Regex for detecting an entire struct declaration (from the struct
-		// keyword to the closing brace and semicolon which ends the struct).
-		// The regex will detect any string containing the word struct followed
-		// by at least one space, followed by the name of the struct (1st
-		// group), followed by some text until the struct end (}) is found.
-		std::regex structRegex = std::regex("struct\\s+(\\w+)[^]*?\\}");
-
-		// Regex for detecting variables inside of a struct. The regex will
-		// detect any string containing a word defining the type of variable
-		// (1st group), followed by at least one space, followed by another
-		// word defining the name of the variable (2nd group).
-		std::regex varRegex = std::regex("(\\w+)\\s+(\\w+);");
-
-		std::sregex_iterator structDecl(source.cbegin(), source.cend(), 
-			structRegex); // Iterator through all of the structs of the source
-		std::sregex_iterator end; // Default End Iterator
-
-		for (; structDecl != end; structDecl++) {
-			// Get the name of the structure from the first group and define a
-			// vector to store all of the variables.
-			std::string sName = structDecl->str(1);
-			std::vector<std::string> vars;
-
-			// Get the string iterator for the beginning and end of the struct
-			// within the source code.
-			auto structBegin = source.cbegin() + structDecl->position();
-			auto structEnd = structBegin + structDecl->length();
-
-			// Iterator through all of the variables of this struct
-			std::sregex_iterator varDecl(structBegin, structEnd, varRegex);
-			
-			for (; varDecl != end; varDecl++) {
-				// Get the type of the variable (first group) and the name of
-				// the variable (second group).
-				std::string vType = varDecl->str(1);
-				std::string vName = varDecl->str(2);
-
-				// If the variable has the type of a previously defined struct
-				// then append each of the variables from that struct to this
-				// variable (due to how GLSL works).
-				if (this->detectedStructs.count(vType)) {
-					std::vector<std::string> detectedStructVars =
-						this->detectedStructs[vType];
-
-					for (int i = 0; i < detectedStructVars.size(); i++)
-						vars.push_back(vName + "." + detectedStructVars.at(i));
-				} else { // Otherwise, just add the variable
-					vars.push_back(vName);
-				}
-			}
-			
-			// Add the detected structure name with all of its detected vars
-			this->detectedStructs.insert({ sName, vars });
-		}
-	}
-
-	void ShaderProgram::detectUniforms(const std::string &source) {
-		// Regex for automatically detecting uniform type and name. The regex
-		// will identify any string containing the word uniform followed by at
-		// least one space, followed by a word (1st group: uniform type),
-		// followed by at least one space, followed by a word (2nd group:
-		// uniform name).
-		std::regex regex = std::regex("uniform\\s+(\\w+)\\s+(\\w+)");
-		
-		std::sregex_iterator uniform(source.cbegin(), source.cend(),
-			regex); // Iterator through all the uniforms in the source
-		std::sregex_iterator end; // End defined by Default Constructor
-
-		for (; uniform != end; uniform++) { // Go through all matched uniforms
-			// The first group represents the uniform type; the second the
-			// uniform name (see regex description).
-			std::string type = uniform->str(1);
-			std::string name = uniform->str(2);
-
-			// If the uniform type is a type of a user defined struct
-			if (this->detectedStructs.count(type)) {
-				// Get all of the variables of the struct
-				std::vector<std::string> vars = this->detectedStructs[type];
-
-				for (int i = 0; i < vars.size(); i++) {
-					// Add the full uniform name (uniform name + variable name)
-					// to detected uniforms.
-					this->detectedUniforms.push_back(name + "." + vars.at(i));
-				}
-			} else { // If the uniform type is not a user defined struct
-				this->detectedUniforms.push_back(name);
-			}
-		}
-	}
-
-	std::string* ShaderProgram::processSource(const std::string &file) {
-		std::string *importSrc = File::readFileToStr(file); // Import Source
-		
-		// Process the imported source code
-		this->deleteComments(*importSrc);
-		this->includeDependencies(file, *importSrc);
-		this->detectStructs(*importSrc);
-		this->detectUniforms(*importSrc);
-
-		return importSrc;
 	}
 }
