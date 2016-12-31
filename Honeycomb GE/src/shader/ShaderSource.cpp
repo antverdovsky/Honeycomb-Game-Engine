@@ -164,7 +164,7 @@ namespace Honeycomb::Shader {
 			// Get the name of the structure from the first group and define a
 			// vector to store all of the variables.
 			std::string sName = structDecl->str(1);
-			std::vector<std::string*> vars;
+			std::vector<std::string> vars;
 
 			// If this struct has already been found -> Continue to next one
 			if (detStructs.count(sName)) 
@@ -179,14 +179,24 @@ namespace Honeycomb::Shader {
 			std::sregex_iterator varDecl(structBegin, structEnd, varRegex);
 
 			for (; varDecl != end; varDecl++) {
-				std::string *var = new std::string[2]; // Array containing the type & name of var
-				
 				// Get the type of the variable (first group) and the name of
 				// the variable (second group).
-				var[0] = varDecl->str(1);
-				var[1] = varDecl->str(2);
+				std::string vType = varDecl->str(1);
+				std::string vName = varDecl->str(2);
 
-				vars.push_back(var); // Add variable type & name to list
+				// If the variable has the type of a previously defined struct
+				// then append each of the variables from that struct to this
+				// variable (due to how GLSL works).
+				if (this->detStructs.count(vType)) {
+					std::vector<std::string> detectedStructVars =
+						this->detStructs[vType];
+
+					for (int i = 0; i < detectedStructVars.size(); i++)
+						vars.push_back(vName + "." + detectedStructVars.at(i));
+				}
+				else { // Otherwise, just add the variable
+					vars.push_back(vName);
+				}
 			}
 
 			// Add the detected structure name with all of its detected vars
@@ -212,31 +222,19 @@ namespace Honeycomb::Shader {
 			std::string type = uniform->str(1);
 			std::string name = uniform->str(2);
 
-			// If already exists -> Continue;	// TODO: Perhaps a set is better???
-			if (std::find(this->detUniforms.begin(), this->detUniforms.end(), name) !=
-				this->detUniforms.end()) continue;
-
 			// If the uniform type is a type of a user defined struct
 			if (this->detStructs.count(type)) {
-				this->detectStructUniform(type, name, name);
+				// Get all of the variables of the struct
+				std::vector<std::string> vars = this->detStructs[type];
+
+				for (int i = 0; i < vars.size(); i++) {
+					// Add the full uniform name (uniform name + variable name)
+					// to detected uniforms.
+					this->detUniforms.push_back(name + "." + vars.at(i));
+				}
 			}
 			else { // If the uniform type is not a user defined struct
 				this->detUniforms.push_back(name);
-			}
-		}
-	}
-
-	// todo: this method may not be necessary ?
-	void ShaderSource::detectStructUniform(std::string type, std::string 
-			name, std::string fullUni) {
-		std::vector<std::string*> structVars = this->detStructs[type];
-
-		for (std::string* var : structVars) {
-			if (this->detStructs.count(var[0])) {
-				this->detectStructUniform(var[0], var[1], fullUni + "." + var[1]);
-			}
-			else {
-				this->detUniforms.push_back(fullUni + "." + var[1]);
 			}
 		}
 	}

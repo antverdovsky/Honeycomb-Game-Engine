@@ -90,7 +90,9 @@ namespace Honeycomb::Shader {
 
 		int programID; // "Pointer" ID to this shader program in the driver
 		std::vector<int> shaders; // "Pointer" IDs to the individual shaders
-		std::unordered_map<std::string, int> uniforms; // Hash Map of uniforms
+		
+		// HashMap of the Uniform's name to the Uniform's ID in OpenGL
+		std::unordered_map<std::string, int> uniforms;
 	};
 }
 

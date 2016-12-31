@@ -81,15 +81,16 @@ namespace Honeycomb::Shader {
 		std::string file; // File which this Shader Source represents
 		std::string source; // The source code of this Shader Source File
 
-		// Map of the name of the struct to a list of the variables in the
-		// struct. The list of variables is made up of an array with two
-		// elements, where the first element represents the type of the
-		// variable and the second element represents the name of the variable.
-		std::unordered_map<std::string, std::vector<std::string*>> detStructs;
+		// Map of the name of the struct to a list of the variable names in the
+		// struct. If the type of the variable in the struct is actually 
+		// another user defined struct, then for each variable in that struct,
+		// the name of the variable preceded by a period will be added instead.
+		std::unordered_map<std::string, std::vector<std::string>> detStructs;
 		
 		// List of all of the uniforms detected in the shader source code. For
-		// uniforms with a user defined struct type, a uniform with the name of
-		// the variable appended at the end will be added instead.
+		// uniforms with a user defined struct type, for each variable in that 
+		// struct, the name of the variable preceded by a period will be added 
+		// instead. 
 		std::vector<std::string> detUniforms;
 
 		/// Initializes a new instance of the Shader Source class for the
@@ -122,10 +123,6 @@ namespace Honeycomb::Shader {
 		/// Finds any include directives in this source code and replaces the 
 		/// directive with the included source code.
 		void includeDependencies();
-
-		/// Creates uniforms out of struct variables for some declared uniform.
-		/// todo... this method may not be necessary?
-		void detectStructUniform(std::string type, std::string name, std::string fullUni);
 	};
 }
 
