@@ -1,4 +1,4 @@
-#include <stdMaterial.glh>
+#include <stdMaterial.glsl>
 
 ///
 /// The basic structure for all lights.

@@ -9,10 +9,10 @@ namespace Honeycomb::Shader::Phong {
 
 	const std::string PhongAmbientShader::VERT_FILE_LOC =
 		"..\\Honeycomb GE\\res\\shaders\\standard\\source\\vertex\\"
-		"stdVertex.glc";
+		"stdVertex.glsl";
 	const std::string PhongAmbientShader::FRAG_FILE_LOC =
 		"..\\Honeycomb GE\\res\\shaders\\standard\\source\\light\\"
-		"stdAmbientLight.glc";
+		"stdAmbientLight.glsl";
 
 	PhongAmbientShader* PhongAmbientShader::getPhongAmbientShader() {
 		if (phongAmbientShader == nullptr)

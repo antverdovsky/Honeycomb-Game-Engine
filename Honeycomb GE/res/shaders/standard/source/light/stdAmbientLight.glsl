@@ -1,6 +1,6 @@
 #version 330 core
 
-#include <..\..\include\stdLight.glh>
+#include <..\..\include\stdLight.glsl>
 
 uniform sampler2D textureSampler; // Texture Sampler
 

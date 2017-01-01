@@ -2,7 +2,7 @@
 
 uniform sampler2D textureSampler; // Texture Sampler
 
-#include <..\..\include\stdLight.glh>
+#include <..\..\include\stdLight.glsl>
 
 ///
 /// The point light structure.
