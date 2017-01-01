@@ -8,7 +8,7 @@
 
 namespace Honeycomb::Shader {
 	/// Represents any variable or uniform in the Shader Source.
-	struct Variable {
+	struct SourceVariable {
 		std::string name; // The name of the variable
 		std::string type; // The type of the variable
 
@@ -16,7 +16,7 @@ namespace Honeycomb::Shader {
 		/// type.
 		/// const string &name : The name of the variable.
 		/// const string &type : The type of the variable.
-		Variable(const std::string &name, const std::string &type);
+		SourceVariable(const std::string &name, const std::string &type);
 	};
 
 	class ShaderSourceProperties {
@@ -45,6 +45,7 @@ namespace Honeycomb::Shader {
 	};
 
 	class ShaderSource {
+		friend class GenericStruct;
 		friend class ShaderProgram;
 
 	public:
@@ -97,13 +98,13 @@ namespace Honeycomb::Shader {
 		// struct. If the type of the variable in the struct is actually 
 		// another user defined struct, then for each variable in that struct,
 		// the name of the variable preceded by a period will be added instead.
-		std::unordered_map<std::string, std::vector<Variable>> detStructs;
+		std::unordered_map<std::string, std::vector<SourceVariable>> detStructs;
 		
 		// List of all of the uniforms detected in the shader source code. For
 		// uniforms with a user defined struct type, for each variable in that 
 		// struct, the name of the variable preceded by a period will be added 
 		// instead. 
-		std::vector<Variable> detUniforms;
+		std::vector<SourceVariable> detUniforms;
 
 		/// Initializes a new instance of the Shader Source class for the
 		/// specified source code file. The Shader Source from the specified
