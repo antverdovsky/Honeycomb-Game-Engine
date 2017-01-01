@@ -10,6 +10,11 @@ using namespace Honeycomb::File;
 using namespace Honeycomb::Debug;
 
 namespace Honeycomb::Shader {
+	Variable::Variable(const std::string &name, const std::string &type) {
+		this->name = name;
+		this->type = type;
+	}
+
 	ShaderSourceProperties::ShaderSourceProperties() : 
 			ShaderSourceProperties(true, true, true, true) {
 		
@@ -164,7 +169,7 @@ namespace Honeycomb::Shader {
 			// Get the name of the structure from the first group and define a
 			// vector to store all of the variables.
 			std::string sName = structDecl->str(1);
-			std::vector<std::string> vars;
+			std::vector<Variable> vars;
 
 			// If this struct has already been found -> Continue to next one
 			if (detStructs.count(sName)) 
@@ -188,14 +193,19 @@ namespace Honeycomb::Shader {
 				// then append each of the variables from that struct to this
 				// variable (due to how GLSL works).
 				if (this->detStructs.count(vType)) {
-					std::vector<std::string> detectedStructVars =
+					std::vector<Variable> detectedStructVars =
 						this->detStructs[vType];
-
-					for (const std::string &structVar : detectedStructVars)
-						vars.push_back(vName + "." + structVar);
+					
+					// The variable's full name will be the name of the
+					// variable plus the structure's variable. The variable
+					// also takes on the type of the struct's variable.
+					for (const Variable &structVar : detectedStructVars) {
+						vars.push_back(Variable(vName + "." + structVar.name,
+							structVar.type));
+					}
 				}
 				else { // Otherwise, just add the variable
-					vars.push_back(vName);
+					vars.push_back(Variable(vName, vType));
 				}
 			}
 
@@ -225,16 +235,17 @@ namespace Honeycomb::Shader {
 			// If the uniform type is a type of a user defined struct
 			if (this->detStructs.count(type)) {
 				// Get all of the variables of the struct
-				std::vector<std::string> structVars = this->detStructs[type];
+				std::vector<Variable> structVars = this->detStructs[type];
 
-				for (const std::string& structVar : structVars) {
+				for (const Variable& structVar : structVars) {
 					// Add the full uniform name (uniform name + variable name)
 					// to detected uniforms.
-					this->detUniforms.push_back(name + "." + structVar);
+					this->detUniforms.push_back(Variable(name + "." + 
+						structVar.name, structVar.type));
 				}
 			}
 			else { // If the uniform type is not a user defined struct
-				this->detUniforms.push_back(name);
+				this->detUniforms.push_back(Variable(name, type));
 			}
 		}
 	}

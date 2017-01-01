@@ -143,8 +143,8 @@ namespace Honeycomb::Shader {
 		}
 
 		for (ShaderSource *src : this->sources) {
-			for (std::string uniform : src->detUniforms) {
-				this->addUniform(uniform);
+			for (const Variable &var : src->detUniforms) {
+				this->addUniform(var.name);
 			}
 		}
 	}
