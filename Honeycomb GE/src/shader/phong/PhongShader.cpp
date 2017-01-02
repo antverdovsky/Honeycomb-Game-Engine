@@ -131,10 +131,12 @@ namespace Honeycomb::Shader::Phong {
 	void PhongShader::setUniform_Material(const Material &mat) {
 		std::string name = mat.getName();
 
+		/*
 		setUniform_vec4(name + ".ambientColor", mat.getAmbientColor());
 		setUniform_vec4(name + ".diffuseColor", mat.getDiffuseColor());
 		setUniform_vec4(name + ".specularColor", mat.getSpecularColor());
 		setUniform_f(name + ".shininess", mat.getShininess());
+		*/
 	}
 
 	void PhongShader::setUniform_PointLight(const PointLight &pL) {

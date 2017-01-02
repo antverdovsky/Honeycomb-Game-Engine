@@ -319,5 +319,12 @@
     <None Include="res\shaders\standard\source\vertex\stdVertex.glc" />
     <None Include="res\shaders\standard\include\stdLight.glh" />
     <None Include="res\shaders\standard\include\stdMaterial.glh" />
+    <None Include="res\shaders\standard\source\vertex\stdVertex.glsl" />
+    <None Include="res\shaders\standard\include\stdLight.glsl" />
+    <None Include="res\shaders\standard\include\stdMaterial.glsl" />
+    <None Include="res\shaders\standard\source\light\stdAmbientLight.glsl" />
+    <None Include="res\shaders\standard\source\light\stdDirectionalLight.glsl" />
+    <None Include="res\shaders\standard\source\light\stdPointLight.glsl" />
+    <None Include="res\shaders\standard\source\light\stdSpotLight.glsl" />
   </ItemGroup>
 </Project>

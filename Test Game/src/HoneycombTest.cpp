@@ -29,16 +29,17 @@ namespace HoneycombTest {
 		// Initialize the Light Objects & a Camera
 		GameObject *ambientLight = Builder::getBuilder()->newAmbientLight();
 		ambientLight->getComponent<AmbientLight>()->
-			setIntensity(0.22F);
+			setIntensity(0.10F);
 		GameObject *directionalLight = Builder::getBuilder()->
 			newDirectionalLight();
 		directionalLight->getComponent<DirectionalLight>
-			()->setIntensity(2.0F);
+			()->setIntensity(0.1F);
+		directionalLight->getComponent<Transform>()->rotate(Vector3f::getGlobalRight(), -PI / 2);
 		GameObject *camera = Builder::getBuilder()->newCamera();
 		aPointLight->getComponent<Transform>()->translate(
-			Vector3f(0.0F, 5.0F, 0.0F));
+			Vector3f(5.0F, 5.0F, 0.0F));
 		aPointLight->getComponent<PointLight>()->setIntensity(
-			10.0F);
+			1.0F);
 		aPointLight->getComponent<PointLight>()->setColor(
 			Vector4f(0.0F, 0.0F, 1.0F, 1.0F));
 
@@ -53,19 +54,16 @@ namespace HoneycombTest {
 			5.0F, 5.0F);
 		PointLight *suzPointLight = new PointLight();
 		suzPointLight->setColor(Vector4f(1.0F, 0.0F, 0.0F, 1.0F));
-		suzPointLight->setIntensity(10.0F);
+		suzPointLight->setIntensity(1.0F);
 		SpotLight *suzSpotLight = new SpotLight();
 		suzSpotLight->setColor(Vector4f(0.0F, 0.0F, 1.0F, 1.0F));
-		suzSpotLight->setIntensity(10.0F);
+		suzSpotLight->setIntensity(1.0F);
 
 		// Add Suzanne's Components to Suzanne
 		suzanne->addComponent(*suzPointLight);
 		suzanne->addComponent(*suzSpotLight);
 		suzanne->addComponent(*suzInputTransformable);
-		camera->addComponent(*(new DirectionalLight("DirectionalLight",
-			2.0F,
-			Vector4f(1.0F, 1.0F, 1.0F, 1.0F))));
-
+		
 		// Allow the free movement of the camera
 		InputTransformable *camInputTransformable = new InputTransformable();
 		camera->addComponent(*camInputTransformable);
@@ -86,19 +84,21 @@ namespace HoneycombTest {
 		challenger->getChild("Body")->getComponent<Transform>()->setTranslation(
 			Vector3f(7.5F, 1.75F, -7.5F));
 
-		// Create a fancy Emerald Material (non-textured).
-		Material *emerald = new Material("material", 
-			Texture2D::getNonTexture(),
-			Vector4f(1.0F, 1.0F, 1.0F, 1.0F),
-			Vector4f(0.07568F, 0.61424F, 0.07568F, 1.0F),
-			Vector4f(0.633F, 0.727811F, 0.633F, 1.0F),
-			0.6F * 128.0F);
+		// Create a fancy Chrome Material (non-textured).
+		Material *chrome = new Material();
+		chrome->glVector4fs.setValue("ambientColor", 
+			Vector4f(0.25F, 0.25F, 0.25F, 1.0F));
+		chrome->glVector4fs.setValue("diffuseColor",
+			Vector4f(0.4F, 0.4F, 0.4F, 1.0F));
+		chrome->glVector4fs.setValue("specularColor",
+			Vector4f(0.774597F, 0.774597F, 0.774597F, 1.0F));
+		chrome->glFloats.setValue("shininess", 0.6F * 128.0F);
 		
 		// Give Suzanne & the Sphere the Emerald Material
 		suzanne->getComponent<MeshRenderer>()->setMaterial(
-			*emerald);
+			*chrome);
 		sphere->getComponent<MeshRenderer>()->setMaterial(
-			*emerald);
+			*chrome);
 
 		// Add all objects to the scene
 		this->gameScene.addChild(*cube);
@@ -106,6 +106,7 @@ namespace HoneycombTest {
 		this->gameScene.addChild(*sphere);
 		this->gameScene.addChild(*suzanne);
 		this->gameScene.addChild(*aPointLight);
+		this->gameScene.addChild(*directionalLight);
 		this->gameScene.addChild(*ambientLight);
 		this->gameScene.addChild(*camera);
 		this->gameScene.addChild(*challenger);

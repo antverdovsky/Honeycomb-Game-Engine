@@ -121,11 +121,14 @@ namespace Honeycomb::Geometry {
 		}
 
 		// Build the Material and return it [TODO, use material name not sub!]
-		Material *mat = new Material("material", *texture,
-			Vector4f(matAmbient.r, matAmbient.g, matAmbient.b, 1.0F),
-			Vector4f(matDiffuse.r, matDiffuse.g, matDiffuse.b, 1.0F),
-			Vector4f(matSpecular.r, matSpecular.g, matSpecular.b, 1.0F),
-			matShininess);
+		Material *mat = new Material();
+		mat->glVector4fs.setValue("ambientColor", 
+			Vector4f(matAmbient.r, matAmbient.g, matAmbient.b, 1.0F));
+		mat->glVector4fs.setValue("diffuseColor",
+			Vector4f(matDiffuse.r, matDiffuse.g, matDiffuse.b, 1.0F));
+		mat->glVector4fs.setValue("specularColor",
+			Vector4f(matSpecular.r, matSpecular.g, matSpecular.b, 1.0F));
+		mat->glFloats.setValue("shininess", matShininess);
 
 		// Save the texture and material
 		this->textures.push_back(texture);

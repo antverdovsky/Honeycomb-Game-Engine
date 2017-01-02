@@ -324,12 +324,19 @@
     <None Include="res\shaders\simple\fragShader.glsl" />
     <None Include="res\shaders\simple\vertexShader.glsl" />
     <None Include="res\shaders\standard\include\stdLight.glh" />
+    <None Include="res\shaders\standard\include\stdLight.glsl" />
     <None Include="res\shaders\standard\include\stdMaterial.glh" />
+    <None Include="res\shaders\standard\include\stdMaterial.glsl" />
     <None Include="res\shaders\standard\source\light\stdAmbientLight.glc" />
+    <None Include="res\shaders\standard\source\light\stdAmbientLight.glsl" />
     <None Include="res\shaders\standard\source\light\stdDirectionalLight.glc" />
+    <None Include="res\shaders\standard\source\light\stdDirectionalLight.glsl" />
     <None Include="res\shaders\standard\source\light\stdPointLight.glc" />
+    <None Include="res\shaders\standard\source\light\stdPointLight.glsl" />
     <None Include="res\shaders\standard\source\light\stdSpotLight.glc" />
+    <None Include="res\shaders\standard\source\light\stdSpotLight.glsl" />
     <None Include="res\shaders\standard\source\vertex\stdVertex.glc" />
+    <None Include="res\shaders\standard\source\vertex\stdVertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
