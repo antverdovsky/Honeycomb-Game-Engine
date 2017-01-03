@@ -3,28 +3,30 @@
 #define DIRECTIONAL_LIGHT
 
 #include "BaseLight.h"
-#include "..\..\math\Vector3f.h"
+#include "..\GameComponent.h"
 
 namespace Honeycomb::Component::Light {
 	class DirectionalLight : public BaseLight {
 	public:
-		/// Creates a new Directional light with a default base.
+		// Variables defining the color and intensity of the light.
+		const static std::string COLOR_VEC4;
+		const static std::string INTENSITY_F;
+		const static std::string DIRECTION_VEC3;
+
+		/// Creates a new directional light with a white { 1.0F, 1.0F, 1.0F, 
+		/// 1.0F } color, and an intensity of 1.0F. The direction will be set
+		/// to the default Vector3 until the Directional Light is started and
+		/// the Transform direction takes over.
 		DirectionalLight();
 
-		/// Creates a new Directional light with the given base.
-		/// const BaseLight &bL : The base light to be used for this light.
-		DirectionalLight(const BaseLight &bL);
-
-		/// Creates a new Directional light with the given name, intensity and
-		/// color.
-		/// const string &nam : The name of this light.
+		/// Creates a new Directional Light with the given intensity and color.
+		/// The direction will be set to the default Vector3 until the 
+		/// Directional Light is started and the Transform direction takes 
+		/// over.
 		/// const float &inten : The intensity of this light.
 		/// const Vector4f &col : The color of this light.
-		DirectionalLight(const std::string &nam, const float &inten, const
-			Honeycomb::Math::Vector4f &col);
-
-		/// Destroys this Directional Light.
-		~DirectionalLight();
+		DirectionalLight(const float &inten, const Honeycomb::Math::Vector4f 
+				&col);
 
 		/// Clones this Directional Light into a new, dynamically allocated,
 		/// Directional Light. This function should be used instead of the copy 
@@ -32,18 +34,16 @@ namespace Honeycomb::Component::Light {
 		/// return : The cloned Directional Light.
 		DirectionalLight* clone() const;
 
-		/// Gets the direction of this directional light. The reference which
-		/// is returned is equivalent to the Transform's local forward vector.
-		/// return : The direction.
-		const Honeycomb::Math::Vector3f& getDirection() const;
-
 		/// Starts this Directional Light.
 		void start();
 
-		/// Writes the parameters of this directional light into its preferred
-		/// shader.
-		void toShader();
+		/// Updates this Directional Light.
+		void update();
 	private:
+		// The struct definition for the Directional Light.
+		const static Honeycomb::Shader::ShaderSource* shaderSource;
+		const static std::string structName;
+
 		const Honeycomb::Math::Vector3f *direction; // Transform Direction
 	};
 }

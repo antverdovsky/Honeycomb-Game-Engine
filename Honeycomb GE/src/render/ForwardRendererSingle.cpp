@@ -1,3 +1,5 @@
+/******************************************************************************
+
 #include "..\..\include\render\ForwardRendererSingle.h"
 
 #include "..\..\include\shader\phong\PhongShader.h"
@@ -42,3 +44,5 @@ namespace Honeycomb::Render {
 
 	}
 }
+
+******************************************************************************/

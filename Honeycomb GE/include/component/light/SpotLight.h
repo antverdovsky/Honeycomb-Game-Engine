@@ -9,73 +9,58 @@
 namespace Honeycomb::Component::Light {
 	class SpotLight : public BaseLight {
 	public:
-		/// Initializes a Point Light with the default base, and a default
-		/// Attenuation, 10.0F for the Range, and PI / 6 radians (30.0 degrees)
-		/// for the spot angle.
+		// Variables defining the color and intensity of the light.
+		const static std::string ATTENUATION_CONSTANT_F;
+		const static std::string ATTENUATION_LINEAR_F;
+		const static std::string ATTENUATION_QUADRATIC_F;
+		const static std::string COLOR_VEC4;
+		const static std::string INTENSITY_F;
+		const static std::string POSITION_VEC3;
+		const static std::string DIRECTION_VEC3;
+		const static std::string RANGE_F;
+		const static std::string ANGLE_F;
+
+		/// Initializes a new Spot Light with a white { 1.0F, 1.0F, 1.0F, 
+		/// 1.0F } color, 1.0F intensity, 1.0F constant attenuation, 0.22
+		/// linear attenuation, 0.20 quadratic attenuation, 10.0F range and
+		/// PI / 4.0F angle. The position and direction will be set to the 
+		/// default Vector3 values, until the Spot Light is started and the 
+		/// Transform translation takes over.
 		SpotLight();
 
-		/// Initializes a new Point Light with the specified base, range, spot
-		/// angle and attenuation variables.
-		/// const BaseLight &bL : The base light of this Spot Light.
-		/// const Attenuation &atten : The attenuation of this Spot Light.
-		/// const float &ran : The range of this Spot Light.
-		/// const float &ang : The angle of this Spot Light, in radians.
-		SpotLight(const BaseLight &bL, const BaseLight::Attenuation &atten,
-				const float &ran, const float &ang);
+		/// Initializes a new Spot Light with the specified name, intensity,
+		/// color, attenuation variables, range and angle. The position and 
+		/// direction will be set to the default Vector3 values, until the Spot
+		/// Light is started and the Transform translation takes over.
+		/// const float &inten : The intensity of this light.
+		/// const Vector4f &col : The color of this light.
+		/// const float &atC : The attenuation constant of this light.
+		/// const float &atL : The attenuation linear of this light.
+		/// const float &atQ : The attenuation quadratic of this light.
+		/// const float &ran : The range of this light.
+		/// const float &ang : The angle of this light.
+		SpotLight(const float &inten, const Honeycomb::Math::Vector4f &col,
+			const float &atC, const float &atL, const float &atQ, const
+			float &ran, const float &ang);
 
-		/// Destroys this Spot Light.
-		~SpotLight();
-
-		/// Clones this Point Light into a new, dynamically allocated, Spot 
+		/// Clones this Spot Light into a new, dynamically allocated, Spot 
 		/// Light. This function should be used instead of the copy constructor
 		/// to prevent object slicing.
 		/// return : The cloned Spot Light.
 		SpotLight* clone() const;
 
-		/// Gets the spot angle of the Spot Light.
-		/// return : The spot angle value.
-		const float& getAngle() const;
-
-		/// Gets the reference to the Attenuation of this Spot Light.
-		/// return : The attenuation reference.
-		const BaseLight::Attenuation& getAttenuation() const;
-
-		/// Gets the Direction of this Spot Light.
-		/// return : A vector representing the direction.
-		const Honeycomb::Math::Vector3f& getDirection() const;
-
-		/// Gets the Position of this Spot Light.
-		/// return : A vector representing the position.
-		const Honeycomb::Math::Vector3f& getPosition() const;
-
-		/// Gets the range of this Spot Light.
-		/// return : The range of this Spot Light.
-		const float& getRange() const;
-
-		/// Sets the spot angle of the Spot Light.
-		/// const float &ang : The new angle of this Spot Light.
-		void setAngle(const float &ang);
-
-		/// Sets the attenuation of this Spot Light.
-		/// const Attenuation &atten : The new attenuation of this Spot Light.
-		void setAttenuation(const BaseLight::Attenuation &atten);
-
-		/// Sets the range of this Spot Light.
-		/// const float &ran : The new range of the Spot Light.
-		void setRange(const float &ran);
-
 		/// Starts this Spot Light.
 		void start();
 
-		/// Writes the parameters of this spot light into the preferred shader.
-		void toShader();
+		/// Updates this Spot Light.
+		void update();
 	private:
+		// The struct definition for the Spot Light.
+		const static Honeycomb::Shader::ShaderSource* shaderSource;
+		const static std::string structName;
+
 		const Honeycomb::Math::Vector3f *position; // Transform Position
 		const Honeycomb::Math::Vector3f *direction; // Transform Direction
-
-		BaseLight::Attenuation attenuation; // The attenuation of the Light
-		float angle; // The spot angle of the Spot Light (entire light).
-		float range; // The range of the Spot Light
 	};
 }
 

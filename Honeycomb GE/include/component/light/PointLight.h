@@ -9,33 +9,35 @@
 namespace Honeycomb::Component::Light {
 	class PointLight : public BaseLight {
 	public:
-		/// Initializes a new Point Light with a default base and a default
-		/// Attenuation, and 10.0F for the range.
+		// Variables defining the color and intensity of the light.
+		const static std::string ATTENUATION_CONSTANT_F;
+		const static std::string ATTENUATION_LINEAR_F;
+		const static std::string ATTENUATION_QUADRATIC_F;
+		const static std::string COLOR_VEC4;
+		const static std::string INTENSITY_F;
+		const static std::string POSITION_VEC3;
+		const static std::string RANGE_F;
+
+		/// Initializes a new Point Light with a white { 1.0F, 1.0F, 1.0F, 
+		/// 1.0F } color, 1.0F intensity, 1.0F constant attenuation, 0.22
+		/// linear attenuation, 0.20 quadratic attenuation, and 10.0F range.
+		/// The position will be set to the default Vector3 until the Point 
+		/// Light is started and the Transform translation takes over.
 		PointLight();
 
-		/// Initializes a new Point Light with the specified base, range, and 
-		/// attenuation.
-		/// const BaseLight &bL : The base light of this Point Light.
-		/// const Attenuation &atten : The attenuation of this Point Light.
-		/// const float &ran : The range of the Point Light.
-		PointLight(const BaseLight &bL, const BaseLight::Attenuation &atten,
-				const float &ran);
-
 		/// Initializes a new Point Light with the specified name, intensity,
-		/// color, attenuation variables, and range.
-		/// const string &nam : The name of this light.
+		/// color, attenuation variables, and range. The position will be set 
+		/// to the default Vector3 until the Point Light is started and the 
+		/// Transform translation takes over.
 		/// const float &inten : The intensity of this light.
 		/// const Vector4f &col : The color of this light.
 		/// const float &atC : The attenuation constant of this light.
 		/// const float &atL : The attenuation linear of this light.
 		/// const float &atQ : The attenuation quadratic of this light.
 		/// const float &ran : The range of this light.
-		PointLight(const std::string &nam, const float &inten, const
-				Honeycomb::Math::Vector4f &col, const float &atC,
-				const float &atL, const float &atQ, const float &ran);
-
-		/// Destroys this Point Light.
-		~PointLight();
+		PointLight(const float &inten, const Honeycomb::Math::Vector4f &col, 
+				const float &atC, const float &atL, const float &atQ, const 
+				float &ran);
 
 		/// Clones this Point Light into a new, dynamically allocated, Point 
 		/// Light. This function should be used instead of the copy constructor
@@ -43,37 +45,17 @@ namespace Honeycomb::Component::Light {
 		/// return : The cloned Point Light.
 		PointLight* clone() const;
 
-		/// Gets the Position of this Point Light.
-		/// return : A vector representing the position.
-		const Honeycomb::Math::Vector3f& getPosition() const;
-
-		/// Gets the reference to the Attenuation of this Point Light.
-		/// return : The attenuation reference.
-		const BaseLight::Attenuation& getAttenuation() const;
-		
-		/// Gets the sphere-like radius range of this Point Light.
-		/// return : The range value.
-		const float& getRange() const;
-
-		/// Sets the attenuation of this Point Light.
-		/// const Attenuation &atten : The new attenuation of this Point Light.
-		void setAttenuation(const BaseLight::Attenuation &atten);
-
-		/// Sets the range of this Point Light.
-		/// const float &ran : The new range of the Point Light.
-		void setRange(const float &ran);
-
 		/// Starts this Point Light.
 		void start();
 
-		/// Writes the parameters of this point light into its preferred
-		/// shader.
-		void toShader();
+		/// Updates this Point Light.
+		void update();
 	private:
-		const Honeycomb::Math::Vector3f *position; // Transform Position
+		// The struct definition for the Point Light.
+		const static Honeycomb::Shader::ShaderSource* shaderSource;
+		const static std::string structName;
 
-		BaseLight::Attenuation attenuation; // The attenuation of the Light
-		float range; // The sphere-like radius range of the Point Light
+		const Honeycomb::Math::Vector3f *position; // Transform Position
 	};
 }
 

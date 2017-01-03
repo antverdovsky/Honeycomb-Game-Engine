@@ -253,10 +253,8 @@
     <ClCompile Include="src\shader\phong\PhongAmbientShader.cpp" />
     <ClCompile Include="src\shader\phong\PhongDirectionalShader.cpp" />
     <ClCompile Include="src\shader\phong\PhongPointShader.cpp" />
-    <ClCompile Include="src\shader\phong\PhongShader.cpp" />
     <ClCompile Include="src\shader\phong\PhongSpotShader.cpp" />
     <ClCompile Include="src\shader\ShaderSource.cpp" />
-    <ClCompile Include="src\shader\simple\SimpleShader.cpp" />
     <ClCompile Include="src\shader\ShaderProgram.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -302,10 +300,8 @@
     <ClInclude Include="include\shader\phong\PhongAmbientShader.h" />
     <ClInclude Include="include\shader\phong\PhongDirectionalShader.h" />
     <ClInclude Include="include\shader\phong\PhongPointShader.h" />
-    <ClInclude Include="include\shader\phong\PhongShader.h" />
     <ClInclude Include="include\shader\phong\PhongSpotShader.h" />
     <ClInclude Include="include\shader\ShaderSource.h" />
-    <ClInclude Include="include\shader\Simple\SimpleShader.h" />
     <ClInclude Include="include\shader\ShaderProgram.h" />
   </ItemGroup>
   <ItemGroup>

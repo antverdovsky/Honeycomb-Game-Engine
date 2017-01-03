@@ -68,6 +68,9 @@ namespace Honeycomb::Shader {
 		/// const string &structName : The name of the Struct in the Shader
 		///							   Source.
 		GenericStruct(const ShaderSource &sS, const std::string &structName);
+
+		const ShaderSource *SHADER_SOURCE;
+		std::string structName;
 	};
 }
 

@@ -7,11 +7,6 @@
 #include "..\..\include\component\light\BaseLight.h"
 #include "..\..\include\component\render\CameraController.h"
 
-#include "..\..\include\shader\phong\PhongAmbientShader.h"
-#include "..\..\include\shader\phong\PhongDirectionalShader.h"
-#include "..\..\include\shader\phong\PhongPointShader.h"
-#include "..\..\include\shader\phong\PhongSpotShader.h"
-
 using Honeycomb::Component::Light::BaseLight;
 using Honeycomb::Scene::GameScene;
 using Honeycomb::Shader::ShaderProgram;
@@ -32,10 +27,11 @@ namespace Honeycomb::Render {
 		std::vector<BaseLight*> &activeLights = scene.getActiveLights();
 		
 		// Render the very first active light regularly
-		activeLights.at(0)->toShader();
+		activeLights.at(0)->toShader(*activeLights.at(0)->preferredShader,
+			activeLights.at(0)->uniformName);
 		CameraController::getActiveCamera()->toShader(
-			*activeLights.at(0)->getShader());
-		scene.render(*activeLights.at(0)->getShader());
+			*activeLights.at(0)->preferredShader);
+		scene.render(*activeLights.at(0)->preferredShader);
 
 		// Enable Special Rendering parameters for remaining passes
 		glEnable(GL_BLEND); // Blend light contributions from various sources
@@ -45,9 +41,9 @@ namespace Honeycomb::Render {
 
 		// Render the scene for the remaining lights
 		for (BaseLight *bL : activeLights) {
-			bL->toShader();
-			CameraController::getActiveCamera()->toShader(*bL->getShader());
-			scene.render(*bL->getShader());
+			bL->toShader(*bL->preferredShader, bL->uniformName);
+			CameraController::getActiveCamera()->toShader(*bL->preferredShader);
+			scene.render(*bL->preferredShader);
 		}
 
 		// Enable Regular Rendering for the first pass only

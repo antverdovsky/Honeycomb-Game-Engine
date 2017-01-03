@@ -15,7 +15,6 @@
 #include "..\..\include\math\Vector2f.h"
 #include "..\..\include\math\Vector3f.h"
 #include "..\..\include\math\Vector4f.h"
-#include "..\..\include\shader\phong\PhongShader.h"
 
 using Assimp::Importer;
 
@@ -28,7 +27,6 @@ using Honeycomb::Object::GameObject;
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
-using Honeycomb::Shader::Phong::PhongShader;
 
 namespace Honeycomb::Geometry {
 	std::vector<Model*> Model::imports = std::vector<Model*>();

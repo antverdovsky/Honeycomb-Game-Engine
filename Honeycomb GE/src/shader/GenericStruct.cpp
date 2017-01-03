@@ -25,6 +25,9 @@ namespace Honeycomb::Shader {
 
 	GenericStruct::GenericStruct(const ShaderSource &sS, const std::string 
 			&structName) {
+		this->SHADER_SOURCE = &sS;
+		this->structName = structName;
+
 		for (const SourceVariable &var : sS.detStructs.at(structName)) {
 			if (var.type == "float")
 				this->glFloats.map.insert({ var.name, 0.0F });

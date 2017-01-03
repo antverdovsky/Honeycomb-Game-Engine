@@ -48,9 +48,7 @@
 
 #include "scene\GameScene.h"
 
-#include "shader\phong\PhongShader.h"
 #include "shader\ShaderProgram.h"
-#include "shader\simple\SimpleShader.h"
 
 namespace HoneycombEngine {
 	using namespace Honeycomb::Base;
@@ -76,8 +74,6 @@ namespace HoneycombEngine {
 	using namespace Honeycomb::Scene;
 
 	using namespace Honeycomb::Shader;
-	using namespace Honeycomb::Shader::Phong;
-	using namespace Honeycomb::Shader::Simple;
 }
 
 #endif

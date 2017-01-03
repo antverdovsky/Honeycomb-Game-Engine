@@ -29,18 +29,16 @@ namespace HoneycombTest {
 		// Initialize the Light Objects & a Camera
 		GameObject *ambientLight = Builder::getBuilder()->newAmbientLight();
 		ambientLight->getComponent<AmbientLight>()->
-			setIntensity(0.10F);
+			glFloats.setValue(AmbientLight::INTENSITY_F, 0.1F);
 		GameObject *directionalLight = Builder::getBuilder()->
 			newDirectionalLight();
 		directionalLight->getComponent<DirectionalLight>
-			()->setIntensity(0.1F);
+			()->glFloats.setValue(DirectionalLight::INTENSITY_F, 0.10F);
 		directionalLight->getComponent<Transform>()->rotate(Vector3f::getGlobalRight(), -PI / 2);
 		GameObject *camera = Builder::getBuilder()->newCamera();
 		aPointLight->getComponent<Transform>()->translate(
 			Vector3f(5.0F, 5.0F, 0.0F));
-		aPointLight->getComponent<PointLight>()->setIntensity(
-			1.0F);
-		aPointLight->getComponent<PointLight>()->setColor(
+		aPointLight->getComponent<PointLight>()->glVector4fs.setValue(PointLight::COLOR_VEC4,
 			Vector4f(0.0F, 0.0F, 1.0F, 1.0F));
 
 		// Initialize the Suzanne Components
@@ -53,11 +51,9 @@ namespace HoneycombTest {
 			GameInput::KEY_CODE_V, GameInput::KEY_CODE_B,
 			5.0F, 5.0F);
 		PointLight *suzPointLight = new PointLight();
-		suzPointLight->setColor(Vector4f(1.0F, 0.0F, 0.0F, 1.0F));
-		suzPointLight->setIntensity(1.0F);
+		suzPointLight->glVector4fs.setValue(PointLight::COLOR_VEC4, Vector4f(1.0F, 0.0F, 0.0F, 1.0F));
 		SpotLight *suzSpotLight = new SpotLight();
-		suzSpotLight->setColor(Vector4f(0.0F, 0.0F, 1.0F, 1.0F));
-		suzSpotLight->setIntensity(1.0F);
+		suzSpotLight->glVector4fs.setValue(PointLight::COLOR_VEC4, Vector4f(1.0F, 0.0F, 0.0F, 1.0F));
 
 		// Add Suzanne's Components to Suzanne
 		suzanne->addComponent(*suzPointLight);

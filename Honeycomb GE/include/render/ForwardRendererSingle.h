@@ -1,3 +1,5 @@
+/******************************************************************************
+
 #pragma once
 #ifndef LEGACY_FORWARD_RENDERER
 #define LEGACY_FORWARD_RENDERER
@@ -41,3 +43,5 @@ namespace Honeycomb::Render {
 }
 
 #endif
+
+******************************************************************************/

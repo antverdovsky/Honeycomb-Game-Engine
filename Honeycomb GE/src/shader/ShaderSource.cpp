@@ -37,6 +37,9 @@ namespace Honeycomb::Shader {
 
 	ShaderSource* ShaderSource::getShaderSource(const std::string &file,
 			const ShaderSourceProperties &prop) {
+		return new ShaderSource(file, prop);
+		
+			/*
 		// Try to find the file in the already imported source files
 		std::unordered_map<std::string, ShaderSource*>::iterator it =
 			ShaderSource::shaderSources.find(file);
@@ -48,6 +51,7 @@ namespace Honeycomb::Shader {
 			return new ShaderSource(file, prop);
 		else
 			return it->second;
+			*/
 	}
 
 	const std::string& ShaderSource::getFile() const {
@@ -72,7 +76,7 @@ namespace Honeycomb::Shader {
 		if (prop.detectStructs) this->detectStructs();
 		if (prop.detectUniforms) this->detectUniforms();
 		
-		ShaderSource::shaderSources.insert({ file, this });
+	//	ShaderSource::shaderSources.insert({ file, this });
 	}
 
 	void ShaderSource::deleteComments() {

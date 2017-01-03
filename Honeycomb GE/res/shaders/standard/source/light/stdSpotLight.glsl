@@ -16,9 +16,7 @@ struct SpotLight {
     
     float range; // The range of the light (height of the cone formed by the 
                  // light point and light ray).
-    float cosAngle; // The cosine of the spot angle of the light (angle of 
-                        // the 1 / 2 cone formed by the light point and the 
-                        // light ray).
+    float angle; // The spot angle of the light.
 };
 
 in vec2 out_vs_texCoord; // Take in texture coordinate outputted by VS
@@ -59,7 +57,7 @@ vec4 calculateSpotLight(SpotLight sL, Material mat, vec3 cP, vec3 wP,
     // the spot light can't affect this fragment.
     vec3 direction = normalize(displacement);
     float cosAngle = dot(direction, normalize(sL.direction));
-    if (cosAngle < sL.cosAngle) return vec4(0.0F, 0.0F, 0.0F, 0.0F);
+    if (cosAngle < cos(sL.angle)) return vec4(0.0F, 0.0F, 0.0F, 0.0F);
     
     // Calculate the Attenuation of the Point Light, and the adjusted
     // attenuation which will make the attenuation zero at the range of the
@@ -67,7 +65,7 @@ vec4 calculateSpotLight(SpotLight sL, Material mat, vec3 cP, vec3 wP,
     // for a smoother light transition.
     float atten = calculateAttenuation(sL.attenuation, dispMag);
     float intensity = (1.0F / atten) * sL.base.intensity * 
-        (1.0F - (1.0F - cosAngle) / (1.0F - sL.cosAngle)) * 
+        (1.0F - (1.0F - cosAngle) / (1.0F - cos(sL.angle))) * 
         ((sL.range - dispMag) / sL.range);
     
     // Calculate the Diffuse and Specular Light components of the Spot Light 

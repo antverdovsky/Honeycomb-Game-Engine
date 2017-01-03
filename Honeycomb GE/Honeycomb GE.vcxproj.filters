@@ -75,12 +75,6 @@
     <ClCompile Include="src\component\render\MeshRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\shader\simple\SimpleShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\shader\phong\PhongShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\conjuncture\Event.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -132,6 +126,15 @@
     <ClCompile Include="src\render\ForwardRendererMulti.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\file\LineOperation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shader\ShaderSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shader\GenericStruct.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\shader\phong\PhongAmbientShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -142,15 +145,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\shader\phong\PhongSpotShader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\file\LineOperation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\shader\ShaderSource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\shader\GenericStruct.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -215,12 +209,6 @@
     <ClInclude Include="include\component\render\MeshRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\shader\Simple\SimpleShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\shader\phong\PhongShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\conjuncture\Event.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -275,6 +263,15 @@
     <ClInclude Include="include\render\ForwardRendererMulti.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\file\LineOperation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shader\ShaderSource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\shader\GenericStruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="include\shader\phong\PhongAmbientShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -285,15 +282,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\shader\phong\PhongSpotShader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\file\LineOperation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\shader\ShaderSource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\shader\GenericStruct.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -11,35 +11,40 @@ using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
 using Honeycomb::Shader::ShaderProgram;
+using Honeycomb::Shader::ShaderSource;
 using Honeycomb::Shader::Phong::PhongDirectionalShader;
 
 namespace Honeycomb::Component::Light {
+	const std::string DirectionalLight::COLOR_VEC4 = "base.color";
+	const std::string DirectionalLight::INTENSITY_F = "base.intensity";
+	const std::string DirectionalLight::DIRECTION_VEC3 = "direction";
+
+	const ShaderSource *DirectionalLight::shaderSource =
+		ShaderSource::getShaderSource("..\\Honeycomb GE\\res\\shaders\\"
+			"standard\\source\\light\\stdDirectionalLight.glsl");
+	const std::string DirectionalLight::structName = "DirectionalLight";
+
 	DirectionalLight::DirectionalLight() : 
-			DirectionalLight(BaseLight("DirectionalLight")){
+			DirectionalLight(1.0F, Vector4f(1.0F, 1.0F, 1.0F, 1.0F)) {
 
 	}
 
-	DirectionalLight::DirectionalLight(const BaseLight &bL) : 
-			DirectionalLight(bL.getName(), bL.getIntensity(), bL.getColor()) {
+	DirectionalLight::DirectionalLight(const float &inten, const
+			Honeycomb::Math::Vector4f &col) : 
+			BaseLight(*shaderSource, structName) {
+		this->glFloats.setValue(DirectionalLight::INTENSITY_F, inten);
+		this->glVector4fs.setValue(DirectionalLight::COLOR_VEC4, col);
 
-	}
-
-	DirectionalLight::DirectionalLight(const std::string &nam, const float
-			&inten, const Vector4f &col) : BaseLight(nam, inten, col) {
-		this->shader = PhongDirectionalShader::getPhongDirectionalShader();
-		this->shaderUniform = "directionalLight";
-	}
-
-	DirectionalLight::~DirectionalLight() {
-
+		this->preferredShader = PhongDirectionalShader::
+			getPhongDirectionalShader();
+		this->uniformName = "directionalLight";
 	}
 
 	DirectionalLight* DirectionalLight::clone() const {
-		return new DirectionalLight(this->name, this->intensity, this->color);
-	}
-
-	const Vector3f& DirectionalLight::getDirection() const {
-		return *this->direction;
+		return new DirectionalLight(
+			this->glFloats.getValue(DirectionalLight::INTENSITY_F),
+			this->glVector4fs.getValue(DirectionalLight::COLOR_VEC4)
+		);
 	}
 
 	void DirectionalLight::start() {
@@ -50,10 +55,8 @@ namespace Honeycomb::Component::Light {
 		BaseLight::start();
 	}
 
-	void DirectionalLight::toShader() {
-		BaseLight::toShader();
-
-		this->shader->setUniform_vec3(this->shaderUniform + ".direction", 
+	void DirectionalLight::update() {
+		this->glVector3fs.setValue(DirectionalLight::DIRECTION_VEC3, 
 			*this->direction);
 	}
 }

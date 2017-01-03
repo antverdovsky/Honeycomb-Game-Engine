@@ -9,78 +9,66 @@
 
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Vector3f;
+using Honeycomb::Math::Vector4f;
 using Honeycomb::Shader::ShaderProgram;
+using Honeycomb::Shader::ShaderSource;
 using Honeycomb::Shader::Phong::PhongPointShader;
 
 namespace Honeycomb::Component::Light {
+	const std::string PointLight::ATTENUATION_CONSTANT_F = 
+			"attenuation.constant";
+	const std::string PointLight::ATTENUATION_LINEAR_F = "attenuation.linear";
+	const std::string PointLight::ATTENUATION_QUADRATIC_F = 
+			"attenuation.quadratic";
+	const std::string PointLight::COLOR_VEC4 = "base.color";
+	const std::string PointLight::INTENSITY_F = "base.intensity";
+	const std::string PointLight::POSITION_VEC3 = "position";
+	const std::string PointLight::RANGE_F = "range";
+
+	const ShaderSource *PointLight::shaderSource =
+		ShaderSource::getShaderSource("..\\Honeycomb GE\\res\\shaders\\"
+			"standard\\source\\light\\stdPointLight.glsl");
+	const std::string PointLight::structName = "PointLight";
+
 	PointLight::PointLight() : 
-			PointLight(BaseLight("PointLight"), BaseLight::Attenuation(), 
-			10.0F) {
+			PointLight(1.0F, Vector4f(1.0F, 1.0F, 1.0F, 1.0F), 1.0F, 0.22F,
+			0.20F, 10.0F) {
 
 	}
 
-	PointLight::PointLight(const BaseLight &bL, 
-		const BaseLight::Attenuation &atten, const float &ran) : 
-			PointLight(bL.getName(), bL.getIntensity(), bL.getColor(),
-			atten.getAttenuationConstant(), atten.getAttenuationLinear(),
-			atten.getAttenuationQuadratic(), ran) {
-		
-	}
+	PointLight::PointLight(const float &inten, const Honeycomb::Math::Vector4f
+			&col, const float &atC, const float &atL, const float &atQ, const
+			float &ran) : BaseLight(*shaderSource, structName) {
+		this->glFloats.setValue(PointLight::INTENSITY_F, inten);
+		this->glVector4fs.setValue(PointLight::COLOR_VEC4, col);
+		this->glFloats.setValue(PointLight::ATTENUATION_CONSTANT_F, atC);
+		this->glFloats.setValue(PointLight::ATTENUATION_LINEAR_F, atL);
+		this->glFloats.setValue(PointLight::ATTENUATION_QUADRATIC_F, atQ);
+		this->glFloats.setValue(PointLight::RANGE_F, ran);
 
-	PointLight::PointLight(const std::string &nam, const float &inten, const
-		Honeycomb::Math::Vector4f &col, const float &atC, const float &atL,
-		const float &atQ, const float &ran) : 
-			BaseLight(nam, inten, col), attenuation(atC, atL, atQ) {
-		this->range = ran;
-
-		this->shader = PhongPointShader::getPhongPointShader();
-		this->shaderUniform = "pointLight";
-	}
-
-	PointLight::~PointLight() {
-
+		this->preferredShader = PhongPointShader::getPhongPointShader();
+		this->uniformName = "pointLight";
 	}
 
 	PointLight* PointLight::clone() const {
-		return new PointLight(*this, this->attenuation, this->range);
+		return new PointLight(
+			this->glFloats.getValue(PointLight::INTENSITY_F),
+			this->glVector4fs.getValue(PointLight::COLOR_VEC4),
+			this->glFloats.getValue(PointLight::ATTENUATION_CONSTANT_F),
+			this->glFloats.getValue(PointLight::ATTENUATION_LINEAR_F),
+			this->glFloats.getValue(PointLight::ATTENUATION_QUADRATIC_F),
+			this->glFloats.getValue(PointLight::RANGE_F));
 	}
-
-	const BaseLight::Attenuation& PointLight::getAttenuation() const {
-		return this->attenuation;
-	}
-
-	const Vector3f& PointLight::getPosition() const {
-		return *this->position;
-	}
-
-	const float& PointLight::getRange() const {
-		return this->range;
-	}
-
-	void PointLight::setAttenuation(const BaseLight::Attenuation &atten) {
-		this->attenuation = atten;
-	}
-
-	void PointLight::setRange(const float &ran) {
-		this->range = ran;
-	}
-
+	
 	void PointLight::start() {
 		// Get the position from the Transform.
 		this->position = &this->getAttached()->getComponent<Transform>()->
 			getTranslation();
-	
+
 		BaseLight::start();
 	}
 
-	void PointLight::toShader() {
-		BaseLight::toShader();
-
-		this->attenuation.toShader(*this->shader, 
-			this->shaderUniform + ".attenuation");
-		this->shader->setUniform_vec3(this->shaderUniform + ".position", 
-			*this->position);
-		this->shader->setUniform_f(this->shaderUniform + ".range", 
-			this->range);
+	void PointLight::update() {
+		this->glVector3fs.setValue(PointLight::POSITION_VEC3, *this->position);
 	}
 }

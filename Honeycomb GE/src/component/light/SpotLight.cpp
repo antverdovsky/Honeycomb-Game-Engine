@@ -11,65 +11,59 @@
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Utils::PI;
 using Honeycomb::Math::Vector3f;
+using Honeycomb::Math::Vector4f;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Shader::Phong::PhongSpotShader;
+using Honeycomb::Shader::ShaderSource;
 
 namespace Honeycomb::Component::Light {
-	SpotLight::SpotLight() : 
-			SpotLight(BaseLight("SpotLight"), BaseLight::Attenuation(), 
-			10.0F, PI / 6.0F) {
+	const std::string SpotLight::ATTENUATION_CONSTANT_F =
+		"attenuation.constant";
+	const std::string SpotLight::ATTENUATION_LINEAR_F = "attenuation.linear";
+	const std::string SpotLight::ATTENUATION_QUADRATIC_F =
+		"attenuation.quadratic";
+	const std::string SpotLight::COLOR_VEC4 = "base.color";
+	const std::string SpotLight::INTENSITY_F = "base.intensity";
+	const std::string SpotLight::DIRECTION_VEC3 = "direction";
+	const std::string SpotLight::POSITION_VEC3 = "position";
+	const std::string SpotLight::RANGE_F = "range";
+	const std::string SpotLight::ANGLE_F = "angle";
+
+	const ShaderSource *SpotLight::shaderSource =
+		ShaderSource::getShaderSource("..\\Honeycomb GE\\res\\shaders\\"
+			"standard\\source\\light\\stdSpotLight.glsl");
+	const std::string SpotLight::structName = "SpotLight";
+
+	SpotLight::SpotLight() : SpotLight(1.0F, Vector4f(1.0F, 1.0F, 1.0F, 1.0F),
+			1.0F, 0.22F, 0.20F, 10.0F, PI / 4.0F) {
 
 	}
 
-	SpotLight::SpotLight(const BaseLight &bL, const BaseLight::Attenuation 
-		&atten, const float &ran, const float &ang) : 
-			BaseLight(bL), attenuation(atten) {
-		this->range = ran;
-		this->angle = ang;
+	SpotLight::SpotLight(const float &inten, const Honeycomb::Math::Vector4f
+			&col, const float &atC, const float &atL, const float &atQ, const 
+			float &ran, const float &ang) : 
+			BaseLight(*shaderSource, structName) {
+		this->glFloats.setValue(SpotLight::INTENSITY_F, inten);
+		this->glVector4fs.setValue(SpotLight::COLOR_VEC4, col);
+		this->glFloats.setValue(SpotLight::ATTENUATION_CONSTANT_F, atC);
+		this->glFloats.setValue(SpotLight::ATTENUATION_LINEAR_F, atL);
+		this->glFloats.setValue(SpotLight::ATTENUATION_QUADRATIC_F, atQ);
+		this->glFloats.setValue(SpotLight::RANGE_F, ran);
+		this->glFloats.setValue(SpotLight::ANGLE_F, ang);
 
-		this->shader = PhongSpotShader::getPhongSpotShader();
-		this->shaderUniform = "spotLight";
-	}
-
-	SpotLight::~SpotLight() {
-
+		this->preferredShader = PhongSpotShader::getPhongSpotShader();
+		this->uniformName = "spotLight";
 	}
 
 	SpotLight* SpotLight::clone() const {
-		return new SpotLight(*this, this->attenuation, this->range, 
-			this->angle);
-	}
-
-	const float& SpotLight::getAngle() const {
-		return this->angle;
-	}
-
-	const BaseLight::Attenuation& SpotLight::getAttenuation() const {
-		return this->attenuation;
-	}
-
-	const Vector3f& SpotLight::getDirection() const {
-		return *this->direction;
-	}
-
-	const Vector3f& SpotLight::getPosition() const {
-		return *this->position;
-	}
-
-	const float& SpotLight::getRange() const {
-		return this->range;
-	}
-
-	void SpotLight::setAngle(const float &ang) {
-		this->angle = ang;
-	}
-
-	void SpotLight::setAttenuation(const BaseLight::Attenuation &atten) {
-		this->attenuation = atten;
-	}
-
-	void SpotLight::setRange(const float &ran) {
-		this->range = ran;
+		return new SpotLight(
+			this->glFloats.getValue(SpotLight::INTENSITY_F),
+			this->glVector4fs.getValue(SpotLight::COLOR_VEC4),
+			this->glFloats.getValue(SpotLight::ATTENUATION_CONSTANT_F),
+			this->glFloats.getValue(SpotLight::ATTENUATION_LINEAR_F),
+			this->glFloats.getValue(SpotLight::ATTENUATION_QUADRATIC_F),
+			this->glFloats.getValue(SpotLight::RANGE_F),
+			this->glFloats.getValue(SpotLight::ANGLE_F));
 	}
 
 	void SpotLight::start() {
@@ -82,18 +76,9 @@ namespace Honeycomb::Component::Light {
 		BaseLight::start();
 	}
 
-	void SpotLight::toShader() {
-		BaseLight::toShader();
-		this->attenuation.toShader(*this->shader, 
-			this->shaderUniform + ".attenuation");
-
-		this->shader->setUniform_vec3(this->shaderUniform + ".position", 
-			*this->position);
-		this->shader->setUniform_vec3(this->shaderUniform + ".direction", 
+	void SpotLight::update() {
+		this->glVector3fs.setValue(SpotLight::POSITION_VEC3, *this->position);
+		this->glVector3fs.setValue(SpotLight::DIRECTION_VEC3, 
 			*this->direction);
-		this->shader->setUniform_f(this->shaderUniform + ".range",
-			this->range);
-		this->shader->setUniform_f(this->shaderUniform + ".cosAngle",
-			cos(this->angle));
 	}
 }
