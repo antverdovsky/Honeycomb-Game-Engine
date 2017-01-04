@@ -92,7 +92,7 @@ namespace Honeycomb::Geometry {
 
 	Material* Model::processAiMeshMaterial(aiMaterial* aMat) {
 		aiString matName; // Name of the Material
-		const Texture2D *texture = nullptr; // Albedo Texture of the Material
+		Texture2D *texture = new Texture2D(); // Albedo Texture of the Material
 		aiColor3D matAmbient; // Ambient Property of the Material
 		aiColor3D matDiffuse; // Diffuse Property of the Material
 		aiColor3D matSpecular; // Specular Property of the Material
@@ -112,10 +112,9 @@ namespace Honeycomb::Geometry {
 			aiString dir;
 			aMat->GetTexture(aiTextureType_DIFFUSE, 0, &dir);
 
-			texture = new Texture2D(dir.C_Str());
-		}
-		else {
-			texture = &Texture2D::getNonTexture();
+			texture->initialize(dir.C_Str());
+		} else {
+			texture->initialize();
 		}
 
 		// Build the Material and return it [TODO, use material name not sub!]

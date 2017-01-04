@@ -10,26 +10,10 @@
 using namespace Honeycomb::File;
 
 namespace Honeycomb::Graphics {
-	Texture2D *Texture2D::nonTexture = nullptr;
-
-	Texture2D::Texture2D(const std::string &file) {
-		this->directory = file;
-
-		// Initialize Texture using OpenGL
-		GLuint texID;
-		glGenTextures(1, &texID);
-		this->textureID = texID;
-
-		// Default Texture2D settings
-		this->setImageData(file, GL_RGB, GL_RGB);
-		this->setTextureFiltering(GL_NEAREST, GL_NEAREST);
-		this->setTextureWrap(GL_REPEAT, GL_REPEAT);
-		this->genMipMap();
-	}
-
-	Texture2D::~Texture2D() {
-		GLuint texID = this->textureID;
-		glDeleteTextures(1, &texID); // Delete Texture from OpenGL
+	Texture2D::Texture2D() {
+		this->isInitialized = false;
+		this->directory = "";
+		this->textureID = -1;
 	}
 
 	void Texture2D::bind() const {
@@ -44,11 +28,32 @@ namespace Honeycomb::Graphics {
 		this->unbind();
 	}
 
-	const Texture2D& Texture2D::getNonTexture() {
-		if (Texture2D::nonTexture == nullptr) Texture2D::nonTexture = new 
-			Texture2D("..\\Honeycomb GE\\res\\textures\\default\\null.bmp");
+	bool Texture2D::initialize(const std::string &file) {
+		if (this->isInitialized) return false;
+		
+		this->directory = file;
+		GLuint texID;
+		glGenTextures(1, &texID);
+		this->textureID = texID;
 
-		return *Texture2D::nonTexture;
+		if (file.empty()) { // If empty file -> Create a 1x1 white RGBA texture
+			GLubyte white[] = { 255, 255, 255, 255 };
+
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA,
+				GL_UNSIGNED_BYTE, white);
+		} else { // Otherwise, import the texture from file
+			this->setImageData(file, GL_RGB, GL_RGB);
+		}
+
+		// Default Texture2D settings
+		this->setTextureFiltering(GL_NEAREST, GL_NEAREST);
+		this->setTextureWrap(GL_REPEAT, GL_REPEAT);
+		this->genMipMap();
+	}
+
+	void Texture2D::destroy() {
+		GLuint texID = this->textureID;
+		glDeleteTextures(1, &texID); // Delete Texture from OpenGL
 	}
 
 	void Texture2D::setImageData(const std::string &file) {

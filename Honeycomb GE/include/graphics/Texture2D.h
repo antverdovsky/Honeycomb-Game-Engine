@@ -7,28 +7,27 @@
 namespace Honeycomb::Graphics {
 	class Texture2D {
 	public:
-		/// Generates a texture using the specified image file, using GL_RGB
-		/// for both the internal and external format. The filtering of the 
-		/// texture will be set to GL_NEAREST for minifying and magnifying. The
-		/// wrap of the texture will be set to GL_REPEAT for both S, and T 
-		/// coordinates. Mip Maps will also be generated for the texture.
-		/// const std::string &file : The file from which to load the texture.
-		Texture2D(const std::string &file);
-
-		/// Destroys this texture from OpenGL.
-		~Texture2D();
+		/// Creates an empty Texture instance.
+		Texture2D();
 
 		/// Binds this texture to OpenGL.
 		void bind() const;
 
+		/// Destroys this 2D texture from OpenGL. This method should only be
+		/// called when any copies of this texture are no longer being used.
+		void destroy();
+
 		/// Generates a MipMap for the texture.
 		void genMipMap();
 
-		/// Returns a constant reference to the non-texture. The non-texture
-		/// is a 2 x 2 sized white texture which should be used instead of a
-		/// nullptr if some material does not have a texture.
-		/// return : The constant reference to the non-texture.
-		static const Texture2D& getNonTexture();
+		/// Initializes this 2D Texture using the specified file directory. If
+		/// the file string is empty, this texture will be instead initialized
+		/// to a 1x1 white RGBA bitmap (default "non-texture).
+		/// const string &file : The file with which to initialize the texture,
+		///						 or empty for non-texture.
+		///	return : True if this texture was successfully initialized. False,
+		///			 otherwise.
+		bool initialize(const std::string &file = "");
 
 		/// Gets the image data from the specified image file and passes it to
 		/// OpenGL, using the GL_RGB formats.
@@ -65,9 +64,7 @@ namespace Honeycomb::Graphics {
 		/// Unbinds this (and any other) texture from OpenGL.
 		static void unbind();
 	private:
-		// The non-texture (2x2 white texture which is used when a material
-		// does not have a texture).
-		static Texture2D *nonTexture;
+		bool isInitialized; // Has the texture been initialized?
 		
 		int textureID; // The texture "pointer"
 		std::string directory; // The file from which the texture was loaded
