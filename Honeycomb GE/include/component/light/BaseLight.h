@@ -34,8 +34,7 @@ namespace Honeycomb::Component::Light {
 		/// Stops this base light.
 		virtual void stop();
 
-		// Shader with which the Light prefers to be rendered (TEMP TODO).
-		Honeycomb::Shader::ShaderProgram *preferredShader;
+		// The name of this light's uniform in the preferred shader. [temp: TODO]
 		std::string uniformName;
 	};
 }

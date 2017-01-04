@@ -5,14 +5,12 @@
 #include "..\..\..\include\component\physics\Transform.h"
 #include "..\..\..\include\object\GameObject.h"
 #include "..\..\..\include\scene\GameScene.h"
-#include "..\..\..\include\shader\phong\PhongPointShader.h"
 
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Shader::ShaderSource;
-using Honeycomb::Shader::Phong::PhongPointShader;
 
 namespace Honeycomb::Component::Light {
 	const std::string PointLight::ATTENUATION_CONSTANT_F = 
@@ -46,7 +44,6 @@ namespace Honeycomb::Component::Light {
 		this->glFloats.setValue(PointLight::ATTENUATION_QUADRATIC_F, atQ);
 		this->glFloats.setValue(PointLight::RANGE_F, ran);
 
-		this->preferredShader = PhongPointShader::getPhongPointShader();
 		this->uniformName = "pointLight";
 	}
 

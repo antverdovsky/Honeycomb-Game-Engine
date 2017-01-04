@@ -6,14 +6,12 @@
 #include "..\..\..\include\math\MathUtils.h"
 #include "..\..\..\include\object\GameObject.h"
 #include "..\..\..\include\scene\GameScene.h"
-#include "..\..\..\include\shader\phong\PhongSpotShader.h"
 
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Utils::PI;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
 using Honeycomb::Shader::ShaderProgram;
-using Honeycomb::Shader::Phong::PhongSpotShader;
 using Honeycomb::Shader::ShaderSource;
 
 namespace Honeycomb::Component::Light {
@@ -50,7 +48,6 @@ namespace Honeycomb::Component::Light {
 		this->glFloats.setValue(SpotLight::RANGE_F, ran);
 		this->glFloats.setValue(SpotLight::ANGLE_F, ang);
 
-		this->preferredShader = PhongSpotShader::getPhongSpotShader();
 		this->uniformName = "spotLight";
 	}
 

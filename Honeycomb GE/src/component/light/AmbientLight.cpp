@@ -1,11 +1,8 @@
 #include "..\..\..\include\component\light\AmbientLight.h"
 
-#include "..\..\..\include\shader\phong\PhongAmbientShader.h"
-
 using Honeycomb::Math::Vector4f;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Shader::ShaderSource;
-using Honeycomb::Shader::Phong::PhongAmbientShader;
 
 namespace Honeycomb::Component::Light {
 	const std::string AmbientLight::COLOR_VEC4 = "base.color";
@@ -25,7 +22,6 @@ namespace Honeycomb::Component::Light {
 		this->glFloats.setValue(AmbientLight::INTENSITY_F, inten);
 		this->glVector4fs.setValue(AmbientLight::COLOR_VEC4, col);
 
-		this->preferredShader = PhongAmbientShader::getPhongAmbientShader();
 		this->uniformName = "ambientLight";
 	}
 

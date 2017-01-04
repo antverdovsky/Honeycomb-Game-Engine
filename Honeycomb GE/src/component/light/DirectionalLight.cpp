@@ -5,14 +5,12 @@
 #include "..\..\..\include\component\physics\Transform.h"
 #include "..\..\..\include\object\GameObject.h"
 #include "..\..\..\include\scene\GameScene.h"
-#include "..\..\..\include\shader\phong\PhongDirectionalShader.h"
 
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Shader::ShaderSource;
-using Honeycomb::Shader::Phong::PhongDirectionalShader;
 
 namespace Honeycomb::Component::Light {
 	const std::string DirectionalLight::COLOR_VEC4 = "base.color";
@@ -34,8 +32,6 @@ namespace Honeycomb::Component::Light {
 		this->glFloats.setValue(DirectionalLight::INTENSITY_F, inten);
 		this->glVector4fs.setValue(DirectionalLight::COLOR_VEC4, col);
 
-		this->preferredShader = PhongDirectionalShader::
-			getPhongDirectionalShader();
 		this->uniformName = "directionalLight";
 	}
 

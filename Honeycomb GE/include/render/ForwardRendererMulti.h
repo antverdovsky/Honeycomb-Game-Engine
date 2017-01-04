@@ -21,6 +21,11 @@ namespace Honeycomb::Render {
 	private:
 		static ForwardRendererMulti* forwardRendererMulti; // Singleton
 
+		// Map of the name of a light to the shader which it will use when
+		// rendering.
+		std::unordered_map<std::string, Honeycomb::Shader::ShaderProgram*> 
+			lightShaders;
+
 		/// Instantiates a new instance of the Forward Renderer Mutli-pass
 		/// Renderer.
 		ForwardRendererMulti();
