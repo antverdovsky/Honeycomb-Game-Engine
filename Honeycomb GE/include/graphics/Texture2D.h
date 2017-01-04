@@ -10,8 +10,13 @@ namespace Honeycomb::Graphics {
 		/// Creates an empty Texture instance.
 		Texture2D();
 
-		/// Binds this texture to OpenGL.
+		/// Binds this texture to OpenGL at GL_TEXTURE0.
 		void bind() const;
+
+		/// Binds this texture to OpenGL at the specified location. 
+		/// const int &loc : The location of the texture in memory. This is
+		///					 treated as the displacement from GL_TEXTURE0.
+		void bind(const int &loc) const;
 
 		/// Destroys this 2D texture from OpenGL. This method should only be
 		/// called when any copies of this texture are no longer being used.

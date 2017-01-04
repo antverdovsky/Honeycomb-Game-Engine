@@ -6,4 +6,6 @@ struct Material {
     vec4 diffuseColor; // Color under diffuse light.
     vec4 specularColor; // Color under specular light
     float shininess; // Shininess for the Specular Spread
+
+	sampler2D albedoTexture; // Texture under any light
 };

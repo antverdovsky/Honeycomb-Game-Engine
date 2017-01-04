@@ -33,7 +33,7 @@ namespace HoneycombTest {
 		GameObject *directionalLight = Builder::getBuilder()->
 			newDirectionalLight();
 		directionalLight->getComponent<DirectionalLight>
-			()->glFloats.setValue(DirectionalLight::INTENSITY_F, 0.10F);
+			()->glFloats.setValue(DirectionalLight::INTENSITY_F, 1.0F);
 		directionalLight->getComponent<Transform>()->rotate(Vector3f::getGlobalRight(), -PI / 2);
 		GameObject *camera = Builder::getBuilder()->newCamera();
 		aPointLight->getComponent<Transform>()->translate(
@@ -81,6 +81,8 @@ namespace HoneycombTest {
 			Vector3f(7.5F, 1.75F, -7.5F));
 
 		// Create a fancy Chrome Material (non-textured).
+		Texture2D *blank = new Texture2D();
+		blank->initialize();
 		Material *chrome = new Material();
 		chrome->glVector4fs.setValue("ambientColor", 
 			Vector4f(0.25F, 0.25F, 0.25F, 1.0F));
@@ -89,6 +91,7 @@ namespace HoneycombTest {
 		chrome->glVector4fs.setValue("specularColor",
 			Vector4f(0.774597F, 0.774597F, 0.774597F, 1.0F));
 		chrome->glFloats.setValue("shininess", 0.6F * 128.0F);
+		chrome->glSampler2Ds.setValue("albedoTexture", *blank);
 		
 		// Give Suzanne & the Sphere the Emerald Material
 		suzanne->getComponent<MeshRenderer>()->setMaterial(

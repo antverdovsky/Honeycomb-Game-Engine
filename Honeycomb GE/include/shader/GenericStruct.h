@@ -49,7 +49,7 @@ namespace Honeycomb::Shader {
 		VariableMap<float> glFloats;
 		VariableMap<int> glInts;
 		VariableMap<Honeycomb::Math::Matrix4f> glMatrix4fs;
-		VariableMap<Honeycomb::Graphics::Texture2D*> glSampler2Ds;
+		VariableMap<Honeycomb::Graphics::Texture2D> glSampler2Ds;
 		VariableMap<Honeycomb::Math::Vector3f> glVector3fs;
 		VariableMap<Honeycomb::Math::Vector4f> glVector4fs;
 

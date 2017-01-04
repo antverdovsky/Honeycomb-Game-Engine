@@ -17,6 +17,11 @@ namespace Honeycomb::Graphics {
 	}
 
 	void Texture2D::bind() const {
+		this->bind(0);
+	}
+
+	void Texture2D::bind(const int &loc) const {
+		glActiveTexture(GL_TEXTURE0 + loc);
 		glBindTexture(GL_TEXTURE_2D, this->textureID);
 	}
 
@@ -37,9 +42,10 @@ namespace Honeycomb::Graphics {
 		this->textureID = texID;
 
 		if (file.empty()) { // If empty file -> Create a 1x1 white RGBA texture
-			GLubyte white[] = { 255, 255, 255, 255 };
+			GLubyte white[] = { 255, 255, 255 };
 
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA,
+			this->bind();
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB,
 				GL_UNSIGNED_BYTE, white);
 		} else { // Otherwise, import the texture from file
 			this->setImageData(file, GL_RGB, GL_RGB);
@@ -49,6 +55,9 @@ namespace Honeycomb::Graphics {
 		this->setTextureFiltering(GL_NEAREST, GL_NEAREST);
 		this->setTextureWrap(GL_REPEAT, GL_REPEAT);
 		this->genMipMap();
+
+		this->isInitialized = true;
+		return true;
 	}
 
 	void Texture2D::destroy() {

@@ -2,8 +2,6 @@
 
 #include <..\..\include\stdLight.glsl>
 
-uniform sampler2D textureSampler; // Texture Sampler
-
 ///
 /// The spot light structure
 ///
@@ -90,6 +88,6 @@ void main() {
     
 	// Set the color to the color provided by the Texture, mixed with the
     // lighting for this fragment.
-	gl_FragColor = vec4(totalLight.xyz, 1.0F);
-//		texture2D(textureSampler, out_vs_texCoord);
+	gl_FragColor = vec4(totalLight.xyz, 1.0F) * 
+		texture2D(material.albedoTexture, out_vs_texCoord);
 }
