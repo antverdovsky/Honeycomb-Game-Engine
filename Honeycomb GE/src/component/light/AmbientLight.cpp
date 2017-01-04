@@ -11,9 +11,8 @@ namespace Honeycomb::Component::Light {
 	const std::string AmbientLight::COLOR_VEC4 = "base.color";
 	const std::string AmbientLight::INTENSITY_F = "base.intensity";
 
-	const ShaderSource *AmbientLight::shaderSource = 
-		ShaderSource::getShaderSource("..\\Honeycomb GE\\res\\shaders\\"
-			"standard\\source\\light\\stdAmbientLight.glsl");
+	const std::string AmbientLight::structFile = "..\\Honeycomb GE\\res\\"
+			"shaders\\standard\\source\\light\\stdAmbientLight.glsl";
 	const std::string AmbientLight::structName = "AmbientLight";
 
 	AmbientLight::AmbientLight() : 
@@ -21,8 +20,8 @@ namespace Honeycomb::Component::Light {
 		
 	}
 
-	AmbientLight::AmbientLight(const float &inten, const Vector4f &col) : 
-			BaseLight(*shaderSource, structName) {
+	AmbientLight::AmbientLight(const float &inten, const Vector4f &col) :
+			BaseLight(*ShaderSource::getShaderSource(structFile), structName) {
 		this->glFloats.setValue(AmbientLight::INTENSITY_F, inten);
 		this->glVector4fs.setValue(AmbientLight::COLOR_VEC4, col);
 

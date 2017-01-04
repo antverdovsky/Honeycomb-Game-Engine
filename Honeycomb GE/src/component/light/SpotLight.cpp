@@ -29,9 +29,8 @@ namespace Honeycomb::Component::Light {
 	const std::string SpotLight::RANGE_F = "range";
 	const std::string SpotLight::ANGLE_F = "angle";
 
-	const ShaderSource *SpotLight::shaderSource =
-		ShaderSource::getShaderSource("..\\Honeycomb GE\\res\\shaders\\"
-			"standard\\source\\light\\stdSpotLight.glsl");
+	const std::string SpotLight::structFile = "..\\Honeycomb GE\\res\\"
+			"shaders\\standard\\source\\light\\stdSpotLight.glsl";
 	const std::string SpotLight::structName = "SpotLight";
 
 	SpotLight::SpotLight() : SpotLight(1.0F, Vector4f(1.0F, 1.0F, 1.0F, 1.0F),
@@ -42,7 +41,7 @@ namespace Honeycomb::Component::Light {
 	SpotLight::SpotLight(const float &inten, const Honeycomb::Math::Vector4f
 			&col, const float &atC, const float &atL, const float &atQ, const 
 			float &ran, const float &ang) : 
-			BaseLight(*shaderSource, structName) {
+			BaseLight(*ShaderSource::getShaderSource(structFile), structName) {
 		this->glFloats.setValue(SpotLight::INTENSITY_F, inten);
 		this->glVector4fs.setValue(SpotLight::COLOR_VEC4, col);
 		this->glFloats.setValue(SpotLight::ATTENUATION_CONSTANT_F, atC);

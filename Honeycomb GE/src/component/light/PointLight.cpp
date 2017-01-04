@@ -25,9 +25,8 @@ namespace Honeycomb::Component::Light {
 	const std::string PointLight::POSITION_VEC3 = "position";
 	const std::string PointLight::RANGE_F = "range";
 
-	const ShaderSource *PointLight::shaderSource =
-		ShaderSource::getShaderSource("..\\Honeycomb GE\\res\\shaders\\"
-			"standard\\source\\light\\stdPointLight.glsl");
+	const std::string PointLight::structFile = "..\\Honeycomb GE\\res\\shaders"
+			"\\standard\\source\\light\\stdPointLight.glsl";
 	const std::string PointLight::structName = "PointLight";
 
 	PointLight::PointLight() : 
@@ -38,7 +37,8 @@ namespace Honeycomb::Component::Light {
 
 	PointLight::PointLight(const float &inten, const Honeycomb::Math::Vector4f
 			&col, const float &atC, const float &atL, const float &atQ, const
-			float &ran) : BaseLight(*shaderSource, structName) {
+			float &ran) : 
+			BaseLight(*ShaderSource::getShaderSource(structFile), structName) {
 		this->glFloats.setValue(PointLight::INTENSITY_F, inten);
 		this->glVector4fs.setValue(PointLight::COLOR_VEC4, col);
 		this->glFloats.setValue(PointLight::ATTENUATION_CONSTANT_F, atC);

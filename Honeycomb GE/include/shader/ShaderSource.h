@@ -98,7 +98,8 @@ namespace Honeycomb::Shader {
 		// struct. If the type of the variable in the struct is actually 
 		// another user defined struct, then for each variable in that struct,
 		// the name of the variable preceded by a period will be added instead.
-		std::unordered_map<std::string, std::vector<SourceVariable>> detStructs;
+		std::unordered_map<std::string, std::vector<SourceVariable>> 
+				detStructs;
 		
 		// List of all of the uniforms detected in the shader source code. For
 		// uniforms with a user defined struct type, for each variable in that 

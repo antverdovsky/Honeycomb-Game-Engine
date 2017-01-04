@@ -31,7 +31,7 @@ namespace Honeycomb::Component::Light {
 		void start();
 	private:
 		// The struct definition for the Ambient Light.
-		const static Honeycomb::Shader::ShaderSource* shaderSource;
+		const static std::string structFile;
 		const static std::string structName;
 	};
 }

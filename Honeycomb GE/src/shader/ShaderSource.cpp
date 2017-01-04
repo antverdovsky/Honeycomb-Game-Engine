@@ -10,7 +10,8 @@ using namespace Honeycomb::File;
 using namespace Honeycomb::Debug;
 
 namespace Honeycomb::Shader {
-	SourceVariable::SourceVariable(const std::string &name, const std::string &type) {
+	SourceVariable::SourceVariable(const std::string &name, const std::string 
+			&type) {
 		this->name = name;
 		this->type = type;
 	}
@@ -37,9 +38,6 @@ namespace Honeycomb::Shader {
 
 	ShaderSource* ShaderSource::getShaderSource(const std::string &file,
 			const ShaderSourceProperties &prop) {
-		return new ShaderSource(file, prop);
-		
-			/*
 		// Try to find the file in the already imported source files
 		std::unordered_map<std::string, ShaderSource*>::iterator it =
 			ShaderSource::shaderSources.find(file);
@@ -51,7 +49,6 @@ namespace Honeycomb::Shader {
 			return new ShaderSource(file, prop);
 		else
 			return it->second;
-			*/
 	}
 
 	const std::string& ShaderSource::getFile() const {
@@ -76,7 +73,7 @@ namespace Honeycomb::Shader {
 		if (prop.detectStructs) this->detectStructs();
 		if (prop.detectUniforms) this->detectUniforms();
 		
-	//	ShaderSource::shaderSources.insert({ file, this });
+		ShaderSource::shaderSources.insert({ file, this });
 	}
 
 	void ShaderSource::deleteComments() {
@@ -203,8 +200,10 @@ namespace Honeycomb::Shader {
 					// The variable's full name will be the name of the
 					// variable plus the structure's variable. The variable
 					// also takes on the type of the struct's variable.
-					for (const SourceVariable &structVar : detectedStructVars) {
-						vars.push_back(SourceVariable(vName + "." + structVar.name,
+					for (const SourceVariable &structVar : detectedStructVars) 
+					{
+						vars.push_back(SourceVariable(
+							vName + "." + structVar.name,
 							structVar.type));
 					}
 				}
@@ -239,7 +238,8 @@ namespace Honeycomb::Shader {
 			// If the uniform type is a type of a user defined struct
 			if (this->detStructs.count(type)) {
 				// Get all of the variables of the struct
-				std::vector<SourceVariable> structVars = this->detStructs[type];
+				std::vector<SourceVariable> structVars = 
+					this->detStructs[type];
 
 				for (const SourceVariable& structVar : structVars) {
 					// Add the full uniform name (uniform name + variable name)

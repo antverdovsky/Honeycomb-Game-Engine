@@ -19,9 +19,8 @@ namespace Honeycomb::Component::Light {
 	const std::string DirectionalLight::INTENSITY_F = "base.intensity";
 	const std::string DirectionalLight::DIRECTION_VEC3 = "direction";
 
-	const ShaderSource *DirectionalLight::shaderSource =
-		ShaderSource::getShaderSource("..\\Honeycomb GE\\res\\shaders\\"
-			"standard\\source\\light\\stdDirectionalLight.glsl");
+	const std::string DirectionalLight::structFile = "..\\Honeycomb GE\\"
+			"res\\shaders\\standard\\source\\light\\stdDirectionalLight.glsl";
 	const std::string DirectionalLight::structName = "DirectionalLight";
 
 	DirectionalLight::DirectionalLight() : 
@@ -31,7 +30,7 @@ namespace Honeycomb::Component::Light {
 
 	DirectionalLight::DirectionalLight(const float &inten, const
 			Honeycomb::Math::Vector4f &col) : 
-			BaseLight(*shaderSource, structName) {
+			BaseLight(*ShaderSource::getShaderSource(structFile), structName) {
 		this->glFloats.setValue(DirectionalLight::INTENSITY_F, inten);
 		this->glVector4fs.setValue(DirectionalLight::COLOR_VEC4, col);
 

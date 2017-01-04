@@ -52,7 +52,7 @@ namespace Honeycomb::Component::Light {
 		void update();
 	private:
 		// The struct definition for the Point Light.
-		const static Honeycomb::Shader::ShaderSource* shaderSource;
+		const static std::string structFile;
 		const static std::string structName;
 
 		const Honeycomb::Math::Vector3f *position; // Transform Position
