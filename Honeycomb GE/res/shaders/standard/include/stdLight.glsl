@@ -1,3 +1,4 @@
+#include <stdCamera.glsl>
 #include <stdMaterial.glsl>
 
 ///
@@ -52,12 +53,14 @@ vec4 calculateDiffuseLight(BaseLight bL, Material mat, vec3 dir, vec3 norm) {
 /// coordinates of the camera and the fragment.
 /// BaseLight bL : The light for which the reflection is being computed.
 /// Material mat : The material of the surface.
-/// vec3 cP : The "position" of the camera in the world.
+/// Camera cam : The camera with which the scene is rendered.
 /// vec3 wP : The position of the fragment in the world.
 /// vec3 dir : The direction with which the light hits the surface.
 /// vec3 norm : The normal to the surface.
-vec4 calculateSpecularReflection(BaseLight bL, Material mat, vec3 cP, vec3 wP,
-        vec3 dir, vec3 norm) {
+vec4 calculateSpecularReflection(BaseLight bL, Material mat, Camera cam,
+        vec3 wP, vec3 dir, vec3 norm) {
+    vec3 cP = cam.translation; // Camera Position
+        
     vec3 direction = normalize(cP - wP); // Direction from Cam to Frag
     vec3 reflection = normalize(reflect(dir, norm)); // Get the reflection
     

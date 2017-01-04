@@ -143,8 +143,7 @@ namespace Honeycomb::Shader {
 			// time, offset the iterator to begin after the included source
 			// code, for obvious performance reasons).
 			include = std::sregex_iterator(
-				source.begin() + includeSrc->source.size(), source.end(), 
-				regex);
+				source.begin(), source.end(), regex);
 		}
 	}
 

@@ -23,10 +23,9 @@ in vec3 out_vs_pos; // Take in the world position outputted by VS
 
 uniform SpotLight spotLight; // The point light
 uniform Material material; // The material
+uniform Camera camera;
 
-uniform vec3 cameraPos; // TEMP TEMP TEMP TODO!
-
-vec4 calculateSpotLight(SpotLight sL, Material mat, vec3 cP, vec3 wP, 
+vec4 calculateSpotLight(SpotLight sL, Material mat, Camera cam, vec3 wP, 
     vec3 norm);
 
 /// Calculates the light which should be applied to this fragment given the
@@ -35,10 +34,10 @@ vec4 calculateSpotLight(SpotLight sL, Material mat, vec3 cP, vec3 wP,
 /// normal.
 /// SpotLight sL : The spot light which shines on this fragment.
 /// Material mat : The material of the surface on this fragment.
-/// vec3 cP : The world position of the camera.
+/// Camera cam : The camera with which to render the scene.
 /// vec3 wP : The world position of this fragment.
 /// vec3 norm : The normalized normal of the surface.
-vec4 calculateSpotLight(SpotLight sL, Material mat, vec3 cP, vec3 wP, 
+vec4 calculateSpotLight(SpotLight sL, Material mat, Camera cam, vec3 wP, 
         vec3 norm) {
     // Calculate the displacement vector between the world position of the
     // fragment and the spot light position.
@@ -69,7 +68,7 @@ vec4 calculateSpotLight(SpotLight sL, Material mat, vec3 cP, vec3 wP,
     // Calculate the Diffuse and Specular Light components of the Spot Light 
     // and scale by the attenuation to adjust the light with distance.
     vec4 diffuse = calculateDiffuseLight(sL.base, mat, direction, norm);
-    vec4 specular = calculateSpecularReflection(sL.base, mat, cP, wP, 
+    vec4 specular = calculateSpecularReflection(sL.base, mat, cam, wP, 
         direction, norm);
     diffuse = vec4(diffuse.xyz * intensity, diffuse.w);
     specular = vec4(specular.xyz * intensity, specular.w);
@@ -80,7 +79,7 @@ vec4 calculateSpotLight(SpotLight sL, Material mat, vec3 cP, vec3 wP,
 
 void main() {
     // Calculate the contributions of the Light sources
-    vec4 spotComponent = calculateSpotLight(spotLight, material, cameraPos,
+    vec4 spotComponent = calculateSpotLight(spotLight, material, camera,
         out_vs_pos, out_vs_norm);
         
     // Sum up the contributions of the Light sources

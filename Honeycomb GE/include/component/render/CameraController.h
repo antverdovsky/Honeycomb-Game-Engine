@@ -7,10 +7,16 @@
 #include "..\..\..\include\conjuncture\EventHandler.h"
 #include "..\..\..\include\math\Matrix4f.h"
 #include "..\..\..\include\object\GameObject.h"
+#include "..\..\shader\GenericStruct.h"
 
 namespace Honeycomb::Component::Render {
-	class CameraController : public GameComponent {
+	class CameraController : 
+			public GameComponent,
+			public Honeycomb::Shader::GenericStruct {
 	public:
+		const static std::string PROJECTION_MAT4;
+		const static std::string TRANSLATION_VEC3;
+
 		enum CameraType { // The type of camera (Orthographic or Perspective)
 			ORTHOGRAPHIC,
 			PERSPECTIVE
@@ -120,14 +126,11 @@ namespace Honeycomb::Component::Render {
 
 		/// Updates this camera instance.
 		void update();
-
-		/// Writes the parameters of this Camera Controller to the specified
-		/// shader.
-		/// ShaderProgram &shader : The shader to which the Camera Controller
-		///							should be written to.
-		void toShader(Honeycomb::Shader::ShaderProgram &shader);
 	private:
 		static CameraController *activeCamera; // The active camera
+
+		const static std::string STRUCT_FILE;
+		const static std::string STRUCT_NAME;
 
 		CameraType type = PERSPECTIVE; // The type of Camera (Persp / Ortho)
 		float clipFar = 1000.0F; // The far clipping plane

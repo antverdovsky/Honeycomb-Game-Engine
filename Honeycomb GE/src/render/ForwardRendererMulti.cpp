@@ -31,7 +31,7 @@ namespace Honeycomb::Render {
 		firstLight.toShader(*this->lightShaders.at(firstLight.getName()),
 			firstLight.uniformName);
 		CameraController::getActiveCamera()->toShader(
-			*this->lightShaders.at(firstLight.getName()));
+			*this->lightShaders.at(firstLight.getName()), "camera");
 		scene.render(*this->lightShaders.at(firstLight.getName()));
 
 		// Enable Special Rendering parameters for remaining passes
@@ -47,7 +47,7 @@ namespace Honeycomb::Render {
 			// todo, if shader doesnt exist for the light...
 
 			bL->toShader(*bLShader, bL->uniformName);
-			CameraController::getActiveCamera()->toShader(*bLShader);
+			CameraController::getActiveCamera()->toShader(*bLShader, "camera");
 			scene.render(*bLShader);
 		}
 

@@ -6,20 +6,30 @@
 #include "..\..\..\include\base\GameWindow.h"
 #include "..\..\..\include\math\MathUtils.h"
 #include "..\..\..\include\shader\ShaderProgram.h"
+#include "..\..\..\include\shader\ShaderSource.h"
 
 using Honeycomb::Base::GameWindow;
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Conjuncture::EventHandler;
 using Honeycomb::Math::Matrix4f;
 using Honeycomb::Shader::ShaderProgram;
+using Honeycomb::Shader::GenericStruct;
+using Honeycomb::Shader::ShaderSource;
 
 using namespace Honeycomb::Math::Utils;
 
 namespace Honeycomb::Component::Render {
 	CameraController *CameraController::activeCamera = nullptr;
 
-	CameraController::CameraController()
-		: CameraController(CameraType::PERSPECTIVE, 75.0F, 100.0F, 0.03F,
+	const std::string CameraController::PROJECTION_MAT4 = "projection";
+	const std::string CameraController::TRANSLATION_VEC3 = "translation";
+
+	const std::string CameraController::STRUCT_FILE = "..\\Honeycomb GE\\"
+		"res\\shaders\\standard\\include\\stdCamera.glsl";
+	const std::string CameraController::STRUCT_NAME = "Camera";
+
+	CameraController::CameraController() : 
+			CameraController(CameraType::PERSPECTIVE, 75.0F, 100.0F, 0.03F,
 			(float)GameWindow::getGameWindow()->getWindowHeight(),
 			(float)GameWindow::getGameWindow()->getWindowWidth()) {
 
@@ -27,8 +37,9 @@ namespace Honeycomb::Component::Render {
 
 	CameraController::CameraController(const CameraType &cT, const float &cTP,
 			const float &clF, const float &clN, const float &projH,
-			const float &projW) 
-			: GameComponent("Camera") {
+			const float &projW) : 
+			GameComponent("CameraController"), GenericStruct(*ShaderSource::
+				getShaderSource(STRUCT_FILE), STRUCT_NAME) {
 		this->type = cT;
 		this->typeParameter = cTP;
 
@@ -150,12 +161,10 @@ namespace Honeycomb::Component::Render {
 	}
 
 	void CameraController::update() {
-		if (!this->isActive) return;
-	}
-
-	void CameraController::toShader(ShaderProgram &shader) {
-		shader.setUniform_mat4("camProjection", this->projection);
-		shader.setUniform_vec3("cameraPos", this->transform->getTranslation());
+		this->glMatrix4fs.setValue(CameraController::PROJECTION_MAT4, 
+			this->projection);
+		this->glVector3fs.setValue(CameraController::TRANSLATION_VEC3,
+			this->transform->getTranslation());
 	}
 
 	const Matrix4f& CameraController::calcProjection() {

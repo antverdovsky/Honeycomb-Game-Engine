@@ -16,8 +16,6 @@ in vec3 out_vs_pos; // Take in the world position outputted by VS
 uniform AmbientLight ambientLight; // The ambient light
 uniform Material material; // The material
 
-uniform vec3 cameraPos;
-
 /// Forward Declarations
 vec4 calculateAmbientLight(AmbientLight aL, Material mat);
 
@@ -45,8 +43,6 @@ void main() {
     // Sum up the contributions of the Light sources
     vec4 totalLight = ambientComponent;
     
-	vec3 amsd = cameraPos; // TODO: JUST SO IT ISNT OPTIMIZED AWAY FROM SHADER FOR NOW
-
 	// Set the color to the color provided by the Texture, mixed with the
     // lighting for this fragment.
 	gl_FragColor = vec4(totalLight.xyz, 1.0F) * 

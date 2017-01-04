@@ -18,29 +18,29 @@ in vec3 out_vs_pos; // Take in the world position outputted by VS
 uniform DirectionalLight directionalLight; // The directional light
 uniform Material material; // The material
 
-uniform vec3 cameraPos; // TEMP TEMP TEMP TODO!
+uniform Camera camera;
 
 /// Forward Declarations
-vec4 calculateDirectionalLight(DirectionalLight dL, Material mat, vec3 cP,
-    vec3 wP, vec3 norm);
+vec4 calculateDirectionalLight(DirectionalLight dL, Material mat, Camera cam,
+        vec3 wP, vec3 norm);
 
 /// Calculates the light which should be applied to this fragment, given the
 /// directional light which shines on it and the normal of the surface.
 /// DirectionLight dL : The directional light which will be used to calculate
 ///                     the effect of the light.
 /// Material mat : The material for which the light should be calculated.
-/// vec3 cP : The "position" of the camera in the world.
+/// Camera cam : The camera with which the light is calculated.
 /// vec3 wP : The world position of the fragment.
 /// vec3 norm : The normal vector of the surface. This should be normalized,
 ///             prior to being passed in.
 /// return : The vector which can be used to add or detract lighting from the
 ///          fragment.
-vec4 calculateDirectionalLight(DirectionalLight dL, Material mat, vec3 cP,
+vec4 calculateDirectionalLight(DirectionalLight dL, Material mat, Camera cam, 
         vec3 wP, vec3 norm) {
     // Calculate the Diffuse and Specular Light components of the Directional
     // Light.
     vec4 diffuse = calculateDiffuseLight(dL.base, mat, dL.direction, norm);
-    vec4 specular = calculateSpecularReflection(dL.base, mat, cameraPos, wP, 
+    vec4 specular = calculateSpecularReflection(dL.base, mat, cam, wP, 
         dL.direction, norm);
     
     // Return the blend of the Diffuse and Specular lighting
@@ -50,7 +50,7 @@ vec4 calculateDirectionalLight(DirectionalLight dL, Material mat, vec3 cP,
 void main() {
     // Calculate the contributions of the Light sources
     vec4 directionalComponent = calculateDirectionalLight(directionalLight,
-        material, cameraPos, out_vs_pos, out_vs_norm);
+        material, camera, out_vs_pos, out_vs_norm);
         
     // Sum up the contributions of the Light sources
     vec4 totalLight = directionalComponent;
