@@ -6,7 +6,7 @@ namespace Honeycomb::Base {
 	}
 
 	bool GLItem::initialize() {
-
+		return false;
 	}
 
 	void GLItem::destroy() {

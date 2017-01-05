@@ -16,37 +16,42 @@ using Honeycomb::Math::Vector3f;
 using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb::Geometry {
-	Mesh::Mesh() {
-		// Initialize a Vertex Buffer Object and store it
+	bool Mesh::initialize() {
+		if (this->isInitialized) return false;
+
+		// Placeholders to store the buffer ID after the glGenBuffers func.
+		GLuint ibo = 0;
 		GLuint vbo = 0;
+
+		// Generate the IBO and VBO buffers
+		glGenBuffers(1, &ibo);
 		glGenBuffers(1, &vbo);
 
-		// Initialize a Index Buffer Object and store it
-		GLuint ibo = 0;
-		glGenBuffers(1, &ibo);
-
-		// Copy the VBO and IBO pointers into the mesh instance. Set default 
-		// mesh size to zero (no vertices or indices yet).
-		this->vertexBufferObj = vbo;
-		this->vertCount = 0;
-		this->vertSize = 0;
+		// Initialize the IBO buffer information of this Mesh to default
 		this->indexBufferObj = ibo;
 		this->indexCount = 0;
 		this->indexSize = 0;
+
+		// Initialize the VBO buffer information of this Mesh to default
+		this->vertexBufferObj = vbo;
+		this->vertCount = 0;
+		this->vertSize = 0;
+
+		// Success!
+		this->isInitialized = true;
+		return true;
 	}
 
-	Mesh::Mesh(Vertex v[], const int &vC, int i[], const int &iC) : Mesh() {
-		this->addVertexData(v, vC, i, iC);
-	}
-
-	Mesh::~Mesh() {
+	void Mesh::destroy() {
+		// Placeholders to store the buffer ID for the glDeleteBuffers func.
 		GLuint ibo = this->indexBufferObj;
+		GLuint vbo = this->vertexBufferObj;;
+
+		// Delete the IBO and VBO buffers
 		glDeleteBuffers(1, &ibo);
-		
-		GLuint vbo = this->vertexBufferObj;
 		glDeleteBuffers(1, &vbo);
 	}
-
+	
 	void Mesh::draw(ShaderProgram &shader) const {
 		shader.bindShaderProgram();
 
@@ -79,32 +84,47 @@ namespace Honeycomb::Geometry {
 		glDisableVertexAttribArray(2);
 	}
 
-	void Mesh::addVertexData(Vertex v[], const int &vC, int i[],
-			const int &iC) {
-		// Convert the verticies into floats which OpenGL understands
-		GLfloat *vertFloats = Vertex::toFloatBuffer(v, vC);
+	void Mesh::setIndexData(int indices[], const int &iC) {
+		// Bind the Buffer & invalidate it, in case there is already some data
+		glBindBuffer(GL_ARRAY_BUFFER, this->indexBufferObj);
+		glBufferData(GL_ARRAY_BUFFER, this->indexSize, nullptr, 
+			GL_STATIC_DRAW);
 
-		// Get the count of the verticies and the memory size (in bytes) of the
-		// verticies (each vertex has 8 floats (3 for positions, 2 for texture
-		// coordinates, 3 for normals)).
-		this->vertCount += vC;
-		this->vertSize += vC * 8 * sizeof(GLfloat);
+		// Set the count and size variables. The count represents the length of
+		// the index array, where as size represents the raw size, in bytes, of
+		// the index array. The total size of the array is equal to the size of
+		// one integer multiplied by the amount of integers in the array.
+		this->indexCount = iC;
+		this->indexSize = iC * sizeof(int);
 
-		// Get the count of indices and their memory size
-		this->indexCount += iC;
-		this->indexSize += iC * sizeof(int);
+		// Send the index data to the buffer (Static Draw indicates that the
+		// data is constant).
+		glBufferData(GL_ARRAY_BUFFER, this->indexSize, &indices[0],
+			GL_STATIC_DRAW);
+	}
 
-		// Bind the buffer to the VBO and send the vertex data to the buffer 
-		// [Static Draw indicates that data is constant].
+	void Mesh::setVertexData(Vertex vert[], const int &vC) {
+		// Bind the Buffer & invalidate it, in case there is already some data
 		glBindBuffer(GL_ARRAY_BUFFER, this->vertexBufferObj);
-		glBufferData(GL_ARRAY_BUFFER, this->vertSize, &vertFloats[0],
+		glBufferData(GL_ARRAY_BUFFER, this->vertSize, nullptr, GL_STATIC_DRAW);
+
+		// Convert the verticies into a float buffer which OpenGL understands
+		GLfloat *vertFloats = Vertex::toFloatBuffer(vert, vC);
+
+		// Set the count and size variables. The count represents the length of
+		// the vertex array, where as size represents the raw size, in bytes,
+		// of the vertex array. The total size of the array is equal to the
+		// size of one float multiplied by the the number of floats per vertex
+		// (8 due to 3 position floats, 2 texture coordianate floats, and 3
+		// normals floats) multiplied by the number of vertices in the array.
+		this->vertCount = vC;
+		this->vertSize = 8 * sizeof(GLfloat) * this->vertCount;
+
+		// Send the vertex data to the buffer (Static Draw indicates that the
+		// data is constant).
+		glBufferData(GL_ARRAY_BUFFER, this->vertSize, &vertFloats[0], 
 			GL_STATIC_DRAW);
 
-		// Bind the buffer to the IBO and send the index data to the buffer
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBufferObj);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->indexSize, &i[0],
-			GL_STATIC_DRAW);
-
-		delete vertFloats; // Done using the verticies floats
+		delete vertFloats; // Delete the dynamically allocated vertex floats
 	}
 }

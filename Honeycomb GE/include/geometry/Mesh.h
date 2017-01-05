@@ -5,28 +5,36 @@
 #include <string>
 
 #include "Vertex.h"
+#include "..\base\GLItem.h"
 #include "..\shader\ShaderProgram.h"
 
 namespace Honeycomb::Geometry {
-	class Mesh {
+	class Mesh : public Honeycomb::Base::GLItem {
 	public:
-		/// Initializes an empty mesh.
-		Mesh();
+		/// Initializes this Mesh by creating the appropriate Index and Vertex
+		/// buffers for it.
+		bool initialize();
 
-		/// Initializes a Mesh with the specified vertices and indices data.
-		/// Vertex v[] : The vertices data.
-		/// const int &vC : The vertex count.
-		/// int i[] : The indices data.
-		/// const int &iC : The index count.
-		Mesh(Honeycomb::Geometry::Vertex v[], const int &vC, 
-			int i[], const int &iC);
-
-		/// Destroys the mesh and the buffers and data associated with it.
-		~Mesh();
+		/// Destroys this Mesh by destroying the appropriate Index and Vertex
+		/// buffers of it.
+		void destroy();
 
 		/// Draws this Mesh to the screen using the vertex data.
 		/// ShaderProgram &shader : The shader which will draw the mesh.
 		void draw(Honeycomb::Shader::ShaderProgram &shader) const;
+
+		/// Sets the Index Data for this Mesh. Do note that the index buffer
+		/// will be cleared before any data is modified for this Mesh.
+		/// int indices[] : The array of indices to be passed to the IBO.
+		/// const int &count : The length of the index array.
+		void setIndexData(int indices[], const int &count);
+
+		/// Sets the Vertex Data for this Mesh. Do note that the vertex buffer
+		/// will be cleared before any data is modified for this Mesh.
+		/// Vertex vert[] : The array of vertices to be passed to the VBO.
+		/// const int &count : The length of the vertex array.
+		void setVertexData(Honeycomb::Geometry::Vertex vert[], const int 
+				&count);
 	private:
 		int vertexBufferObj; // VBO "Pointer"
 		int vertCount; // The count of vertices stored for this mesh
@@ -35,14 +43,6 @@ namespace Honeycomb::Geometry {
 		int indexBufferObj; // IBO "Pointer" (for VBO indexing)
 		int indexCount; // The count of the indices stored for this mesh
 		int indexSize; // The byte size of the indices stored for this mesh
-
-		/// Adds the vertex data for this mesh.
-		/// Vertex v[] : The vertices data.
-		/// const int &vC : The vertex count.
-		/// int i[] : The indices data.
-		/// const int &iC : The index count.
-		void addVertexData(Honeycomb::Geometry::Vertex vert[], const int &vC,
-			int i[], const int &iC);
 	};
 }
 

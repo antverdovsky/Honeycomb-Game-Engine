@@ -172,11 +172,13 @@ namespace Honeycomb::Geometry {
 		}
 
 		// Create a new Honeycomb Mesh with the fetched vertex and index data.
-		Mesh *mes = new Mesh(&vertices[0], vertices.size(),
-			&indices[0], indices.size());
-		this->meshes.push_back(mes);
+		Mesh *mesh = new Mesh();
+		mesh->initialize();
+		mesh->setIndexData(&indices[0], indices.size());
+		mesh->setVertexData(&vertices[0], vertices.size());
+		this->meshes.push_back(mesh);
 
-		return mes;
+		return mesh;
 	}
 
 	GameObject* Model::processAiNode(aiNode *aNode) {
