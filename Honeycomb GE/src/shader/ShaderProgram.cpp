@@ -22,21 +22,10 @@ using Honeycomb::Math::Matrix4f;
 using Honeycomb::Debug::Logger;
 
 namespace Honeycomb::Shader {
-	ShaderProgram::ShaderProgram() {
-		this->name = "ShaderProgram";
-
-		// Create a pointer to the program ID for the shader
-		this->programID = glCreateProgram();
-
-		this->bindShaderProgram();
+	ShaderProgram::ShaderProgram(const std::string &name) {
+		this->name = name;
 	}
-
-	ShaderProgram::~ShaderProgram() {
-		glDeleteProgram(this->programID);
-
-		this->unbindShaderProgram();
-	}
-
+	
 	void ShaderProgram::addShader(const std::string &file, const int &type) {
 		this->bindShaderProgram();
 
@@ -97,6 +86,10 @@ namespace Honeycomb::Shader {
 
 	void ShaderProgram::bindShaderProgram() {
 		glUseProgram(this->programID);
+	}
+
+	void ShaderProgram::destroy() {
+		glDeleteProgram(this->programID);
 	}
 
 	void ShaderProgram::finalizeShaderProgram() {
@@ -161,6 +154,15 @@ namespace Honeycomb::Shader {
 			return -1;
 		}
 		else return it->second;
+	}
+
+	bool ShaderProgram::initialize() {
+		if (this->isInitialized) return false;
+
+		this->programID = glCreateProgram();
+		
+		this->isInitialized = true;
+		return true;
 	}
 
 	void ShaderProgram::setUniform_f(const std::string &uni,

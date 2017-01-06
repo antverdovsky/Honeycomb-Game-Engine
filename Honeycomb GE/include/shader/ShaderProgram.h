@@ -6,6 +6,7 @@
 #include <unordered_map>
 
 #include "ShaderSource.h"
+#include "..\base\GLItem.h"
 #include "..\file\FileIO.h"
 #include "..\file\LineOperation.h"
 #include "..\math\Vector3f.h"
@@ -13,13 +14,12 @@
 #include "..\math\Matrix4f.h"
 
 namespace Honeycomb::Shader {
-	class ShaderProgram {
+	class ShaderProgram : public Honeycomb::Base::GLItem {
 	public:
-		/// Initializes the Shader instance.
-		ShaderProgram();
-
-		/// Destroys the Shader from the GPU memory.
-		~ShaderProgram();
+		/// Instantiates this Shader instance with the specified name, or the
+		/// name "ShaderProgram" is the argument is not passed in.
+		/// const string &name : The name of the Shader Program.
+		ShaderProgram(const std::string &name = "ShaderProgram");
 
 		/// Links the Shader from the specified file to this Shader instance.
 		/// const string &file : The file path from which to read in the shader
@@ -37,6 +37,10 @@ namespace Honeycomb::Shader {
 		/// Binds the shader program so that it may be used.
 		void bindShaderProgram();
 
+		/// Destroys this Shader Program instance by destroying the program
+		/// from the GPU.
+		void destroy();
+
 		/// After all of the shaders have been added and compiled, this links 
 		/// the program and validates that everything was done correctly.
 		void finalizeShaderProgram();
@@ -48,6 +52,9 @@ namespace Honeycomb::Shader {
 		/// return : The uniform location in the shader; or a negative value if
 		///			 the uniform does not exist.
 		int getUniformLocation(const std::string &uni);
+
+		/// Initializes this Shader Program by creating the program on the GPU.
+		bool initialize();
 
 		/// Sets the specified uniform variable to the specified value. If the
 		/// uniform does not exist, no changes will be made.

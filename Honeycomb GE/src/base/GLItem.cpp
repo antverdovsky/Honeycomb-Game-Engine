@@ -14,7 +14,7 @@ namespace Honeycomb::Base {
 	}
 	
 	GLItem::GLItem() {
-
+		this->isInitialized = false;
 	}
 
 	GLItem::~GLItem() {

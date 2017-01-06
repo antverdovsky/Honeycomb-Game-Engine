@@ -83,6 +83,7 @@ namespace HoneycombTest {
 		// Create a fancy Chrome Material (non-textured).
 		Texture2D *blank = new Texture2D();
 		blank->initialize();
+		blank->setImageData();
 		Material *chrome = new Material();
 		chrome->glVector4fs.setValue("ambientColor", 
 			Vector4f(0.25F, 0.25F, 0.25F, 1.0F));

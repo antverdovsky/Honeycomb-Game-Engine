@@ -28,11 +28,11 @@ namespace Honeycomb::Render {
 		
 		// Render the very first active light regularly [clean up this mess TODO]
 		BaseLight firstLight = *activeLights.at(0);
-		firstLight.toShader(*this->lightShaders.at(firstLight.getName()),
+		firstLight.toShader(this->lightShaders.at(firstLight.getName()),
 			firstLight.uniformName);
 		CameraController::getActiveCamera()->toShader(
-			*this->lightShaders.at(firstLight.getName()), "camera");
-		scene.render(*this->lightShaders.at(firstLight.getName()));
+			this->lightShaders.at(firstLight.getName()), "camera");
+		scene.render(this->lightShaders.at(firstLight.getName()));
 
 		// Enable Special Rendering parameters for remaining passes
 		glEnable(GL_BLEND); // Blend light contributions from various sources
@@ -42,13 +42,13 @@ namespace Honeycomb::Render {
 
 		// Render the scene for the remaining lights
 		for (BaseLight *bL : activeLights) {
-			ShaderProgram *bLShader = this->lightShaders.at(bL->getName());
+			ShaderProgram bLShader = this->lightShaders.at(bL->getName());
 
 			// todo, if shader doesnt exist for the light...
 
-			bL->toShader(*bLShader, bL->uniformName);
-			CameraController::getActiveCamera()->toShader(*bLShader, "camera");
-			scene.render(*bLShader);
+			bL->toShader(bLShader, bL->uniformName);
+			CameraController::getActiveCamera()->toShader(bLShader, "camera");
+			scene.render(bLShader);
 		}
 
 		// Enable Regular Rendering for the first pass only
@@ -60,33 +60,37 @@ namespace Honeycomb::Render {
 	ForwardRendererMulti::ForwardRendererMulti() : Renderer() {
 		// Initialize all of the Light Shaders which are used for the
 		// renderable lights.
-		ShaderProgram *ambientShader = new ShaderProgram;
-		ambientShader->addShader("..\\Honeycomb GE\\res\\shaders\\standard\\"
+		ShaderProgram ambientShader = ShaderProgram("AmbientShader");
+		ambientShader.initialize();
+		ambientShader.addShader("..\\Honeycomb GE\\res\\shaders\\standard\\"
 			"source\\vertex\\stdVertex.glsl", GL_VERTEX_SHADER);
-		ambientShader->addShader("..\\Honeycomb GE\\res\\shaders\\standard\\"
+		ambientShader.addShader("..\\Honeycomb GE\\res\\shaders\\standard\\"
 			"source\\light\\stdAmbientLight.glsl", GL_FRAGMENT_SHADER);
-		ambientShader->finalizeShaderProgram();
+		ambientShader.finalizeShaderProgram();
 
-		ShaderProgram *directionalShader = new ShaderProgram;
-		directionalShader->addShader("..\\Honeycomb GE\\res\\shaders\\standard"
+		ShaderProgram directionalShader = ShaderProgram("DirectionalShader");
+		directionalShader.initialize();
+		directionalShader.addShader("..\\Honeycomb GE\\res\\shaders\\standard"
 			"\\source\\vertex\\stdVertex.glsl", GL_VERTEX_SHADER);
-		directionalShader->addShader("..\\Honeycomb GE\\res\\shaders\\standard"
+		directionalShader.addShader("..\\Honeycomb GE\\res\\shaders\\standard"
 			"\\source\\light\\stdDirectionalLight.glsl", GL_FRAGMENT_SHADER);
-		directionalShader->finalizeShaderProgram();
+		directionalShader.finalizeShaderProgram();
 
-		ShaderProgram *pointShader = new ShaderProgram;
-		pointShader->addShader("..\\Honeycomb GE\\res\\shaders\\standard\\"
+		ShaderProgram pointShader = ShaderProgram("PointShader");
+		pointShader.initialize();
+		pointShader.addShader("..\\Honeycomb GE\\res\\shaders\\standard\\"
 			"source\\vertex\\stdVertex.glsl", GL_VERTEX_SHADER);
-		pointShader->addShader("..\\Honeycomb GE\\res\\shaders\\standard\\"
+		pointShader.addShader("..\\Honeycomb GE\\res\\shaders\\standard\\"
 			"source\\light\\stdPointLight.glsl", GL_FRAGMENT_SHADER);
-		pointShader->finalizeShaderProgram();
+		pointShader.finalizeShaderProgram();
 
-		ShaderProgram *spotShader = new ShaderProgram;
-		spotShader->addShader("..\\Honeycomb GE\\res\\shaders\\standard\\"
+		ShaderProgram spotShader = ShaderProgram("SpotShader");
+		spotShader.initialize();
+		spotShader.addShader("..\\Honeycomb GE\\res\\shaders\\standard\\"
 			"source\\vertex\\stdVertex.glsl", GL_VERTEX_SHADER);
-		spotShader->addShader("..\\Honeycomb GE\\res\\shaders\\standard\\"
+		spotShader.addShader("..\\Honeycomb GE\\res\\shaders\\standard\\"
 			"source\\light\\stdSpotLight.glsl", GL_FRAGMENT_SHADER);
-		spotShader->finalizeShaderProgram();
+		spotShader.finalizeShaderProgram();
 
 		
 		this->lightShaders.insert({ "AmbientLight", ambientShader });
