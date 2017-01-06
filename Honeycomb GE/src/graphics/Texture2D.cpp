@@ -29,8 +29,10 @@ namespace Honeycomb::Graphics {
 		this->bind();
 
 		glGenerateMipmap(GL_TEXTURE_2D);
+	}
 
-		this->unbind();
+	const int& Texture2D::getTextureID() const {
+		return this->textureID;
 	}
 
 	bool Texture2D::initialize() {
@@ -85,8 +87,6 @@ namespace Honeycomb::Graphics {
 		this->setTextureFiltering(GL_NEAREST, GL_NEAREST);
 		this->setTextureWrap(GL_REPEAT, GL_REPEAT);
 		this->genMipMap();
-
-		this->unbind();
 	}
 
 	void Texture2D::setTextureFiltering(const int &min, const int &mag) {
@@ -95,8 +95,6 @@ namespace Honeycomb::Graphics {
 		// Set the minifying and magnifying filter parameters
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag);
-
-		this->unbind();
 	}
 
 	void Texture2D::setTextureWrap(const int &s, const int &t) {
@@ -104,8 +102,6 @@ namespace Honeycomb::Graphics {
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, s);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, t);
-
-		this->unbind();
 	}
 
 	void Texture2D::unbind() {

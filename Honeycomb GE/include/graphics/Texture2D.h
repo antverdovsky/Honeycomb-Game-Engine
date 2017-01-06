@@ -23,6 +23,10 @@ namespace Honeycomb::Graphics {
 		/// Generates a MipMap for the texture.
 		void genMipMap();
 
+		/// Returns the texture ID of this 2D Texture.
+		/// return : The Texture ID.
+		const int& getTextureID() const;
+
 		/// Initializes this 2D Texture instance by generating the appropriate
 		/// texture buffer to store the texture data.
 		bool initialize();
