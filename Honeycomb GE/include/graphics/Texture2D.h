@@ -4,8 +4,10 @@
 
 #include <string>
 
+#include "..\base\GLItem.h"
+
 namespace Honeycomb::Graphics {
-	class Texture2D {
+	class Texture2D : public Honeycomb::Base::GLItem {
 	public:
 		/// Creates an empty Texture instance.
 		Texture2D();
@@ -18,26 +20,24 @@ namespace Honeycomb::Graphics {
 		///					 treated as the displacement from GL_TEXTURE0.
 		void bind(const int &loc) const;
 
-		/// Destroys this 2D texture from OpenGL. This method should only be
-		/// called when any copies of this texture are no longer being used.
-		void destroy();
-
 		/// Generates a MipMap for the texture.
 		void genMipMap();
 
-		/// Initializes this 2D Texture using the specified file directory. If
-		/// the file string is empty, this texture will be instead initialized
-		/// to a 1x1 white RGBA bitmap (default "non-texture).
-		/// const string &file : The file with which to initialize the texture,
-		///						 or empty for non-texture.
-		///	return : True if this texture was successfully initialized. False,
-		///			 otherwise.
-		bool initialize(const std::string &file = "");
+		/// Initializes this 2D Texture instance by generating the appropriate
+		/// texture buffer to store the texture data.
+		bool initialize();
+		
+		/// Destroys this 2D Texture instance by destroying the appropriate
+		/// texture buffer.
+		void destroy();
 
 		/// Gets the image data from the specified image file and passes it to
-		/// OpenGL, using the GL_RGB formats.
-		/// const string &file : The file path to the image file.
-		void setImageData(const std::string &file);
+		/// OpenGL, using the GL_RGB formats. If the file string is empty, this
+		/// texture will be instead initialized to a 1x1 white RGB bitmap 
+		/// (default "non-texture).
+		/// const string &file : The file path to the image file, or empty for
+		///						 a non-texture.
+		void setImageData(const std::string &file = "");
 
 		/// Gets the image data from the specified image file and passes it to
 		/// OpenGL, using the specified internal and external formats.

@@ -105,6 +105,7 @@ namespace Honeycomb::Geometry {
 		aMat->Get(AI_MATKEY_COLOR_SPECULAR, matSpecular);
 		aMat->Get(AI_MATKEY_SHININESS, matShininess);
 
+		texture->initialize();
 		if (aMat->GetTextureCount(aiTextureType_DIFFUSE)) {
 			///
 			/// TODO: SUPPORT FOR MORE TEXTURES.
@@ -112,9 +113,9 @@ namespace Honeycomb::Geometry {
 			aiString dir;
 			aMat->GetTexture(aiTextureType_DIFFUSE, 0, &dir);
 
-			texture->initialize(dir.C_Str());
+			texture->setImageData(dir.C_Str());
 		} else {
-			texture->initialize();
+			texture->setImageData();
 		}
 
 		// Build the Material and return it [TODO, use material name not sub!]

@@ -33,28 +33,12 @@ namespace Honeycomb::Graphics {
 		this->unbind();
 	}
 
-	bool Texture2D::initialize(const std::string &file) {
+	bool Texture2D::initialize() {
 		if (this->isInitialized) return false;
 		
-		this->directory = file;
 		GLuint texID;
 		glGenTextures(1, &texID);
 		this->textureID = texID;
-
-		if (file.empty()) { // If empty file -> Create a 1x1 white RGBA texture
-			GLubyte white[] = { 255, 255, 255 };
-
-			this->bind();
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB,
-				GL_UNSIGNED_BYTE, white);
-		} else { // Otherwise, import the texture from file
-			this->setImageData(file, GL_RGB, GL_RGB);
-		}
-
-		// Default Texture2D settings
-		this->setTextureFiltering(GL_NEAREST, GL_NEAREST);
-		this->setTextureWrap(GL_REPEAT, GL_REPEAT);
-		this->genMipMap();
 
 		this->isInitialized = true;
 		return true;
@@ -66,11 +50,21 @@ namespace Honeycomb::Graphics {
 	}
 
 	void Texture2D::setImageData(const std::string &file) {
-		this->setImageData(file, GL_RGB, GL_RGB);
+		if (file.empty()) { // If empty file -> Create a 1x1 white RGBA texture
+			GLubyte white[] = { 255, 255, 255 };
+
+			this->bind();
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB,
+				GL_UNSIGNED_BYTE, white);
+		} else { // Otherwise, import the texture from file
+			this->setImageData(file, GL_RGB, GL_RGB);
+		}
 	}
 
 	void Texture2D::setImageData(const std::string &file, const int &in, 
 			const int &ex) {
+		this->directory = file;
+
 		// Store the width, height and image data.
 		int width, height;
 		unsigned char *data = File::readImageToUChar(file, width, height);
@@ -86,6 +80,11 @@ namespace Honeycomb::Graphics {
 		// Pass in the Image to OpenGL using the given parameters
 		glTexImage2D(GL_TEXTURE_2D, 0, in, w, h, 0, ex, GL_UNSIGNED_BYTE, 
 			data);
+
+		// Default Texture2D settings
+		this->setTextureFiltering(GL_NEAREST, GL_NEAREST);
+		this->setTextureWrap(GL_REPEAT, GL_REPEAT);
+		this->genMipMap();
 
 		this->unbind();
 	}
