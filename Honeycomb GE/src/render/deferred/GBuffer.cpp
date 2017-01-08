@@ -17,16 +17,30 @@ namespace Honeycomb::Render::Deferred {
 
 	}
 
+	void GBuffer::bind() {
+		glBindFramebuffer(GL_FRAMEBUFFER, this->frameBufferObj);
+	}
+
 	void GBuffer::bindDraw() {
-		glBindFramebuffer(GL_DRAW_BUFFER, this->frameBufferObj);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->frameBufferObj);
 	}
 
 	void GBuffer::bindRead() {
-		glBindFramebuffer(GL_READ_BUFFER, this->frameBufferObj);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, this->frameBufferObj);
+	}
+
+	void GBuffer::bindTexture(const GBufferTextureType &type) {
+		glBindTexture(GL_TEXTURE_2D, 
+			this->bufferTextures[type].getTextureID());
 	}
 
 	void GBuffer::destroy() {
-		
+		GLuint fbo = this->frameBufferObj;
+		glDeleteFramebuffers(1, &fbo);
+	}
+
+	const int& GBuffer::getFrameBuffer() const {
+		return this->frameBufferObj;
 	}
 
 	bool GBuffer::initialize() {
@@ -38,8 +52,12 @@ namespace Honeycomb::Render::Deferred {
 
 		// Generate the Frame Buffer Object for this G-Buffer
 		GLuint fbo;
-		glGenBuffers(1, &fbo);
+		glGenFramebuffers(1, &fbo);
 		this->frameBufferObj = fbo;
+
+		// Bind the Buffer so that it may be written to and modified in the
+		// remaining initialization steps.
+		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
 		// Stores all of the color (non-depth) buffers, for a test to see if
 		// everything was correctly initialized.
@@ -50,37 +68,52 @@ namespace Honeycomb::Render::Deferred {
 			// Create an empty texture
 			this->bufferTextures[i].initialize();
 			this->bufferTextures[i].bind();
-			this->bufferTextures[i].setImageData(nullptr, GL_RGB32F, GL_RGB,
-				this->textureWidth, this->textureHeight);
+			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGB32F, 
+				GL_RGB, this->textureWidth, this->textureHeight);
 
 			// Bind the texture to the Frame Buffer Object
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i,
 				GL_TEXTURE_2D, this->bufferTextures[i].getTextureID(), 0);
 
-			colorBuffers[i] = GL_COLOR_ATTACHMENT0 + 1; // Add to Color Buffers
-		}
-
-		// Check that all the color buffers were initialized correctly
-		glDrawBuffers(GBufferTextureType::DEPTH, colorBuffers);
-		GLenum bufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-		if (bufferStatus != GL_FRAMEBUFFER_COMPLETE) {
-			Logger::getLogger().logError(__FUNCTION__, __LINE__,
-				"Unable to Create Deferred Frame Buffer!");
+			colorBuffers[i] = GL_COLOR_ATTACHMENT0 + i; // Add to Color Buffers
 		}
 
 		// Create a specific Depth Texture for the Depth Buffer
 		this->bufferTextures[GBufferTextureType::DEPTH].initialize();
 		this->bufferTextures[GBufferTextureType::DEPTH].bind();
-		this->bufferTextures[GBufferTextureType::DEPTH].setImageData(nullptr,
-			GL_DEPTH_COMPONENT32F, GL_RGB, this->textureWidth,
-			this->textureHeight);
+		this->bufferTextures[GBufferTextureType::DEPTH].setImageData(NULL, 
+			GL_FLOAT, GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT, 
+			this->textureWidth, this->textureHeight);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
 				GL_TEXTURE_2D, this->bufferTextures[GBufferTextureType::DEPTH].
 				getTextureID(), 0);
 
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // Bind Default FrameBuffer
+		// Bind the 4 buffers as the color buffers which will be used when
+		// drawing & check that all the color buffers were initialized properly
+		glDrawBuffers(GBufferTextureType::DEPTH, colorBuffers);
+		
+		GLenum bufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+		
+		if (bufferStatus != GL_FRAMEBUFFER_COMPLETE) {
+			Logger::getLogger().logError(__FUNCTION__, __LINE__,
+				"Unable to Create Deferred GBuffer!");
+		}
 
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // Bind Default FrameBuffer
+		
 		this->isInitialized = true;
 		return true;
+	}
+
+	void GBuffer::unbind() {
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+	void GBuffer::unbindDraw() {
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	}
+
+	void GBuffer::unbindRead() {
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
 	}
 }

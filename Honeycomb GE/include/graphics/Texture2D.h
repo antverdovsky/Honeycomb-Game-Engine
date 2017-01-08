@@ -53,12 +53,13 @@ namespace Honeycomb::Graphics {
 
 		/// Passes the specified image data to OpenGL.
 		/// unsigned char *data : The image data to be sent to OpenGL.
+		/// const int &type : The type of data being passed in.
 		/// const int &in : The internal format with which to store the image.
 		/// const int &ex : The external format of the data passed in.
 		/// const int &w : The width of the image.
 		/// const int &h : The height of the image.
-		void setImageData(unsigned char *data, const int &in, const int &ex,
-			const int &w, const int &h);
+		void setImageData(unsigned char *data, const int &type, const int &in, 
+			const int &ex, const int &w, const int &h);
 
 		/// Sets the texture filtering for minifying and magnifying operations.
 		/// const int &min : The filtering when minifying.

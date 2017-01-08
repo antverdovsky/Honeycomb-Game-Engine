@@ -71,17 +71,16 @@ namespace Honeycomb::Graphics {
 		int width, height;
 		unsigned char *data = File::readImageToUChar(file, width, height);
 
-		this->setImageData(data, in, ex, width, height);
+		this->setImageData(data, GL_UNSIGNED_BYTE, in, ex, width, height);
 		delete data;
 	}
 
-	void Texture2D::setImageData(unsigned char *data, const int &in, 
-			const int &ex, const int &w, const int &h) {
+	void Texture2D::setImageData(unsigned char *data, const int &type, 
+			const int &in, const int &ex, const int &w, const int &h) {
 		this->bind();
 
 		// Pass in the Image to OpenGL using the given parameters
-		glTexImage2D(GL_TEXTURE_2D, 0, in, w, h, 0, ex, GL_UNSIGNED_BYTE, 
-			data);
+		glTexImage2D(GL_TEXTURE_2D, 0, in, w, h, 0, ex, type, data);
 
 		// Default Texture2D settings
 		this->setTextureFiltering(GL_NEAREST, GL_NEAREST);
