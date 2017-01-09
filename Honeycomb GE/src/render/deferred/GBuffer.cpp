@@ -46,6 +46,10 @@ namespace Honeycomb::Render::Deferred {
 	bool GBuffer::initialize() {
 		if (this->isInitialized) return false;
 
+		GameWindow::getGameWindow()->getResizeEvent() += 
+			this->windowResizeHandler;
+		this->windowResizeHandler += std::bind(&GBuffer::resizeTextures, this);
+
 		// Fetch the Height and Width of the Game Window
 		this->textureHeight = GameWindow::getGameWindow()->getWindowHeight();
 		this->textureWidth = GameWindow::getGameWindow()->getWindowWidth();
@@ -115,5 +119,19 @@ namespace Honeycomb::Render::Deferred {
 
 	void GBuffer::unbindRead() {
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	}
+
+	void GBuffer::resizeTextures() {
+		this->textureHeight = GameWindow::getGameWindow()->getWindowHeight();
+		this->textureWidth = GameWindow::getGameWindow()->getWindowWidth();
+		
+		for (int i = 0; i < GBufferTextureType::DEPTH; i++) {
+			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGB32F,
+				GL_RGB, this->textureWidth, this->textureHeight);
+		}
+
+		this->bufferTextures[GBufferTextureType::DEPTH].setImageData(
+			NULL, GL_FLOAT, GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT,
+			this->textureWidth, this->textureHeight);
 	}
 }

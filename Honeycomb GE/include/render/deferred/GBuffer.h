@@ -3,6 +3,7 @@
 #define G_BUFFER_H
 
 #include "..\..\base\GLItem.h"
+#include "..\..\conjuncture\EventHandler.h"
 #include "..\..\graphics\Texture2D.h"
 #include "..\..\render\Renderer.h"
 
@@ -21,6 +22,9 @@ namespace Honeycomb::Render::Deferred {
 		friend class DeferredRenderer;
 
 	public:
+		// Event Handler for the Window Resize Event
+		Honeycomb::Conjuncture::EventHandler windowResizeHandler;
+
 		/// Instantiates a blank G Buffer structure.
 		GBuffer();
 
@@ -71,6 +75,10 @@ namespace Honeycomb::Render::Deferred {
 		// The width and height of the buffer textures, from the GameWindow
 		int textureHeight;
 		int textureWidth;
+
+		/// Resizes all of the buffer textures of this GBuffer to match the
+		/// current window screen size.
+		void resizeTextures();
 	};
 }
 
