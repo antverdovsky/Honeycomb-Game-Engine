@@ -110,7 +110,7 @@ namespace Honeycomb::Base {
 		glewExperimental = true;
 		glewInit();
 		this->renderEngine = RenderingEngine::getRenderingEngine();
-		this->renderEngine->setRenderingType(RenderingType::TYPE_FORWARD_RENDERER_MULTI);
+		this->renderEngine->setRenderingType(RenderingType::TYPE_DEFERRED_RENDERER);
 
 		Logger::getLogger().logEntry(__FUNCTION__, __LINE__,
 			"All GLEW and GLFW initializations complete!");

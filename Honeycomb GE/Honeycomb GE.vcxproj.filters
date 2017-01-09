@@ -141,6 +141,9 @@
     <ClCompile Include="src\base\GLItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\deferred\DeferredRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\math\Vector2f.h">
@@ -272,6 +275,9 @@
     <ClInclude Include="include\base\GLItem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\render\deferred\DeferredRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\phong\fragShader.glsl" />
@@ -302,5 +308,7 @@
     <None Include="res\shaders\standard\source\light\stdDirectionalLight.glsl" />
     <None Include="res\shaders\standard\source\light\stdPointLight.glsl" />
     <None Include="res\shaders\standard\source\light\stdSpotLight.glsl" />
+    <None Include="res\shaders\defGeometryFS.glsl" />
+    <None Include="res\shaders\defGeometryVS.glsl" />
   </ItemGroup>
 </Project>

@@ -2,10 +2,12 @@
 
 //#include "..\..\include\render\ForwardRendererSingle.h"
 #include "..\..\include\render\ForwardRendererMulti.h"
+#include "..\..\include\render\deferred\DeferredRenderer.h"
 
 using Honeycomb::Scene::GameScene;
 //using Honeycomb::Render::ForwardRendererSingle;
 using Honeycomb::Render::ForwardRendererMulti;
+using Honeycomb::Render::Deferred::DeferredRenderer;
 
 namespace Honeycomb::Render {
 	RenderingEngine *RenderingEngine::renderingEngine = nullptr;
@@ -28,6 +30,9 @@ namespace Honeycomb::Render {
 			break;
 		case RenderingType::TYPE_FORWARD_RENDERER_MULTI:
 			this->renderer = ForwardRendererMulti::getForwardRendererMulti();
+			break;
+		case RenderingType::TYPE_DEFERRED_RENDERER:
+			this->renderer = DeferredRenderer::getDeferredRenderer();
 			break;
 		}
 	}

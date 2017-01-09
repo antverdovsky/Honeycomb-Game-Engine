@@ -41,6 +41,7 @@ namespace Honeycomb::Debug {
 
 	void Logger::log(const std::string &msgType, const std::string &calFunc,
 			const int &calLine, const std::string &msg) {
+#if _DEBUG
 		// Print out the message
 		std::cout << std::setfill('0') << std::setw(7) << this->logCount <<
 			" | " << msgType << " ~ " << calFunc << "::" << calLine << " < " <<
@@ -48,5 +49,6 @@ namespace Honeycomb::Debug {
 			<< "\n\t" << msg << std::endl;
 
 		this->logCount++; // Another message has been logged
+#endif
 	}
 }
