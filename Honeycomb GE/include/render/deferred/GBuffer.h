@@ -44,6 +44,12 @@ namespace Honeycomb::Render::Deferred {
 		/// const GBufferTextureType &type : The type of texture to be binded.
 		void bindTexture(const GBufferTextureType &type);
 
+		/// Binds all of the color attachment textures of this GBuffer to the 
+		/// specified Shader.
+		/// ShaderProgram &shader : The Shader Program for which the textures
+		///							are to be binded.
+		void bindTextures(Honeycomb::Shader::ShaderProgram &shader);
+
 		/// Destroys this G Buffer structure, and its position, diffuse, normal
 		/// and texture coordinate buffers.
 		void destroy();

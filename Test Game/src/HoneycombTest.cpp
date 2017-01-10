@@ -51,7 +51,8 @@ namespace HoneycombTest {
 			GameInput::KEY_CODE_V, GameInput::KEY_CODE_B,
 			5.0F, 5.0F);
 		PointLight *suzPointLight = new PointLight();
-		suzPointLight->glVector4fs.setValue(PointLight::COLOR_VEC4, Vector4f(1.0F, 0.0F, 0.0F, 1.0F));
+		suzPointLight->glVector4fs.setValue(PointLight::COLOR_VEC4, Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
+		suzPointLight->glFloats.setValue(PointLight::INTENSITY_F, 1.0F);
 		SpotLight *suzSpotLight = new SpotLight();
 		suzSpotLight->glVector4fs.setValue(PointLight::COLOR_VEC4, Vector4f(1.0F, 0.0F, 0.0F, 1.0F));
 

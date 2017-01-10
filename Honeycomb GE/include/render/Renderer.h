@@ -23,7 +23,7 @@ namespace Honeycomb::Render {
 		/// TODO: More Options
 //		const int CULL_FACE = GL_BACK; // Which face should be culled
 		const Honeycomb::Math::Vector4f CLEAR_SCREEN_COLOR = // Clear Color
-			Honeycomb::Math::Vector4f(0.0F, 0.0F, 1.0F, 0.0F);
+			Honeycomb::Math::Vector4f(0.0F, 0.0F, 0.0F, 0.0F);
 		const bool DEPTH_TEST = true; // Should depth tests occur?
 		const bool DO_CULL_FACES = true; // Should the cull face be culled?
 		const bool MSAA_SAMPLING = true; // Do Multisampling?

@@ -27,6 +27,9 @@ namespace Honeycomb::Render::Deferred {
 
 		Honeycomb::Shader::ShaderProgram geometryShader;
 		Honeycomb::Shader::ShaderProgram quadShader;
+		Honeycomb::Shader::ShaderProgram pointLightShader;
+
+		Honeycomb::Object::GameObject *pointLightSphere;
 
 		/// Initializes a new Deferred Renderer.
 		DeferredRenderer();
@@ -41,6 +44,11 @@ namespace Honeycomb::Render::Deferred {
 		/// Renders the lights of the specified scene.
 		/// GameScene &scene : The scene whose lights are to be rendered.
 		void renderLights(Honeycomb::Scene::GameScene &scene);
+
+		/// Renders the specified Point Light using Deferred Rendering.
+		/// const PointLight &pL : The point light to be rendered.
+		void renderLightPoint(const Honeycomb::Component::Light::PointLight	
+				&pL);
 	};
 }
 

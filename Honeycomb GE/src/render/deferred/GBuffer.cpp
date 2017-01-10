@@ -7,6 +7,7 @@
 
 using Honeycomb::Base::GameWindow;
 using Honeycomb::Debug::Logger;
+using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb::Render::Deferred {
 	GBuffer::GBuffer() {
@@ -30,8 +31,21 @@ namespace Honeycomb::Render::Deferred {
 	}
 
 	void GBuffer::bindTexture(const GBufferTextureType &type) {
-		glBindTexture(GL_TEXTURE_2D, 
-			this->bufferTextures[type].getTextureID());
+		this->bufferTextures[type].bind();
+	}
+
+	void GBuffer::bindTextures(ShaderProgram &shader) {
+		shader.setUniform_i("gBufferPosition", 0);
+		glActiveTexture(GL_TEXTURE0);
+		this->bufferTextures[0].bind(0);
+		
+		shader.setUniform_i("gBufferDiffuse", 1);
+		glActiveTexture(GL_TEXTURE1);
+		this->bufferTextures[1].bind(1);
+		
+		shader.setUniform_i("gBufferNormal", 2);
+		glActiveTexture(GL_TEXTURE2);
+		this->bufferTextures[2].bind(2);
 	}
 
 	void GBuffer::destroy() {
