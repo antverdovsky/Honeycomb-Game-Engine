@@ -73,7 +73,8 @@ uniform sampler2D gBufferNormal;
 out vec4 fragColor;
 
 void main() {
-    vec2 screenCoord = vec2(gl_FragCoord.x / 1024, gl_FragCoord.y / 768); // TODO VERY TEMPORARY!
+    vec2 screenCoord = vec2(gl_FragCoord.x / camera.width,
+							gl_FragCoord.y / camera.height);
     
     vec3 pos = texture2D(gBufferPosition, screenCoord).xyz;
     vec3 dif = texture2D(gBufferDiffuse, screenCoord).xyz;

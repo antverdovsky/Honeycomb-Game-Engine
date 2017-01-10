@@ -23,6 +23,8 @@ namespace Honeycomb::Component::Render {
 
 	const std::string CameraController::PROJECTION_MAT4 = "projection";
 	const std::string CameraController::TRANSLATION_VEC3 = "translation";
+	const std::string CameraController::WIDTH_F = "width";
+	const std::string CameraController::HEIGHT_F = "height";
 
 	const std::string CameraController::STRUCT_FILE = "..\\Honeycomb GE\\"
 		"res\\shaders\\standard\\include\\stdCamera.glsl";
@@ -161,16 +163,22 @@ namespace Honeycomb::Component::Render {
 	}
 
 	void CameraController::update() {
-		this->glMatrix4fs.setValue(CameraController::PROJECTION_MAT4, 
-			this->projection);
-		this->glVector3fs.setValue(CameraController::TRANSLATION_VEC3,
-			this->transform->getTranslation());
+		
 	}
 
 	const Matrix4f& CameraController::calcProjection() {
 		this->projection = this->getProjectionView() *
 			this->getProjectionOrientation() *
 			this->getProjectionTranslation();
+
+		this->glFloats.setValue(CameraController::WIDTH_F,
+			this->projectionWidth);
+		this->glFloats.setValue(CameraController::HEIGHT_F,
+			this->projectionHeight);
+		this->glMatrix4fs.setValue(CameraController::PROJECTION_MAT4,
+			this->projection);
+		this->glVector3fs.setValue(CameraController::TRANSLATION_VEC3,
+			this->transform->getTranslation());
 
 		return this->getProjection();
 	}

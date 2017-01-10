@@ -319,6 +319,7 @@
     <None Include="res\shaders\phong\vertexShader.glsl" />
     <None Include="res\shaders\simple\fragShader.glsl" />
     <None Include="res\shaders\simple\vertexShader.glsl" />
+    <None Include="res\shaders\standard\include\stdCamera.glsl" />
     <None Include="res\shaders\standard\include\stdLight.glh" />
     <None Include="res\shaders\standard\include\stdLight.glsl" />
     <None Include="res\shaders\standard\include\stdMaterial.glh" />

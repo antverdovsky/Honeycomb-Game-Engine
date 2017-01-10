@@ -16,6 +16,8 @@ namespace Honeycomb::Component::Render {
 	public:
 		const static std::string PROJECTION_MAT4;
 		const static std::string TRANSLATION_VEC3;
+		const static std::string WIDTH_F;
+		const static std::string HEIGHT_F;
 
 		enum CameraType { // The type of camera (Orthographic or Perspective)
 			ORTHOGRAPHIC,

@@ -310,5 +310,6 @@
     <None Include="res\shaders\standard\source\light\stdSpotLight.glsl" />
     <None Include="res\shaders\defGeometryFS.glsl" />
     <None Include="res\shaders\defGeometryVS.glsl" />
+    <None Include="res\shaders\standard\include\stdCamera.glsl" />
   </ItemGroup>
 </Project>
