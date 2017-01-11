@@ -18,7 +18,7 @@ namespace Honeycomb::Component::Light {
 	const std::string DirectionalLight::DIRECTION_VEC3 = "direction";
 
 	const std::string DirectionalLight::structFile = "..\\Honeycomb GE\\"
-			"res\\shaders\\standard\\source\\light\\stdDirectionalLight.glsl";
+			"res\\shaders\\standard\\include\\light\\stdDirectionalLight.glsl";
 	const std::string DirectionalLight::structName = "DirectionalLight";
 
 	DirectionalLight::DirectionalLight() : 

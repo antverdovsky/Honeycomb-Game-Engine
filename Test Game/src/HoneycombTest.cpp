@@ -106,7 +106,7 @@ namespace HoneycombTest {
 		this->gameScene.addChild(*plane);
 		this->gameScene.addChild(*sphere);
 		this->gameScene.addChild(*suzanne);
-		this->gameScene.addChild(*aPointLight);
+//		this->gameScene.addChild(*aPointLight);
 		this->gameScene.addChild(*directionalLight);
 		this->gameScene.addChild(*ambientLight);
 		this->gameScene.addChild(*camera);

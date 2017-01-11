@@ -28,7 +28,7 @@ namespace Honeycomb::Component::Light {
 	const std::string SpotLight::ANGLE_F = "angle";
 
 	const std::string SpotLight::structFile = "..\\Honeycomb GE\\res\\"
-			"shaders\\standard\\source\\light\\stdSpotLight.glsl";
+			"shaders\\standard\\include\\light\\stdSpotLight.glsl";
 	const std::string SpotLight::structName = "SpotLight";
 
 	SpotLight::SpotLight() : SpotLight(1.0F, Vector4f(1.0F, 1.0F, 1.0F, 1.0F),

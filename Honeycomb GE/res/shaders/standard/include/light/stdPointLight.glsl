@@ -1,6 +1,4 @@
-#version 330 core
-
-#include <..\..\include\stdLight.glsl>
+#include <stdBaseLight.glsl>
 
 ///
 /// The point light structure.
@@ -14,26 +12,18 @@ struct PointLight {
                  // the more accurate the attenuation of the light).
 };
 
-in vec2 out_vs_texCoord; // Take in texture coordinate outputted by VS
-in vec3 out_vs_norm; // Take in the normal outputted by VS
-in vec3 out_vs_pos; // Take in the world position outputted by VS
-
-uniform PointLight pointLight; // The point light
-uniform Material material; // The material
-uniform Camera camera;
-
 /// Calculates the light which should be applied to this fragment, given the
-/// point light which shines on it, the material of the surface, the coordinate
-/// of the fragment position and the surface normal.
+/// point light which shines on it, the coordinates of the fragment position 
+/// and the surface normal.
 /// PointLight pL : The point light which shines on the surface.
-/// Material mat : The material of the surface.
 /// Camera cam : The camera with which the scene is rendered.
 /// vec3 wP : The world position of the fragment.
 /// vec3 norm : The normal of the surface.
+/// float shine : The shininess of the reflection (for specular reflection).
 /// return : The vector which can be used to add or detract lighting from the
 ///          fragment.
-vec4 calculatePointLight(PointLight pL, Material mat, Camera cam, vec3 wP, 
-        vec3 norm) {
+vec4 calculatePointLight(PointLight pL, Camera cam, vec3 wP, vec3 norm, 
+        float shine) {
     // Calculate the displacement vector between the world position of the
     // fragment and the point light position.
     vec3 displacement = wP - pL.position;
@@ -56,26 +46,12 @@ vec4 calculatePointLight(PointLight pL, Material mat, Camera cam, vec3 wP,
     
     // Calculate the Diffuse and Specular Light components of the Point Light 
     // and scale by the attenuation to adjust the light with distance.
-    vec4 diffuse = calculateDiffuseLight(pL.base, mat, direction, norm);
-    vec4 specular = calculateSpecularReflection(pL.base, mat, cam, wP, 
-        direction, norm);
+    vec4 diffuse = calculateDiffuseLight(pL.base, direction, norm);
+    vec4 specular = calculateSpecularReflection(pL.base, cam, wP, direction, 
+        norm, shine);
     diffuse = vec4(diffuse.xyz * intensity, diffuse.w);
     specular = vec4(specular.xyz * intensity, specular.w);
     
     // Return the blend of the Diffuse and Specular lighting
     return vec4(vec3(diffuse.xyz + specular.xyz), diffuse.w + specular.w);
-}
-
-void main() {
-    // Calculate the contributions of the Light sources
-    vec4 pointComponent = calculatePointLight(pointLight, material, camera,
-        out_vs_pos, out_vs_norm);
-        
-    // Sum up the contributions of the Light sources
-    vec4 totalLight = pointComponent;
-    
-	// Set the color to the color provided by the Texture, mixed with the
-    // lighting for this fragment.
-	gl_FragColor = vec4(totalLight.xyz, 1.0F) * 
-		texture2D(material.albedoTexture, out_vs_texCoord);
 }

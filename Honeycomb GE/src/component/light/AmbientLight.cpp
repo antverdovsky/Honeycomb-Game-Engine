@@ -9,7 +9,7 @@ namespace Honeycomb::Component::Light {
 	const std::string AmbientLight::INTENSITY_F = "base.intensity";
 
 	const std::string AmbientLight::structFile = "..\\Honeycomb GE\\res\\"
-			"shaders\\standard\\source\\light\\stdAmbientLight.glsl";
+		"shaders\\standard\\include\\light\\stdAmbientLight.glsl";
 	const std::string AmbientLight::structName = "AmbientLight";
 
 	AmbientLight::AmbientLight() : 

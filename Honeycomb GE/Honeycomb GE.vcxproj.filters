@@ -311,5 +311,11 @@
     <None Include="res\shaders\defGeometryFS.glsl" />
     <None Include="res\shaders\defGeometryVS.glsl" />
     <None Include="res\shaders\standard\include\stdCamera.glsl" />
+    <None Include="res\shaders\render\deferred\geometryFS.glsl" />
+    <None Include="res\shaders\render\deferred\geometryVS.glsl" />
+    <None Include="res\shaders\render\deferred\pointLightFS.glsl" />
+    <None Include="res\shaders\render\deferred\pointLightVS.glsl" />
+    <None Include="res\shaders\render\deferred\simpleFS.glsl" />
+    <None Include="res\shaders\render\deferred\simpleVS.glsl" />
   </ItemGroup>
 </Project>

@@ -176,5 +176,9 @@ namespace Honeycomb::Render::Deferred {
 		this->pointLightSphere->getComponent<Transform>()->setTranslation(
 			pL.glVector3fs.getValue(PointLight::POSITION_VEC3));
 		this->pointLightSphere->render(this->pointLightShader);
+
+		std::cout << this->pointLightSphere->getComponent<Transform>()->getTranslation().getX() << ", "
+			<< this->pointLightSphere->getComponent<Transform>()->getTranslation().getY() << ", "
+			<< this->pointLightSphere->getComponent<Transform>()->getTranslation().getZ() << std::endl;
 	}
 }
