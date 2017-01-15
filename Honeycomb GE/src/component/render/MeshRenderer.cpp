@@ -49,6 +49,10 @@ namespace Honeycomb::Component::Render {
 		if (this->mesh != nullptr) this->mesh->draw(shader);
 	}
 
+	void MeshRenderer::setMaterial(const Honeycomb::Graphics::Material *mat) {
+		this->material = mat;
+	}
+
 	void MeshRenderer::setMaterial(const Honeycomb::Graphics::Material &mat) {
 		this->material = &mat;
 	}

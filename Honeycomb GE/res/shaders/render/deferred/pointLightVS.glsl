@@ -12,5 +12,5 @@ out vec3 out_vs_pos;
 void main() {
     gl_Position = camera.projection * objTransform * vec4(in_vs_pos, 1.0);
     
-    out_vs_pos = (camera.projection * objTransform * vec4(in_vs_pos, 1.0)).xyz;
+    out_vs_pos = (objTransform * vec4(in_vs_pos, 1.0)).xyz;
 }

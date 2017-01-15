@@ -26,6 +26,22 @@ namespace Honeycomb::Render::Deferred {
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, this->frameBufferObj);
 	}
 
+	void GBuffer::bindDrawGeometry() {
+		this->bindDraw();
+
+		// Set the drawing buffers (color attachments [0, 2])
+		GLenum drawBuffers[] = {
+			GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2
+		};
+		glDrawBuffers(3, drawBuffers);
+	}
+
+	void GBuffer::bindDrawLight(ShaderProgram &shader) {
+		glDrawBuffer(GL_COLOR_ATTACHMENT4);
+		
+		this->bindTextures(shader);
+	}
+
 	void GBuffer::bindRead() {
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, this->frameBufferObj);
 	}
@@ -36,21 +52,29 @@ namespace Honeycomb::Render::Deferred {
 
 	void GBuffer::bindTextures(ShaderProgram &shader) {
 		shader.setUniform_i("gBufferPosition", 0);
-		glActiveTexture(GL_TEXTURE0);
 		this->bufferTextures[0].bind(0);
 		
 		shader.setUniform_i("gBufferDiffuse", 1);
-		glActiveTexture(GL_TEXTURE1);
 		this->bufferTextures[1].bind(1);
 		
 		shader.setUniform_i("gBufferNormal", 2);
-		glActiveTexture(GL_TEXTURE2);
 		this->bufferTextures[2].bind(2);
+	}
+
+	void GBuffer::bindStencil() {
+		glDrawBuffer(GL_NONE); // Disable drawing to buffers in stencil pass
 	}
 
 	void GBuffer::destroy() {
 		GLuint fbo = this->frameBufferObj;
 		glDeleteFramebuffers(1, &fbo);
+	}
+
+	void GBuffer::frameBegin() {
+		// Clear the final texture attached to this GBuffer
+		this->bindDraw();
+		glDrawBuffer(GL_COLOR_ATTACHMENT4);
+		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	const int& GBuffer::getFrameBuffer() const {
@@ -72,11 +96,11 @@ namespace Honeycomb::Render::Deferred {
 		GLuint fbo;
 		glGenFramebuffers(1, &fbo);
 		this->frameBufferObj = fbo;
-
+		
 		// Bind the Buffer so that it may be written to and modified in the
 		// remaining initialization steps.
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-
+		
 		// Stores all of the color (non-depth) buffers, for a test to see if
 		// everything was correctly initialized.
 		GLenum colorBuffers[GBufferTextureType::DEPTH];
@@ -96,15 +120,25 @@ namespace Honeycomb::Render::Deferred {
 			colorBuffers[i] = GL_COLOR_ATTACHMENT0 + i; // Add to Color Buffers
 		}
 
-		// Create a specific Depth Texture for the Depth Buffer
+		// Create the Depth Buffer Texture
 		this->bufferTextures[GBufferTextureType::DEPTH].initialize();
 		this->bufferTextures[GBufferTextureType::DEPTH].bind();
 		this->bufferTextures[GBufferTextureType::DEPTH].setImageData(NULL, 
-			GL_FLOAT, GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT, 
-			this->textureWidth, this->textureHeight);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-				GL_TEXTURE_2D, this->bufferTextures[GBufferTextureType::DEPTH].
-				getTextureID(), 0);
+			GL_FLOAT_32_UNSIGNED_INT_24_8_REV, GL_DEPTH32F_STENCIL8, 
+			GL_DEPTH_STENCIL, this->textureWidth, this->textureHeight);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
+			GL_TEXTURE_2D, this->bufferTextures[GBufferTextureType::DEPTH].
+			getTextureID(), 0);
+
+		// Create the Final Image Texture
+		this->bufferTextures[GBufferTextureType::FINAL].initialize();
+		this->bufferTextures[GBufferTextureType::FINAL].bind();
+		this->bufferTextures[GBufferTextureType::FINAL].setImageData(NULL,
+			GL_FLOAT, GL_RGBA, GL_RGB, this->textureWidth, this->textureHeight
+		);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4,
+			GL_TEXTURE_2D, this->bufferTextures[GBufferTextureType::FINAL].
+			getTextureID(), 0);
 
 		// Bind the 4 buffers as the color buffers which will be used when
 		// drawing & check that all the color buffers were initialized properly
@@ -144,8 +178,11 @@ namespace Honeycomb::Render::Deferred {
 				GL_RGB, this->textureWidth, this->textureHeight);
 		}
 
-		this->bufferTextures[GBufferTextureType::DEPTH].setImageData(
-			NULL, GL_FLOAT, GL_DEPTH_COMPONENT32F, GL_DEPTH_COMPONENT,
-			this->textureWidth, this->textureHeight);
+		this->bufferTextures[GBufferTextureType::DEPTH].setImageData(NULL,
+			GL_FLOAT_32_UNSIGNED_INT_24_8_REV, GL_DEPTH32F_STENCIL8,
+			GL_DEPTH_STENCIL, this->textureWidth, this->textureHeight);
+		this->bufferTextures[GBufferTextureType::FINAL].setImageData(NULL,
+			GL_FLOAT, GL_RGBA, GL_RGB, this->textureWidth, this->textureHeight
+		);
 	}
 }

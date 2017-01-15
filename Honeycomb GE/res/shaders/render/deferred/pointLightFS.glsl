@@ -23,9 +23,8 @@ void main() {
     
     vec3 pos = texture2D(gBufferPosition, screenCoord).xyz;
     vec3 dif = texture2D(gBufferDiffuse, screenCoord).xyz;
-    vec3 norm = texture2D(gBufferNormal, screenCoord).xyz;
-  fragColor = calculatePointLight(pointLight, camera, pos, norm, 
-        material.shininess);
-    //fragColor = texture2D(gBufferPosition, screenCoord);
+    vec3 norm = normalize(texture2D(gBufferNormal, screenCoord).xyz);
+	fragColor = calculatePointLight(pointLight, camera, pos, norm, 
+        0); // TEMPORARY
     
 }

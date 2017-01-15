@@ -47,6 +47,7 @@ namespace Honeycomb::Render::Deferred {
 
 		this->pointLightSphere = Builder::getBuilder()->newSphere();
 		// TEMPORARY
+		/*
 		Texture2D *blank = new Texture2D();
 		blank->initialize();
 		blank->setImageData();
@@ -60,6 +61,8 @@ namespace Honeycomb::Render::Deferred {
 		mat->glFloats.setValue("shininess", 1.0F * 128.0F);
 		mat->glSampler2Ds.setValue("albedoTexture", *blank);
 		this->pointLightSphere->getComponent<MeshRenderer>()->setMaterial(*mat);
+		*/
+		this->pointLightSphere->getComponent<MeshRenderer>()->setMaterial(nullptr);
 		this->pointLightSphere->start();
 
 		this->geometryShader.initialize();
@@ -83,6 +86,13 @@ namespace Honeycomb::Render::Deferred {
 			"render\\deferred\\pointLightFS.glsl", GL_FRAGMENT_SHADER);
 		this->pointLightShader.finalizeShaderProgram();
 
+		this->stencilShader.initialize();
+		this->stencilShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
+			"render\\deferred\\stencilVS.glsl", GL_VERTEX_SHADER);
+		this->stencilShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
+			"render\\deferred\\stencilFS.glsl", GL_FRAGMENT_SHADER);
+		this->stencilShader.finalizeShaderProgram();
+
 		Vertex quadVerts[4] = {
 			Vertex(Vector3f(0.0F, 0.0F, 0.0F), Vector3f(-1.0F, -1.0F, 0.0F), Vector2f(0.0F, 0.0F)),
 			Vertex(Vector3f(0.0F, 0.0F, 0.0F), Vector3f(-1.0F,  1.0F, 0.0F), Vector2f(0.0F, 1.0F)),
@@ -103,47 +113,54 @@ namespace Honeycomb::Render::Deferred {
 
 	}
 
+	void DeferredRenderer::renderFinal() {
+		this->gBuffer.unbind();
+		this->gBuffer.bindTexture(GBufferTextureType::FINAL);
+
+		quad.draw(this->quadShader);
+	}
+
 	void DeferredRenderer::render(Honeycomb::Scene::GameScene &scene) {
 		CameraController::getActiveCamera()->toShader(this->geometryShader,
 			"camera");
+		
+		this->gBuffer.frameBegin(); // Clear rendered texture from last frame 
 
-		this->renderGeometry(scene);
-		this->renderLights(scene);
+		this->renderGeometryPass(scene); // Render Geometry
+		this->renderLightsPass(scene); // Render Lights
+
+		this->renderFinal();
 	}
 
-	void DeferredRenderer::renderGeometry(GameScene &scene) {
-		// Bind the G Buffer for Drawing
-		this->gBuffer.bindDraw();
+	void DeferredRenderer::renderGeometryPass(GameScene &scene) {
+		// Bind the G Buffer for Drawing Geometry
+		this->gBuffer.bindDrawGeometry();
 
 		glDepthMask(GL_TRUE); // Only Geometry Render writes to the Depth
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear Buffer
 		glEnable(GL_DEPTH_TEST); // Enable the Depth Test for Geometry Render
-		glDisable(GL_BLEND); // Disable blending as only light uses it
-
+		
 		scene.render(this->geometryShader); // Render the Game Scene Meshes
+
+		glDepthMask(GL_FALSE); // Only Geometry Render writes to the Depth
 	}
 
-	void DeferredRenderer::renderLights(GameScene &scene) {
-		glDepthMask(GL_FALSE); // Light passes will not draw to Depth
-		glDisable(GL_DEPTH_TEST); // Light does not need Depth Testing
-		glEnable(GL_BLEND); // Each light's contribution is blended together
-		glBlendEquation(GL_FUNC_ADD); // Lights are added together with an
-		glBlendFunc(GL_ONE, GL_ONE);  // equal contribution from each source
-
-		this->gBuffer.bindRead(); // Bind GBuffer's color attachments
-		this->gBuffer.bindTextures(this->pointLightShader); 
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // Bind default for draw
-		glClear(GL_COLOR_BUFFER_BIT); // Clear the Color Buffer
-
+	void DeferredRenderer::renderLightsPass(GameScene &scene) {
 		for (BaseLight *bL : scene.getActiveLights()) {
 			if (bL->getName() == "PointLight") { // TODO temporary
+				glEnable(GL_STENCIL_TEST); // Enable Stencil Testing for P.L.s
+				
+				this->transformLightPointVolume(
+					*bL->getAttached()->getComponent<PointLight>());
+
+				this->stencilLightPoint(
+					*bL->getAttached()->getComponent<PointLight>());
 				this->renderLightPoint(
 					*bL->getAttached()->getComponent<PointLight>());
+				
+				glDisable(GL_STENCIL_TEST); // Disable Stencil Testing
 			}
 		}
-
-//		this->gBuffer.bindTexture(GBufferTextureType::POSITION);
-//		quad.draw(this->quadShader);
 	}
 
 	void DeferredRenderer::renderLightPoint(const PointLight &pL) {
@@ -152,6 +169,53 @@ namespace Honeycomb::Render::Deferred {
 			"camera");
 		pL.toShader(this->pointLightShader, "pointLight");
 
+		this->gBuffer.bindDrawLight(this->pointLightShader);
+
+		// Set the Stencil Function to pass when the stencil value != 0
+		glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
+
+		glDisable(GL_DEPTH_TEST); // Light does not need Depth Testing
+		glEnable(GL_BLEND); // Each light's contribution is blended together
+		glBlendEquation(GL_FUNC_ADD); // Lights are added together with an
+		glBlendFunc(GL_ONE, GL_ONE);  // equal contribution from each source
+
+		// Enable the culling of the front facing faces 
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+		
+		// Render the point light sphere with the given shader
+		this->pointLightSphere->render(this->pointLightShader);
+
+		// Enable the culling of the back facing faces
+		glCullFace(GL_BACK);
+		glDisable(GL_BLEND);
+	}
+
+	void DeferredRenderer::stencilLightPoint(const PointLight &pL) {
+		CameraController::getActiveCamera()->toShader(this->stencilShader,
+			"camera");
+		this->gBuffer.bindStencil(); // Bind buffer for Stencil information
+
+		glEnable(GL_DEPTH_TEST); // Enable depth testing for stencil
+		glDisable(GL_CULL_FACE); // For processing ALL (front & back) faces
+		glClear(GL_STENCIL_BUFFER_BIT); // Clear Stencil for this pass
+
+		// Set the Stencil Test to always successeed, since only the depth is
+		// to be tested.
+		glStencilFunc(GL_ALWAYS, 0, 0);
+
+		// Configure stencil operation for back facing polygons to increment
+		// the value in the stencil buffer only when the depth test fails. For
+		// front facing polygons, decrement the value in the stencil buffer
+		// only when the depth test fails.
+		glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
+		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
+
+		// Render the Sphere with the basic stencil shader
+		this->pointLightSphere->render(this->stencilShader);
+	}
+
+	void DeferredRenderer::transformLightPointVolume(PointLight &pL) {
 		// Retrieve the RGBA color of the Point Light and get the maximum
 		// RGB component of the color.
 		Vector4f rgba = pL.glVector4fs.getValue(PointLight::COLOR_VEC4);
@@ -166,19 +230,15 @@ namespace Honeycomb::Render::Deferred {
 		float kL = pL.glFloats.getValue(PointLight::ATTENUATION_LINEAR_F);
 		float kQ = pL.glFloats.getValue(PointLight::ATTENUATION_QUADRATIC_F);
 
-		// Get the radius (or scale) of the point light sphere & scale the
-		// point light sphere accordingly.
+		// Get the radius (or scale) of the point light sphere
 		float scl = (-kL + sqrt(kL * kL - 4 * kQ * (kC - kK * kM))) / (2 * kQ);
-//		this->pointLightSphere->getComponent<Transform>()->setScale(Vector3f(
-//			scl, scl, scl));
+		
+		// Transform the Light Volume Sphere by scaling and translating it
 		this->pointLightSphere->getComponent<Transform>()->setScale(Vector3f(
-			5.0F, 5.0F, 5.0F));
+			scl, scl, scl));
 		this->pointLightSphere->getComponent<Transform>()->setTranslation(
 			pL.glVector3fs.getValue(PointLight::POSITION_VEC3));
-		this->pointLightSphere->render(this->pointLightShader);
 
-		std::cout << this->pointLightSphere->getComponent<Transform>()->getTranslation().getX() << ", "
-			<< this->pointLightSphere->getComponent<Transform>()->getTranslation().getY() << ", "
-			<< this->pointLightSphere->getComponent<Transform>()->getTranslation().getZ() << std::endl;
+		pL.glFloats.setValue(PointLight::RANGE_F, scl);
 	}
 }

@@ -323,6 +323,8 @@
     <None Include="res\shaders\render\deferred\pointLightVS.glsl" />
     <None Include="res\shaders\render\deferred\simpleFS.glsl" />
     <None Include="res\shaders\render\deferred\simpleVS.glsl" />
+    <None Include="res\shaders\render\deferred\stencilFS.glsl" />
+    <None Include="res\shaders\render\deferred\stencilVS.glsl" />
     <None Include="res\shaders\simple\fragShader.glsl" />
     <None Include="res\shaders\simple\vertexShader.glsl" />
     <None Include="res\shaders\standard\include\stdCamera.glsl" />

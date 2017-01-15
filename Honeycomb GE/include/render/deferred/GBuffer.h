@@ -14,6 +14,7 @@ namespace Honeycomb::Render::Deferred {
 		NORMAL,		// Normals Buffer
 		TEXTURE,	// Texture Coordinates Buffer
 		DEPTH,		// Depth Buffer (also equal to the number of color buffers)
+		FINAL,		// Final Buffer (image which is to be drawn to the screen)
 
 		COUNT		// The total number of buffers
 	};
@@ -37,8 +38,21 @@ namespace Honeycomb::Render::Deferred {
 		/// Binds this G Buffer for only drawing to it.
 		void bindDraw();
 
+		/// Binds this G Buffer for drawing Geometry to it from the Deferred
+		/// Renderer.
+		void bindDrawGeometry();
+
+		/// Binds this G Buffer for drawing Light to it from the Deferred
+		/// Renderer.
+		/// ShaderProgram &shader : The Shader Program with which the lights
+		///							will be drawn.
+		void bindDrawLight(Honeycomb::Shader::ShaderProgram &shader);
+
 		/// Binds this G Buffer for only reading from it.
 		void bindRead();
+
+		/// Binds this G Buffer for the Stencil Pass.
+		void bindStencil();
 
 		/// Binds the texture of the specified type of this G Buffer.
 		/// const GBufferTextureType &type : The type of texture to be binded.
@@ -53,6 +67,9 @@ namespace Honeycomb::Render::Deferred {
 		/// Destroys this G Buffer structure, and its position, diffuse, normal
 		/// and texture coordinate buffers.
 		void destroy();
+
+		/// Sets up the GBuffer for the beginning of a frame render.
+		void frameBegin();
 
 		/// Returns the frame buffer object index for this G Buffer.
 		/// return : The FBO index.

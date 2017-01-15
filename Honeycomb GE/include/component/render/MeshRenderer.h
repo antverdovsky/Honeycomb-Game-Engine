@@ -48,6 +48,10 @@ namespace Honeycomb::Component::Render {
 		void render(Honeycomb::Shader::ShaderProgram &shader);
 
 		/// Sets the material of this Mesh Renderer.
+		/// const Material *mat : The material.
+		void setMaterial(const Honeycomb::Graphics::Material *mat);
+
+		/// Sets the material of this Mesh Renderer.
 		/// const Material &mat : The material.
 		void setMaterial(const Honeycomb::Graphics::Material &mat);
 

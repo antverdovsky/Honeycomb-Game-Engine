@@ -28,6 +28,7 @@ namespace Honeycomb::Render::Deferred {
 		Honeycomb::Shader::ShaderProgram geometryShader;
 		Honeycomb::Shader::ShaderProgram quadShader;
 		Honeycomb::Shader::ShaderProgram pointLightShader;
+		Honeycomb::Shader::ShaderProgram stencilShader;
 
 		Honeycomb::Object::GameObject *pointLightSphere;
 
@@ -37,18 +38,35 @@ namespace Honeycomb::Render::Deferred {
 		/// Destroys this Deferred Renderer.
 		~DeferredRenderer();
 
+		/// Renders the final produced texture from the GBuffer to the screen.
+		void renderFinal();
+
 		/// Renders the geometry of the specified scene.
 		/// GameScene &scene : The scene whose geometry is to be rendered.
-		void renderGeometry(Honeycomb::Scene::GameScene &scene);
+		void renderGeometryPass(Honeycomb::Scene::GameScene &scene);
 
 		/// Renders the lights of the specified scene.
 		/// GameScene &scene : The scene whose lights are to be rendered.
-		void renderLights(Honeycomb::Scene::GameScene &scene);
+		void renderLightsPass(Honeycomb::Scene::GameScene &scene);
 
 		/// Renders the specified Point Light using Deferred Rendering.
 		/// const PointLight &pL : The point light to be rendered.
 		void renderLightPoint(const Honeycomb::Component::Light::PointLight	
 				&pL);
+		
+		/// Performs the stencil pass on the specified Point Light.
+		/// const PointLight &pL : The point light to be rendered.
+		void stencilLightPoint(const Honeycomb::Component::Light::PointLight 
+				&pL);
+
+		/// Scales and translates the Point Light's Sphere Volume based on the 
+		/// attenuation, color, intensity and position of the specified point 
+		/// light. The range of the light will also be modified to reflect the
+		/// scale of the light sphere volume.
+		/// PointLight &pL : The Point Light for which the light volume
+		///					 is to be transformed.
+		void transformLightPointVolume(Honeycomb::Component::Light::
+			PointLight &pL);
 	};
 }
 

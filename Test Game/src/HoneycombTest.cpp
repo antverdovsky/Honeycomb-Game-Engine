@@ -75,7 +75,7 @@ namespace HoneycombTest {
 		sphere->getComponent<Transform>()->setTranslation(
 			Vector3f(PI, PI, PI));
 		suzanne->getComponent<Transform>()->setTranslation(
-			Vector3f(0.0F, 2.5F, 0.0F));
+			Vector3f(3.0F, 5.5F, 0.0F));
 		challenger->getChild("Body")->getComponent<Transform>()->setScale(
 			Vector3f(2.5F, 2.5F, 2.5F));
 		challenger->getChild("Body")->getComponent<Transform>()->setTranslation(
@@ -101,12 +101,32 @@ namespace HoneycombTest {
 		sphere->getComponent<MeshRenderer>()->setMaterial(
 			*chrome);
 
+
+		srand(time(NULL));
+		for (int i = -12; i < 10; i += 2) {
+			for (int j = -12; j < 10; j += 2) {
+				GameObject *light = Builder::getBuilder()->newPointLight();
+
+				light->getComponent<Transform>()->setTranslation(Vector3f(
+					i * 5.0F, 1.0F, j * 5.0F));
+				light->getComponent<PointLight>()->glVector4fs.setValue(
+					PointLight::COLOR_VEC4, Vector4f(
+						((double)rand() / (RAND_MAX)) + 1,
+						((double)rand() / (RAND_MAX)) + 1,
+						((double)rand() / (RAND_MAX)) + 1, 
+						((double)rand() / (RAND_MAX)) + 1)
+				);
+
+				this->gameScene.addChild(*light);
+			}
+		}
+
 		// Add all objects to the scene
 		this->gameScene.addChild(*cube);
 		this->gameScene.addChild(*plane);
 		this->gameScene.addChild(*sphere);
 		this->gameScene.addChild(*suzanne);
-//		this->gameScene.addChild(*aPointLight);
+		this->gameScene.addChild(*aPointLight);
 		this->gameScene.addChild(*directionalLight);
 		this->gameScene.addChild(*ambientLight);
 		this->gameScene.addChild(*camera);

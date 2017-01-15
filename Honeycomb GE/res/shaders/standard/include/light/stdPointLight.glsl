@@ -32,8 +32,7 @@ vec4 calculatePointLight(PointLight pL, Camera cam, vec3 wP, vec3 norm,
     // distance exceeds the range of the point light, return a zero vector 
     // since the point light can't affect this fragment.
     float dispMag = length(displacement);
-//    if (dispMag > pL.range) return vec4(0.0F, 0.0F, 0.0F, 0.0F); // todo: no significant frame change... redundant?
-        
+ 
 	// Get the unit vector pointing in the direction of the displacement
     vec3 direction  = normalize(displacement);
     

@@ -25,7 +25,7 @@ namespace Honeycomb::Render {
 		const Honeycomb::Math::Vector4f CLEAR_SCREEN_COLOR = // Clear Color
 			Honeycomb::Math::Vector4f(0.0F, 0.0F, 0.0F, 0.0F);
 		const bool DEPTH_TEST = true; // Should depth tests occur?
-		const bool DO_CULL_FACES = true; // Should the cull face be culled?
+		const bool DO_CULL_FACES = false; // Should the cull face be culled?
 		const bool MSAA_SAMPLING = true; // Do Multisampling?
 //		const int POLYGON_MODE = GL_FILL; // Render mode (wireframe, poly, etc)
 
