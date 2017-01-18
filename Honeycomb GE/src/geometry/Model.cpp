@@ -125,8 +125,7 @@ namespace Honeycomb::Geometry {
 		mat->glVector4fs.setValue("diffuseColor",
 			Vector4f(matDiffuse.r, matDiffuse.g, matDiffuse.b, 1.0F));
 		mat->glVector4fs.setValue("specularColor",
-			Vector4f(matSpecular.r, matSpecular.g, matSpecular.b, 1.0F));
-		mat->glFloats.setValue("shininess", matShininess);
+			Vector4f(matSpecular.r, matSpecular.g, matSpecular.b, matShininess));
 		mat->glSampler2Ds.setValue("albedoTexture", *texture);
 
 		// Save the texture and material

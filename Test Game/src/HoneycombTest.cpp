@@ -91,8 +91,7 @@ namespace HoneycombTest {
 		chrome->glVector4fs.setValue("diffuseColor",
 			Vector4f(0.4F, 0.4F, 0.4F, 1.0F));
 		chrome->glVector4fs.setValue("specularColor",
-			Vector4f(0.774597F, 0.774597F, 0.774597F, 1.0F));
-		chrome->glFloats.setValue("shininess", 0.6F * 128.0F);
+			Vector4f(0.774597F, 0.774597F, 0.774597F, 0.6F * 128.0F));
 		chrome->glSampler2Ds.setValue("albedoTexture", *blank);
 		
 		// Give Suzanne & the Sphere the Emerald Material
@@ -100,7 +99,6 @@ namespace HoneycombTest {
 			*chrome);
 		sphere->getComponent<MeshRenderer>()->setMaterial(
 			*chrome);
-
 
 		srand(time(NULL));
 		for (int i = -12; i < 10; i += 2) {
@@ -116,6 +114,8 @@ namespace HoneycombTest {
 						((double)rand() / (RAND_MAX)) + 1, 
 						((double)rand() / (RAND_MAX)) + 1)
 				);
+
+				light->addComponent(*suzInputTransformable->clone());
 
 				this->gameScene.addChild(*light);
 			}

@@ -13,6 +13,7 @@ namespace Honeycomb::Render::Deferred {
 		DIFFUSE,	// Diffuse Buffer
 		NORMAL,		// Normals Buffer
 		TEXTURE,	// Texture Coordinates Buffer
+		SPECULAR,   // Specular Buffer
 		DEPTH,		// Depth Buffer (also equal to the number of color buffers)
 		FINAL,		// Final Buffer (image which is to be drawn to the screen)
 

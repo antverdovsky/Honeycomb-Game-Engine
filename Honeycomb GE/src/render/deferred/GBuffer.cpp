@@ -29,15 +29,16 @@ namespace Honeycomb::Render::Deferred {
 	void GBuffer::bindDrawGeometry() {
 		this->bindDraw();
 
-		// Set the drawing buffers (color attachments [0, 2])
+		// Set the drawing buffers
 		GLenum drawBuffers[] = {
-			GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2
+			GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2,
+			GL_COLOR_ATTACHMENT4
 		};
-		glDrawBuffers(3, drawBuffers);
+		glDrawBuffers(4, drawBuffers);
 	}
 
 	void GBuffer::bindDrawLight(ShaderProgram &shader) {
-		glDrawBuffer(GL_COLOR_ATTACHMENT4);
+		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL);
 		
 		this->bindTextures(shader);
 	}
@@ -59,6 +60,9 @@ namespace Honeycomb::Render::Deferred {
 		
 		shader.setUniform_i("gBufferNormal", 2);
 		this->bufferTextures[2].bind(2);
+
+		shader.setUniform_i("gBufferSpecular", 3);
+		this->bufferTextures[3].bind(3);
 	}
 
 	void GBuffer::bindStencil() {
@@ -73,7 +77,7 @@ namespace Honeycomb::Render::Deferred {
 	void GBuffer::frameBegin() {
 		// Clear the final texture attached to this GBuffer
 		this->bindDraw();
-		glDrawBuffer(GL_COLOR_ATTACHMENT4);
+		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL);
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
@@ -136,11 +140,12 @@ namespace Honeycomb::Render::Deferred {
 		this->bufferTextures[GBufferTextureType::FINAL].setImageData(NULL,
 			GL_FLOAT, GL_RGBA, GL_RGB, this->textureWidth, this->textureHeight
 		);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4,
+		glFramebufferTexture2D(GL_FRAMEBUFFER, 
+			GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL,
 			GL_TEXTURE_2D, this->bufferTextures[GBufferTextureType::FINAL].
 			getTextureID(), 0);
 
-		// Bind the 4 buffers as the color buffers which will be used when
+		// Bind the 5 buffers as the color buffers which will be used when
 		// drawing & check that all the color buffers were initialized properly
 		glDrawBuffers(GBufferTextureType::DEPTH, colorBuffers);
 		

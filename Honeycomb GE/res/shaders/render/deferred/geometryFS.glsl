@@ -17,6 +17,7 @@ layout (location = 0) out vec3 out_fs_pos;
 layout (location = 1) out vec3 out_fs_diffuse;
 layout (location = 2) out vec3 out_fs_normal;
 layout (location = 3) out vec3 out_fs_texCoord;
+layout (location = 4) out vec4 out_fs_specular;
 
 uniform Material material; // Standard Material
 
@@ -25,4 +26,5 @@ void main() {
     out_fs_diffuse = texture2D(material.albedoTexture, out_vs_texCoord).xyz;
     out_fs_normal = out_vs_norm;
     out_fs_texCoord = vec3(out_vs_texCoord, 0.0F);
+	out_fs_specular = material.specularColor;
 }

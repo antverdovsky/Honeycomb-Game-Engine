@@ -14,6 +14,7 @@ uniform Camera camera;
 uniform sampler2D gBufferPosition;
 uniform sampler2D gBufferDiffuse;
 uniform sampler2D gBufferNormal;
+uniform sampler2D gBufferSpecular;
 
 out vec4 fragColor;
 
@@ -24,7 +25,10 @@ void main() {
     vec3 pos = texture2D(gBufferPosition, screenCoord).xyz;
     vec3 dif = texture2D(gBufferDiffuse, screenCoord).xyz;
     vec3 norm = normalize(texture2D(gBufferNormal, screenCoord).xyz);
+	vec3 spec = texture2D(gBufferSpecular, screenCoord).xyz;
+	float shine = texture2D(gBufferSpecular, screenCoord).w;
+
 	fragColor = calculatePointLight(pointLight, camera, pos, norm, 
-        0); // TEMPORARY
+        shine);
     
 }
