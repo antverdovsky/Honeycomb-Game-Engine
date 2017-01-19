@@ -319,5 +319,10 @@
     <None Include="res\shaders\render\deferred\simpleVS.glsl" />
     <None Include="res\shaders\render\deferred\stencilVS.glsl" />
     <None Include="res\shaders\render\deferred\stencilFS.glsl" />
+    <None Include="res\shaders\standard\include\light\stdAmbientLight.glsl" />
+    <None Include="res\shaders\standard\include\light\stdBaseLight.glsl" />
+    <None Include="res\shaders\standard\include\light\stdDirectionalLight.glsl" />
+    <None Include="res\shaders\standard\include\light\stdPointLight.glsl" />
+    <None Include="res\shaders\standard\include\light\stdSpotLight.glsl" />
   </ItemGroup>
 </Project>

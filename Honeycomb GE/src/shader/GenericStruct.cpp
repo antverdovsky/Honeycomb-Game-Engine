@@ -9,22 +9,26 @@ using Honeycomb::Math::Vector4f;
 namespace Honeycomb::Shader {
 	void GenericStruct::toShader(ShaderProgram &shader, const std::string &uni)
 			const {
+		// Create a new string with the uniform name and a dot appended, so
+		// that this is not done for each variable in the struct.
+		std::string uniDot = uni + ".";
+
 		for (const auto &var : this->glFloats.map)
-			shader.setUniform_f(uni + "." + var.first, var.second);
+			shader.setUniform_f(uniDot + var.first, var.second);
 		for (const auto &var : this->glInts.map)
-			shader.setUniform_i(uni + "." + var.first, var.second);
+			shader.setUniform_i(uniDot + var.first, var.second);
 		for (const auto &var : this->glMatrix4fs.map)
-			shader.setUniform_mat4(uni + "." + var.first, var.second);
+			shader.setUniform_mat4(uniDot + var.first, var.second);
 		for (const auto &var : this->glVector3fs.map)
-			shader.setUniform_vec3(uni + "." + var.first, var.second);
+			shader.setUniform_vec3(uniDot + var.first, var.second);
 		for (const auto &var : this->glVector4fs.map)
-			shader.setUniform_vec4(uni + "." + var.first, var.second);
+			shader.setUniform_vec4(uniDot + var.first, var.second);
 		
 		int texIndex = 0; // Texture Index (displacement from GL_TEXTURE0)
 		for (const auto &var : this->glSampler2Ds.map) {
 			// Set the texture index which the sampler2D will reference and
 			// bind the texture at that location.
-			shader.setUniform_i(uni + "." + var.first, texIndex);
+			shader.setUniform_i(uniDot + var.first, texIndex);
 			var.second.bind(texIndex);
 
 			texIndex++;

@@ -327,6 +327,11 @@
     <None Include="res\shaders\render\deferred\stencilVS.glsl" />
     <None Include="res\shaders\simple\fragShader.glsl" />
     <None Include="res\shaders\simple\vertexShader.glsl" />
+    <None Include="res\shaders\standard\include\light\stdAmbientLight.glsl" />
+    <None Include="res\shaders\standard\include\light\stdBaseLight.glsl" />
+    <None Include="res\shaders\standard\include\light\stdDirectionalLight.glsl" />
+    <None Include="res\shaders\standard\include\light\stdPointLight.glsl" />
+    <None Include="res\shaders\standard\include\light\stdSpotLight.glsl" />
     <None Include="res\shaders\standard\include\stdCamera.glsl" />
     <None Include="res\shaders\standard\include\stdLight.glh" />
     <None Include="res\shaders\standard\include\stdLight.glsl" />
