@@ -16,6 +16,8 @@ using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector2f;
 #include "..\..\..\include\component\light\BaseLight.h"
 using Honeycomb::Component::Light::BaseLight;
+#include "..\..\..\include\component\light\DirectionalLight.h"
+using Honeycomb::Component::Light::DirectionalLight;
 #include "..\..\..\include\component\light\PointLight.h"
 using Honeycomb::Component::Light::PointLight;
 #include "..\..\..\include\object\Builder.h"
@@ -46,6 +48,7 @@ namespace Honeycomb::Render::Deferred {
 		this->gBuffer.initialize();
 
 		this->pointLightSphere = Builder::getBuilder()->newSphere();
+		this->directionalLightPlane = Builder::getBuilder()->newPlane();
 		// TEMPORARY
 		/*
 		Texture2D *blank = new Texture2D();
@@ -85,6 +88,14 @@ namespace Honeycomb::Render::Deferred {
 		this->pointLightShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
 			"render\\deferred\\light\\pointLightFS.glsl", GL_FRAGMENT_SHADER);
 		this->pointLightShader.finalizeShaderProgram();
+
+		this->directionalLightShader.initialize();
+		this->directionalLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
+			"\\render\\deferred\\pass\\simpleVS.glsl", GL_VERTEX_SHADER);
+		this->directionalLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
+			"\\render\\deferred\\light\\directionalLightFS.glsl", 
+			GL_FRAGMENT_SHADER);
+		this->directionalLightShader.finalizeShaderProgram();
 
 		this->stencilShader.initialize();
 		this->stencilShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
@@ -157,12 +168,34 @@ namespace Honeycomb::Render::Deferred {
 					*bL->getAttached()->getComponent<PointLight>());
 				this->renderLightPoint(
 					*bL->getAttached()->getComponent<PointLight>());
-				
-				glDisable(GL_STENCIL_TEST); // Disable Stencil Testing
 			} else if (bL->getName() == "DirectionalLight") {
+				glDisable(GL_STENCIL_TEST); // Disable Stencil Testing
 
+				this->renderLightDirectional(
+					*bL->getAttached()->getComponent<DirectionalLight>());
 			}
 		}
+	}
+
+	void DeferredRenderer::renderLightDirectional(const DirectionalLight &dL) {
+		// Write the Camera Projection & Light to the Point Light Shader
+		CameraController::getActiveCamera()->toShader(
+			this->directionalLightShader, "camera");
+		dL.toShader(this->directionalLightShader, "directionalLight");
+
+		glDisable(GL_DEPTH_TEST); // Light does not need Depth Testing
+		glEnable(GL_BLEND); // Each light's contribution is blended together
+		glBlendEquation(GL_FUNC_ADD); // Lights are added together with an
+		glBlendFunc(GL_ONE, GL_ONE);  // equal contribution from each source
+
+		glEnable(GL_CULL_FACE);
+
+		this->gBuffer.bindDrawLight(this->directionalLightShader);
+
+		//this->directionalLightPlane->render(this->directionalLightShader);
+		quad.draw(this->directionalLightShader);
+
+		glDisable(GL_BLEND);
 	}
 
 	void DeferredRenderer::renderLightPoint(const PointLight &pL) {

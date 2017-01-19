@@ -18,15 +18,16 @@ struct DirectionalLight {
 /// vec3 norm : The normal vector of the surface. This should be normalized,
 ///             prior to being passed in.
 /// float shine : The shininess of the reflection (for specular reflection).
+/// vec3 specColor : The color of the reflection (for specular reflection).
 /// return : The vector which can be used to add or detract lighting from the
 ///          fragment.
 vec4 calculateDirectionalLight(DirectionalLight dL, Camera cam, vec3 wP, 
-        vec3 norm, float shine) {
+        vec3 norm, float shine, vec3 specColor) {
     // Calculate the Diffuse and Specular Light components of the Directional
     // Light.
     vec4 diffuse = calculateDiffuseLight(dL.base, dL.direction, norm);
     vec4 specular = calculateSpecularReflection(dL.base, cam, wP, dL.direction,
-        norm, shine);
+        norm, shine, specColor);
     
     // Return the blend of the Diffuse and Specular lighting
     return diffuse + specular;

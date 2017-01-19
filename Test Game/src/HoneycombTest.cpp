@@ -33,7 +33,7 @@ namespace HoneycombTest {
 		GameObject *directionalLight = Builder::getBuilder()->
 			newDirectionalLight();
 		directionalLight->getComponent<DirectionalLight>
-			()->glFloats.setValue(DirectionalLight::INTENSITY_F, 1.0F);
+			()->glFloats.setValue(DirectionalLight::INTENSITY_F, 0.6F);
 		directionalLight->getComponent<Transform>()->rotate(Vector3f::getGlobalRight(), -PI / 2);
 		GameObject *camera = Builder::getBuilder()->newCamera();
 		aPointLight->getComponent<Transform>()->translate(
@@ -100,7 +100,6 @@ namespace HoneycombTest {
 		sphere->getComponent<MeshRenderer>()->setMaterial(
 			*chrome);
 
-		/*
 		srand(time(NULL));
 		for (int i = -8; i <= 8; i += 4) {
 			for (int j = -8; j <= 8; j += 4) {
@@ -121,14 +120,13 @@ namespace HoneycombTest {
 				this->gameScene.addChild(*light);
 			}
 		}
-		*/
 
 		// Add all objects to the scene
 		this->gameScene.addChild(*cube);
 		this->gameScene.addChild(*plane);
 		this->gameScene.addChild(*sphere);
-		this->gameScene.addChild(*suzanne);
-		this->gameScene.addChild(*aPointLight);
+//		this->gameScene.addChild(*suzanne);
+//		this->gameScene.addChild(*aPointLight);
 		this->gameScene.addChild(*directionalLight);
 		this->gameScene.addChild(*ambientLight);
 		this->gameScene.addChild(*camera);

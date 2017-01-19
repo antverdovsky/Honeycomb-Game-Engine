@@ -27,10 +27,13 @@ namespace Honeycomb::Render::Deferred {
 
 		Honeycomb::Shader::ShaderProgram geometryShader;
 		Honeycomb::Shader::ShaderProgram quadShader;
-		Honeycomb::Shader::ShaderProgram pointLightShader;
 		Honeycomb::Shader::ShaderProgram stencilShader;
+		
+		Honeycomb::Shader::ShaderProgram pointLightShader;
+		Honeycomb::Shader::ShaderProgram directionalLightShader;
 
 		Honeycomb::Object::GameObject *pointLightSphere;
+		Honeycomb::Object::GameObject *directionalLightPlane;
 
 		/// Initializes a new Deferred Renderer.
 		DeferredRenderer();
@@ -48,6 +51,11 @@ namespace Honeycomb::Render::Deferred {
 		/// Renders the lights of the specified scene.
 		/// GameScene &scene : The scene whose lights are to be rendered.
 		void renderLightsPass(Honeycomb::Scene::GameScene &scene);
+
+		/// Renders the specified Directional Light using Deferred Rendering.
+		/// const DirectionalLight &dL : The directional light to be rendered.
+		void renderLightDirectional(const Honeycomb::Component::Light::
+				DirectionalLight &dL);
 
 		/// Renders the specified Point Light using Deferred Rendering.
 		/// const PointLight &pL : The point light to be rendered.
