@@ -52,8 +52,10 @@ vec4 calculateDiffuseLight(BaseLight bL, vec3 dir, vec3 norm) {
 /// vec3 dir : The direction with which the light hits the surface.
 /// vec3 norm : The normal to the surface.
 /// float shine : The shininess of the specular reflection.
+/// vec3 color : The color of the specular reflection.
+/// return : The specular reflection.
 vec4 calculateSpecularReflection(BaseLight bL, Camera cam, vec3 wP, vec3 dir, 
-        vec3 norm, float shine) {
+        vec3 norm, float shine, vec3 color) {
     vec3 cP = cam.translation; // Camera Position
         
     vec3 direction = normalize(cP - wP); // Direction from Cam to Frag
@@ -65,5 +67,5 @@ vec4 calculateSpecularReflection(BaseLight bL, Camera cam, vec3 wP, vec3 dir,
     // Calculate the specular light but do NOT apply the intensity to the W
     // component, so that the surface does not become transparent if the
     // intensity is less than 1.0F.
-    return vec4(vec3(spec * bL.intensity * bL.color.xyz), bL.color.w);
+    return vec4(vec3(spec * bL.intensity * bL.color.xyz * color), bL.color.w);
 }

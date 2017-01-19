@@ -20,10 +20,11 @@ struct PointLight {
 /// vec3 wP : The world position of the fragment.
 /// vec3 norm : The normal of the surface.
 /// float shine : The shininess of the reflection (for specular reflection).
+/// vec3 specColor : The color of the reflection (for specular reflection).
 /// return : The vector which can be used to add or detract lighting from the
 ///          fragment.
 vec4 calculatePointLight(PointLight pL, Camera cam, vec3 wP, vec3 norm, 
-        float shine) {
+        float shine, vec3 specColor) {
     // Calculate the displacement vector between the world position of the
     // fragment and the point light position.
     vec3 displacement = wP - pL.position;
@@ -47,7 +48,7 @@ vec4 calculatePointLight(PointLight pL, Camera cam, vec3 wP, vec3 norm,
     // and scale by the attenuation to adjust the light with distance.
     vec4 diffuse = calculateDiffuseLight(pL.base, direction, norm);
     vec4 specular = calculateSpecularReflection(pL.base, cam, wP, direction, 
-        norm, shine);
+        norm, shine, specColor);
     diffuse = vec4(diffuse.xyz * intensity, diffuse.w);
     specular = vec4(specular.xyz * intensity, specular.w);
     

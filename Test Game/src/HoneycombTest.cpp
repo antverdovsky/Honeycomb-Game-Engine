@@ -101,8 +101,8 @@ namespace HoneycombTest {
 			*chrome);
 
 		srand(time(NULL));
-		for (int i = -12; i < 10; i += 2) {
-			for (int j = -12; j < 10; j += 2) {
+		for (int i = -8; i <= 8; i += 4) {
+			for (int j = -8; j <= 8; j += 4) {
 				GameObject *light = Builder::getBuilder()->newPointLight();
 
 				light->getComponent<Transform>()->setTranslation(Vector3f(
