@@ -52,7 +52,7 @@ namespace HoneycombTest {
 			5.0F, 5.0F);
 		PointLight *suzPointLight = new PointLight();
 		suzPointLight->glVector4fs.setValue(PointLight::COLOR_VEC4, Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
-		suzPointLight->glFloats.setValue(PointLight::INTENSITY_F, 1.0F);
+		suzPointLight->glFloats.setValue(PointLight::INTENSITY_F, 7.0F);
 		SpotLight *suzSpotLight = new SpotLight();
 		suzSpotLight->glVector4fs.setValue(PointLight::COLOR_VEC4, Vector4f(1.0F, 0.0F, 0.0F, 1.0F));
 
@@ -100,6 +100,7 @@ namespace HoneycombTest {
 		sphere->getComponent<MeshRenderer>()->setMaterial(
 			*chrome);
 
+		/*
 		srand(time(NULL));
 		for (int i = -8; i <= 8; i += 4) {
 			for (int j = -8; j <= 8; j += 4) {
@@ -120,6 +121,7 @@ namespace HoneycombTest {
 				this->gameScene.addChild(*light);
 			}
 		}
+		*/
 
 		// Add all objects to the scene
 		this->gameScene.addChild(*cube);

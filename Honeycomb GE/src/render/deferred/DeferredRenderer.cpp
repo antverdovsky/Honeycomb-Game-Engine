@@ -67,30 +67,30 @@ namespace Honeycomb::Render::Deferred {
 
 		this->geometryShader.initialize();
 		this->geometryShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\geometryVS.glsl", GL_VERTEX_SHADER);
+			"render\\deferred\\pass\\geometryVS.glsl", GL_VERTEX_SHADER);
 		this->geometryShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\geometryFS.glsl", GL_FRAGMENT_SHADER);
+			"render\\deferred\\pass\\geometryFS.glsl", GL_FRAGMENT_SHADER);
 		this->geometryShader.finalizeShaderProgram();
 
 		this->quadShader.initialize();
 		this->quadShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\simpleVS.glsl", GL_VERTEX_SHADER);
+			"render\\deferred\\pass\\simpleVS.glsl", GL_VERTEX_SHADER);
 		this->quadShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\simpleFS.glsl", GL_FRAGMENT_SHADER);
+			"render\\deferred\\pass\\simpleFS.glsl", GL_FRAGMENT_SHADER);
 		this->quadShader.finalizeShaderProgram();
 
 		this->pointLightShader.initialize();
 		this->pointLightShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\pointLightVS.glsl", GL_VERTEX_SHADER);
+			"render\\deferred\\light\\lightVS.glsl", GL_VERTEX_SHADER);
 		this->pointLightShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\pointLightFS.glsl", GL_FRAGMENT_SHADER);
+			"render\\deferred\\light\\pointLightFS.glsl", GL_FRAGMENT_SHADER);
 		this->pointLightShader.finalizeShaderProgram();
 
 		this->stencilShader.initialize();
 		this->stencilShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\stencilVS.glsl", GL_VERTEX_SHADER);
+			"render\\deferred\\pass\\stencilVS.glsl", GL_VERTEX_SHADER);
 		this->stencilShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\stencilFS.glsl", GL_FRAGMENT_SHADER);
+			"render\\deferred\\pass\\stencilFS.glsl", GL_FRAGMENT_SHADER);
 		this->stencilShader.finalizeShaderProgram();
 
 		Vertex quadVerts[4] = {
@@ -159,6 +159,8 @@ namespace Honeycomb::Render::Deferred {
 					*bL->getAttached()->getComponent<PointLight>());
 				
 				glDisable(GL_STENCIL_TEST); // Disable Stencil Testing
+			} else if (bL->getName() == "DirectionalLight") {
+
 			}
 		}
 	}

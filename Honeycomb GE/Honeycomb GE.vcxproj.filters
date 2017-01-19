@@ -311,18 +311,18 @@
     <None Include="res\shaders\defGeometryFS.glsl" />
     <None Include="res\shaders\defGeometryVS.glsl" />
     <None Include="res\shaders\standard\include\stdCamera.glsl" />
-    <None Include="res\shaders\render\deferred\geometryFS.glsl" />
-    <None Include="res\shaders\render\deferred\geometryVS.glsl" />
-    <None Include="res\shaders\render\deferred\pointLightFS.glsl" />
-    <None Include="res\shaders\render\deferred\pointLightVS.glsl" />
-    <None Include="res\shaders\render\deferred\simpleFS.glsl" />
-    <None Include="res\shaders\render\deferred\simpleVS.glsl" />
-    <None Include="res\shaders\render\deferred\stencilVS.glsl" />
-    <None Include="res\shaders\render\deferred\stencilFS.glsl" />
     <None Include="res\shaders\standard\include\light\stdAmbientLight.glsl" />
     <None Include="res\shaders\standard\include\light\stdBaseLight.glsl" />
     <None Include="res\shaders\standard\include\light\stdDirectionalLight.glsl" />
     <None Include="res\shaders\standard\include\light\stdPointLight.glsl" />
     <None Include="res\shaders\standard\include\light\stdSpotLight.glsl" />
+    <None Include="res\shaders\render\deferred\pass\geometryFS.glsl" />
+    <None Include="res\shaders\render\deferred\pass\geometryVS.glsl" />
+    <None Include="res\shaders\render\deferred\pass\simpleVS.glsl" />
+    <None Include="res\shaders\render\deferred\pass\simpleFS.glsl" />
+    <None Include="res\shaders\render\deferred\pass\stencilFS.glsl" />
+    <None Include="res\shaders\render\deferred\pass\stencilVS.glsl" />
+    <None Include="res\shaders\render\deferred\light\pointLightFS.glsl" />
+    <None Include="res\shaders\render\deferred\light\lightVS.glsl" />
   </ItemGroup>
 </Project>

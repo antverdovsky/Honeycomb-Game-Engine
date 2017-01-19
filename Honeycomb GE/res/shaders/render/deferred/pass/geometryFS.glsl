@@ -5,7 +5,7 @@
 
 #version 410 core
 
-#include <..\..\standard\include\stdMaterial.glsl>
+#include <..\..\..\standard\include\stdMaterial.glsl>
 
 // The output of the Geometry Vertex Shader
 in vec2 out_vs_texCoord;
@@ -23,7 +23,8 @@ uniform Material material; // Standard Material
 
 void main() {
     out_fs_pos = out_vs_pos;
-    out_fs_diffuse = texture2D(material.albedoTexture, out_vs_texCoord).xyz;
+    out_fs_diffuse = texture2D(material.albedoTexture, out_vs_texCoord).xyz
+		* material.diffuseColor;
     out_fs_normal = out_vs_norm;
     out_fs_texCoord = vec3(out_vs_texCoord, 0.0F);
 	out_fs_specular = material.specularColor;
