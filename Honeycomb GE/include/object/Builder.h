@@ -29,6 +29,13 @@ namespace Honeycomb::Object {
 		/// return : The new Camera object.
 		GameObject* newCamera();
 
+		/// Builds a new Cone GameObject. The game object will simply be the
+		/// object named "Cone", with MeshRenderer and Transform attached to
+		/// it. The Mesh and Material data will come from the file from which 
+		/// the Builder imports the cube.
+		/// return : The new Cone Game Object.
+		GameObject* newCone();
+
 		/// Builds a new Directional Light GameObject. The game object will
 		/// be the object named "Directional Light", with Transform and 
 		/// Directional Light components attached to it. Both components will 
@@ -42,6 +49,13 @@ namespace Honeycomb::Object {
 		/// the Builder imports the cube.
 		/// return : The new Cube Game Object.
 		GameObject* newCube();
+
+		/// Binds a new Icosphere GameObject. The game object will simply be
+		/// the object named "Icosphere", with MeshRenderer and Transform
+		/// attached to it. The Mesh and Material data will come from the file 
+		/// from which the Builder imports the cube.
+		/// return : The new Icosphere Game Object.
+		GameObject* newIcosphere();
 
 		/// Imports a new model from the specified path and constructs a game
 		/// object from it. The game object will be the the root node of the
@@ -93,7 +107,9 @@ namespace Honeycomb::Object {
 		static Builder *instance; // The Builder Singleton instance
 
 		// File Location of all of the Default Models
+		const static std::string CONE_LOCATION;
 		const static std::string CUBE_LOCATION;
+		const static std::string ICOSPHERE_LOCATION;
 		const static std::string PLANE_LOCATION;
 		const static std::string SPHERE_LOCATION;
 		const static std::string SUZANNE_LOCATION;

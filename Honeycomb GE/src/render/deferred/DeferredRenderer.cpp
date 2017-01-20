@@ -49,7 +49,7 @@ namespace Honeycomb::Render::Deferred {
 	DeferredRenderer::DeferredRenderer() : Renderer() {
 		this->gBuffer.initialize();
 
-		this->pointLightSphere = Builder::getBuilder()->newSphere();
+		this->pointLightIcosphere = Builder::getBuilder()->newIcosphere();
 		this->directionalLightPlane = Builder::getBuilder()->newPlane();
 		// TEMPORARY
 		/*
@@ -67,8 +67,8 @@ namespace Honeycomb::Render::Deferred {
 		mat->glSampler2Ds.setValue("albedoTexture", *blank);
 		this->pointLightSphere->getComponent<MeshRenderer>()->setMaterial(*mat);
 		*/
-		this->pointLightSphere->getComponent<MeshRenderer>()->setMaterial(nullptr);
-		this->pointLightSphere->start();
+		this->pointLightIcosphere->getComponent<MeshRenderer>()->setMaterial(nullptr);
+		this->pointLightIcosphere->start();
 
 		this->geometryShader.initialize();
 		this->geometryShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
@@ -257,7 +257,7 @@ namespace Honeycomb::Render::Deferred {
 		glCullFace(GL_FRONT);
 		
 		// Render the point light sphere with the given shader
-		this->pointLightSphere->render(this->pointLightShader);
+		this->pointLightIcosphere->render(this->pointLightShader);
 
 		// Enable the culling of the back facing faces
 		glCullFace(GL_BACK);
@@ -285,7 +285,7 @@ namespace Honeycomb::Render::Deferred {
 		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
 
 		// Render the Sphere with the basic stencil shader
-		this->pointLightSphere->render(this->stencilShader);
+		this->pointLightIcosphere->render(this->stencilShader);
 	}
 
 	void DeferredRenderer::transformLightPointVolume(PointLight &pL) {
@@ -307,9 +307,9 @@ namespace Honeycomb::Render::Deferred {
 		float scl = (-kL + sqrt(kL * kL - 4 * kQ * (kC - kK * kM))) / (2 * kQ);
 		
 		// Transform the Light Volume Sphere by scaling and translating it
-		this->pointLightSphere->getComponent<Transform>()->setScale(Vector3f(
+		this->pointLightIcosphere->getComponent<Transform>()->setScale(Vector3f(
 			scl, scl, scl));
-		this->pointLightSphere->getComponent<Transform>()->setTranslation(
+		this->pointLightIcosphere->getComponent<Transform>()->setTranslation(
 			pL.glVector3fs.getValue(PointLight::POSITION_VEC3));
 
 		pL.glFloats.setValue(PointLight::RANGE_F, scl);

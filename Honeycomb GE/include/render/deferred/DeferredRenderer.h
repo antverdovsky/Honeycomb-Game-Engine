@@ -33,7 +33,7 @@ namespace Honeycomb::Render::Deferred {
 		Honeycomb::Shader::ShaderProgram pointLightShader;
 		Honeycomb::Shader::ShaderProgram directionalLightShader;
 
-		Honeycomb::Object::GameObject *pointLightSphere;
+		Honeycomb::Object::GameObject *pointLightIcosphere;
 		Honeycomb::Object::GameObject *directionalLightPlane;
 
 		/// Initializes a new Deferred Renderer.

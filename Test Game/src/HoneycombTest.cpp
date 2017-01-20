@@ -22,6 +22,8 @@ namespace HoneycombTest {
 		GameObject *plane = Builder::getBuilder()->newPlane();
 		GameObject *sphere = Builder::getBuilder()->newSphere();
 		GameObject *suzanne = Builder::getBuilder()->newSuzanne();
+		GameObject *icosphere = Builder::getBuilder()->newIcosphere();
+		GameObject *cone = Builder::getBuilder()->newCone();
 		GameObject *challenger = Builder::getBuilder()->newModel(
 			"..\\Test Game\\res\\models\\dodge-challenger.fbx");
 		GameObject *aPointLight = Builder::getBuilder()->newPointLight();
@@ -123,10 +125,12 @@ namespace HoneycombTest {
 
 		// Add all objects to the scene
 		this->gameScene.addChild(*cube);
+		this->gameScene.addChild(*cone);
 		this->gameScene.addChild(*plane);
 		this->gameScene.addChild(*sphere);
-//		this->gameScene.addChild(*suzanne);
-//		this->gameScene.addChild(*aPointLight);
+		this->gameScene.addChild(*suzanne);
+		this->gameScene.addChild(*aPointLight);
+		this->gameScene.addChild(*icosphere);
 		this->gameScene.addChild(*directionalLight);
 		this->gameScene.addChild(*ambientLight);
 		this->gameScene.addChild(*camera);

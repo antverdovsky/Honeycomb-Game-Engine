@@ -24,8 +24,12 @@ using Honeycomb::Math::Vector4f;
 namespace Honeycomb::Object {
 	Builder* Builder::instance = nullptr; // Nullptr before being initialized
 
+	const std::string Builder::CONE_LOCATION =
+		"..\\Honeycomb GE\\res\\models\\default\\cone.fbx";
 	const std::string Builder::CUBE_LOCATION = 
 		"..\\Honeycomb GE\\res\\models\\default\\cube.fbx";
+	const std::string Builder::ICOSPHERE_LOCATION =
+		"..\\Honeycomb GE\\res\\models\\default\\icosphere.fbx";
 	const std::string Builder::PLANE_LOCATION =
 		"..\\Honeycomb GE\\res\\models\\default\\plane.fbx";
 	const std::string Builder::SPHERE_LOCATION =
@@ -89,8 +93,16 @@ namespace Honeycomb::Object {
 		return dirLight; // Return the Directional Light Game Object
 	}
 
+	GameObject* Builder::newCone() {
+		return newDefaultImport("Cone", CONE_LOCATION);
+	}
+
 	GameObject* Builder::newCube() {
 		return newDefaultImport("Cube", CUBE_LOCATION);
+	}
+
+	GameObject* Builder::newIcosphere() {
+		return newDefaultImport("Icosphere", ICOSPHERE_LOCATION);
 	}
 
 	GameObject* Builder::newModel(std::string path) {
