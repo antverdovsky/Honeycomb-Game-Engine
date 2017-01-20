@@ -16,6 +16,8 @@ using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector2f;
 #include "..\..\..\include\component\light\BaseLight.h"
 using Honeycomb::Component::Light::BaseLight;
+#include "..\..\..\include\component\light\AmbientLight.h"
+using Honeycomb::Component::Light::AmbientLight;
 #include "..\..\..\include\component\light\DirectionalLight.h"
 using Honeycomb::Component::Light::DirectionalLight;
 #include "..\..\..\include\component\light\PointLight.h"
@@ -81,6 +83,14 @@ namespace Honeycomb::Render::Deferred {
 		this->quadShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
 			"render\\deferred\\pass\\simpleFS.glsl", GL_FRAGMENT_SHADER);
 		this->quadShader.finalizeShaderProgram();
+
+		this->ambientShader.initialize();
+		this->ambientShader.addShader("..\\Honeycomb GE\\res\\shaders"
+			"\\render\\deferred\\pass\\simpleVS.glsl", GL_VERTEX_SHADER);
+		this->ambientShader.addShader("..\\Honeycomb GE\\res\\shaders"
+			"\\render\\deferred\\light\\ambientLightFS.glsl", 
+			GL_FRAGMENT_SHADER);
+		this->ambientShader.finalizeShaderProgram();
 
 		this->pointLightShader.initialize();
 		this->pointLightShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
@@ -173,8 +183,36 @@ namespace Honeycomb::Render::Deferred {
 
 				this->renderLightDirectional(
 					*bL->getAttached()->getComponent<DirectionalLight>());
+			} else if (bL->getName() == "AmbientLight") {
+				glDisable(GL_STENCIL_TEST);
+
+				this->renderLightAmbient(
+					*bL->getAttached()->getComponent<AmbientLight>());
 			}
 		}
+	}
+
+	void DeferredRenderer::renderLightAmbient(const AmbientLight &aL) {
+		// Write the Camera Projection & Light to the Point Light Shader
+		CameraController::getActiveCamera()->toShader(
+			this->ambientShader, "camera");
+		aL.toShader(this->ambientShader, "ambientLight");
+
+		glDisable(GL_DEPTH_TEST); // Light does not need Depth Testing
+		glEnable(GL_BLEND); // Each light's contribution is blended together
+		glBlendEquation(GL_FUNC_ADD); // Lights are added together with an
+		glBlendFunc(GL_ONE, GL_ONE);  // equal contribution from each source
+
+		glEnable(GL_CULL_FACE);
+
+		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL);
+		this->gBuffer.bindTexture(GBufferTextureType::DIFFUSE, 
+			this->ambientShader);
+
+		//this->directionalLightPlane->render(this->directionalLightShader);
+		quad.draw(this->ambientShader);
+
+		glDisable(GL_BLEND);
 	}
 
 	void DeferredRenderer::renderLightDirectional(const DirectionalLight &dL) {

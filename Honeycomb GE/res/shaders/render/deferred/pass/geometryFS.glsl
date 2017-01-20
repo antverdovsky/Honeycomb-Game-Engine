@@ -24,7 +24,7 @@ uniform Material material; // Standard Material
 void main() {
     out_fs_pos = out_vs_pos;
     out_fs_diffuse = texture2D(material.albedoTexture, out_vs_texCoord).xyz
-		* material.diffuseColor;
+		* material.diffuseColor.xyz;
     out_fs_normal = out_vs_norm;
     out_fs_texCoord = vec3(out_vs_texCoord, 0.0F);
 	out_fs_specular = material.specularColor;

@@ -59,11 +59,20 @@ namespace Honeycomb::Render::Deferred {
 		/// const GBufferTextureType &type : The type of texture to be binded.
 		void bindTexture(const GBufferTextureType &type);
 
-		/// Binds all of the color attachment textures of this GBuffer to the 
-		/// specified Shader.
+		/// Binds the texture of the specified GBuffer type to the specified
+		/// Shader.
+		/// const GBufferTextureType &type : The type of the GBuffer texture.
+		/// ShaderProgram &shader : The Shader Program for which the texture
+		/// is to be binded.
+		void bindTexture(const GBufferTextureType &type, Honeycomb::Shader::
+				ShaderProgram &shader);
+
+		/// Binds all of the color attachment textures (with the exception of
+		/// the texture coordinates texture) of this GBuffer to the specified 
+		/// Shader.
 		/// ShaderProgram &shader : The Shader Program for which the textures
 		///							are to be binded.
-		void bindTextures(Honeycomb::Shader::ShaderProgram &shader);
+		void bindColorTextures(Honeycomb::Shader::ShaderProgram &shader);
 
 		/// Destroys this G Buffer structure, and its position, diffuse, normal
 		/// and texture coordinate buffers.
@@ -95,6 +104,11 @@ namespace Honeycomb::Render::Deferred {
 		
 		Honeycomb::Graphics::Texture2D bufferTextures // All of the Buffer
 			[GBufferTextureType::COUNT];			  // Textures (from Enum)
+
+		// Stores the Shader Uniform names of all of the GBuffer Textures of a
+		// GBuffer.
+		static const std::string 
+			TEXTURE_SHADER_NAMES[GBufferTextureType::COUNT];
 
 		// The width and height of the buffer textures, from the GameWindow
 		int textureHeight;

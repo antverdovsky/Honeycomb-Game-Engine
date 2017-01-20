@@ -29,11 +29,11 @@ namespace HoneycombTest {
 		// Initialize the Light Objects & a Camera
 		GameObject *ambientLight = Builder::getBuilder()->newAmbientLight();
 		ambientLight->getComponent<AmbientLight>()->
-			glFloats.setValue(AmbientLight::INTENSITY_F, 0.1F);
+			glFloats.setValue(AmbientLight::INTENSITY_F, 0.25F);
 		GameObject *directionalLight = Builder::getBuilder()->
 			newDirectionalLight();
 		directionalLight->getComponent<DirectionalLight>
-			()->glFloats.setValue(DirectionalLight::INTENSITY_F, 0.6F);
+			()->glFloats.setValue(DirectionalLight::INTENSITY_F, 0.25F);
 		directionalLight->getComponent<Transform>()->rotate(Vector3f::getGlobalRight(), -PI / 2);
 		GameObject *camera = Builder::getBuilder()->newCamera();
 		aPointLight->getComponent<Transform>()->translate(
@@ -142,15 +142,13 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::update() {
-		/*
 		// Rotate the Directional Light to emulate sun light in the scene.
 		GameObject *sun = this->gameScene.getChild("Directional Light");
-		DirectionalLight *sunLight = sun->getComponentOfType<DirectionalLight>
-			("directionalLight");
-		Transform *sunTrans = sun->getComponentOfType<Transform>("Transform");
+		DirectionalLight *sunLight = sun->getComponent<DirectionalLight>
+			("DirectionalLight");
+		Transform *sunTrans = sun->getComponent<Transform>("Transform");
 		
-		sunTrans->rotate(sunTrans->getLocalRight(), 
-			0.333F * GameTime::getGameTime()->getDeltaTimeS());
-		*/
+		sunTrans->rotate(sunTrans->getLocalRight(),
+			0.5F * GameTime::getGameTime()->getDeltaTimeS());
 	}
 }

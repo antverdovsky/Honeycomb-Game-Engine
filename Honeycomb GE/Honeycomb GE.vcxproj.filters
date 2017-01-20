@@ -325,5 +325,6 @@
     <None Include="res\shaders\render\deferred\light\pointLightFS.glsl" />
     <None Include="res\shaders\render\deferred\light\lightVS.glsl" />
     <None Include="res\shaders\render\deferred\light\directionalLightFS.glsl" />
+    <None Include="res\shaders\render\deferred\light\ambientLightFS.glsl" />
   </ItemGroup>
 </Project>

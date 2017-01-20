@@ -29,6 +29,7 @@ namespace Honeycomb::Render::Deferred {
 		Honeycomb::Shader::ShaderProgram quadShader;
 		Honeycomb::Shader::ShaderProgram stencilShader;
 		
+		Honeycomb::Shader::ShaderProgram ambientShader;
 		Honeycomb::Shader::ShaderProgram pointLightShader;
 		Honeycomb::Shader::ShaderProgram directionalLightShader;
 
@@ -51,6 +52,11 @@ namespace Honeycomb::Render::Deferred {
 		/// Renders the lights of the specified scene.
 		/// GameScene &scene : The scene whose lights are to be rendered.
 		void renderLightsPass(Honeycomb::Scene::GameScene &scene);
+
+		/// Renders the specified Ambient Light using Deferred Rendering.
+		/// const AmbientLight &aL : The ambient light to be rendered.
+		void renderLightAmbient(const Honeycomb::Component::Light::AmbientLight
+				&aL);
 
 		/// Renders the specified Directional Light using Deferred Rendering.
 		/// const DirectionalLight &dL : The directional light to be rendered.

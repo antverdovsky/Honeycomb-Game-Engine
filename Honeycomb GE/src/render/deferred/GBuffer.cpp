@@ -10,6 +10,16 @@ using Honeycomb::Debug::Logger;
 using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb::Render::Deferred {
+	const std::string GBuffer::TEXTURE_SHADER_NAMES[] = {
+		"gBufferPosition",
+		"gBufferDiffuse",
+		"gBufferNormal",
+		"gBufferTexture",
+		"gBufferSpecular",
+		"gBufferDepth",
+		"gBufferFinal"
+	};
+
 	GBuffer::GBuffer() {
 
 	}
@@ -43,7 +53,7 @@ namespace Honeycomb::Render::Deferred {
 	void GBuffer::bindDrawLight(ShaderProgram &shader) {
 		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL);
 		
-		this->bindTextures(shader);
+		this->bindColorTextures(shader);
 	}
 
 	void GBuffer::bindRead() {
@@ -54,22 +64,17 @@ namespace Honeycomb::Render::Deferred {
 		this->bufferTextures[type].bind();
 	}
 
-	void GBuffer::bindTextures(ShaderProgram &shader) {
-		shader.setUniform_i("gBufferPosition", GBufferTextureType::POSITION);
-		this->bufferTextures[GBufferTextureType::POSITION].bind(
-			GBufferTextureType::POSITION);
-		
-		shader.setUniform_i("gBufferDiffuse", GBufferTextureType::DIFFUSE);
-		this->bufferTextures[GBufferTextureType::DIFFUSE].bind(
-			GBufferTextureType::DIFFUSE);
-		
-		shader.setUniform_i("gBufferNormal", GBufferTextureType::NORMAL);
-		this->bufferTextures[GBufferTextureType::NORMAL].bind(
-			GBufferTextureType::NORMAL);
+	void GBuffer::bindTexture(const GBufferTextureType &type, ShaderProgram
+			&shader) {
+		shader.setUniform_i(GBuffer::TEXTURE_SHADER_NAMES[type], type);
+		this->bufferTextures[type].bind(type);
+	}
 
-		shader.setUniform_i("gBufferSpecular", GBufferTextureType::SPECULAR);
-		this->bufferTextures[GBufferTextureType::SPECULAR].bind(
-			GBufferTextureType::SPECULAR);
+	void GBuffer::bindColorTextures(ShaderProgram &shader) {
+		this->bindTexture(GBufferTextureType::POSITION, shader);
+		this->bindTexture(GBufferTextureType::DIFFUSE, shader);
+		this->bindTexture(GBufferTextureType::NORMAL, shader);
+		this->bindTexture(GBufferTextureType::SPECULAR, shader);
 	}
 
 	void GBuffer::bindStencil() {
