@@ -32,8 +32,10 @@ namespace Honeycomb::Render::Deferred {
 		Honeycomb::Shader::ShaderProgram ambientShader;
 		Honeycomb::Shader::ShaderProgram pointLightShader;
 		Honeycomb::Shader::ShaderProgram directionalLightShader;
+		Honeycomb::Shader::ShaderProgram spotLightShader;
 
 		Honeycomb::Object::GameObject *pointLightIcosphere;
+		Honeycomb::Object::GameObject *spotLightCone;
 		Honeycomb::Object::GameObject *directionalLightPlane;
 
 		/// Initializes a new Deferred Renderer.
@@ -67,11 +69,20 @@ namespace Honeycomb::Render::Deferred {
 		/// const PointLight &pL : The point light to be rendered.
 		void renderLightPoint(const Honeycomb::Component::Light::PointLight	
 				&pL);
+
+		/// Renders the specified Spot Light using Deferred Rendering.
+		/// const SpotLight &pL : The spot light to be rendered.
+		void renderLightSpot(const Honeycomb::Component::Light::SpotLight &sL);
 		
 		/// Performs the stencil pass on the specified Point Light.
 		/// const PointLight &pL : The point light to be rendered.
 		void stencilLightPoint(const Honeycomb::Component::Light::PointLight 
 				&pL);
+
+		/// Performs the stencil pass on the specified Spot Light.
+		/// const SpotLight &pL : The spot light to be rendered.
+		void stencilLightSpot(const Honeycomb::Component::Light::SpotLight
+				&sL);
 
 		/// Scales and translates the Point Light's Sphere Volume based on the 
 		/// attenuation, color, intensity and position of the specified point 
@@ -80,7 +91,16 @@ namespace Honeycomb::Render::Deferred {
 		/// PointLight &pL : The Point Light for which the light volume
 		///					 is to be transformed.
 		void transformLightPointVolume(Honeycomb::Component::Light::
-			PointLight &pL);
+				PointLight &pL);
+
+		/// Scales and translates the Spot Light's Sphere Volume based on the 
+		/// attenuation, color, intensity and position of the specified point 
+		/// light. The range of the light will also be modified to reflect the
+		/// scale of the light sphere volume.
+		/// SpotLight &sL : The Spot Light for which the light volume is to be 
+		///					transformed.
+		void transformLightSpotVolume(Honeycomb::Component::Light::
+				SpotLight &sL);
 	};
 }
 

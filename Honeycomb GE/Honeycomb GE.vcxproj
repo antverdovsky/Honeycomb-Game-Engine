@@ -319,6 +319,7 @@
     <None Include="res\shaders\phong\vertexShader.glsl" />
     <None Include="res\shaders\render\deferred\light\ambientLightFS.glsl" />
     <None Include="res\shaders\render\deferred\light\directionalLightFS.glsl" />
+    <None Include="res\shaders\render\deferred\light\spotLightFS.glsl" />
     <None Include="res\shaders\render\deferred\pass\geometryFS.glsl" />
     <None Include="res\shaders\render\deferred\pass\geometryVS.glsl" />
     <None Include="res\shaders\render\deferred\light\pointLightFS.glsl" />

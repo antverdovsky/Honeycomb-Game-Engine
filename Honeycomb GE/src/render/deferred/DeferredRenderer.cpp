@@ -22,6 +22,8 @@ using Honeycomb::Component::Light::AmbientLight;
 using Honeycomb::Component::Light::DirectionalLight;
 #include "..\..\..\include\component\light\PointLight.h"
 using Honeycomb::Component::Light::PointLight;
+#include "..\..\..\include\component\light\SpotLight.h"
+using Honeycomb::Component::Light::SpotLight;
 #include "..\..\..\include\object\Builder.h"
 using Honeycomb::Object::Builder;
 #include "..\..\..\include\component\render\MeshRenderer.h"
@@ -51,6 +53,7 @@ namespace Honeycomb::Render::Deferred {
 
 		this->pointLightIcosphere = Builder::getBuilder()->newIcosphere();
 		this->directionalLightPlane = Builder::getBuilder()->newPlane();
+		this->spotLightCone = Builder::getBuilder()->newCone();
 		// TEMPORARY
 		/*
 		Texture2D *blank = new Texture2D();
@@ -69,6 +72,9 @@ namespace Honeycomb::Render::Deferred {
 		*/
 		this->pointLightIcosphere->getComponent<MeshRenderer>()->setMaterial(nullptr);
 		this->pointLightIcosphere->start();
+		this->spotLightCone->getComponent<MeshRenderer>()->setMaterial(nullptr);
+		this->spotLightCone->start();
+
 
 		this->geometryShader.initialize();
 		this->geometryShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
@@ -106,6 +112,13 @@ namespace Honeycomb::Render::Deferred {
 			"\\render\\deferred\\light\\directionalLightFS.glsl", 
 			GL_FRAGMENT_SHADER);
 		this->directionalLightShader.finalizeShaderProgram();
+
+		this->spotLightShader.initialize();
+		this->spotLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
+			"\\render\\deferred\\light\\lightVS.glsl", GL_VERTEX_SHADER);
+		this->spotLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
+			"\\render\\deferred\\light\\spotLightFS.glsl", GL_FRAGMENT_SHADER);
+		this->spotLightShader.finalizeShaderProgram();
 
 		this->stencilShader.initialize();
 		this->stencilShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
@@ -178,6 +191,16 @@ namespace Honeycomb::Render::Deferred {
 					*bL->getAttached()->getComponent<PointLight>());
 				this->renderLightPoint(
 					*bL->getAttached()->getComponent<PointLight>());
+			} else if (bL->getName() == "SpotLight") {
+				glEnable(GL_STENCIL_TEST); // Enable Stencil Testing for S.L.s
+
+				this->transformLightSpotVolume(
+					*bL->getAttached()->getComponent<SpotLight>());
+
+				this->stencilLightSpot(
+					*bL->getAttached()->getComponent<SpotLight>());
+				this->renderLightSpot(
+					*bL->getAttached()->getComponent<SpotLight>());
 			} else if (bL->getName() == "DirectionalLight") {
 				glDisable(GL_STENCIL_TEST); // Disable Stencil Testing
 
@@ -264,6 +287,34 @@ namespace Honeycomb::Render::Deferred {
 		glDisable(GL_BLEND);
 	}
 
+	void DeferredRenderer::renderLightSpot(const SpotLight &sL) {
+		// Write the Camera Projection & Light to the Point Light Shader
+		CameraController::getActiveCamera()->toShader(this->spotLightShader,
+			"camera");
+		sL.toShader(this->spotLightShader, "spotLight");
+
+		this->gBuffer.bindDrawLight(this->spotLightShader);
+
+		// Set the Stencil Function to pass when the stencil value != 0
+		glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
+
+		glDisable(GL_DEPTH_TEST); // Light does not need Depth Testing
+		glEnable(GL_BLEND); // Each light's contribution is blended together
+		glBlendEquation(GL_FUNC_ADD); // Lights are added together with an
+		glBlendFunc(GL_ONE, GL_ONE);  // equal contribution from each source
+
+		// Enable the culling of the front facing faces 
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+
+		// Render the point light sphere with the given shader
+		this->spotLightCone->render(this->spotLightShader);
+
+		// Enable the culling of the back facing faces
+		glCullFace(GL_BACK);
+		glDisable(GL_BLEND);
+	}
+
 	void DeferredRenderer::stencilLightPoint(const PointLight &pL) {
 		CameraController::getActiveCamera()->toShader(this->stencilShader,
 			"camera");
@@ -286,6 +337,30 @@ namespace Honeycomb::Render::Deferred {
 
 		// Render the Sphere with the basic stencil shader
 		this->pointLightIcosphere->render(this->stencilShader);
+	}
+
+	void DeferredRenderer::stencilLightSpot(const SpotLight &sL) {
+		CameraController::getActiveCamera()->toShader(this->stencilShader,
+			"camera");
+		this->gBuffer.bindStencil(); // Bind buffer for Stencil information
+
+		glEnable(GL_DEPTH_TEST); // Enable depth testing for stencil
+		glDisable(GL_CULL_FACE); // For processing ALL (front & back) faces
+		glClear(GL_STENCIL_BUFFER_BIT); // Clear Stencil for this pass
+
+		// Set the Stencil Test to always successeed, since only the depth is
+		// to be tested.
+		glStencilFunc(GL_ALWAYS, 0, 0);
+
+		// Configure stencil operation for back facing polygons to increment
+		// the value in the stencil buffer only when the depth test fails. For
+		// front facing polygons, decrement the value in the stencil buffer
+		// only when the depth test fails.
+		glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
+		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
+
+		// Render the Sphere with the basic stencil shader
+		this->spotLightCone->render(this->stencilShader);
 	}
 
 	void DeferredRenderer::transformLightPointVolume(PointLight &pL) {
@@ -313,5 +388,39 @@ namespace Honeycomb::Render::Deferred {
 			pL.glVector3fs.getValue(PointLight::POSITION_VEC3));
 
 		pL.glFloats.setValue(PointLight::RANGE_F, scl);
+	}
+
+	void DeferredRenderer::transformLightSpotVolume(SpotLight &sL) {
+		// Retrieve the RGBA color of the Point Light and get the maximum
+		// RGB component of the color.
+		Vector4f rgba = sL.glVector4fs.getValue(SpotLight::COLOR_VEC4);
+		float kM = fmaxf(rgba.getX(), fmaxf(rgba.getY(), rgba.getZ()));
+
+		// Constant representing the inverse of the brightness at the radius of
+		// the sphere.
+		float kK = 256.0F / 5.0F;
+
+		// Retrieve all of the attenuation constants
+		float kC = sL.glFloats.getValue(PointLight::ATTENUATION_CONSTANT_F);
+		float kL = sL.glFloats.getValue(PointLight::ATTENUATION_LINEAR_F);
+		float kQ = sL.glFloats.getValue(PointLight::ATTENUATION_QUADRATIC_F);
+
+		// Get the radius (or scale) of the point light sphere
+		float scl = (-kL + sqrt(kL * kL - 4 * kQ * (kC - kK * kM))) / (2 * kQ);
+
+		// Transform the Light Volume Sphere by scaling and translating it
+		this->spotLightCone->getComponent<Transform>()->setScale(Vector3f(
+			scl, scl, scl));
+		this->spotLightCone->getComponent<Transform>()->setTranslation(
+			sL.glVector3fs.getValue(SpotLight::POSITION_VEC3));
+		this->spotLightCone->getComponent<Transform>()->setRotation(
+			sL.getAttached()->getComponent<Transform>()->getRotation());		// TODO make so it uses sL.direction
+		this->spotLightCone->getComponent<Transform>()->rotate(					// todo temporary
+			this->spotLightCone->getComponent<Transform>()->getLocalRight(),
+			3.1415926159F
+		);
+			
+
+		sL.glFloats.setValue(SpotLight::RANGE_F, scl);
 	}
 }
