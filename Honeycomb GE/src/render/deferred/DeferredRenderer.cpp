@@ -35,11 +35,18 @@ using Honeycomb::Graphics::Material;
 #include "..\..\..\include\graphics\Texture2D.h"
 using Honeycomb::Graphics::Texture2D;
 
+using Honeycomb::Object::GameObject;
+
 using Honeycomb::Scene::GameScene;
 using Honeycomb::Component::Render::CameraController;
 
 namespace Honeycomb::Render::Deferred {
 	DeferredRenderer* DeferredRenderer::deferredRenderer = nullptr;
+
+	const std::string DeferredRenderer::POINT_LIGHT_VOLUME_MODEL =
+		"..\\Honeycomb GE\\res\\models\\light-volumes\\pointLight.fbx";
+	const std::string DeferredRenderer::SPOT_LIGHT_VOLUME_MODEL =
+		"..\\Honeycomb GE\\res\\models\\light-volumes\\spotLight.fbx";
 
 	DeferredRenderer* DeferredRenderer::getDeferredRenderer() {
 		if (DeferredRenderer::deferredRenderer == nullptr)
@@ -51,52 +58,58 @@ namespace Honeycomb::Render::Deferred {
 	DeferredRenderer::DeferredRenderer() : Renderer() {
 		this->gBuffer.initialize();
 
-		this->pointLightIcosphere = Builder::getBuilder()->newIcosphere();
-		this->directionalLightPlane = Builder::getBuilder()->newPlane();
-		this->spotLightCone = Builder::getBuilder()->newCone();
-		// TEMPORARY
-		/*
-		Texture2D *blank = new Texture2D();
-		blank->initialize();
-		blank->setImageData();
-		Material *mat = new Material();
-		mat->glVector4fs.setValue("ambientColor",
-			Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
-		mat->glVector4fs.setValue("diffuseColor",
-			Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
-		mat->glVector4fs.setValue("specularColor",
-			Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
-		mat->glFloats.setValue("shininess", 1.0F * 128.0F);
-		mat->glSampler2Ds.setValue("albedoTexture", *blank);
-		this->pointLightSphere->getComponent<MeshRenderer>()->setMaterial(*mat);
-		*/
-		this->pointLightIcosphere->getComponent<MeshRenderer>()->setMaterial(nullptr);
-		this->pointLightIcosphere->start();
-		this->spotLightCone->getComponent<MeshRenderer>()->setMaterial(nullptr);
-		this->spotLightCone->start();
+		this->initializeLightVolumes();
+		this->initializeQuad();
+		this->initializeShaders();
+	}
 
+	DeferredRenderer::~DeferredRenderer() {
+		delete this->lightVolumePoint;
+		delete this->lightVolumeSpot;
+	}
 
-		this->geometryShader.initialize();
-		this->geometryShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\pass\\geometryVS.glsl", GL_VERTEX_SHADER);
-		this->geometryShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\pass\\geometryFS.glsl", GL_FRAGMENT_SHADER);
-		this->geometryShader.finalizeShaderProgram();
+	void DeferredRenderer::initializeLightVolumes() {
+		// Get the models containing the Light Volumes
+		GameObject *pLModel = Builder::getBuilder()->newModel(
+			POINT_LIGHT_VOLUME_MODEL);
+		GameObject *sLModel = Builder::getBuilder()->newModel(
+			SPOT_LIGHT_VOLUME_MODEL);
 
-		this->quadShader.initialize();
-		this->quadShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\pass\\simpleVS.glsl", GL_VERTEX_SHADER);
-		this->quadShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\pass\\simpleFS.glsl", GL_FRAGMENT_SHADER);
-		this->quadShader.finalizeShaderProgram();
+		// Extract the actual light volumes from the Model
+		this->lightVolumePoint = pLModel->getChild("Icosphere")->clone();
+		this->lightVolumeSpot = sLModel->getChild("Cone")->clone();
 
+		// Delete the Light Volume Models
+		delete pLModel;
+		delete sLModel;
+
+		// Set a null material for the Light Volume Game Objects
+		this->lightVolumePoint->getComponent<MeshRenderer>()->setMaterial(
+			nullptr);
+		this->lightVolumeSpot->getComponent<MeshRenderer>()->setMaterial(
+			nullptr);
+
+		// Start the Light Volume Game Objects so that they may be rendered
+		this->lightVolumePoint->start();
+		this->lightVolumeSpot->start();
+	}
+
+	void DeferredRenderer::initializeShaders() {
 		this->ambientShader.initialize();
 		this->ambientShader.addShader("..\\Honeycomb GE\\res\\shaders"
 			"\\render\\deferred\\pass\\simpleVS.glsl", GL_VERTEX_SHADER);
 		this->ambientShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\render\\deferred\\light\\ambientLightFS.glsl", 
+			"\\render\\deferred\\light\\ambientLightFS.glsl",
 			GL_FRAGMENT_SHADER);
 		this->ambientShader.finalizeShaderProgram();
+
+		this->directionalLightShader.initialize();
+		this->directionalLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
+			"\\render\\deferred\\pass\\simpleVS.glsl", GL_VERTEX_SHADER);
+		this->directionalLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
+			"\\render\\deferred\\light\\directionalLightFS.glsl",
+			GL_FRAGMENT_SHADER);
+		this->directionalLightShader.finalizeShaderProgram();
 
 		this->pointLightShader.initialize();
 		this->pointLightShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
@@ -105,20 +118,19 @@ namespace Honeycomb::Render::Deferred {
 			"render\\deferred\\light\\pointLightFS.glsl", GL_FRAGMENT_SHADER);
 		this->pointLightShader.finalizeShaderProgram();
 
-		this->directionalLightShader.initialize();
-		this->directionalLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\render\\deferred\\pass\\simpleVS.glsl", GL_VERTEX_SHADER);
-		this->directionalLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\render\\deferred\\light\\directionalLightFS.glsl", 
-			GL_FRAGMENT_SHADER);
-		this->directionalLightShader.finalizeShaderProgram();
-
 		this->spotLightShader.initialize();
 		this->spotLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
 			"\\render\\deferred\\light\\lightVS.glsl", GL_VERTEX_SHADER);
 		this->spotLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
 			"\\render\\deferred\\light\\spotLightFS.glsl", GL_FRAGMENT_SHADER);
 		this->spotLightShader.finalizeShaderProgram();
+
+		this->geometryShader.initialize();
+		this->geometryShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
+			"render\\deferred\\pass\\geometryVS.glsl", GL_VERTEX_SHADER);
+		this->geometryShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
+			"render\\deferred\\pass\\geometryFS.glsl", GL_FRAGMENT_SHADER);
+		this->geometryShader.finalizeShaderProgram();
 
 		this->stencilShader.initialize();
 		this->stencilShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
@@ -127,24 +139,34 @@ namespace Honeycomb::Render::Deferred {
 			"render\\deferred\\pass\\stencilFS.glsl", GL_FRAGMENT_SHADER);
 		this->stencilShader.finalizeShaderProgram();
 
-		Vertex quadVerts[4] = {
-			Vertex(Vector3f(0.0F, 0.0F, 0.0F), Vector3f(-1.0F, -1.0F, 0.0F), Vector2f(0.0F, 0.0F)),
-			Vertex(Vector3f(0.0F, 0.0F, 0.0F), Vector3f(-1.0F,  1.0F, 0.0F), Vector2f(0.0F, 1.0F)),
-			Vertex(Vector3f(0.0F, 0.0F, 0.0F), Vector3f( 1.0F,  1.0F, 0.0F), Vector2f(1.0F, 1.0F)),
-			Vertex(Vector3f(0.0F, 0.0F, 0.0F), Vector3f( 1.0F, -1.0F, 0.0F), Vector2f(1.0F, 0.0F))
-		};
-
-		int indices[6] = {
-			0, 3, 2, 2, 1, 0
-		};
-
-		quad.initialize();
-		quad.setVertexData(quadVerts, 4);
-		quad.setIndexData(indices, 6);
+		this->quadShader.initialize();
+		this->quadShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
+			"render\\deferred\\pass\\simpleVS.glsl", GL_VERTEX_SHADER);
+		this->quadShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
+			"render\\deferred\\pass\\simpleFS.glsl", GL_FRAGMENT_SHADER);
+		this->quadShader.finalizeShaderProgram();
 	}
 
-	DeferredRenderer::~DeferredRenderer() {
+	void DeferredRenderer::initializeQuad() {
+		// The vertices for a full screen Quad
+		Vertex quadVerts[4] = {
+			Vertex(Vector3f(0.0F, 0.0F, 0.0F), Vector3f(-1.0F, -1.0F, 0.0F), 
+				Vector2f(0.0F, 0.0F)),
+			Vertex(Vector3f(0.0F, 0.0F, 0.0F), Vector3f(-1.0F,  1.0F, 0.0F), 
+				Vector2f(0.0F, 1.0F)),
+			Vertex(Vector3f(0.0F, 0.0F, 0.0F), Vector3f(1.0F,  1.0F, 0.0F), 
+				Vector2f(1.0F, 1.0F)),
+			Vertex(Vector3f(0.0F, 0.0F, 0.0F), Vector3f(1.0F, -1.0F, 0.0F), 
+				Vector2f(1.0F, 0.0F))
+		};
 
+		// The indices of the two triangles of the Quad
+		int indices[6] = { 0, 3, 2, 2, 1, 0 };
+
+		// Build the Quad Mesh & initialize so that it may be drawn
+		this->quad.initialize();
+		this->quad.setVertexData(quadVerts, 4);
+		this->quad.setIndexData(indices, 6);
 	}
 
 	void DeferredRenderer::renderFinal() {
@@ -280,7 +302,7 @@ namespace Honeycomb::Render::Deferred {
 		glCullFace(GL_FRONT);
 		
 		// Render the point light sphere with the given shader
-		this->pointLightIcosphere->render(this->pointLightShader);
+		this->lightVolumePoint->render(this->pointLightShader);
 
 		// Enable the culling of the back facing faces
 		glCullFace(GL_BACK);
@@ -288,7 +310,7 @@ namespace Honeycomb::Render::Deferred {
 	}
 
 	void DeferredRenderer::renderLightSpot(const SpotLight &sL) {
-		// Write the Camera Projection & Light to the Point Light Shader
+		// Write the Camera Projection & Light to the Spot Light Shader
 		CameraController::getActiveCamera()->toShader(this->spotLightShader,
 			"camera");
 		sL.toShader(this->spotLightShader, "spotLight");
@@ -307,8 +329,8 @@ namespace Honeycomb::Render::Deferred {
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 
-		// Render the point light sphere with the given shader
-		this->spotLightCone->render(this->spotLightShader);
+		// Render the spot light volume with the given shader
+		this->lightVolumeSpot->render(this->spotLightShader);
 
 		// Enable the culling of the back facing faces
 		glCullFace(GL_BACK);
@@ -336,7 +358,7 @@ namespace Honeycomb::Render::Deferred {
 		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
 
 		// Render the Sphere with the basic stencil shader
-		this->pointLightIcosphere->render(this->stencilShader);
+		this->lightVolumePoint->render(this->stencilShader);
 	}
 
 	void DeferredRenderer::stencilLightSpot(const SpotLight &sL) {
@@ -359,8 +381,8 @@ namespace Honeycomb::Render::Deferred {
 		glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
 		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
 
-		// Render the Sphere with the basic stencil shader
-		this->spotLightCone->render(this->stencilShader);
+		// Render the Cone with the basic stencil shader
+		this->lightVolumeSpot->render(this->stencilShader);
 	}
 
 	void DeferredRenderer::transformLightPointVolume(PointLight &pL) {
@@ -382,9 +404,9 @@ namespace Honeycomb::Render::Deferred {
 		float scl = (-kL + sqrt(kL * kL - 4 * kQ * (kC - kK * kM))) / (2 * kQ);
 		
 		// Transform the Light Volume Sphere by scaling and translating it
-		this->pointLightIcosphere->getComponent<Transform>()->setScale(Vector3f(
+		this->lightVolumePoint->getComponent<Transform>()->setScale(Vector3f(
 			scl, scl, scl));
-		this->pointLightIcosphere->getComponent<Transform>()->setTranslation(
+		this->lightVolumePoint->getComponent<Transform>()->setTranslation(
 			pL.glVector3fs.getValue(PointLight::POSITION_VEC3));
 
 		pL.glFloats.setValue(PointLight::RANGE_F, scl);
@@ -409,14 +431,14 @@ namespace Honeycomb::Render::Deferred {
 		float scl = (-kL + sqrt(kL * kL - 4 * kQ * (kC - kK * kM))) / (2 * kQ);
 
 		// Transform the Light Volume Sphere by scaling and translating it
-		this->spotLightCone->getComponent<Transform>()->setScale(Vector3f(
+		this->lightVolumeSpot->getComponent<Transform>()->setScale(Vector3f(
 			scl, scl, scl));
-		this->spotLightCone->getComponent<Transform>()->setTranslation(
+		this->lightVolumeSpot->getComponent<Transform>()->setTranslation(
 			sL.glVector3fs.getValue(SpotLight::POSITION_VEC3));
-		this->spotLightCone->getComponent<Transform>()->setRotation(
+		this->lightVolumeSpot->getComponent<Transform>()->setRotation(
 			sL.getAttached()->getComponent<Transform>()->getRotation());		// TODO make so it uses sL.direction
-		this->spotLightCone->getComponent<Transform>()->rotate(					// todo temporary
-			this->spotLightCone->getComponent<Transform>()->getLocalRight(),
+		this->lightVolumeSpot->getComponent<Transform>()->rotate(					// todo temporary
+			this->lightVolumeSpot->getComponent<Transform>()->getLocalRight(),
 			3.1415926159F
 		);
 			

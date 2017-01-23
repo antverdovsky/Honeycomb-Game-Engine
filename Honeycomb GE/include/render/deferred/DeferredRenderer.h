@@ -21,7 +21,12 @@ namespace Honeycomb::Render::Deferred {
 	private:
 		static DeferredRenderer *deferredRenderer; // Singleton instance
 
-		Honeycomb::Geometry::Mesh quad; // Quad to which buffer is rendered
+		// The directories of the Point and Spot Lights Volume models
+		const static std::string POINT_LIGHT_VOLUME_MODEL;
+		const static std::string SPOT_LIGHT_VOLUME_MODEL;
+
+		// Full screen quad which is rendered with a GBuffer's texture
+		Honeycomb::Geometry::Mesh quad;
 
 		GBuffer gBuffer; // The G Buffer of the Renderer
 
@@ -34,15 +39,26 @@ namespace Honeycomb::Render::Deferred {
 		Honeycomb::Shader::ShaderProgram directionalLightShader;
 		Honeycomb::Shader::ShaderProgram spotLightShader;
 
-		Honeycomb::Object::GameObject *pointLightIcosphere;
-		Honeycomb::Object::GameObject *spotLightCone;
-		Honeycomb::Object::GameObject *directionalLightPlane;
+		// The Point Light Volume (Icosphere) and the Spot Light Volume (Cone)
+		Honeycomb::Object::GameObject *lightVolumePoint;
+		Honeycomb::Object::GameObject *lightVolumeSpot;
 
 		/// Initializes a new Deferred Renderer.
 		DeferredRenderer();
 
 		/// Destroys this Deferred Renderer.
 		~DeferredRenderer();
+
+		/// Initializes the Light Volumes used by the Spot and Point Light
+		/// structures.
+		void initializeLightVolumes();
+
+		/// Initializes the Geometry Shader, Quad Shader, Stencil Shader, and
+		/// the light component shaders.
+		void initializeShaders();
+
+		/// Initializes the Quad Mesh.
+		void initializeQuad();
 
 		/// Renders the final produced texture from the GBuffer to the screen.
 		void renderFinal();
