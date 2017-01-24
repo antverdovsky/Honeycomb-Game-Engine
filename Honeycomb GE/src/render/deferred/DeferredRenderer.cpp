@@ -3,6 +3,8 @@
 #include <GL/glew.h>
 
 #include "..\..\..\include\component\render\CameraController.h"
+#include "..\..\..\include\math\MathUtils.h"
+using namespace Honeycomb::Math::Utils;
 
 #include "..\..\..\include\base\GameWindow.h"
 using Honeycomb::Base::GameWindow;
@@ -413,26 +415,32 @@ namespace Honeycomb::Render::Deferred {
 	}
 
 	void DeferredRenderer::transformLightSpotVolume(SpotLight &sL) {
-		// Retrieve the RGBA color of the Point Light and get the maximum
+		// Retrieve the RGBA color of the Spot Light and get the maximum
 		// RGB component of the color.
 		Vector4f rgba = sL.glVector4fs.getValue(SpotLight::COLOR_VEC4);
 		float kM = fmaxf(rgba.getX(), fmaxf(rgba.getY(), rgba.getZ()));
 
 		// Constant representing the inverse of the brightness at the radius of
-		// the sphere.
+		// the cone.
 		float kK = 256.0F / 5.0F;
 
 		// Retrieve all of the attenuation constants
-		float kC = sL.glFloats.getValue(PointLight::ATTENUATION_CONSTANT_F);
-		float kL = sL.glFloats.getValue(PointLight::ATTENUATION_LINEAR_F);
-		float kQ = sL.glFloats.getValue(PointLight::ATTENUATION_QUADRATIC_F);
+		float kC = sL.glFloats.getValue(SpotLight::ATTENUATION_CONSTANT_F);
+		float kL = sL.glFloats.getValue(SpotLight::ATTENUATION_LINEAR_F);
+		float kQ = sL.glFloats.getValue(SpotLight::ATTENUATION_QUADRATIC_F);
 
-		// Get the radius (or scale) of the point light sphere
+		// Get the general scale of the spot light cone
 		float scl = (-kL + sqrt(kL * kL - 4 * kQ * (kC - kK * kM))) / (2 * kQ);
+
+		// Get the scale which will be applied on the XY axes to account for
+		// the angle of the spot light. Since the light volume by default is
+		// for a 45 degrees (PI / 4 radians) cone, the new scale can be found
+		// by dividing the angle of the spot light by the default volume angle.
+		float sclXY = 2 * tan(clamp(0, 1.44, sL.glFloats.getValue(SpotLight::ANGLE_F) / 2));
 
 		// Transform the Light Volume Sphere by scaling and translating it
 		this->lightVolumeSpot->getComponent<Transform>()->setScale(Vector3f(
-			scl, scl, scl));
+			scl * sclXY, scl * sclXY, scl));
 		this->lightVolumeSpot->getComponent<Transform>()->setTranslation(
 			sL.glVector3fs.getValue(SpotLight::POSITION_VEC3));
 		this->lightVolumeSpot->getComponent<Transform>()->setRotation(
@@ -443,6 +451,6 @@ namespace Honeycomb::Render::Deferred {
 		);
 			
 
-		sL.glFloats.setValue(SpotLight::RANGE_F, scl);
+		sL.glFloats.setValue(SpotLight::RANGE_F, scl * sclXY);
 	}
 }

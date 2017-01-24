@@ -61,6 +61,7 @@ namespace HoneycombTest {
 
 		suzSpotLight->glVector4fs.setValue(PointLight::COLOR_VEC4, Vector4f(1.0F, 0.0F, 0.0F, 1.0F));
 		suzSpotLight->glFloats.setValue(SpotLight::INTENSITY_F, 5.0F);
+		suzSpotLight->glFloats.setValue(SpotLight::ANGLE_F, PI / 2);
 
 		// Add Suzanne's Components to Suzanne
 //		suzanne->addComponent(*suzPointLight);

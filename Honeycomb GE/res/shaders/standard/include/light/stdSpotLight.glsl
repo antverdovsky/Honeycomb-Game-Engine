@@ -35,23 +35,26 @@ vec4 calculateSpotLight(SpotLight sL, Camera cam, vec3 wP, vec3 norm,
     // distance exceeds the range of the point light, return a zero vector 
     // since the point light can't affect this fragment.
     float dispMag = length(displacement);
-    if (dispMag > sL.range) return vec4(0.0F, 0.0F, 0.0F, 0.0F);
     
     // Calculate the angle between the fragment and the spot light. If the 
     // angle exceeds the angle of the spot light, return a zero vector since
     // the spot light can't affect this fragment.
     vec3 direction = normalize(displacement);
     float cosAngle = dot(direction, normalize(sL.direction));
-//    if (cosAngle < cos(sL.angle)) return vec4(0.0F, 0.0F, 0.0F, 0.0F);
-    
-    // Calculate the Attenuation of the Point Light, and the adjusted
-    // attenuation which will make the attenuation zero at the range of the
-    // spot light and zero at the edge of the angle of the spot light to allow 
-    // for a smoother light transition.
-    float atten = calculateAttenuation(sL.attenuation, dispMag);
-    float intensity = (1.0F / atten) * sL.base.intensity * 
-        (1.0F - (1.0F - cosAngle) / (1.0F - cos(sL.angle))) * 
-        ((sL.range - dispMag) / sL.range);
+   
+    // Calculate the Attenuation of the Point Light
+    float attenuation = calculateAttenuation(sL.attenuation, dispMag);
+
+	// Calculate the angle factor using the cosine angle and the cosine of the
+	// half angle. This factor will gradually fall off as the light angle
+	// approaches the the hypotenuse of the spot light cone. This allows for
+	// a smooth transition from light to darkness at the light's edges.
+	float cosHalfAngle = cos(sL.angle / 2.0F);
+	float angleFactor = 1.0F - (1.0F - cosAngle) / (1.0F - cosHalfAngle);
+
+	// Calculate the final intensity using the base intensity, attenuation
+	// and the angle factor.
+	float intensity = sL.base.intensity / attenuation * angleFactor;
     
     // Calculate the Diffuse and Specular Light components of the Spot Light 
     // and scale by the attenuation to adjust the light with distance.
@@ -60,8 +63,8 @@ vec4 calculateSpotLight(SpotLight sL, Camera cam, vec3 wP, vec3 norm,
         norm, shine, specColor);
     diffuse = vec4(diffuse.xyz * intensity, diffuse.w);
     specular = vec4(specular.xyz * intensity, specular.w);
-    
-	return vec4(1.0F);
+
+//	return vec4(1.0F);
 
     // Return the blend of the Diffuse and Specular lighting
     return diffuse + specular;
