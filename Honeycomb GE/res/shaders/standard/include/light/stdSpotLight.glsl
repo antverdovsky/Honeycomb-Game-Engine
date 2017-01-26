@@ -64,8 +64,6 @@ vec4 calculateSpotLight(SpotLight sL, Camera cam, vec3 wP, vec3 norm,
     diffuse = vec4(diffuse.xyz * intensity, diffuse.w);
     specular = vec4(specular.xyz * intensity, specular.w);
 
-//	return vec4(1.0F);
-
     // Return the blend of the Diffuse and Specular lighting
     return diffuse + specular;
 }

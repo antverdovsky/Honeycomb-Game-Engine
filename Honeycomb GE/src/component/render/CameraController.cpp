@@ -31,7 +31,7 @@ namespace Honeycomb::Component::Render {
 	const std::string CameraController::STRUCT_NAME = "Camera";
 
 	CameraController::CameraController() : 
-			CameraController(CameraType::PERSPECTIVE, 75.0F, 100.0F, 0.03F,
+			CameraController(CameraType::PERSPECTIVE, 75.0F, 1000.0F, 0.30F,
 			(float)GameWindow::getGameWindow()->getWindowHeight(),
 			(float)GameWindow::getGameWindow()->getWindowWidth()) {
 

@@ -79,7 +79,7 @@ namespace Honeycomb::Render::Deferred {
 
 		// Extract the actual light volumes from the Model
 		this->lightVolumePoint = pLModel->getChild("Icosphere")->clone();
-		this->lightVolumeSpot = sLModel->getChild("Cone")->clone();
+		this->lightVolumeSpot = sLModel->getChild("Cube")->clone();
 
 		// Delete the Light Volume Models
 		delete pLModel;
@@ -418,7 +418,8 @@ namespace Honeycomb::Render::Deferred {
 		// Retrieve the RGBA color of the Spot Light and get the maximum
 		// RGB component of the color.
 		Vector4f rgba = sL.glVector4fs.getValue(SpotLight::COLOR_VEC4);
-		float kM = fmaxf(rgba.getX(), fmaxf(rgba.getY(), rgba.getZ()));
+		float kM = fmaxf(rgba.getX(), fmaxf(rgba.getY(), rgba.getZ())) *
+			sL.glFloats.getValue(SpotLight::INTENSITY_F);
 
 		// Constant representing the inverse of the brightness at the radius of
 		// the cone.
@@ -432,25 +433,16 @@ namespace Honeycomb::Render::Deferred {
 		// Get the general scale of the spot light cone
 		float scl = (-kL + sqrt(kL * kL - 4 * kQ * (kC - kK * kM))) / (2 * kQ);
 
-		// Get the scale which will be applied on the XY axes to account for
-		// the angle of the spot light. Since the light volume by default is
-		// for a 45 degrees (PI / 4 radians) cone, the new scale can be found
-		// by dividing the angle of the spot light by the default volume angle.
-		float sclXY = 2 * tan(clamp(0, 1.44, sL.glFloats.getValue(SpotLight::ANGLE_F) / 2));
-
 		// Transform the Light Volume Sphere by scaling and translating it
 		this->lightVolumeSpot->getComponent<Transform>()->setScale(Vector3f(
-			scl * sclXY, scl * sclXY, scl));
+			scl, scl, scl));
 		this->lightVolumeSpot->getComponent<Transform>()->setTranslation(
-			sL.glVector3fs.getValue(SpotLight::POSITION_VEC3));
+			sL.glVector3fs.getValue(SpotLight::POSITION_VEC3));// + Vector3f(0.0F, 0.0F, scl));	// TODO: When children transforms work change this
 		this->lightVolumeSpot->getComponent<Transform>()->setRotation(
 			sL.getAttached()->getComponent<Transform>()->getRotation());		// TODO make so it uses sL.direction
 		this->lightVolumeSpot->getComponent<Transform>()->rotate(					// todo temporary
 			this->lightVolumeSpot->getComponent<Transform>()->getLocalRight(),
 			3.1415926159F
 		);
-			
-
-		sL.glFloats.setValue(SpotLight::RANGE_F, scl * sclXY);
 	}
 }
