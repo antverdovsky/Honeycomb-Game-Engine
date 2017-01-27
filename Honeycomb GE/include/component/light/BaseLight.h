@@ -12,6 +12,10 @@ namespace Honeycomb::Component::Light {
 			public Honeycomb::Shader::GenericStruct,
 			public Honeycomb::Component::GameComponent {
 	public:
+		// Uniforms containing the color and intensity of the light
+		static const std::string COLOR_VEC4;
+		static const std::string INTENSITY_F;
+
 		/// Initializes a new base light with the specified Shader Source and
 		/// structure definition.
 		/// const ShaderSource &src : The Shader Source in which this Light is
@@ -28,6 +32,30 @@ namespace Honeycomb::Component::Light {
 		/// return : The cloned Base Light.
 		BaseLight* clone() const;
 
+		/// Returns a reference to the color of this Base Light.
+		/// return : The color reference.
+		Honeycomb::Math::Vector4f& getColor();
+
+		/// Returns a constant reference to the color of this Base Light.
+		/// return : The constant color reference.
+		const Honeycomb::Math::Vector4f& getColor() const;
+
+		/// Returns a reference to the intensity of this Base Light.
+		/// return : The intensity reference.
+		float& getIntensity();
+
+		/// Returns a constant reference to the intensity of this Base Light.
+		/// return : The constant intensity reference.
+		const float& getIntensity() const;
+
+		/// Sets the color of this Base Light.
+		/// const Vector4f &col : The new color of this BaseLight.
+		void setColor(const Honeycomb::Math::Vector4f &col);
+
+		/// Sets the intensity of this Base Light.
+		/// const float &inten : The new intensity of this Base Light.
+		void setIntensity(const float &inten);
+
 		/// Starts this base light.
 		virtual void start();
 
@@ -36,6 +64,68 @@ namespace Honeycomb::Component::Light {
 
 		// The name of this light's uniform in the preferred shader. [temp: TODO]
 		std::string uniformName;
+	};
+
+	class Attenuation :
+			public Honeycomb::Shader::GenericStruct {
+	public:
+		// Struct File and Struct Name of the Attenuation Declaration
+		static const std::string STRUCT_FILE;
+		static const std::string STRUCT_NAME;
+
+		// Uniforms containing the attenuation values
+		static const std::string ATTENUATION_CONSTANT_F;
+		static const std::string ATTENUATION_LINEAR_F;
+		static const std::string ATTENUATION_QUADRATIC_F;
+		
+		/// Initializes default attenuation values of 1.0F for constant,
+		/// 0.22F for linear, and 0.20 for quadratic.
+		Attenuation();
+
+		/// Initializes attenuation of the specified values.
+		/// const float &atC : The constant attenuation value.
+		/// const float &atL : The linear attenuation value.
+		/// const float &atQ : The quadratic attenuation value.
+		Attenuation(const float &atC, const float &atL, const float &atQ);
+
+		/// Returns a reference to the constant term of the attenuation.
+		/// return : A reference to the constant term.
+		float& getConstantTerm();
+
+		/// Returns a constant reference to the constant term of the 
+		///	attenuation.
+		/// return : A constant reference to the constant term.
+		const float& getConstantTerm() const;
+
+		/// Returns a reference to the linear term of the attenuation.
+		/// return : A reference to the linear term.
+		float& getLinearTerm();
+
+		/// Returns a constant reference to the linear term of the 
+		///	attenuation.
+		/// return : A constant reference to the linear term.
+		const float& getLinearTerm() const;
+
+		/// Returns a reference to the quadratic term of the attenuation.
+		/// return : A reference to the quadratic term.
+		float& getQuadraticTerm();
+
+		/// Returns a constant reference to the quadratic term of the 
+		///	attenuation.
+		/// return : A constant reference to the quadratic term.
+		const float& getQuadraticTerm() const;
+
+		/// Sets the constant term of the attenuation.
+		/// const float &atC : The new constant term of the attenuation.
+		void setConstantTerm(const float &atC);
+
+		/// Sets the linear term of the attenuation.
+		/// const float &atL : The new linear term of the attenuation.
+		void setLinearTerm(const float &atL);
+
+		/// Sets the quadratic term of the attenuation.
+		/// const float &atQ : The new quadratic term of the attenuation.
+		void setQuadraticTerm(const float &atQ);
 	};
 }
 
