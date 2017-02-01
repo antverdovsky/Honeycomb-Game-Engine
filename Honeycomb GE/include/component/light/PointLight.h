@@ -47,10 +47,26 @@ namespace Honeycomb::Component::Light {
 		/// return : The constant reference to the Attenuation.
 		const Honeycomb::Component::Light::Attenuation& getAttenuation() const;
 
+		/// Returns the position of this Point Light.
+		/// return : The constant reference to the Position.
+		const Honeycomb::Math::Vector3f& getPosition() const;
+
+		/// Returns the range of this Point Light.
+		/// return : The reference to the range.
+		float& getRange();
+
+		/// Returns the range of this Point Light.
+		/// return : The constant reference to the range.
+		const float& getRange() const;
+
 		/// Sets the attenuation of this Point Light.
 		/// const Attenuation &atten : The new attenuation of this Point Light.
 		void setAttenuation(const Honeycomb::Component::Light::Attenuation& 
 				atten);
+
+		/// Sets the range of this Point Light.
+		/// const float &range : The new range of this Point Light.
+		void setRange(const float &range);
 
 		/// Starts this Point Light.
 		void start();

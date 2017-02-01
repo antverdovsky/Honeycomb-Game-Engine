@@ -34,6 +34,10 @@ namespace Honeycomb::Component::Light {
 		/// return : The cloned Directional Light.
 		DirectionalLight* clone() const;
 
+		/// Returns the direction of this Directional Light.
+		/// return : The constant reference to the Directional Light.
+		const Honeycomb::Math::Vector3f& getDirection() const;
+
 		/// Starts this Directional Light.
 		void start();
 

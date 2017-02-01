@@ -60,8 +60,24 @@ namespace Honeycomb::Component::Light {
 		return this->attenuation;
 	}
 
+	const Vector3f& PointLight::getPosition() const {
+		return *this->position;
+	}
+
+	float& PointLight::getRange() {
+		return this->glFloats.getValue(PointLight::RANGE_F);
+	}
+
+	const float& PointLight::getRange() const {
+		return this->glFloats.getValue(PointLight::RANGE_F);
+	}
+
 	void PointLight::setAttenuation(const Attenuation &atten) {
 		this->attenuation = atten;
+	}
+
+	void PointLight::setRange(const float &range) {
+		this->getRange() = range;
 	}
 	
 	void PointLight::start() {

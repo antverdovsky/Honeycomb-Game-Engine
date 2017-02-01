@@ -42,6 +42,10 @@ namespace Honeycomb::Component::Light {
 		);
 	}
 
+	const Vector3f& DirectionalLight::getDirection() const {
+		return *this->direction;
+	}
+
 	void DirectionalLight::start() {
 		// Get the direction from the Transform
 		this->direction = &this->getAttached()->getComponent<Transform>()->

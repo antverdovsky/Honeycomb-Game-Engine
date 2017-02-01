@@ -59,12 +59,36 @@ namespace Honeycomb::Component::Light {
 		return sL;
 	}
 
+	float& SpotLight::getAngle() {
+		return this->glFloats.getValue(SpotLight::ANGLE_F);
+	}
+
+	const float& SpotLight::getAngle() const {
+		return this->glFloats.getValue(SpotLight::ANGLE_F);
+	}
+
 	Attenuation& SpotLight::getAttenuation() {
 		return this->attenuation;
 	}
 
 	const Attenuation& SpotLight::getAttenuation() const {
 		return this->attenuation;
+	}
+
+	const Vector3f& SpotLight::getDirection() const {
+		return *this->direction;
+	}
+
+	const Vector3f& SpotLight::getPosition() const {
+		return *this->position;
+	}
+
+	const float& SpotLight::getRange() const {
+		return this->glFloats.getValue(SpotLight::RANGE_F);
+	}
+
+	float& SpotLight::getRange() {
+		return this->glFloats.getValue(SpotLight::RANGE_F);
 	}
 
 	void SpotLight::setAttenuation(const Attenuation &atten) {

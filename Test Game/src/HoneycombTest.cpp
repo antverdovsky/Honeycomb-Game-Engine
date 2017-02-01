@@ -66,7 +66,7 @@ namespace HoneycombTest {
 		// Add Suzanne's Components to Suzanne
 //		suzanne->addComponent(*suzPointLight);
 		cone->addComponent(*suzInputTransformable->clone());
-		suzanne->addComponent(*suzSpotLight);
+//		suzanne->addComponent(*suzSpotLight);
 		suzanne->addComponent(*suzInputTransformable);
 
 		// Allow the free movement of the camera
@@ -108,17 +108,16 @@ namespace HoneycombTest {
 		sphere->getComponent<MeshRenderer>()->setMaterial(
 			*chrome);
 
-		/*
 		srand(time(NULL));
 		for (int i = -8; i <= 8; i += 4) {
 			for (int j = -8; j <= 8; j += 4) {
-				GameObject *light = Builder::getBuilder()->newSpotLight();
+				GameObject *light = Builder::getBuilder()->newPointLight();
 
 				light->getComponent<Transform>()->setTranslation(Vector3f(
 					i * 5.0F, 5.0F, j * 5.0F));
 //				light->getComponent<Transform>()->rotate(
 //					Vector3f::getGlobalRight(), -PI / 2);
-				light->getComponent<SpotLight>()->glVector4fs.setValue(
+				light->getComponent<PointLight>()->glVector4fs.setValue(
 					PointLight::COLOR_VEC4, Vector4f(
 						((double)rand() / (RAND_MAX)) + 1,
 						((double)rand() / (RAND_MAX)) + 1,
@@ -126,17 +125,12 @@ namespace HoneycombTest {
 						((double)rand() / (RAND_MAX)) + 1)
 				);
 
-				light->getComponent<Transform>()->rotate(Vector3f::getGlobalRight(), PI);
-				light->getComponent<SpotLight>()->glFloats.setValue(
-					SpotLight::INTENSITY_F, 10.0F);
-				light->getComponent<SpotLight>()->glFloats.setValue(
-					SpotLight::ANGLE_F, PI);
+				light->getComponent<PointLight>()->setIntensity(3.0F);
 				light->addComponent(*suzInputTransformable->clone());
 
 				this->gameScene.addChild(*light);
 			}
 		}
-		*/
 
 		// Add all objects to the scene
 		this->gameScene.addChild(*cube);

@@ -43,6 +43,14 @@ namespace Honeycomb::Component::Light {
 		/// return : The cloned Spot Light.
 		SpotLight* clone() const;
 
+		/// Returns the angle of this Spot Light.
+		/// return : The reference to the angle.
+		float& getAngle();
+
+		/// Returns the angle of this Spot Light.
+		/// return : The constant reference to the angle.
+		const float& getAngle() const;
+
 		/// Returns the attenuation of this Point Light.
 		/// return : The reference to the Attenuation.
 		Honeycomb::Component::Light::Attenuation& getAttenuation();
@@ -50,6 +58,22 @@ namespace Honeycomb::Component::Light {
 		/// Returns the attenuation of this Point Light.
 		/// return : The constant reference to the Attenuation.
 		const Honeycomb::Component::Light::Attenuation& getAttenuation() const;
+
+		/// Returns the direction of this Spot Light.
+		/// return : The constant reference to the Direction.
+		const Honeycomb::Math::Vector3f& getDirection() const;
+
+		/// Returns the position of this Spot Light.
+		/// return : The constant reference to the Position.
+		const Honeycomb::Math::Vector3f& getPosition() const;
+
+		/// Returns the range of this Point Light.
+		/// return : The reference to the range.
+		float& getRange();
+
+		/// Returns the range of this Point Light.
+		/// return : The constant reference to the range.
+		const float& getRange() const;
 
 		/// Writes the light and attenuation values of this Spot Light to the
 		/// specified Shader.
