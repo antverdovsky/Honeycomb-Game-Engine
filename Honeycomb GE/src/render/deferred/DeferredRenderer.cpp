@@ -398,9 +398,9 @@ namespace Honeycomb::Render::Deferred {
 		float kK = 256.0F / 5.0F;
 
 		// Retrieve all of the attenuation constants
-		float kC = pL.glFloats.getValue(PointLight::ATTENUATION_CONSTANT_F);
-		float kL = pL.glFloats.getValue(PointLight::ATTENUATION_LINEAR_F);
-		float kQ = pL.glFloats.getValue(PointLight::ATTENUATION_QUADRATIC_F);
+		float kC = pL.getAttenuation().getConstantTerm();
+		float kL = pL.getAttenuation().getLinearTerm();
+		float kQ = pL.getAttenuation().getQuadraticTerm();
 
 		// Get the radius (or scale) of the point light sphere
 		float scl = (-kL + sqrt(kL * kL - 4 * kQ * (kC - kK * kM))) / (2 * kQ);
@@ -426,9 +426,9 @@ namespace Honeycomb::Render::Deferred {
 		float kK = 256.0F / 5.0F;
 
 		// Retrieve all of the attenuation constants
-		float kC = sL.glFloats.getValue(SpotLight::ATTENUATION_CONSTANT_F);
-		float kL = sL.glFloats.getValue(SpotLight::ATTENUATION_LINEAR_F);
-		float kQ = sL.glFloats.getValue(SpotLight::ATTENUATION_QUADRATIC_F);
+		float kC = sL.getAttenuation().getConstantTerm();
+		float kL = sL.getAttenuation().getLinearTerm();
+		float kQ = sL.getAttenuation().getQuadraticTerm();
 
 		// Get the general scale of the spot light cone
 		float scl = (-kL + sqrt(kL * kL - 4 * kQ * (kC - kK * kM))) / (2 * kQ);

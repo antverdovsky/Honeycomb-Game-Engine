@@ -59,7 +59,8 @@ namespace Honeycomb::Shader {
 		///							information should be written to.
 		/// const string &uni : The name of the uniform in the Shader to which
 		///						the information should be written to.
-		void toShader(ShaderProgram &shader, const std::string &uni) const;
+		virtual void toShader(ShaderProgram &shader, const std::string &uni) 
+				const;
 	protected:
 		/// Initializes a new Generic Struct using the specified Shader Source
 		/// and the name of the struct as it appears in the Shader Source.

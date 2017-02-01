@@ -10,17 +10,13 @@ namespace Honeycomb::Component::Light {
 	class PointLight : public BaseLight {
 	public:
 		// Variables defining the color and intensity of the light.
-		const static std::string ATTENUATION_CONSTANT_F;
-		const static std::string ATTENUATION_LINEAR_F;
-		const static std::string ATTENUATION_QUADRATIC_F;
 		const static std::string COLOR_VEC4;
 		const static std::string INTENSITY_F;
 		const static std::string POSITION_VEC3;
 		const static std::string RANGE_F;
 
 		/// Initializes a new Point Light with a white { 1.0F, 1.0F, 1.0F, 
-		/// 1.0F } color, 1.0F intensity, 1.0F constant attenuation, 0.22
-		/// linear attenuation, 0.20 quadratic attenuation, and 10.0F range.
+		/// 1.0F } color, 1.0F intensity, default attenuation, and 10.0F range.
 		/// The position will be set to the default Vector3 until the Point 
 		/// Light is started and the Transform translation takes over.
 		PointLight();
@@ -31,12 +27,10 @@ namespace Honeycomb::Component::Light {
 		/// Transform translation takes over.
 		/// const float &inten : The intensity of this light.
 		/// const Vector4f &col : The color of this light.
-		/// const float &atC : The attenuation constant of this light.
-		/// const float &atL : The attenuation linear of this light.
-		/// const float &atQ : The attenuation quadratic of this light.
+		/// const Attenuation &atten : The attenuation of this light.
 		/// const float &ran : The range of this light.
 		PointLight(const float &inten, const Honeycomb::Math::Vector4f &col, 
-				const float &atC, const float &atL, const float &atQ, const 
+				const Honeycomb::Component::Light::Attenuation &atten, const 
 				float &ran);
 
 		/// Clones this Point Light into a new, dynamically allocated, Point 
@@ -45,8 +39,29 @@ namespace Honeycomb::Component::Light {
 		/// return : The cloned Point Light.
 		PointLight* clone() const;
 
+		/// Returns the attenuation of this Point Light.
+		/// return : The reference to the Attenuation.
+		Honeycomb::Component::Light::Attenuation& getAttenuation();
+
+		/// Returns the attenuation of this Point Light.
+		/// return : The constant reference to the Attenuation.
+		const Honeycomb::Component::Light::Attenuation& getAttenuation() const;
+
+		/// Sets the attenuation of this Point Light.
+		/// const Attenuation &atten : The new attenuation of this Point Light.
+		void setAttenuation(const Honeycomb::Component::Light::Attenuation& 
+				atten);
+
 		/// Starts this Point Light.
 		void start();
+
+		/// Writes the light and attenuation values of this Point Light to the
+		/// specified Shader.
+		/// ShaderProgram &shader : The shader to which to write the values of
+		///							this light.
+		///	const string &uni : The uniform name of this Light in the Shader.
+		void toShader(Honeycomb::Shader::ShaderProgram &shader,
+				const std::string &uni) const;
 
 		/// Updates this Point Light.
 		void update();
@@ -54,6 +69,8 @@ namespace Honeycomb::Component::Light {
 		// The struct definition for the Point Light.
 		const static std::string structFile;
 		const static std::string structName;
+
+		Honeycomb::Component::Light::Attenuation attenuation;
 
 		const Honeycomb::Math::Vector3f *position; // Transform Position
 	};

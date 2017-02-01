@@ -68,11 +68,11 @@ namespace Honeycomb::Component::Light {
 	const std::string Attenuation::STRUCT_NAME = "Attenuation";
 
 	const std::string Attenuation::ATTENUATION_CONSTANT_F = 
-		"attenuation.constant";
+		"constant";
 	const std::string Attenuation::ATTENUATION_LINEAR_F =
-		"attenuation.linear";
+		"linear";
 	const std::string Attenuation::ATTENUATION_QUADRATIC_F =
-		"attenuation.quadratic";
+		"quadratic";
 
 	Attenuation::Attenuation() : Attenuation(1.0F, 0.22F, 0.20F) {
 
@@ -82,7 +82,9 @@ namespace Honeycomb::Component::Light {
 			const float &atQ) : 
 			GenericStruct(*ShaderSource::getShaderSource(STRUCT_FILE), 
 				STRUCT_NAME) {
-		
+		this->setConstantTerm(atC);
+		this->setLinearTerm(atL);
+		this->setQuadraticTerm(atQ);
 	}
 
 	float& Attenuation::getConstantTerm() {
