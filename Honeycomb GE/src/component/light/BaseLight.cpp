@@ -87,6 +87,26 @@ namespace Honeycomb::Component::Light {
 		this->setQuadraticTerm(atQ);
 	}
 
+	float Attenuation::calculateRange(const BaseLight &bL, const Attenuation
+			&atten, const float &minI) {
+		// Retrieve the RGBA color of the Light and get the maximum RGB 
+		// component of the color.
+		Vector4f rgba = bL.glVector4fs.getValue(PointLight::COLOR_VEC4);
+		float kM = fmaxf(rgba.getX(), fmaxf(rgba.getY(), rgba.getZ()));
+
+		// Constant representing the inverse of the brightness at the radius of
+		// the sphere.
+		float kK = 1.0F / minI;
+
+		// Retrieve all of the attenuation constants
+		float kC = atten.getConstantTerm();
+		float kL = atten.getLinearTerm();
+		float kQ = atten.getQuadraticTerm();
+
+		// Get the range and return
+		return (-kL + sqrt(kL * kL - 4 * kQ * (kC - kK * kM))) / (2 * kQ);
+	}
+
 	float& Attenuation::getConstantTerm() {
 		return this->glFloats.getValue(ATTENUATION_CONSTANT_F);
 	}

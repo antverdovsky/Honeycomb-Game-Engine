@@ -88,6 +88,18 @@ namespace Honeycomb::Component::Light {
 		/// const float &atQ : The quadratic attenuation value.
 		Attenuation(const float &atC, const float &atL, const float &atQ);
 
+		/// Calculates the range for the light given the light, its attenuation
+		///	and the minimum intensity of the light (the intensity of the light
+		/// at its range).
+		/// const BaseLight &bL : The base light for which the range is to be
+		///						  computed.
+		/// const Attenuation &atten : The attenuation of the light.
+		///	const float &minI : The minimum intensity of the Light, at its 
+		///						range. The intensity must be greater than zero.
+		/// return : The recommended range of the light.
+		static float calculateRange(const BaseLight &bL, const Attenuation 
+				&atten, const float &minI = 5.0F / 256.0F);
+
 		/// Returns a reference to the constant term of the attenuation.
 		/// return : A reference to the constant term.
 		float& getConstantTerm();

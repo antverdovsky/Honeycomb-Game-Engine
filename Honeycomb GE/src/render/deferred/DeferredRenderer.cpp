@@ -256,7 +256,6 @@ namespace Honeycomb::Render::Deferred {
 		this->gBuffer.bindTexture(GBufferTextureType::DIFFUSE, 
 			this->ambientShader);
 
-		//this->directionalLightPlane->render(this->directionalLightShader);
 		quad.draw(this->ambientShader);
 
 		glDisable(GL_BLEND);
@@ -387,59 +386,22 @@ namespace Honeycomb::Render::Deferred {
 		this->lightVolumeSpot->render(this->stencilShader);
 	}
 
-	void DeferredRenderer::transformLightPointVolume(PointLight &pL) {
-		// Retrieve the RGBA color of the Point Light and get the maximum
-		// RGB component of the color.
-		Vector4f rgba = pL.glVector4fs.getValue(PointLight::COLOR_VEC4);
-		float kM = fmaxf(rgba.getX(), fmaxf(rgba.getY(), rgba.getZ()));
-
-		// Constant representing the inverse of the brightness at the radius of
-		// the sphere.
-		float kK = 256.0F / 5.0F;
-
-		// Retrieve all of the attenuation constants
-		float kC = pL.getAttenuation().getConstantTerm();
-		float kL = pL.getAttenuation().getLinearTerm();
-		float kQ = pL.getAttenuation().getQuadraticTerm();
-
-		// Get the radius (or scale) of the point light sphere
-		float scl = (-kL + sqrt(kL * kL - 4 * kQ * (kC - kK * kM))) / (2 * kQ);
-		
+	void DeferredRenderer::transformLightPointVolume(const PointLight &pL) {
 		// Transform the Light Volume Sphere by scaling and translating it
 		this->lightVolumePoint->getComponent<Transform>()->setScale(Vector3f(
-			scl, scl, scl));
+			pL.getRange(), pL.getRange(), pL.getRange()));
 		this->lightVolumePoint->getComponent<Transform>()->setTranslation(
 			pL.glVector3fs.getValue(PointLight::POSITION_VEC3));
-
-		pL.glFloats.setValue(PointLight::RANGE_F, scl);
 	}
 
-	void DeferredRenderer::transformLightSpotVolume(SpotLight &sL) {
-		// Retrieve the RGBA color of the Spot Light and get the maximum
-		// RGB component of the color.
-		Vector4f rgba = sL.glVector4fs.getValue(SpotLight::COLOR_VEC4);
-		float kM = fmaxf(rgba.getX(), fmaxf(rgba.getY(), rgba.getZ())) *
-			sL.glFloats.getValue(SpotLight::INTENSITY_F);
-
-		// Constant representing the inverse of the brightness at the radius of
-		// the cone.
-		float kK = 256.0F / 5.0F;
-
-		// Retrieve all of the attenuation constants
-		float kC = sL.getAttenuation().getConstantTerm();
-		float kL = sL.getAttenuation().getLinearTerm();
-		float kQ = sL.getAttenuation().getQuadraticTerm();
-
-		// Get the general scale of the spot light cone
-		float scl = (-kL + sqrt(kL * kL - 4 * kQ * (kC - kK * kM))) / (2 * kQ);
-
+	void DeferredRenderer::transformLightSpotVolume(const SpotLight &sL) {
 		// Transform the Light Volume Sphere by scaling and translating it
 		this->lightVolumeSpot->getComponent<Transform>()->setScale(Vector3f(
-			scl, scl, scl));
+			sL.getRange(), sL.getRange(), sL.getRange()));
 		this->lightVolumeSpot->getComponent<Transform>()->setTranslation(
-			sL.glVector3fs.getValue(SpotLight::POSITION_VEC3));// + Vector3f(0.0F, 0.0F, scl));	// TODO: When children transforms work change this
+			sL.glVector3fs.getValue(SpotLight::POSITION_VEC3));
 		this->lightVolumeSpot->getComponent<Transform>()->setRotation(
-			sL.getAttached()->getComponent<Transform>()->getRotation());		// TODO make so it uses sL.direction
+			sL.getAttached()->getComponent<Transform>()->getRotation());		    // TODO make so it uses sL.direction
 		this->lightVolumeSpot->getComponent<Transform>()->rotate(					// todo temporary
 			this->lightVolumeSpot->getComponent<Transform>()->getLocalRight(),
 			3.1415926159F

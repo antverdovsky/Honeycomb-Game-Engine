@@ -102,20 +102,18 @@ namespace Honeycomb::Render::Deferred {
 
 		/// Scales and translates the Point Light's Sphere Volume based on the 
 		/// attenuation, color, intensity and position of the specified point 
-		/// light. The range of the light will also be modified to reflect the
-		/// scale of the light sphere volume.
-		/// PointLight &pL : The Point Light for which the light volume
-		///					 is to be transformed.
-		void transformLightPointVolume(Honeycomb::Component::Light::
+		/// light.
+		/// const PointLight &pL : The Point Light for which the light volume
+		///					       is to be transformed.
+		void transformLightPointVolume(const Honeycomb::Component::Light::
 				PointLight &pL);
 
 		/// Scales and translates the Spot Light's Sphere Volume based on the 
 		/// attenuation, color, intensity and position of the specified point 
-		/// light. The range of the light will also be modified to reflect the
-		/// scale of the light sphere volume.
-		/// SpotLight &sL : The Spot Light for which the light volume is to be 
-		///					transformed.
-		void transformLightSpotVolume(Honeycomb::Component::Light::
+		/// light.
+		/// const SpotLight &sL : The Spot Light for which the light volume is
+		///						  to be transformed.
+		void transformLightSpotVolume(const Honeycomb::Component::Light::
 				SpotLight &sL);
 	};
 }
