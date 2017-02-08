@@ -8,6 +8,13 @@
 #include "..\..\shader\GenericStruct.h"
 
 namespace Honeycomb::Component::Light {
+	enum LightType {
+		LIGHT_TYPE_AMBIENT,
+		LIGHT_TYPE_DIRECTIONAL,
+		LIGHT_TYPE_POINT,
+		LIGHT_TYPE_SPOT
+	};
+
 	class BaseLight : 
 			public Honeycomb::Shader::GenericStruct,
 			public Honeycomb::Component::GameComponent {
@@ -23,8 +30,9 @@ namespace Honeycomb::Component::Light {
 		/// const string &name : The name of the struct within the Shader
 		///						 Source which defines this light (also the
 		///						 component name).
+		/// const LightType &type : The type of this Light.
 		BaseLight(const Honeycomb::Shader::ShaderSource &src, const 
-				std::string &name);
+				std::string &name, const LightType &type);
 
 		/// Clones this Base Light into a new, dynamically allocated,
 		/// Base Light. This function should be used instead of the copy 
@@ -48,6 +56,10 @@ namespace Honeycomb::Component::Light {
 		/// return : The constant intensity reference.
 		const float& getIntensity() const;
 
+		/// Returns a constant reference to the type of this Light.
+		/// return : The type of this light.
+		const LightType& getType() const;
+
 		/// Sets the color of this Base Light.
 		/// const Vector4f &col : The new color of this BaseLight.
 		void setColor(const Honeycomb::Math::Vector4f &col);
@@ -61,9 +73,8 @@ namespace Honeycomb::Component::Light {
 
 		/// Stops this base light.
 		virtual void stop();
-
-		// The name of this light's uniform in the preferred shader. [temp: TODO]
-		std::string uniformName;
+	protected:
+		LightType type; // The type of this Light
 	};
 
 	class Attenuation :

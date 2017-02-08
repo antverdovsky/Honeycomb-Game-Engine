@@ -34,15 +34,14 @@ namespace Honeycomb::Component::Light {
 	SpotLight::SpotLight(const float &inten, const Honeycomb::Math::Vector4f
 			&col, const Attenuation &atten, const float &ran, 
 			const float &ang) : 
-			BaseLight(*ShaderSource::getShaderSource(structFile), structName) {
+			BaseLight(*ShaderSource::getShaderSource(structFile), structName, 
+				LightType::LIGHT_TYPE_SPOT) {
 		this->glFloats.setValue(SpotLight::INTENSITY_F, inten);
 		this->glVector4fs.setValue(SpotLight::COLOR_VEC4, col);
 		this->glFloats.setValue(SpotLight::RANGE_F, ran);
 		this->glFloats.setValue(SpotLight::ANGLE_F, ang);
 
 		this->attenuation = atten;
-
-		this->uniformName = "spotLight";
 	}
 
 	SpotLight* SpotLight::clone() const {

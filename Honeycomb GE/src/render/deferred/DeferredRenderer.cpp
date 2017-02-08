@@ -36,6 +36,7 @@ using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Graphics::Material;
 #include "..\..\..\include\graphics\Texture2D.h"
 using Honeycomb::Graphics::Texture2D;
+using Honeycomb::Component::Light::LightType;
 
 using Honeycomb::Object::GameObject;
 
@@ -205,7 +206,9 @@ namespace Honeycomb::Render::Deferred {
 
 	void DeferredRenderer::renderLightsPass(GameScene &scene) {
 		for (BaseLight *bL : scene.getActiveLights()) {
-			if (bL->getName() == "PointLight") { // TODO temporary
+			LightType type = bL->getType(); // Get the light type of the Light
+
+			if (type == LightType::LIGHT_TYPE_POINT) {
 				glEnable(GL_STENCIL_TEST); // Enable Stencil Testing for P.L.s
 				
 				this->transformLightPointVolume(
@@ -215,7 +218,7 @@ namespace Honeycomb::Render::Deferred {
 					*bL->getAttached()->getComponent<PointLight>());
 				this->renderLightPoint(
 					*bL->getAttached()->getComponent<PointLight>());
-			} else if (bL->getName() == "SpotLight") {
+			} else if (type == LightType::LIGHT_TYPE_SPOT) {
 				glEnable(GL_STENCIL_TEST); // Enable Stencil Testing for S.L.s
 
 				this->transformLightSpotVolume(
@@ -225,12 +228,12 @@ namespace Honeycomb::Render::Deferred {
 					*bL->getAttached()->getComponent<SpotLight>());
 				this->renderLightSpot(
 					*bL->getAttached()->getComponent<SpotLight>());
-			} else if (bL->getName() == "DirectionalLight") {
+			} else if (type == LightType::LIGHT_TYPE_DIRECTIONAL) {
 				glDisable(GL_STENCIL_TEST); // Disable Stencil Testing
 
 				this->renderLightDirectional(
 					*bL->getAttached()->getComponent<DirectionalLight>());
-			} else if (bL->getName() == "AmbientLight") {
+			} else if (type == LightType::LIGHT_TYPE_AMBIENT) {
 				glDisable(GL_STENCIL_TEST);
 
 				this->renderLightAmbient(

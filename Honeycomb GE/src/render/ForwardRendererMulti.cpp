@@ -1,3 +1,4 @@
+/*
 #include "..\..\include\render\ForwardRendererMulti.h"
 
 #include <GL\glew.h>
@@ -103,3 +104,4 @@ namespace Honeycomb::Render {
 
 	}
 }
+*/

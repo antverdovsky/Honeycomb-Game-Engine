@@ -18,11 +18,10 @@ namespace Honeycomb::Component::Light {
 	}
 
 	AmbientLight::AmbientLight(const float &inten, const Vector4f &col) :
-			BaseLight(*ShaderSource::getShaderSource(structFile), structName) {
+			BaseLight(*ShaderSource::getShaderSource(structFile), structName,
+				LightType::LIGHT_TYPE_AMBIENT) {
 		this->glFloats.setValue(AmbientLight::INTENSITY_F, inten);
 		this->glVector4fs.setValue(AmbientLight::COLOR_VEC4, col);
-
-		this->uniformName = "ambientLight";
 	}
 
 	AmbientLight* AmbientLight::clone() const {

@@ -30,14 +30,13 @@ namespace Honeycomb::Component::Light {
 
 	PointLight::PointLight(const float &inten, const Honeycomb::Math::Vector4f
 			&col, const Attenuation &atten, const float &ran) : 
-			BaseLight(*ShaderSource::getShaderSource(structFile), structName) {
+			BaseLight(*ShaderSource::getShaderSource(structFile), structName, 
+				LightType::LIGHT_TYPE_POINT) {
 		this->glFloats.setValue(PointLight::INTENSITY_F, inten);
 		this->glVector4fs.setValue(PointLight::COLOR_VEC4, col);
 		this->glFloats.setValue(PointLight::RANGE_F, ran);
 
 		this->attenuation = atten;
-
-		this->uniformName = "pointLight";
 	}
 
 	PointLight* PointLight::clone() const {

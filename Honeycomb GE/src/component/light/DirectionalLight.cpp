@@ -28,11 +28,10 @@ namespace Honeycomb::Component::Light {
 
 	DirectionalLight::DirectionalLight(const float &inten, const
 			Honeycomb::Math::Vector4f &col) : 
-			BaseLight(*ShaderSource::getShaderSource(structFile), structName) {
+			BaseLight(*ShaderSource::getShaderSource(structFile), structName,
+				LightType::LIGHT_TYPE_DIRECTIONAL) {
 		this->glFloats.setValue(DirectionalLight::INTENSITY_F, inten);
 		this->glVector4fs.setValue(DirectionalLight::COLOR_VEC4, col);
-
-		this->uniformName = "directionalLight";
 	}
 
 	DirectionalLight* DirectionalLight::clone() const {

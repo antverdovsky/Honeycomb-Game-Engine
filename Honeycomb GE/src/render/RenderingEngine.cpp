@@ -6,7 +6,7 @@
 
 using Honeycomb::Scene::GameScene;
 //using Honeycomb::Render::ForwardRendererSingle;
-using Honeycomb::Render::ForwardRendererMulti;
+//using Honeycomb::Render::ForwardRendererMulti;
 using Honeycomb::Render::Deferred::DeferredRenderer;
 
 namespace Honeycomb::Render {
@@ -28,9 +28,9 @@ namespace Honeycomb::Render {
 		case RenderingType::TYPE_FORWARD_RENDERER_SINGLE:
 //			this->renderer = ForwardRendererSingle::getLegacyForwardRenderer();
 			break;
-		case RenderingType::TYPE_FORWARD_RENDERER_MULTI:
-			this->renderer = ForwardRendererMulti::getForwardRendererMulti();
-			break;
+//		case RenderingType::TYPE_FORWARD_RENDERER_MULTI:
+//			this->renderer = ForwardRendererMulti::getForwardRendererMulti();
+//			break;
 		case RenderingType::TYPE_DEFERRED_RENDERER:
 			this->renderer = DeferredRenderer::getDeferredRenderer();
 			break;

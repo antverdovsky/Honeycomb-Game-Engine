@@ -17,14 +17,14 @@ namespace Honeycomb::Component::Light {
 	const std::string BaseLight::INTENSITY_F = "base.intensity";
 
 	BaseLight::BaseLight(const Honeycomb::Shader::ShaderSource &src, const
-			std::string &name) : 
+			std::string &name, const LightType &type) : 
 			GenericStruct(src, name), GameComponent(name) {
-
+		this->type = type;
 	}
 
 	BaseLight* BaseLight::clone() const {
 		return new BaseLight(*GenericStruct::SHADER_SOURCE, 
-			GenericStruct::structName);
+			GenericStruct::structName, this->type);
 	}
 
 	Vector4f& BaseLight::getColor() {
@@ -41,6 +41,10 @@ namespace Honeycomb::Component::Light {
 
 	const float& BaseLight::getIntensity() const {
 		return this->glFloats.getValue(BaseLight::INTENSITY_F);
+	}
+
+	const LightType& BaseLight::getType() const {
+		return this->type;
 	}
 
 	void BaseLight::setColor(const Honeycomb::Math::Vector4f &col) {

@@ -1,3 +1,6 @@
+/*
+	BROKEN; DO NOT USE
+
 #pragma once
 #ifndef FORWARD_RENDERER_MULTI
 #define FORWARD_RENDERER_MULTI
@@ -36,3 +39,4 @@ namespace Honeycomb::Render {
 }
 
 #endif
+*/
