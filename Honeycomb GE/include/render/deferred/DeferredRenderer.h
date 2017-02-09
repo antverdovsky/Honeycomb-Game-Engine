@@ -89,16 +89,33 @@ namespace Honeycomb::Render::Deferred {
 		/// Renders the specified Spot Light using Deferred Rendering.
 		/// const SpotLight &pL : The spot light to be rendered.
 		void renderLightSpot(const Honeycomb::Component::Light::SpotLight &sL);
-		
-		/// Performs the stencil pass on the specified Point Light.
-		/// const PointLight &pL : The point light to be rendered.
-		void stencilLightPoint(const Honeycomb::Component::Light::PointLight 
-				&pL);
 
-		/// Performs the stencil pass on the specified Spot Light.
-		/// const SpotLight &pL : The spot light to be rendered.
-		void stencilLightSpot(const Honeycomb::Component::Light::SpotLight
-				&sL);
+		/// Renders the specified Base Light using a full screen quad.
+		/// const BaseLight &bL : The base light to be rendered.
+		/// const ShaderProgram &shader : The shader program to be used when
+		///								  rendering the light quad.
+		/// const string &name : The name of the light uniform in the Shader.
+		void renderLightQuad(const Honeycomb::Component::Light::BaseLight &bL,
+				Honeycomb::Shader::ShaderProgram &shader, const std::string 
+				&name);
+
+		/// Renders the specified Base Light using a full screen quad.
+		/// const BaseLight &bL : The base light to be rendered.
+		/// GameObject &volume : The game object representing the volume
+		///						 of the light to be rendered.
+		/// const ShaderProgram &shader : The shader program to be used when
+		///								  rendering the light quad.
+		/// const string &name : The name of the light uniform in the Shader.
+		void renderLightVolume(const Honeycomb::Component::Light::BaseLight 
+				&bL, Honeycomb::Object::GameObject &volume, 
+				Honeycomb::Shader::ShaderProgram &shader, const std::string 
+				&name);
+
+		/// Performs the stencil pass on the light with the specified light
+		///	volume.
+		/// GameObject &volume : The object representing the light volume of 
+		///						 the light.
+		void stencilLightVolume(Honeycomb::Object::GameObject &volume);
 
 		/// Scales and translates the Point Light's Sphere Volume based on the 
 		/// attenuation, color, intensity and position of the specified point 

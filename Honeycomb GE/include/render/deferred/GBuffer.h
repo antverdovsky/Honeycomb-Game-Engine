@@ -44,10 +44,21 @@ namespace Honeycomb::Render::Deferred {
 		void bindDrawGeometry();
 
 		/// Binds this G Buffer for drawing Light to it from the Deferred
-		/// Renderer.
+		/// Renderer. All the color textures of this GBuffer will be binded
+		/// to the shader provided.
 		/// ShaderProgram &shader : The Shader Program with which the lights
 		///							will be drawn.
 		void bindDrawLight(Honeycomb::Shader::ShaderProgram &shader);
+
+		/// Binds this G Buffer for drawing Light to it from the Deferred
+		/// Renderer. If the light is of type Ambient Light, only the Diffuse
+		/// texture will be binded, otherwise, all the color textures of this
+		/// GBuffer will be binded to the shader provided.
+		/// ShaderProgram &shader : The Shader Program with which the lights
+		///							will be drawn.
+		/// const LightType &type : The type of the light which will be drawn.
+		void bindDrawLight(Honeycomb::Shader::ShaderProgram &shader, const
+				Honeycomb::Component::Light::LightType &type);
 
 		/// Binds this G Buffer for only reading from it.
 		void bindRead();

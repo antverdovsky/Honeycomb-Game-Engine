@@ -140,7 +140,7 @@ namespace HoneycombTest {
 		this->gameScene.addChild(*suzanne);
 		this->gameScene.addChild(*aPointLight);
 		this->gameScene.addChild(*icosphere);
-		//		this->gameScene.addChild(*directionalLight);
+		this->gameScene.addChild(*directionalLight);
 		this->gameScene.addChild(*ambientLight);
 		this->gameScene.addChild(*camera);
 		this->gameScene.addChild(*challenger);

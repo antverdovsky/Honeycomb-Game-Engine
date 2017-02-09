@@ -37,8 +37,11 @@ using Honeycomb::Graphics::Material;
 #include "..\..\..\include\graphics\Texture2D.h"
 using Honeycomb::Graphics::Texture2D;
 using Honeycomb::Component::Light::LightType;
+#include "..\..\..\include\geometry\Mesh.h"
+using Honeycomb::Geometry::Mesh;
 
 using Honeycomb::Object::GameObject;
+using Honeycomb::Shader::ShaderProgram;
 
 using Honeycomb::Scene::GameScene;
 using Honeycomb::Component::Render::CameraController;
@@ -206,120 +209,80 @@ namespace Honeycomb::Render::Deferred {
 
 	void DeferredRenderer::renderLightsPass(GameScene &scene) {
 		for (BaseLight *bL : scene.getActiveLights()) {
-			LightType type = bL->getType(); // Get the light type of the Light
-
-			if (type == LightType::LIGHT_TYPE_POINT) {
-				glEnable(GL_STENCIL_TEST); // Enable Stencil Testing for P.L.s
-				
-				this->transformLightPointVolume(
-					*bL->getAttached()->getComponent<PointLight>());
-
-				this->stencilLightPoint(
-					*bL->getAttached()->getComponent<PointLight>());
-				this->renderLightPoint(
-					*bL->getAttached()->getComponent<PointLight>());
-			} else if (type == LightType::LIGHT_TYPE_SPOT) {
-				glEnable(GL_STENCIL_TEST); // Enable Stencil Testing for S.L.s
-
-				this->transformLightSpotVolume(
-					*bL->getAttached()->getComponent<SpotLight>());
-
-				this->stencilLightSpot(
-					*bL->getAttached()->getComponent<SpotLight>());
-				this->renderLightSpot(
-					*bL->getAttached()->getComponent<SpotLight>());
-			} else if (type == LightType::LIGHT_TYPE_DIRECTIONAL) {
-				glDisable(GL_STENCIL_TEST); // Disable Stencil Testing
-
-				this->renderLightDirectional(
-					*bL->getAttached()->getComponent<DirectionalLight>());
-			} else if (type == LightType::LIGHT_TYPE_AMBIENT) {
-				glDisable(GL_STENCIL_TEST);
-
-				this->renderLightAmbient(
-					*bL->getAttached()->getComponent<AmbientLight>());
+			switch (bL->getType()) {
+			case LightType::LIGHT_TYPE_AMBIENT:
+				this->renderLightAmbient(*(bL->downcast<AmbientLight>()));
+				break;
+			case LightType::LIGHT_TYPE_DIRECTIONAL:
+				this->renderLightDirectional(*(
+					bL->downcast<DirectionalLight>()));
+				break;
+			case LightType::LIGHT_TYPE_POINT:
+				this->renderLightPoint(*(bL->downcast<PointLight>()));
+				break;
+			case LightType::LIGHT_TYPE_SPOT:
+				this->renderLightSpot(*(bL->downcast<SpotLight>()));
+				break;
 			}
 		}
 	}
 
 	void DeferredRenderer::renderLightAmbient(const AmbientLight &aL) {
-		// Write the Camera Projection & Light to the Point Light Shader
-		CameraController::getActiveCamera()->toShader(
-			this->ambientShader, "camera");
-		aL.toShader(this->ambientShader, "ambientLight");
+		glDisable(GL_STENCIL_TEST);
 
-		glDisable(GL_DEPTH_TEST); // Light does not need Depth Testing
-		glEnable(GL_BLEND); // Each light's contribution is blended together
-		glBlendEquation(GL_FUNC_ADD); // Lights are added together with an
-		glBlendFunc(GL_ONE, GL_ONE);  // equal contribution from each source
-
-		glEnable(GL_CULL_FACE);
-
-		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL);
-		this->gBuffer.bindTexture(GBufferTextureType::DIFFUSE, 
-			this->ambientShader);
-
-		quad.draw(this->ambientShader);
-
-		glDisable(GL_BLEND);
+		this->renderLightQuad(aL, this->ambientShader, "ambientLight");
 	}
 
 	void DeferredRenderer::renderLightDirectional(const DirectionalLight &dL) {
-		// Write the Camera Projection & Light to the Point Light Shader
-		CameraController::getActiveCamera()->toShader(
-			this->directionalLightShader, "camera");
-		dL.toShader(this->directionalLightShader, "directionalLight");
-
-		glDisable(GL_DEPTH_TEST); // Light does not need Depth Testing
-		glEnable(GL_BLEND); // Each light's contribution is blended together
-		glBlendEquation(GL_FUNC_ADD); // Lights are added together with an
-		glBlendFunc(GL_ONE, GL_ONE);  // equal contribution from each source
-
-		glEnable(GL_CULL_FACE);
-
-		this->gBuffer.bindDrawLight(this->directionalLightShader);
-
-		//this->directionalLightPlane->render(this->directionalLightShader);
-		quad.draw(this->directionalLightShader);
-
-		glDisable(GL_BLEND);
+		glDisable(GL_STENCIL_TEST);
+		
+		this->renderLightQuad(dL, this->directionalLightShader, 
+			"directionalLight");
 	}
 
 	void DeferredRenderer::renderLightPoint(const PointLight &pL) {
-		// Write the Camera Projection & Light to the Point Light Shader
-		CameraController::getActiveCamera()->toShader(this->pointLightShader,
-			"camera");
-		pL.toShader(this->pointLightShader, "pointLight");
+		glEnable(GL_STENCIL_TEST);
 
-		this->gBuffer.bindDrawLight(this->pointLightShader);
-
-		// Set the Stencil Function to pass when the stencil value != 0
-		glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
-
-		glDisable(GL_DEPTH_TEST); // Light does not need Depth Testing
-		glEnable(GL_BLEND); // Each light's contribution is blended together
-		glBlendEquation(GL_FUNC_ADD); // Lights are added together with an
-		glBlendFunc(GL_ONE, GL_ONE);  // equal contribution from each source
-
-		// Enable the culling of the front facing faces 
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
-		
-		// Render the point light sphere with the given shader
-		this->lightVolumePoint->render(this->pointLightShader);
-
-		// Enable the culling of the back facing faces
-		glCullFace(GL_BACK);
-		glDisable(GL_BLEND);
+		this->transformLightPointVolume(pL);
+		this->stencilLightVolume(*(this->lightVolumePoint));
+		this->renderLightVolume(pL, *(this->lightVolumePoint), 
+			this->pointLightShader, "pointLight");
 	}
 
 	void DeferredRenderer::renderLightSpot(const SpotLight &sL) {
-		// Write the Camera Projection & Light to the Spot Light Shader
-		CameraController::getActiveCamera()->toShader(this->spotLightShader,
-			"camera");
-		sL.toShader(this->spotLightShader, "spotLight");
+		glEnable(GL_STENCIL_TEST); // Enable Stencil Testing for S.L.s
 
-		this->gBuffer.bindDrawLight(this->spotLightShader);
+		this->transformLightSpotVolume(sL);
+		this->stencilLightVolume(*(this->lightVolumeSpot));
+		this->renderLightVolume(sL, *(this->lightVolumeSpot),
+			this->spotLightShader, "spotLight");
+	}
+
+	void DeferredRenderer::renderLightQuad(const BaseLight &bL, 
+			ShaderProgram &shader, const std::string &name) {
+		CameraController::getActiveCamera()->toShader(shader, "camera");
+		bL.toShader(shader, name);
+
+		glDisable(GL_DEPTH_TEST); // Light does not need Depth Testing
+		glEnable(GL_BLEND); // Each light's contribution is blended together
+		glBlendEquation(GL_FUNC_ADD); // Lights are added together with an
+		glBlendFunc(GL_ONE, GL_ONE);  // equal contribution from each source
+
+		glEnable(GL_CULL_FACE);
+
+		this->gBuffer.bindDrawLight(shader, bL.getType());
+		quad.draw(shader);
+
+		glDisable(GL_BLEND);
+	}
+
+	void DeferredRenderer::renderLightVolume(const BaseLight &bL,
+			GameObject &obj, ShaderProgram &shader, const std::string &name) {
+		// Write the Camera Projection & Light to the Point Light Shader
+		CameraController::getActiveCamera()->toShader(shader, "camera");
+		bL.toShader(shader, name);
+
+		this->gBuffer.bindDrawLight(shader, bL.getType());
 
 		// Set the Stencil Function to pass when the stencil value != 0
 		glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
@@ -333,39 +296,15 @@ namespace Honeycomb::Render::Deferred {
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_FRONT);
 
-		// Render the spot light volume with the given shader
-		this->lightVolumeSpot->render(this->spotLightShader);
+		// Render the point light sphere with the given shader
+		obj.render(shader);
 
 		// Enable the culling of the back facing faces
 		glCullFace(GL_BACK);
 		glDisable(GL_BLEND);
 	}
 
-	void DeferredRenderer::stencilLightPoint(const PointLight &pL) {
-		CameraController::getActiveCamera()->toShader(this->stencilShader,
-			"camera");
-		this->gBuffer.bindStencil(); // Bind buffer for Stencil information
-
-		glEnable(GL_DEPTH_TEST); // Enable depth testing for stencil
-		glDisable(GL_CULL_FACE); // For processing ALL (front & back) faces
-		glClear(GL_STENCIL_BUFFER_BIT); // Clear Stencil for this pass
-
-		// Set the Stencil Test to always successeed, since only the depth is
-		// to be tested.
-		glStencilFunc(GL_ALWAYS, 0, 0);
-
-		// Configure stencil operation for back facing polygons to increment
-		// the value in the stencil buffer only when the depth test fails. For
-		// front facing polygons, decrement the value in the stencil buffer
-		// only when the depth test fails.
-		glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
-		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
-
-		// Render the Sphere with the basic stencil shader
-		this->lightVolumePoint->render(this->stencilShader);
-	}
-
-	void DeferredRenderer::stencilLightSpot(const SpotLight &sL) {
+	void DeferredRenderer::stencilLightVolume(GameObject &volume) {
 		CameraController::getActiveCamera()->toShader(this->stencilShader,
 			"camera");
 		this->gBuffer.bindStencil(); // Bind buffer for Stencil information
@@ -386,7 +325,7 @@ namespace Honeycomb::Render::Deferred {
 		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
 
 		// Render the Cone with the basic stencil shader
-		this->lightVolumeSpot->render(this->stencilShader);
+		volume.render(this->stencilShader);
 	}
 
 	void DeferredRenderer::transformLightPointVolume(const PointLight &pL) {

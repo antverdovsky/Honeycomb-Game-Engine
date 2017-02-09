@@ -39,6 +39,26 @@ namespace Honeycomb::Component::Light {
 		/// constructor to prevent object slicing.
 		/// return : The cloned Base Light.
 		BaseLight* clone() const;
+		
+		/// Downcasts this light depending on the type of the light. The
+		/// type passed to the template function must match the type of this
+		/// light. If the type passed in does not match the type of this light,
+		/// a nullptr will be returned instead.
+		/// return : A constant pointer to the downcast instance; nullptr if 
+		///			 the light could not be downcast.
+		template<typename T> const T* downcast() const {
+			return dynamic_cast<const T*>(this);
+		}
+
+		/// Downcasts this light depending on the type of the light. The
+		/// type passed to the template function must match the type of this
+		/// light. If the type passed in does not match the type of this light,
+		/// a nullptr will be returned instead.
+		/// return : A pointer to the downcast instance; nullptr if the light
+		///			 could not be downcast.
+		template<typename T> T* downcast() {
+			return dynamic_cast<T*>(this);
+		}
 
 		/// Returns a reference to the color of this Base Light.
 		/// return : The color reference.

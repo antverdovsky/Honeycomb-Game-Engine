@@ -5,6 +5,7 @@
 #include "..\..\..\include\base\GameWindow.h"
 #include "..\..\..\include\debug\Logger.h"
 
+using Honeycomb::Component::Light::LightType;
 using Honeycomb::Base::GameWindow;
 using Honeycomb::Debug::Logger;
 using Honeycomb::Shader::ShaderProgram;
@@ -54,6 +55,21 @@ namespace Honeycomb::Render::Deferred {
 		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL);
 		
 		this->bindColorTextures(shader);
+	}
+
+	void GBuffer::bindDrawLight(ShaderProgram &shader, const LightType &type) {
+		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL);
+
+		switch (type) {
+		case LightType::LIGHT_TYPE_AMBIENT:
+			this->bindTexture(GBufferTextureType::DIFFUSE, shader);
+			return;
+		case LightType::LIGHT_TYPE_DIRECTIONAL:
+		case LightType::LIGHT_TYPE_POINT:
+		case LightType::LIGHT_TYPE_SPOT:
+			this->bindColorTextures(shader);
+			return;
+		}
 	}
 
 	void GBuffer::bindRead() {
