@@ -2,49 +2,34 @@
 
 #include <GL/glew.h>
 
-#include "..\..\..\include\component\render\CameraController.h"
-#include "..\..\..\include\math\MathUtils.h"
-using namespace Honeycomb::Math::Utils;
-
-#include "..\..\..\include\base\GameWindow.h"
-using Honeycomb::Base::GameWindow;
-#include "..\..\..\include\geometry\Vertex.h"
-using Honeycomb::Geometry::Vertex;
-#include "..\..\..\include\math\Vector4f.h"
-using Honeycomb::Math::Vector4f;
-#include "..\..\..\include\math\Vector3f.h"
-using Honeycomb::Math::Vector3f;
-#include "..\..\..\include\math\Vector2f.h"
-using Honeycomb::Math::Vector2f;
-#include "..\..\..\include\component\light\BaseLight.h"
-using Honeycomb::Component::Light::BaseLight;
 #include "..\..\..\include\component\light\AmbientLight.h"
-using Honeycomb::Component::Light::AmbientLight;
+#include "..\..\..\include\component\light\BaseLight.h"
 #include "..\..\..\include\component\light\DirectionalLight.h"
-using Honeycomb::Component::Light::DirectionalLight;
 #include "..\..\..\include\component\light\PointLight.h"
-using Honeycomb::Component::Light::PointLight;
 #include "..\..\..\include\component\light\SpotLight.h"
-using Honeycomb::Component::Light::SpotLight;
-#include "..\..\..\include\object\Builder.h"
-using Honeycomb::Object::Builder;
-#include "..\..\..\include\component\render\MeshRenderer.h"
-using Honeycomb::Component::Render::MeshRenderer;
 #include "..\..\..\include\component\physics\Transform.h"
-using Honeycomb::Component::Physics::Transform;
-#include "..\..\..\include\graphics\Material.h"
-using Honeycomb::Graphics::Material;
-#include "..\..\..\include\graphics\Texture2D.h"
-using Honeycomb::Graphics::Texture2D;
+#include "..\..\..\include\component\render\CameraController.h"
+#include "..\..\..\include\component\render\MeshRenderer.h"
+
+#include "..\..\..\include\geometry\Vertex.h"
+#include "..\..\..\include\object\Builder.h"
+
+using Honeycomb::Component::Light::BaseLight;
+using Honeycomb::Component::Light::AmbientLight;
+using Honeycomb::Component::Light::DirectionalLight;
+using Honeycomb::Component::Light::PointLight;
+using Honeycomb::Component::Light::SpotLight;
 using Honeycomb::Component::Light::LightType;
-#include "..\..\..\include\geometry\Mesh.h"
-using Honeycomb::Geometry::Mesh;
-
-using Honeycomb::Object::GameObject;
-using Honeycomb::Shader::ShaderProgram;
-
-using Honeycomb::Scene::GameScene;
+using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Component::Render::CameraController;
+using Honeycomb::Component::Render::MeshRenderer;
+using Honeycomb::Geometry::Vertex;
+using Honeycomb::Math::Vector3f;
+using Honeycomb::Math::Vector2f;
+using Honeycomb::Object::Builder;
+using Honeycomb::Object::GameObject;
+using Honeycomb::Scene::GameScene;
+using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb::Render::Deferred {
 	DeferredRenderer* DeferredRenderer::deferredRenderer = nullptr;
