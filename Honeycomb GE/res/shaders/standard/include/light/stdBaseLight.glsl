@@ -45,25 +45,25 @@ vec4 calculateDiffuseLight(BaseLight bL, vec3 dir, vec3 norm) {
 
 /// Calculates the specular reflection for this fragment given the light for
 /// which the reflection is being computed, and the coordinates of the camera 
-/// and the fragment.
+/// and the fragment, using the Blinn-Phong lighting model.
 /// BaseLight bL : The light for which the reflection is being computed.
 /// Camera cam : The camera with which the scene is rendered.
 /// vec3 wP : The position of the fragment in the world.
-/// vec3 dir : The direction with which the light hits the surface.
+/// vec3 dirLight : The direction with which the light hits the surface.
 /// vec3 norm : The normal to the surface.
 /// float shine : The shininess of the specular reflection.
 /// vec3 color : The color of the specular reflection.
 /// return : The specular reflection.
-vec4 calculateSpecularReflection(BaseLight bL, Camera cam, vec3 wP, vec3 dir, 
-        vec3 norm, float shine, vec3 color) {
+vec4 calculateSpecularReflection(BaseLight bL, Camera cam, vec3 wP, 
+		vec3 dirLight, vec3 norm, float shine, vec3 color) {
     vec3 cP = cam.translation; // Camera Position
         
-    vec3 direction = normalize(cP - wP); // Direction from Cam to Frag
-    vec3 reflection = normalize(reflect(dir, norm)); // Get the reflection
+    vec3 dirView = normalize(cP - wP); // Direction from Cam to Frag
+	vec3 dirHalf = normalize(dirLight + dirView); // Get the halfway direction
     
-    // Calculate the specular reflection factor
-    float spec = pow(max(dot(direction, reflection), 0.0F), shine);
-    
+    // Calculate the specular reflection factor.
+	float spec = pow(max(dot(-dirHalf, norm), 0.0F), shine);
+
     // Calculate the specular light but do NOT apply the intensity to the W
     // component, so that the surface does not become transparent if the
     // intensity is less than 1.0F.

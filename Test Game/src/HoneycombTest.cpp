@@ -56,7 +56,7 @@ namespace HoneycombTest {
 			5.0F, 5.0F);
 		PointLight *suzPointLight = new PointLight();
 		suzPointLight->glVector4fs.setValue(PointLight::COLOR_VEC4, Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
-		suzPointLight->glFloats.setValue(PointLight::INTENSITY_F, 7.0F);
+		suzPointLight->glFloats.setValue(PointLight::INTENSITY_F, 3.0F);
 		SpotLight *suzSpotLight = new SpotLight();
 
 		suzSpotLight->glVector4fs.setValue(PointLight::COLOR_VEC4, Vector4f(1.0F, 0.0F, 0.0F, 1.0F));
@@ -64,7 +64,7 @@ namespace HoneycombTest {
 		suzSpotLight->glFloats.setValue(SpotLight::ANGLE_F, PI);
 
 		// Add Suzanne's Components to Suzanne
-//		suzanne->addComponent(*suzPointLight);
+		suzanne->addComponent(*suzPointLight);
 		cone->addComponent(*suzInputTransformable->clone());
 //		suzanne->addComponent(*suzSpotLight);
 		suzanne->addComponent(*suzInputTransformable);
@@ -92,21 +92,19 @@ namespace HoneycombTest {
 		// Create a fancy Chrome Material (non-textured).
 		Texture2D *blank = new Texture2D();
 		blank->initialize();
-		blank->setImageData();
-		Material *chrome = new Material();
-		chrome->glVector4fs.setValue("ambientColor",
-			Vector4f(0.25F, 0.25F, 0.25F, 1.0F));
-		chrome->glVector4fs.setValue("diffuseColor",
-			Vector4f(0.4F, 0.4F, 0.4F, 1.0F));
-		chrome->glVector4fs.setValue("specularColor",
-			Vector4f(0.774597F, 0.774597F, 0.774597F, 0.6F * 128.0F));
-		chrome->glSampler2Ds.setValue("albedoTexture", *blank);
+		blank->setImageData("..\\Test Game\\res\\textures\\wood.bmp");
+		Material *wood = new Material();
+		wood->glVector4fs.setValue("ambientColor",
+			Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
+		wood->glVector4fs.setValue("diffuseColor",
+			Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
+		wood->glVector4fs.setValue("specularColor",
+			Vector4f(0.2F, 0.2F, 0.2F, 32));			// ?
+		wood->glSampler2Ds.setValue("albedoTexture", *blank);
 
 		// Give Suzanne & the Sphere the Emerald Material
-		suzanne->getComponent<MeshRenderer>()->setMaterial(
-			*chrome);
-		sphere->getComponent<MeshRenderer>()->setMaterial(
-			*chrome);
+		
+		plane->getComponent<MeshRenderer>()->setMaterial(*wood);
 
 		srand(time(NULL));
 		for (int i = -8; i <= 8; i += 4) {
@@ -125,7 +123,7 @@ namespace HoneycombTest {
 						((double)rand() / (RAND_MAX)) + 1)
 				);
 
-				light->getComponent<PointLight>()->setIntensity(3.0F);
+				light->getComponent<PointLight>()->setIntensity(10.0F);
 				light->addComponent(*suzInputTransformable->clone());
 
 				this->gameScene.addChild(*light);
