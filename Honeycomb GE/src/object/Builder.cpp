@@ -19,6 +19,7 @@ using Honeycomb::Component::Light::SpotLight;
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Component::Render::CameraController;
 using Honeycomb::Geometry::Model;
+using Honeycomb::Geometry::ModelSettings;
 using Honeycomb::Math::Vector4f;
 
 namespace Honeycomb::Object {
@@ -105,12 +106,11 @@ namespace Honeycomb::Object {
 		return newDefaultImport("Icosphere", ICOSPHERE_LOCATION);
 	}
 
-	GameObject* Builder::newModel(std::string path) {
+	GameObject* Builder::newModel(const std::string &path, 
+			const ModelSettings &settings) {
 		// Create a Model and return the clone of it (again, do not delete the
 		// model so that the Model class may later reuse this model if needed).
-		GameObject* obj = Model::loadModel(path).getGameObjectClone();
-
-		return obj;
+		return Model::loadModel(path, settings).getGameObjectClone();
 	}
 
 	GameObject* Builder::newPlane() {

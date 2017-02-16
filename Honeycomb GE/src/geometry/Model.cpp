@@ -33,6 +33,49 @@ using Honeycomb::Math::Quaternion;
 namespace Honeycomb::Geometry {
 	std::vector<Model*> Model::imports = std::vector<Model*>();
 
+	unsigned int ModelSettings::toPFlags() const {
+		unsigned int pF = 0;
+
+		pF |= calcTangentSpace ? aiProcess_CalcTangentSpace : 0;
+		pF |= joinDuplicateVertices ? aiProcess_JoinIdenticalVertices : 0;
+		pF |= makeLeftHanded ? aiProcess_MakeLeftHanded : 0;
+		pF |= triangulate ? aiProcess_Triangulate : 0;
+		pF |= genNormals ? aiProcess_GenNormals : 0;
+		pF |= genSmoothNormals ? aiProcess_GenSmoothNormals : 0;
+		pF |= splitLargeMeshes ? aiProcess_SplitLargeMeshes : 0;
+		pF |= preTransformVertices ? aiProcess_PreTransformVertices : 0;
+		pF |= delUnusedMaterials ? aiProcess_RemoveRedundantMaterials : 0;
+		pF |= fixInfacingNormals ? aiProcess_FixInfacingNormals : 0;
+		pF |= genUVCoords ? aiProcess_GenUVCoords : 0;
+		pF |= transformUVCoords ? aiProcess_TransformUVCoords : 0;
+		pF |= optimizeMesh ? aiProcess_OptimizeMeshes : 0;
+		pF |= optimizeGraph ? aiProcess_OptimizeGraph : 0;
+		pF |= flipUVs ? aiProcess_FlipUVs : 0;
+		pF |= flipWindingOrder ? aiProcess_FlipWindingOrder : 0;
+
+		return pF;
+	}
+
+	bool ModelSettings::operator== (const ModelSettings &that) {
+		return
+			this->calcTangentSpace == that.calcTangentSpace &&
+			this->joinDuplicateVertices == that.joinDuplicateVertices &&
+			this->makeLeftHanded == that.makeLeftHanded &&
+			this->triangulate == that.triangulate &&
+			this->genNormals == that.genNormals &&
+			this->genSmoothNormals == that.genSmoothNormals &&
+			this->splitLargeMeshes == that.splitLargeMeshes &&
+			this->preTransformVertices == that.preTransformVertices &&
+			this->delUnusedMaterials == that.delUnusedMaterials &&
+			this->fixInfacingNormals == that.fixInfacingNormals &&
+			this->genUVCoords == that.genUVCoords &&
+			this->transformUVCoords == that.transformUVCoords &&
+			this->optimizeMesh == that.optimizeMesh &&
+			this->optimizeGraph == that.optimizeGraph &&
+			this->flipUVs == that.flipUVs &&
+			this->flipWindingOrder == that.flipWindingOrder;
+	}
+
 	Model::~Model() {
 		for (const Texture2D *tex : this->textures)
 			delete tex;
@@ -46,12 +89,14 @@ namespace Honeycomb::Geometry {
 		this->meshes.clear();
 	}
 
-	const Model& Model::loadModel(const std::string &path) {
-		for (const Model* mod : Model::imports)
-			if (mod->path == path)
-				return *mod;
+	const Model& Model::loadModel(const std::string &path, 
+			const ModelSettings &settings) {
+		for (const Model *model : Model::imports) {
+			if (model->path == path)
+				return *model;
+		}
 
-		return *(new Model(path));
+		return *(new Model(path, settings));
 	}
 
 	GameObject* Model::getGameObject() {
@@ -66,19 +111,18 @@ namespace Honeycomb::Geometry {
 		return this->path;
 	}
 
-	Model::Model(const std::string &path) {
+	Model::Model(const std::string &path, const ModelSettings &settings) {
 		this->path = path;
-		this->scaleFactor = 0.01F;		// TEMPORARY
+		this->settings = settings;
+		
 		this->loadFromPath();
-
 		this->imports.push_back(this);
 	}
 
 	void Model::loadFromPath() {
 		// Import the Scene from ASSIMP and Check for Errors.
 		Importer aImp = Importer();
-		this->scene = aImp.ReadFile(path, aiProcess_Triangulate |
-			aiProcess_GenNormals);
+		this->scene = aImp.ReadFile(path, settings.toPFlags());
 		if (this->scene == nullptr ||
 			this->scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE ||
 			this->scene->mRootNode == nullptr) {
@@ -197,11 +241,11 @@ namespace Honeycomb::Geometry {
 		aiVector3D position;
 		aNode->mTransformation.Decompose(scale, rotation, position);
 		transf->setScale(Vector3f(scale.x, scale.y, scale.z) * 
-			this->scaleFactor);
+			this->settings.scaleFactor);
 		transf->setRotation(Quaternion(rotation.x, rotation.y, rotation.z,
 			rotation.w));
 		transf->setTranslation(Vector3f(position.x, position.y, position.z) *
-			this->scaleFactor);
+			this->settings.scaleFactor);
 		object->addComponent(*transf);
 
 		// Process all of the Meshes of the Object

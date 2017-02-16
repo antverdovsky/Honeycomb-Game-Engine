@@ -65,9 +65,16 @@ namespace Honeycomb::Object {
 		/// component, initialized to the data extracted from the Model file.
 		/// If the model has been previously imported, a copy of the game obj.
 		/// from that model will be returned, rather than re-importing the 
-		/// entire model again.
+		/// entire model again. If the model has not been previously imported,
+		/// it will be imported and the settings specified will be used when
+		/// importing.
+		/// const std::string &path : The path of the Model.
+		/// const ModelSettings &settings : The settings to be used for
+		///								    importing the model.
 		/// return : The constructed Game Object.
-		GameObject* newModel(std::string path);
+		GameObject* newModel(const std::string &path, 
+			const Honeycomb::Geometry::ModelSettings &settings = 
+			Honeycomb::Geometry::ModelSettings());
 
 		/// Builds a new Plane GameObject. The game object will simply be the
 		/// object named "Plane", with a MeshRenderer and Transform attached to

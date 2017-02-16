@@ -16,15 +16,91 @@ struct aiNode;
 struct aiScene;
 
 namespace Honeycomb::Geometry {
+	struct ModelSettings {
+		friend class Model;
+	public:
+		float scaleFactor; // The scale factor of the Model
+
+		bool calcTangentSpace; // Calculate tangent space for imported models?
+		bool joinDuplicateVertices; // Should duplicate vertices be joined?
+		bool makeLeftHanded; // Should the coordinate system be left-handed?
+		bool triangulate; // Should the model be triangulated?
+		bool genNormals; // Should normals be generated?
+		bool genSmoothNormals; // Should smooth normals be generated?
+		bool splitLargeMeshes; // Should large meshes be split?
+		bool preTransformVertices; // Should all vertices be pretransformed?
+		bool delUnusedMaterials; // Remove redundant materials?
+		bool fixInfacingNormals; // Fix normals facing inwards?
+		bool genUVCoords; // Generate UV coordinates for non-UV mappings?
+		bool transformUVCoords; // Transform UV Coordinates?
+		bool optimizeMesh; // Optimize the mesh?
+		bool optimizeGraph; // Optimize the scene graph?
+		bool flipUVs; // Flip the UV coordinates along y-axis?
+		bool flipWindingOrder; // Flip Face Winding Order to CW?
+
+		/// Sets the Model Settings to their Default Settings:
+		/// scaleFactor = 0.01F;
+		/// calcTangentSpace = true;
+		/// joinDuplicateVertices = true;
+		/// makeLeftHanded = false;
+		/// triangulate = true;
+		/// genNormals = false;
+		/// genSmoothNormals = true;
+		/// splitLargeMeshes = true;
+		/// preTransformVertices = false;
+		/// delUnusedMaterials = false;
+		/// fixInfacingNormals = false;
+		/// genUVCoords = false;
+		/// transformUVCoords = false;
+		/// optimizeMesh = true;
+		/// optimizeGraph = false;
+		/// flipUVs = true;
+		/// flipWindingOrder = false;
+		ModelSettings() {
+			this->scaleFactor = 0.01F;
+
+			this->calcTangentSpace = true;
+			this->joinDuplicateVertices = true;
+			this->makeLeftHanded = false;
+			this->triangulate = true;
+			this->genNormals = false;
+			this->genSmoothNormals = true;
+			this->splitLargeMeshes = true;
+			this->preTransformVertices = false;
+			this->delUnusedMaterials = false;
+			this->fixInfacingNormals = false;
+			this->genUVCoords = false;
+			this->transformUVCoords = false;
+			this->optimizeMesh = true;
+			this->optimizeGraph = false;
+			this->flipUVs = true;
+			this->flipWindingOrder = false;
+		}
+
+		/// Checks if these model settings are equal to the specified model
+		/// settings.
+		/// const ModelSettings &that : The model settings which are to be
+		///							    compared to these model settings.
+		/// return : True if the model settings are equal; False otherwise.
+		bool operator== (const ModelSettings &that);
+	private:
+		/// Converts the Model Settings to PFlags which may be used by ASSIMP.
+		/// return : The PFlags.
+		unsigned int toPFlags() const;
+	};
+
 	class Model {
 	public:
 		/// Deletes this model, and the materials / textures imported from it.
 		~Model();
 
 		/// Loads a model from the specified path and returns it. If the model
-		/// has previously been loaded, it will be returned instead, to prevent.
+		/// has previously been imported, the model will be returned but not 
+		/// re-imported to prevent duplication. The settings will only be used
+		/// if the model has not been previously imported.
 		/// const std::string &path : The path to the model.
-		static const Model& loadModel(const std::string &path);
+		static const Model& loadModel(const std::string &path, 
+				const ModelSettings &settings = ModelSettings());
 
 		/// Returns the Game Object loaded in from the Model. This game object
 		/// is directly linked to the Model and IS NOT independent of the
@@ -42,6 +118,9 @@ namespace Honeycomb::Geometry {
 		/// Gets the system path to the file from which the Model was loaded.
 		/// return : The string containing the system path.
 		const std::string& getPath() const;
+
+		/// TO BE IMPLEMENTED:
+		/// void reloadModel(const ModelSettings &settings);
 	private:
 		static std::vector<Model*> imports; // All imported models
 
@@ -56,13 +135,16 @@ namespace Honeycomb::Geometry {
 		std::vector<const Honeycomb::Graphics::Texture2D*> textures;
 		std::vector<const Honeycomb::Graphics::Material*> materials;
 
-		float scaleFactor; // The scale by which to scale the imported model
+		ModelSettings settings; // The settings used to import this model
 
 		/// Initializes a new Model from the specified file path.
 		/// const std::string &path : The system file path to the model.
-		Model(const std::string &path);
+		/// const ModelSettings &settings : The settings to be used when
+		///									importing the model.
+		Model(const std::string &path, const ModelSettings &settings);
 
-		/// Loads the model object from the file path stored in this Model.
+		/// Loads the model object from the file path and using settings stored
+		/// in this Model.
 		void loadFromPath();
 
 		/// Converts the ASSIMP Node into a Honeycomb GameObject, and returns
