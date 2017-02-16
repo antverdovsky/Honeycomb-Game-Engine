@@ -15,6 +15,7 @@
 #include "..\..\include\math\Vector2f.h"
 #include "..\..\include\math\Vector3f.h"
 #include "..\..\include\math\Vector4f.h"
+#include "..\..\include\math\Quaternion.h"
 
 using Assimp::Importer;
 
@@ -27,6 +28,7 @@ using Honeycomb::Object::GameObject;
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
+using Honeycomb::Math::Quaternion;
 
 namespace Honeycomb::Geometry {
 	std::vector<Model*> Model::imports = std::vector<Model*>();
@@ -66,6 +68,7 @@ namespace Honeycomb::Geometry {
 
 	Model::Model(const std::string &path) {
 		this->path = path;
+		this->scaleFactor = 0.01F;		// TEMPORARY
 		this->loadFromPath();
 
 		this->imports.push_back(this);
@@ -125,7 +128,8 @@ namespace Honeycomb::Geometry {
 		mat->glVector4fs.setValue("diffuseColor",
 			Vector4f(matDiffuse.r, matDiffuse.g, matDiffuse.b, 1.0F));
 		mat->glVector4fs.setValue("specularColor",
-			Vector4f(matSpecular.r, matSpecular.g, matSpecular.b, matShininess));
+			Vector4f(matSpecular.r, matSpecular.g, matSpecular.b, 
+				matShininess));
 		mat->glSampler2Ds.setValue("albedoTexture", *texture);
 
 		// Save the texture and material
@@ -183,12 +187,22 @@ namespace Honeycomb::Geometry {
 
 	GameObject* Model::processAiNode(aiNode *aNode) {
 		// Create the GameObject representing this node, and give it a
-		// Transform, since all Objects get one. (DO NOT parent the object to
-		// root, or else it will become an instantiated Game Object once the
-		// game starts).
+		// Transform, since all Objects get one.
 		GameObject* object = new GameObject(aNode->mName.C_Str());
 		Transform* transf = new Transform();
-		object->addComponent(*transf); // TODO: Child Transformation
+
+		// Fetch the Transformation of the Object and write to the Transform
+		aiVector3D scale;
+		aiQuaterniont<float> rotation;
+		aiVector3D position;
+		aNode->mTransformation.Decompose(scale, rotation, position);
+		transf->setScale(Vector3f(scale.x, scale.y, scale.z) * 
+			this->scaleFactor);
+		transf->setRotation(Quaternion(rotation.x, rotation.y, rotation.z,
+			rotation.w));
+		transf->setTranslation(Vector3f(position.x, position.y, position.z) *
+			this->scaleFactor);
+		object->addComponent(*transf);
 
 		// Process all of the Meshes of the Object
 		for (unsigned int i = 0; i < aNode->mNumMeshes; i++) {
@@ -208,7 +222,6 @@ namespace Honeycomb::Geometry {
 			}
 
 			// Create a Mesh Renderer with the mesh and material extracted.
-			// TODO: Shader???
 			MeshRenderer *meshRen = new MeshRenderer(*mat, *mesh);
 			object->addComponent(*meshRen);
 		}

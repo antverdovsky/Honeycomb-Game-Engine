@@ -16,35 +16,28 @@ namespace HoneycombTest {
 
 	}
 
-	GameObject *cone;
-	GameObject *suzanne;
 	void TestGame::start() {
 		// Load in all of the Models.
 		GameObject *cube = Builder::getBuilder()->newCube();
 		GameObject *plane = Builder::getBuilder()->newPlane();
 		GameObject *sphere = Builder::getBuilder()->newSphere();
-		suzanne = Builder::getBuilder()->newSuzanne();
-		GameObject *icosphere = Builder::getBuilder()->newIcosphere();
-		cone = Builder::getBuilder()->newCone();
-		GameObject *challenger = Builder::getBuilder()->newModel(
+		GameObject *suzanne = Builder::getBuilder()->newSuzanne();
+		GameObject *car = Builder::getBuilder()->newModel(
 			"..\\Test Game\\res\\models\\dodge-challenger.fbx");
-		GameObject *aPointLight = Builder::getBuilder()->newPointLight();
-
+		
 		// Initialize the Light Objects & a Camera
 		GameObject *ambientLight = Builder::getBuilder()->newAmbientLight();
 		ambientLight->getComponent<AmbientLight>()->
 			glFloats.setValue(AmbientLight::INTENSITY_F, 0.25F);
+		
 		GameObject *directionalLight = Builder::getBuilder()->
 			newDirectionalLight();
 		directionalLight->getComponent<DirectionalLight>
 			()->glFloats.setValue(DirectionalLight::INTENSITY_F, 0.25F);
 		directionalLight->getComponent<Transform>()->rotate(Vector3f::getGlobalRight(), -PI / 2);
+		
 		GameObject *camera = Builder::getBuilder()->newCamera();
-		aPointLight->getComponent<Transform>()->translate(
-			Vector3f(5.0F, 5.0F, 0.0F));
-		aPointLight->getComponent<PointLight>()->glVector4fs.setValue(PointLight::COLOR_VEC4,
-			Vector4f(0.0F, 0.0F, 1.0F, 1.0F));
-
+		
 		// Initialize the Suzanne Components
 		InputTransformable *suzInputTransformable = new InputTransformable(
 			GameInput::KEY_CODE_UP, GameInput::KEY_CODE_DOWN,
@@ -57,16 +50,9 @@ namespace HoneycombTest {
 		PointLight *suzPointLight = new PointLight();
 		suzPointLight->glVector4fs.setValue(PointLight::COLOR_VEC4, Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
 		suzPointLight->glFloats.setValue(PointLight::INTENSITY_F, 3.0F);
-		SpotLight *suzSpotLight = new SpotLight();
-
-		suzSpotLight->glVector4fs.setValue(PointLight::COLOR_VEC4, Vector4f(1.0F, 0.0F, 0.0F, 1.0F));
-		suzSpotLight->glFloats.setValue(SpotLight::INTENSITY_F, 25.0F);
-		suzSpotLight->glFloats.setValue(SpotLight::ANGLE_F, PI);
 
 		// Add Suzanne's Components to Suzanne
 		suzanne->addComponent(*suzPointLight);
-		cone->addComponent(*suzInputTransformable->clone());
-//		suzanne->addComponent(*suzSpotLight);
 		suzanne->addComponent(*suzInputTransformable);
 
 		// Allow the free movement of the camera
@@ -84,64 +70,17 @@ namespace HoneycombTest {
 			Vector3f(PI, PI, PI));
 		suzanne->getComponent<Transform>()->setTranslation(
 			Vector3f(3.0F, 5.5F, 0.0F));
-		challenger->getChild("Body")->getComponent<Transform>()->setScale(
-			Vector3f(2.5F, 2.5F, 2.5F));
-		challenger->getChild("Body")->getComponent<Transform>()->setTranslation(
-			Vector3f(7.5F, 1.75F, -7.5F));
-
-		// Create a fancy Chrome Material (non-textured).
-		Texture2D *blank = new Texture2D();
-		blank->initialize();
-		blank->setImageData("..\\Test Game\\res\\textures\\wood.bmp");
-		Material *wood = new Material();
-		wood->glVector4fs.setValue("ambientColor",
-			Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
-		wood->glVector4fs.setValue("diffuseColor",
-			Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
-		wood->glVector4fs.setValue("specularColor",
-			Vector4f(0.2F, 0.2F, 0.2F, 32));			// ?
-		wood->glSampler2Ds.setValue("albedoTexture", *blank);
-
-		// Give Suzanne & the Sphere the Emerald Material
-		
-		plane->getComponent<MeshRenderer>()->setMaterial(*wood);
-
-		srand(time(NULL));
-		for (int i = -8; i <= 8; i += 4) {
-			for (int j = -8; j <= 8; j += 4) {
-				GameObject *light = Builder::getBuilder()->newPointLight();
-
-				light->getComponent<Transform>()->setTranslation(Vector3f(
-					i * 5.0F, 5.0F, j * 5.0F));
-//				light->getComponent<Transform>()->rotate(
-//					Vector3f::getGlobalRight(), -PI / 2);
-				light->getComponent<PointLight>()->glVector4fs.setValue(
-					PointLight::COLOR_VEC4, Vector4f(
-						((double)rand() / (RAND_MAX)) + 1,
-						((double)rand() / (RAND_MAX)) + 1,
-						((double)rand() / (RAND_MAX)) + 1,
-						((double)rand() / (RAND_MAX)) + 1)
-				);
-
-				light->getComponent<PointLight>()->setIntensity(10.0F);
-				light->addComponent(*suzInputTransformable->clone());
-
-				this->gameScene.addChild(*light);
-			}
-		}
+		car->getChild("Body")->addComponent(*suzInputTransformable->clone());
 
 		// Add all objects to the scene
 		this->gameScene.addChild(*cube);
-		this->gameScene.addChild(*cone);
 		this->gameScene.addChild(*plane);
 		this->gameScene.addChild(*sphere);
 		this->gameScene.addChild(*suzanne);
-		this->gameScene.addChild(*aPointLight);
-		this->gameScene.addChild(*icosphere);
 		this->gameScene.addChild(*directionalLight);
 		this->gameScene.addChild(*ambientLight);
 		this->gameScene.addChild(*camera);
-		this->gameScene.addChild(*challenger);
+		this->gameScene.addChild(*car);
 		GameScene::setActiveScene(this->gameScene);
 
 		// Start the Game Scene
@@ -153,7 +92,6 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::update() {
-		cone->getComponent<Transform>()->setRotation(suzanne->getComponent<
-			Transform>()->getRotation());
+
 	}
 }

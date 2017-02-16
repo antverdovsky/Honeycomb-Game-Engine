@@ -8,11 +8,6 @@
 #include "..\..\..\include\math\Matrix4f.h"
 #include "..\..\..\include\math\Quaternion.h"
 
-/// [POSSIBLE TODO (NOV 30)]:
-/// There may be an issue with cloning classes who have events/event handlers
-/// attached. The event / handler may be duplicated but still possess the event
-/// or actions of the original class. 
-
 namespace Honeycomb::Component::Physics {
 	class Transform : public GameComponent {
 	public:

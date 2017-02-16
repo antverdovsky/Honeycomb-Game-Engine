@@ -56,6 +56,8 @@ namespace Honeycomb::Geometry {
 		std::vector<const Honeycomb::Graphics::Texture2D*> textures;
 		std::vector<const Honeycomb::Graphics::Material*> materials;
 
+		float scaleFactor; // The scale by which to scale the imported model
+
 		/// Initializes a new Model from the specified file path.
 		/// const std::string &path : The system file path to the model.
 		Model(const std::string &path);
