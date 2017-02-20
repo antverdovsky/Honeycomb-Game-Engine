@@ -230,6 +230,12 @@ namespace Honeycomb::Geometry {
 	}
 
 	GameObject* Model::processAiNode(aiNode *aNode) {
+		// If this is a child of the scene's RootNode, then scale it according
+		// to the settings' scaling factor since its position is global. Else,
+		// the position is local and should not be scaled by anything!
+		float lclSclFactor = (aNode->mParent == this->scene->mRootNode) ?
+			this->settings.scaleFactor : 1.0F;
+
 		// Create the GameObject representing this node, and give it a
 		// Transform, since all Objects get one.
 		GameObject* object = new GameObject(aNode->mName.C_Str());
@@ -245,7 +251,7 @@ namespace Honeycomb::Geometry {
 		transf->setRotation(Quaternion(rotation.x, rotation.y, rotation.z,
 			rotation.w));
 		transf->setTranslation(Vector3f(position.x, position.y, position.z) *
-			this->settings.scaleFactor);
+			lclSclFactor);
 		object->addComponent(*transf);
 
 		// Process all of the Meshes of the Object

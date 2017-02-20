@@ -115,6 +115,8 @@ namespace Honeycomb::Component::Physics {
 		this->calculateRotationMatrix();
 		this->calculateScaleMatrix();
 		this->calculateTransformationMatrix();
+		
+		this->changedEvent.onEvent();
 	}
 
 	void Transform::setRotation(const Quaternion &quat) {
@@ -249,6 +251,9 @@ namespace Honeycomb::Component::Physics {
 	}
 
 	void Transform::onParentChange() {
+		// Whenever the parent changes its translation, rotation or scaling,
+		// global variables of this Transform must change as well (though local
+		// always remains the same when parent changes!).
 		this->setTranslation(this->lclTranslation);
 	}
 
@@ -270,5 +275,8 @@ namespace Honeycomb::Component::Physics {
 			parent->changedEvent += this->parentChanged;
 			this->parent = parent;
 		}
+
+		// Transform is technically changed anytime its parent is changed
+		this->changedEvent.onEvent();
 	}
 }

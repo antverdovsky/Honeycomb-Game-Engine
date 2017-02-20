@@ -114,10 +114,8 @@ namespace HoneycombTest {
 		// Load in all of the Models.
 //		car = Builder::getBuilder()->newModel(
 //			"..\\Test Game\\res\\models\\dodge-challenger.fbx");
-		ModelSettings nonScale;
-		nonScale.scaleFactor = 1.0F;
 		parentTest = Builder::getBuilder()->newModel(
-			"..\\Test Game\\res\\models\\parentTest1.fbx", nonScale);
+			"..\\Test Game\\res\\models\\parentTest1.fbx");
 		GameObject *cube = Builder::getBuilder()->newCube();
 		GameObject *plane = Builder::getBuilder()->newPlane();
 		GameObject *sphere = Builder::getBuilder()->newSphere();
