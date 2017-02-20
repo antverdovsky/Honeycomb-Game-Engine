@@ -97,7 +97,7 @@ namespace Honeycomb::Component::Light {
 	void SpotLight::start() {
 		// Get the position and direction.
 		this->position = &this->getAttached()->getComponent<Transform>()->
-			getTranslation();
+			getGlobalTranslation();
 		this->direction = &this->getAttached()->getComponent<Transform>()->
 			getLocalForward();
 

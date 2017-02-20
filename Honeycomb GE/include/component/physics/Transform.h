@@ -10,6 +10,7 @@
 
 namespace Honeycomb::Component::Physics {
 	class Transform : public GameComponent {
+		friend class Honeycomb::Object::GameObject;
 	public:
 		/// Default constructor which initializes the position, rotation and
 		/// scale of the transform to default values. The position and rotation
@@ -22,13 +23,14 @@ namespace Honeycomb::Component::Physics {
 		/// const Vector3f &pos : The position of the object.
 		/// const Quaternion &rot : The rotation of the object.
 		/// const Vector3f &scl : The scale of the object.
-		Transform(const Honeycomb::Math::Vector3f &pos, 
-			const Honeycomb::Math::Quaternion &rot, 
+		Transform(const Honeycomb::Math::Vector3f &pos,
+			const Honeycomb::Math::Quaternion &rot,
 			const Honeycomb::Math::Vector3f &scl);
 
 		/// Clones this Transform into a new, dynamically allocated Transform. 
 		/// This function should be used instead of the copy constructor to 
-		/// prevent object slicing.
+		/// prevent object slicing. The cloned transform is an independent
+		/// component and will lose any parent or children!
 		/// return : The pointer to the newly cloned Transform.
 		Transform* Transform::clone() const;
 
@@ -41,6 +43,11 @@ namespace Honeycomb::Component::Physics {
 		/// changed in any way (scaled, translated or rotated).
 		/// return : The constant reference to the event.
 		const Honeycomb::Conjuncture::Event& getChangedEvent() const;
+
+		/// Gets the vector representing the global translation of this
+		/// transform.
+		/// return : The global translation vector.
+		const Honeycomb::Math::Vector3f& getGlobalTranslation() const;
 
 		/// Gets the vector pointing in the local forward direction of this
 		/// transform.
@@ -63,7 +70,7 @@ namespace Honeycomb::Component::Physics {
 
 		/// Gets the rotation quaternion of this transform.
 		/// return : The rotation quaternion.
-		const Honeycomb::Math::Quaternion& getRotation() const;
+		const Honeycomb::Math::Quaternion& getLocalRotation() const;
 
 		/// Gets the current rotation matrix for this transform.
 		/// return : The rotation matrix.
@@ -71,21 +78,21 @@ namespace Honeycomb::Component::Physics {
 
 		/// Gets the scale vector of this uniform.
 		/// return : The scale vector.
-		const Honeycomb::Math::Vector3f& getScale() const;
+		const Honeycomb::Math::Vector3f& getLocalScale() const;
 
-		/// Gets the current scale matrix for this transform.
+		/// Gets the current global scale matrix for this transform.
 		/// return : The scale matrix.
 		const Honeycomb::Math::Matrix4f& getScaleMatrix() const;
 
-		/// Gets the current transformation matrix for this transform.
+		/// Gets the current global transformation matrix for this transform.
 		/// return : The transformation matrix.
 		const Honeycomb::Math::Matrix4f& getTransformationMatrix() const;
 
-		/// Gets the position vector of this transform.
+		/// Gets the local position vector of this transform.
 		/// return : The position vector.
-		const Honeycomb::Math::Vector3f& getTranslation() const;
+		const Honeycomb::Math::Vector3f& getLocalTranslation() const;
 
-		/// Gets the current translation matrix for this transform.
+		/// Gets the global current translation matrix for this transform.
 		/// return : The translation matrix.
 		const Honeycomb::Math::Matrix4f& getTranslationMatrix() const;
 
@@ -123,21 +130,28 @@ namespace Honeycomb::Component::Physics {
 		/// const Vector3f &vec : The direction and distance to translate.
 		void translate(const Honeycomb::Math::Vector3f &vec);
 	private:
-		Honeycomb::Math::Vector3f translation; // Stores the local position
-		Honeycomb::Math::Quaternion rotation; // Local rotation quaternion
-		Honeycomb::Math::Vector3f scale; // Stores the local scale
+		Transform *parent; // The pointer to the parent of this Transform
 
-		Honeycomb::Math::Vector3f localForward; // Local Forward Direction
-		Honeycomb::Math::Vector3f localUp; // Local Up Direction
-		Honeycomb::Math::Vector3f localRight; // Local Right Direction
+		Honeycomb::Math::Vector3f lclTranslation;  // Local position Vector
+		Honeycomb::Math::Quaternion lclRotation;   // Local rotation Quaternion
+		Honeycomb::Math::Vector3f lclScale;		   // Local scale Vector
+
+		Honeycomb::Math::Vector3f gblTranslation;  // Global position Vector
+//		Honeycomb::Math::Quaternion gblRotation;   // Global rotation Quat.
+//		Honeycomb::Math::Vector3f gblScale;		   // Global scale Vector
+
+		Honeycomb::Math::Vector3f forward;	// Local Forward Direction
+		Honeycomb::Math::Vector3f up;		// Local Up Direction
+		Honeycomb::Math::Vector3f right;	// Local Right Direction
 
 		Honeycomb::Math::Matrix4f transformationMatrix; // Transformation Mat
-		Honeycomb::Math::Matrix4f translationMatrix; // Translation Mat
-		Honeycomb::Math::Matrix4f rotationMatrix; // Rotation Mat
-		Honeycomb::Math::Matrix4f scaleMatrix; // Scale Mat
-		Honeycomb::Math::Matrix4f orientationMatrix; // Orientation Mat
+		Honeycomb::Math::Matrix4f translationMatrix;	// Translation Mat
+		Honeycomb::Math::Matrix4f rotationMatrix;		// Rotation Mat
+		Honeycomb::Math::Matrix4f scaleMatrix;			// Scale Mat
+		Honeycomb::Math::Matrix4f orientationMatrix;	// Orientation Mat
 
 		Honeycomb::Conjuncture::Event changedEvent; // Transform changed event
+		Honeycomb::Conjuncture::EventHandler parentChanged; // Parent Changed
 
 		/// Calculates the orientation matrix from the forward, up and right of
 		/// this transform.
@@ -163,6 +177,20 @@ namespace Honeycomb::Component::Physics {
 		/// transform.
 		/// return : The translation matrix.
 		const Honeycomb::Math::Matrix4f& calculateTranslationMatrix();
+
+		/// Function called by the parentChanged event handler. Automatically
+		/// updates the global position, rotation and scale of this Transform
+		/// depending on how the parent was changed.
+		void onParentChange();
+
+		/// Sets the parent of this Transformation. This transform will
+		/// automatically subscribe to the new parent's transform and if this
+		/// transform already has a parent, it will unsubscribe from the old
+		/// parent's transform. Once the new transform is set, the world
+		/// coordinates of this Transform will remain the same, though the
+		/// local coordinates will be modified.
+		/// Transform *parent : The pointer to the new Transform (may be null).
+		void setParent(Transform *parent);
 	};
 }
 

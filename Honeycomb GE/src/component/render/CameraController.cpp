@@ -178,7 +178,7 @@ namespace Honeycomb::Component::Render {
 		this->glMatrix4fs.setValue(CameraController::PROJECTION_MAT4,
 			this->projection);
 		this->glVector3fs.setValue(CameraController::TRANSLATION_VEC3,
-			this->transform->getTranslation());
+			this->transform->getGlobalTranslation());
 
 		return this->getProjection();
 	}

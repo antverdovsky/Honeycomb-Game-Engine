@@ -236,12 +236,12 @@ namespace Honeycomb::Geometry {
 		Transform* transf = new Transform();
 
 		// Fetch the Transformation of the Object and write to the Transform
-		aiVector3D scale;
+		// (Scaling may be ignored since the position vector itself is scaled
+		// by the import scale factor).
 		aiQuaterniont<float> rotation;
 		aiVector3D position;
+		aiVector3D scale;
 		aNode->mTransformation.Decompose(scale, rotation, position);
-		transf->setScale(Vector3f(scale.x, scale.y, scale.z) * 
-			this->settings.scaleFactor);
 		transf->setRotation(Quaternion(rotation.x, rotation.y, rotation.z,
 			rotation.w));
 		transf->setTranslation(Vector3f(position.x, position.y, position.z) *

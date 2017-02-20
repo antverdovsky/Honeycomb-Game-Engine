@@ -328,7 +328,7 @@ namespace Honeycomb::Render::Deferred {
 		this->lightVolumeSpot->getComponent<Transform>()->setTranslation(
 			sL.glVector3fs.getValue(SpotLight::POSITION_VEC3));
 		this->lightVolumeSpot->getComponent<Transform>()->setRotation(
-			sL.getAttached()->getComponent<Transform>()->getRotation());		    // TODO make so it uses sL.direction
+			sL.getAttached()->getComponent<Transform>()->getLocalRotation());		    // TODO make so it uses sL.direction
 		this->lightVolumeSpot->getComponent<Transform>()->rotate(					// todo temporary
 			this->lightVolumeSpot->getComponent<Transform>()->getLocalRight(),
 			3.1415926159F

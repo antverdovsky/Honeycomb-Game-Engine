@@ -4,8 +4,10 @@
 #include <iostream>
 
 #include "..\..\include\shader\ShaderProgram.h"
+#include "..\..\include\component\physics\Transform.h"
 
 using Honeycomb::Component::GameComponent;
+using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Debug::Logger;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Scene::GameScene;
@@ -40,10 +42,12 @@ namespace Honeycomb::Object {
 		clone->isActive = this->isActive;
 
 		// Copy over all of the children and the components, once duplicated
-		for (const GameObject *child : this->children)
-			clone->addChild(*child->clone());
+		// (Components must be copied over first since the Transform hierarchy
+		// only gets copied for the child if the Transform component exists).
 		for (const GameComponent *comp : this->components)
 			clone->addComponent(*comp->clone());
+		for (const GameObject *child : this->children)
+			clone->addChild(*child->clone());
 		
 		return clone;
 	}
@@ -55,6 +59,11 @@ namespace Honeycomb::Object {
 
 		if (o.parent != nullptr) o.parent->removeChild(&o);
 		o.parent = this;
+
+		// Parent the Transform of the child to this Transform
+		Transform *childTransf = o.getComponent<Transform>();
+		if (childTransf != nullptr)
+			childTransf->setParent(this->getComponent<Transform>());
 	}
 
 	void GameObject::addComponent(GameComponent &c) {
@@ -73,6 +82,11 @@ namespace Honeycomb::Object {
 			this->parent->removeChild(this);
 			this->parent = nullptr;
 		}
+
+		// Unparent the Transform of this
+		Transform *thisTransf = this->getComponent<Transform>();
+		if (thisTransf != nullptr)
+			thisTransf->setParent(nullptr);
 	}
 
 	GameObject* GameObject::getChild(const std::string &name) {

@@ -3,27 +3,125 @@
 #include "..\..\Honeycomb GE\include\HoneycombEngine.h"
 
 #include "..\include\components\InputTransformable.h"
+#include "..\..\Honeycomb GE\include\debug\Logger.h"
 
 using namespace HoneycombEngine;
 using namespace HoneycombTest::Components;
+using Honeycomb::Debug::Logger;
 
 namespace HoneycombTest {
-	void TestGame::input() {
+	GameObject *parentTest;
+	enum parentTest_ActiveObj {
+		ROOT,
+			CONE,
+				TORUS,
+					SPHERE,
 
+			CYLINDER
+	};
+
+	void TestGame::input() {
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_1)) {
+			parentTest->getComponent<InputTransformable>()->start();
+			parentTest->getChild("Cone")->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cone")->getChild("Torus")->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cone")->getChild("Torus")->getChild("Sphere")->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cylinder")->getComponent<InputTransformable>()->stop();
+
+			Transform *ptr = parentTest->getComponent<Transform>();
+			std::cout << "ROOT LOCAL: " << ptr->getLocalTranslation().getX() << ", " <<
+				ptr->getLocalTranslation().getY() << ", " <<
+				ptr->getLocalTranslation().getZ() << ", " << std::endl;
+			std::cout << "ROOT GLOBAL: " << ptr->getGlobalTranslation().getX() << ", " <<
+				ptr->getGlobalTranslation().getY() << ", " <<
+				ptr->getGlobalTranslation().getZ() << ", " << std::endl;
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_2)) {
+			parentTest->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cone")->getComponent<InputTransformable>()->start();
+			parentTest->getChild("Cone")->getChild("Torus")->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cone")->getChild("Torus")->getChild("Sphere")->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cylinder")->getComponent<InputTransformable>()->stop();
+				
+			Transform *ptr = parentTest->getChild("Cone")->getComponent<Transform>();
+			std::cout << "CONE LOCAL: " << ptr->getLocalTranslation().getX() << ", " <<
+				ptr->getLocalTranslation().getY() << ", " <<
+				ptr->getLocalTranslation().getZ() << ", " << std::endl;
+			std::cout << "CONE GLOBAL: " << ptr->getGlobalTranslation().getX() << ", " <<
+				ptr->getGlobalTranslation().getY() << ", " <<
+				ptr->getGlobalTranslation().getZ() << ", " << std::endl;
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_3)) {
+			parentTest->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cone")->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cone")->getChild("Torus")->getComponent<InputTransformable>()->start();
+			parentTest->getChild("Cone")->getChild("Torus")->getChild("Sphere")->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cylinder")->getComponent<InputTransformable>()->stop();
+
+			Transform *ptr = parentTest->getChild("Cone")->getChild("Torus")->getComponent<Transform>();
+			std::cout << "TORUS LOCAL: " << ptr->getLocalTranslation().getX() << ", " <<
+				ptr->getLocalTranslation().getY() << ", " <<
+				ptr->getLocalTranslation().getZ() << ", " << std::endl;
+			std::cout << "TORUS GLOBAL: " << ptr->getGlobalTranslation().getX() << ", " <<
+				ptr->getGlobalTranslation().getY() << ", " <<
+				ptr->getGlobalTranslation().getZ() << ", " << std::endl;
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_4)) {
+			parentTest->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cone")->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cone")->getChild("Torus")->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cone")->getChild("Torus")->getChild("Sphere")->getComponent<InputTransformable>()->start();
+			parentTest->getChild("Cylinder")->getComponent<InputTransformable>()->stop();
+
+			Transform *ptr = parentTest->getChild("Cone")->getChild("Torus")->getChild("Sphere")->getComponent<Transform>();
+			std::cout << "SPHERE LOCAL: " << ptr->getLocalTranslation().getX() << ", " <<
+				ptr->getLocalTranslation().getY() << ", " <<
+				ptr->getLocalTranslation().getZ() << ", " << std::endl;
+			std::cout << "SPHERE GLOBAL: " << ptr->getGlobalTranslation().getX() << ", " <<
+				ptr->getGlobalTranslation().getY() << ", " <<
+				ptr->getGlobalTranslation().getZ() << ", " << std::endl;
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_5)) {
+			parentTest->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cone")->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cone")->getChild("Torus")->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cone")->getChild("Torus")->getChild("Sphere")->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cylinder")->getComponent<InputTransformable>()->start();
+
+			Transform *ptr = parentTest->getChild("Cylinder")->getComponent<Transform>();
+			std::cout << "CYLINDER LOCAL: " << ptr->getLocalTranslation().getX() << ", " <<
+				ptr->getLocalTranslation().getY() << ", " <<
+				ptr->getLocalTranslation().getZ() << ", " << std::endl;
+			std::cout << "CYLINDER GLOBAL: " << ptr->getGlobalTranslation().getX() << ", " <<
+				ptr->getGlobalTranslation().getY() << ", " <<
+				ptr->getGlobalTranslation().getZ() << ", " << std::endl;
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_6)) {
+			parentTest->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cone")->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cone")->getChild("Torus")->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cone")->getChild("Torus")->getChild("Sphere")->getComponent<InputTransformable>()->stop();
+			parentTest->getChild("Cylinder")->getComponent<InputTransformable>()->stop();
+		}
 	}
 
 	void TestGame::render() {
 
 	}
 
+	GameObject *car;
 	void TestGame::start() {
 		// Load in all of the Models.
+//		car = Builder::getBuilder()->newModel(
+//			"..\\Test Game\\res\\models\\dodge-challenger.fbx");
+		ModelSettings nonScale;
+		nonScale.scaleFactor = 1.0F;
+		parentTest = Builder::getBuilder()->newModel(
+			"..\\Test Game\\res\\models\\parentTest1.fbx", nonScale);
 		GameObject *cube = Builder::getBuilder()->newCube();
 		GameObject *plane = Builder::getBuilder()->newPlane();
 		GameObject *sphere = Builder::getBuilder()->newSphere();
 		GameObject *suzanne = Builder::getBuilder()->newSuzanne();
-		GameObject *car = Builder::getBuilder()->newModel(
-			"..\\Test Game\\res\\models\\dodge-challenger.fbx");
 		
 		// Initialize the Light Objects & a Camera
 		GameObject *ambientLight = Builder::getBuilder()->newAmbientLight();
@@ -70,17 +168,26 @@ namespace HoneycombTest {
 			Vector3f(PI, PI, PI));
 		suzanne->getComponent<Transform>()->setTranslation(
 			Vector3f(3.0F, 5.5F, 0.0F));
-		car->getChild("Body")->addComponent(*suzInputTransformable->clone());
+//		car->addComponent(*suzInputTransformable->clone());
+//		car->getChild("Body")->addComponent(*suzInputTransformable->clone());
+
+		parentTest->addComponent(*suzInputTransformable->clone());
+		parentTest->getChild("Cone")->addComponent(*suzInputTransformable->clone());
+		parentTest->getChild("Cone")->getChild("Torus")->addComponent(*suzInputTransformable->clone());
+		parentTest->getChild("Cone")->getChild("Torus")->getChild("Sphere")->addComponent(*suzInputTransformable->clone());
+		parentTest->getChild("Cylinder")->addComponent(*suzInputTransformable->clone());
+
 
 		// Add all objects to the scene
-		this->gameScene.addChild(*cube);
+//		this->gameScene.addChild(*cube);
 		this->gameScene.addChild(*plane);
-		this->gameScene.addChild(*sphere);
-		this->gameScene.addChild(*suzanne);
+//		this->gameScene.addChild(*sphere);
+//		this->gameScene.addChild(*suzanne);
 		this->gameScene.addChild(*directionalLight);
+		this->gameScene.addChild(*parentTest);
 		this->gameScene.addChild(*ambientLight);
 		this->gameScene.addChild(*camera);
-		this->gameScene.addChild(*car);
+//		this->gameScene.addChild(*car);
 		GameScene::setActiveScene(this->gameScene);
 
 		// Start the Game Scene
@@ -92,6 +199,6 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::update() {
-
+		
 	}
 }

@@ -27,6 +27,7 @@ namespace Honeycomb::Conjuncture {
 	}
 
 	void Event::removeEventHandler(const EventHandler &eH) {
+		if (this->eHandlers.size() == 0) return; // If empty, return
 		const EventHandler *eH_ptr = &eH; // Pointer to reference, for compare
 
 		this->eHandlers.erase( // Remove handler from list of handlers

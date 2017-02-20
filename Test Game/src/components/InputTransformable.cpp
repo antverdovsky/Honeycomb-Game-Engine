@@ -58,6 +58,8 @@ namespace HoneycombTest::Components {
 	}
 
 	void InputTransformable::input() {
+		if (!this->isActive) return; // If not active, don't do anything!
+
 		// Get the Transform which will be modified, and a pointer to the Input
 		Transform *transform = 
 			this->attached->getComponent<Transform>();
