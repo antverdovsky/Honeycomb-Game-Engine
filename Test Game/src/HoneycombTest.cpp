@@ -10,6 +10,24 @@ using namespace HoneycombTest::Components;
 using Honeycomb::Debug::Logger;
 
 namespace HoneycombTest {
+	// print position and local directions of the specified transform :-)
+	void _printPosAndLocals(Transform &transf) {
+		std::cout << "***TRANSFORM FOR: " << transf.getAttached()->getName() << std::endl;
+		std::cout << "POSITION: " << transf.getLocalTranslation().getX() << 
+			", " << transf.getLocalTranslation().getY() << ", " <<
+			transf.getLocalTranslation().getZ() << std::endl;
+		std::cout << "RIGHT: " << transf.getLocalRight().getX() <<
+			", " << transf.getLocalRight().getY() << ", " <<
+			transf.getLocalRight().getZ() << std::endl;
+		std::cout << "UP: " << transf.getLocalUp().getX() <<
+			", " << transf.getLocalUp().getY() << ", " <<
+			transf.getLocalUp().getZ() << std::endl;
+		std::cout << "FORWARD: " << transf.getLocalForward().getX() <<
+			", " << transf.getLocalForward().getY() << ", " <<
+			transf.getLocalForward().getZ() << std::endl;
+		std::cout << "***\n\n\n";
+	}
+
 	GameObject *parentTest;
 	enum parentTest_ActiveObj {
 		ROOT,
@@ -110,16 +128,18 @@ namespace HoneycombTest {
 	}
 
 	GameObject *car;
+	GameObject *camera;
+	GameObject *suzanne;
 	void TestGame::start() {
 		// Load in all of the Models.
-//		car = Builder::getBuilder()->newModel(
-//			"..\\Test Game\\res\\models\\dodge-challenger.fbx");
+		car = Builder::getBuilder()->newModel(
+			"..\\Test Game\\res\\models\\dodge-challenger.fbx");
 		parentTest = Builder::getBuilder()->newModel(
 			"..\\Test Game\\res\\models\\parentTest1.fbx");
 		GameObject *cube = Builder::getBuilder()->newCube();
 		GameObject *plane = Builder::getBuilder()->newPlane();
 		GameObject *sphere = Builder::getBuilder()->newSphere();
-		GameObject *suzanne = Builder::getBuilder()->newSuzanne();
+		suzanne = Builder::getBuilder()->newSuzanne();
 		
 		// Initialize the Light Objects & a Camera
 		GameObject *ambientLight = Builder::getBuilder()->newAmbientLight();
@@ -132,7 +152,7 @@ namespace HoneycombTest {
 			()->glFloats.setValue(DirectionalLight::INTENSITY_F, 0.25F);
 		directionalLight->getComponent<Transform>()->rotate(Vector3f::getGlobalRight(), -PI / 2);
 		
-		GameObject *camera = Builder::getBuilder()->newCamera();
+		camera = Builder::getBuilder()->newCamera();
 		
 		// Initialize the Suzanne Components
 		InputTransformable *suzInputTransformable = new InputTransformable(
@@ -166,8 +186,8 @@ namespace HoneycombTest {
 			Vector3f(PI, PI, PI));
 		suzanne->getComponent<Transform>()->setTranslation(
 			Vector3f(3.0F, 5.5F, 0.0F));
-//		car->addComponent(*suzInputTransformable->clone());
-//		car->getChild("Body")->addComponent(*suzInputTransformable->clone());
+		car->getChild("Body")->addComponent(*suzInputTransformable->clone());
+
 
 		parentTest->addComponent(*suzInputTransformable->clone());
 		parentTest->getChild("Cone")->addComponent(*suzInputTransformable->clone());
@@ -180,12 +200,12 @@ namespace HoneycombTest {
 //		this->gameScene.addChild(*cube);
 		this->gameScene.addChild(*plane);
 //		this->gameScene.addChild(*sphere);
-//		this->gameScene.addChild(*suzanne);
+		this->gameScene.addChild(*suzanne);
 		this->gameScene.addChild(*directionalLight);
 		this->gameScene.addChild(*parentTest);
 		this->gameScene.addChild(*ambientLight);
 		this->gameScene.addChild(*camera);
-//		this->gameScene.addChild(*car);
+		this->gameScene.addChild(*car);
 		GameScene::setActiveScene(this->gameScene);
 
 		// Start the Game Scene
@@ -196,7 +216,14 @@ namespace HoneycombTest {
 		this->gameScene.stop();
 	}
 
+	int i = 0;
 	void TestGame::update() {
-		
+		if (++i % 120 == 0) {
+			system("cls");
+
+			_printPosAndLocals(*camera->getComponent<Transform>());
+			_printPosAndLocals(*car->getChild("Body")->getComponent<Transform>());
+			_printPosAndLocals(*suzanne->getComponent<Transform>());
+		}
 	}
 }
