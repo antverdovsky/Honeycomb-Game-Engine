@@ -2,6 +2,8 @@
 
 #include <math.h>
 
+#include "..\..\include\math\Matrix4f.h"
+
 namespace Honeycomb::Math {
 	Vector4f::Vector4f() : Vector4f(0.0F, 0.0F, 0.0F, 0.0F) { }
 
@@ -77,6 +79,17 @@ namespace Honeycomb::Math {
 		return (float)sqrt(x * x + y * y + z * z);
 	}
 
+	Vector4f Vector4f::multiply(const Matrix4f &mat) const {
+		return mat.multiply(*this);
+	}
+
+	Vector4f& Vector4f::multiplyTo(const Matrix4f &mat) {
+		Vector4f prod = this->multiply(mat);
+
+		this->set(prod.x, prod.y, prod.z, prod.w);
+		return *this;
+	}
+
 	Vector4f& Vector4f::normalize() {
 		Vector4f normalized = this->normalized();
 
@@ -131,8 +144,16 @@ namespace Honeycomb::Math {
 		return this->scale(scale);
 	}
 
+	Vector4f Vector4f::operator*(const Matrix4f &mat) const {
+		return this->multiply(mat);
+	}
+
 	Vector4f& Vector4f::operator*=(const float &scale) {
 		return this->scaleTo(scale);
+	}
+
+	Vector4f& Vector4f::operator*=(const Matrix4f &mat) {
+		return this->multiplyTo(mat);
 	}
 
 	Vector4f Vector4f::operator/(const float &scale) const {

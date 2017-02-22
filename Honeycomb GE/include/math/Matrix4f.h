@@ -2,6 +2,10 @@
 #ifndef MATRIX_4F
 #define MATRIX_4f
 
+#include "Vector2f.h"
+#include "Vector3f.h"
+#include "Vector4f.h"
+
 namespace Honeycomb::Math {
 	class Matrix4f {
 	public:
@@ -46,11 +50,46 @@ namespace Honeycomb::Math {
 		/// return : The value at the position.
 		const float& getAt(const int &r, const int &c) const;
 
+		/// Returns the specified column of the Matrix as a Vector.
+		/// const int &c : The column which is to be returned (0 is the first 
+		///				   column and 3 is the last). If this argument is out 
+		///				   of range a default constructed Vector is returned 
+		///				   instead.
+		/// return : The row of the Matrix.
+		Vector4f getColAt(const int &c) const;
+
+		/// Returns the specified row of the Matrix as a Vector.
+		/// const int &r : The row which is to be returned (0 is the first row
+		///				   and 3 is the last). If this argument is out of range
+		///				   a default constructed Vector is returned instead.
+		/// return : The row of the Matrix.
+		Vector4f getRowAt(const int &r) const;
+
 		/// Returns an instance of the Matrix equal to the product of this 
 		/// matrix and the specified other matrix.
 		/// const Matrix4f &m2 : The second matrix.
 		/// return : The product of the two matricies.
 		Matrix4f multiply(const Matrix4f& m2) const;
+
+		/// Returns an instance of a Vector2f equal to the product of this
+		/// Matrix and the specified Vector. Do note that this Matrix will be
+		/// treated as a 2x2 for this calculation.
+		/// const Vector2f &v : The vector to be multiplied by this instance.
+		/// return : The product of this matrix and that vector.
+		Vector2f multiply(const Vector2f &v) const;
+
+		/// Returns an instance of a Vector3f equal to the product of this
+		/// Matrix and the specified Vector. Do note that this Matrix will be
+		/// treated as a 3x3 for this calculation.
+		/// const Vector3f &v : The vector to be multiplied by this instance.
+		/// return : The product of this matrix and that vector.
+		Vector3f multiply(const Vector3f &v) const;
+
+		/// Returns an instance of a Vector4f equal to the product of this
+		/// Matrix and the specified Vector.
+		/// const Vector4f &v : The vector to be multiplied by this instance.
+		/// return : The product of this matrix and that vector.
+		Vector4f multiply(const Vector4f &v) const;
 
 		/// Multiplies this and the specified matrix and stores the result in 
 		/// this matrix instance.
@@ -104,6 +143,29 @@ namespace Honeycomb::Math {
 		/// const Matrix4f &m2 : The second matrix.
 		/// return : The product of the matricies.
 		Matrix4f operator*(const Matrix4f& m2) const;
+
+		/// Overloads the multiplication operator to return a Vector instance
+		/// which is equivalent to this matrix, multiplied by the specified
+		/// Vector. Do note that the Matrix will be treated as a 2x2 for this
+		/// calculation.
+		/// const Vector2f &v : The vector to multiply this Matrix by.
+		/// return : The product of the matrix and the Vector.
+		Vector2f operator*(const Vector2f &v) const;
+
+		/// Overloads the multiplication operator to return a Vector instance
+		/// which is equivalent to this matrix, multiplied by the specified
+		/// Vector. Do note that the Matrix will be treated as a 3x3 for this
+		/// calculation.
+		/// const Vector3f &v : The vector to multiply this Matrix by.
+		/// return : The product of the matrix and the Vector.
+		Vector3f operator*(const Vector3f &v) const;
+
+		/// Overloads the multiplication operator to return a Vector instance
+		/// which is equivalent to this matrix, multiplied by the specified
+		/// Vector.
+		/// const Vector4f &v : The vector to multiply this Matrix by.
+		/// return : The product of the matrix and the Vector.
+		Vector4f operator*(const Vector4f &v) const;
 
 		/// Overloads the multiplication set operator to set this matrix equal 
 		/// to the product of this matrix and the specified matrix.

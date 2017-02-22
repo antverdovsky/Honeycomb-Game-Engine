@@ -107,6 +107,17 @@ namespace Honeycomb::Math {
 		return (float)sqrt(x * x + y * y + z * z);
 	}
 
+	Vector3f Vector3f::multiply(const Matrix4f &mat) const {
+		return mat.multiply(*this);
+	}
+
+	Vector3f& Vector3f::multiplyTo(const Matrix4f &mat) {
+		Vector3f prod = this->multiply(mat);
+
+		this->set(prod.x, prod.y, prod.z);
+		return *this;
+	}
+
 	Vector3f& Vector3f::normalize() {
 		Vector3f normalized = this->normalized();
 
@@ -187,8 +198,16 @@ namespace Honeycomb::Math {
 		return this->scale(scale);
 	}
 
+	Vector3f Vector3f::operator*(const Matrix4f &mat) const {
+		return this->multiply(mat);
+	}
+
 	Vector3f& Vector3f::operator*=(const float &scale) {
 		return this->scaleTo(scale);
+	}
+
+	Vector3f& Vector3f::operator*=(const Matrix4f &mat) {
+		return this->multiplyTo(mat);
 	}
 
 	Vector3f Vector3f::operator/(const float &scale) const {

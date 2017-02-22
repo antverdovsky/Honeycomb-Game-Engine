@@ -2,6 +2,8 @@
 
 #include "..\..\include\math\Vector2f.h"
 
+#include "..\..\include\math\Matrix4f.h"
+
 namespace Honeycomb::Math {
 	Vector2f::Vector2f() : Vector2f(0.0F, 0.0F) { }
 
@@ -57,6 +59,17 @@ namespace Honeycomb::Math {
 
 	float Vector2f::magnitude() const {
 		return (float)sqrt(x * x + y * y);
+	}
+
+	Vector2f Vector2f::multiply(const Matrix4f &mat) const {
+		return mat.multiply(*this);
+	}
+
+	Vector2f& Vector2f::multiplyTo(const Matrix4f &mat) {
+		Vector2f prod = this->multiply(mat);
+
+		this->set(prod.x, prod.y);
+		return *this;
 	}
 
 	Vector2f& Vector2f::normalize() {
@@ -115,8 +128,16 @@ namespace Honeycomb::Math {
 		return this->scale(scale);
 	}
 
+	Vector2f Vector2f::operator*(const Matrix4f &mat) const {
+		return this->multiply(mat);
+	}
+
 	Vector2f& Vector2f::operator*=(const float &scale) {
 		return this->scaleTo(scale);
+	}
+
+	Vector2f& Vector2f::operator*=(const Matrix4f &mat) {
+		return this->multiplyTo(mat);
 	}
 
 	Vector2f Vector2f::operator/(const float &scale) const {

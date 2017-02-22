@@ -2,6 +2,8 @@
 #ifndef VECTOR_2F_H
 #define VECTOR_2F_H
 
+namespace Honeycomb::Math { class Matrix4f; }
+
 namespace Honeycomb::Math {
 	class Vector2f {
 	public:
@@ -64,6 +66,21 @@ namespace Honeycomb::Math {
 		/// return : The magnitude.
 		float magnitude() const;
 
+		/// Returns an instance of a Vector2f equal to the product of this
+		/// Vector and the specified Matrix. Do note that this Matrix will be
+		/// treated as a 2x2 for this calculation.
+		/// const Matrix4f &mat : The matrix to be multiplied by this instance.
+		/// return : The product of this vector and that matrix.
+		Vector2f multiply(const Matrix4f &mat) const;
+
+		/// Multiplies this instance by the specified Matrix and returns this
+		/// instance. Do note that the Matrix will be treated as a 2x2 for this
+		/// calculation.
+		/// const Matrix4f &mat : The matrix to be multiplied to this instance.
+		/// return : This instance, as the product of this Vector and the 
+		///			 matrix.
+		Vector2f& multiplyTo(const Matrix4f &mat);
+
 		/// Normalizes this vector.
 		/// return : The reference to this normalized vector.
 		Vector2f& normalize();
@@ -114,18 +131,34 @@ namespace Honeycomb::Math {
 		/// const float &y : The new y-component.
 		void setY(const float &y);
 
-		/// Overloads the mulitplication operator to return a vector instance
+		/// Overloads the multiplication operator to return a vector instance
 		/// which is equivalent to this vector, scaled by the specified amount.
 		/// This vector instance is not modified.
 		/// const float &scale : The constant by which to scale the vector.
 		/// return : The scaled vector.
 		Vector2f operator*(const float &scale) const;
 
+		/// Overloads the multiplication operator to return a vector instance
+		/// which is equivalent to this Vector, multiplied by the specified
+		/// Matrix. Do note that the Matrix is treated as a 2x2 for this
+		/// calculation.
+		/// const Matrix4f &mat : The Matrix by whih to multiply this vector.
+		/// return : The Vector, post multiplication.
+		Vector2f operator*(const Matrix4f &mat) const;
+
 		/// Overloads the multiplication set operator to set this vector equal 
 		/// to the scaled vector, and return it.
 		/// const float &scale : The constant by which to scale this vector.
 		/// return : This scaled vector.
 		Vector2f& operator*=(const float &scale);
+
+		/// Overloads the multiplication set operator to set this vector equal
+		/// to the product of this Vector and the specified Matrix, and return
+		/// it. Do note that the Matrix is treated as a 2x2 for this
+		/// calculation.
+		/// const Matrix4f &mat : The Matrix by which to multiply this Vector.
+		/// return : This Vector, post multiplication.
+		Vector2f& operator*=(const Matrix4f &mat);
 
 		/// Overloads the division operator to return a vector instance
 		/// which is equivalent to this vector, inversely scaled by the 

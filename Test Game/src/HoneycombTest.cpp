@@ -131,6 +131,16 @@ namespace HoneycombTest {
 	GameObject *camera;
 	GameObject *suzanne;
 	void TestGame::start() {
+		Vector3f a = Vector3f(1, 2, 3);
+		float m[4][4] = {
+			{ 1, 2, 3, 4 },
+			{ 1, 2, 3, 4 },
+			{ 1, 2, 3, 4 },
+			{ 1, 2, 3, 4 }
+		};
+		Matrix4f mat = Matrix4f(m);
+		Vector3f prod = mat * a;
+
 		// Load in all of the Models.
 		car = Builder::getBuilder()->newModel(
 			"..\\Test Game\\res\\models\\dodge-challenger.fbx");
