@@ -9,6 +9,11 @@
 #include "..\..\..\include\math\Quaternion.h"
 
 namespace Honeycomb::Component::Physics {
+	enum Space {
+		LOCAL,		// Represents the Local Coordinate System of some Object
+		GLOBAL		// Represents the Global Coordinate System of all Objects
+	};
+
 	class Transform : public GameComponent {
 		friend class Honeycomb::Object::GameObject;
 	public:
@@ -126,9 +131,33 @@ namespace Honeycomb::Component::Physics {
 		///							 transform.
 		void rotate(const Honeycomb::Math::Quaternion &quat);
 
-		/// Translates this transform in the direction and distance specified.
-		/// const Vector3f &vec : The direction and distance to translate.
-		void translate(const Honeycomb::Math::Vector3f &vec);
+		/// Transforms the specified Local coordinate system direction vector
+		/// into a World coordinate system direction vector.
+		/// const Vector3f &dir : The Vector which is to be transformed.
+		/// return : The Transformed Vector.
+		Honeycomb::Math::Vector3f transformDirection(
+			const Honeycomb::Math::Vector3f &dir) const;
+
+		/// Translates this transform by the specified amounts on the 
+		/// { X, Y, Z } axes. If the space parameter is set to local, the
+		/// transform is translated along it's local coordinate system.
+		/// Otherwise, the transform is translated along the world coordinate
+		/// system.
+		/// const Vector3f &vec : The distance to travel on each axis.
+		/// const Space &space : The coordinate space in which the Transform is
+		///						 to be translated.
+		void translate(const Honeycomb::Math::Vector3f &vec, 
+			const Space &space = Space::LOCAL);
+
+		/// Translates this transform by the specified amounts on the
+		/// { X, Y, Z } axes relative to the specified Transform. This
+		/// Transform will be translated on the local coordinate system of the
+		/// relative Transform.
+		/// const Vector3f &vec : The distance to travel on each axis.
+		/// const Transform &relTo : The Transform relative to which the
+		///							 translation is to occur.
+		void translate(const Honeycomb::Math::Vector3f &vec, 
+			const Transform &relTo);
 	private:
 		Transform *parent; // The pointer to the parent of this Transform
 

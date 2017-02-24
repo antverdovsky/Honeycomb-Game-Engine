@@ -15,7 +15,8 @@ namespace HoneycombTest::Components {
 		/// Y and U keys will rotate the transform left and right on the 
 		/// x-axis, H and J keys will rotate the transform left and right on 
 		/// the y-axis, N and M keys will rotate the transform left and right 
-		/// on the z-axis.
+		/// on the z-axis. By default, the transform will translate relative to
+		/// its own local coordinate system.
 		InputTransformable();
 
 		/// Creates a new instance of the input movable component. For all 
@@ -35,9 +36,11 @@ namespace HoneycombTest::Components {
 		/// int yR : The key to yaw the transform right on Z-axis.
 		/// float sM : The speed by which the transform is moved.
 		/// float sR : The speed by which the transform is rotated.
+		/// Space space : The space (LOCAL or GLOBAL) relative to which the
+		///				  Transform is to translate.
 		InputTransformable(int mF, int mB, int mL, int mR, int mU, int mD,
 			int pU, int pD, int rL, int rR, int yL, int yR,
-			float sM, float sR);
+			float sM, float sR, Honeycomb::Component::Physics::Space space);
 
 		/// Default Destructor.
 		~InputTransformable();
@@ -47,6 +50,10 @@ namespace HoneycombTest::Components {
 		/// copy constructor to  prevent object slicing.
 		/// return : The cloned Input Transformable.
 		InputTransformable* clone() const;
+
+		/// Returns the space relative to which the translations occur.
+		/// return : A reference to the space.
+		Honeycomb::Component::Physics::Space& getSpace();
 
 		/// Takes in the input and transforms the transform according to the
 		/// input.
@@ -70,6 +77,9 @@ namespace HoneycombTest::Components {
 		int rollRight = 0;
 		int yawLeft = 0;
 		int yawRight = 0;
+
+		// The space relative to which the translation is to occur
+		Honeycomb::Component::Physics::Space space;
 	};
 }
 

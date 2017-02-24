@@ -162,8 +162,24 @@ namespace Honeycomb::Component::Physics {
 		this->setRotation(quat * this->lclRotation);
 	}
 
-	void Transform::translate(const Vector3f &vec) {
-		this->setTranslation(this->lclTranslation + vec);
+	Vector3f Transform::transformDirection(const Vector3f &dir) const {
+		return this->rotationMatrix * dir;
+	}
+
+	void Transform::translate(const Vector3f &vec, const Space &space) {
+		// If the space specified is global, then the vector passed in is
+		// global and can just be added to the local translation. Otherwise,
+		// if the space specified is local, then the vector must be changed
+		// from the local coordinate system of this Transform to the global.
+		Vector3f global = Space::GLOBAL ? vec : this->transformDirection(vec);
+		this->setTranslation(this->lclTranslation + global);
+	}
+
+	void Transform::translate(const Vector3f &vec, const Transform &relTo) {
+		// Treat the vector as a local vector of the relative transform, so
+		// pass it through the transform direction method to get the global
+		// vector, then translate on the global axes.
+		this->translate(relTo.transformDirection(vec), Space::GLOBAL);
 	}
 
 	const Matrix4f& Transform::calculateOrientationMatrix() {

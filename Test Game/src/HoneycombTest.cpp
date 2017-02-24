@@ -16,19 +16,42 @@ namespace HoneycombTest {
 		std::cout << "POSITION: " << transf.getLocalTranslation().getX() << 
 			", " << transf.getLocalTranslation().getY() << ", " <<
 			transf.getLocalTranslation().getZ() << std::endl;
-		std::cout << "RIGHT: " << transf.getLocalRight().getX() <<
+
+		std::cout << "LOCAL RIGHT: " << transf.getLocalRight().getX() <<
 			", " << transf.getLocalRight().getY() << ", " <<
 			transf.getLocalRight().getZ() << std::endl;
-		std::cout << "UP: " << transf.getLocalUp().getX() <<
+		std::cout << "LOCAL RIGHT: " << transf.transformDirection(Vector3f::getGlobalRight()).getX() << ", " <<
+			transf.transformDirection(Vector3f::getGlobalRight()).getY() << ", " <<
+			transf.transformDirection(Vector3f::getGlobalRight()).getZ() << std::endl << std::endl;
+
+
+		std::cout << "LOCAL UP: " << transf.getLocalUp().getX() <<
 			", " << transf.getLocalUp().getY() << ", " <<
 			transf.getLocalUp().getZ() << std::endl;
-		std::cout << "FORWARD: " << transf.getLocalForward().getX() <<
+		std::cout << "LOCAL UP: " << transf.transformDirection(Vector3f::getGlobalUp()).getX() << ", " << 
+			transf.transformDirection(Vector3f::getGlobalUp()).getY() << ", " <<
+			transf.transformDirection(Vector3f::getGlobalUp()).getZ() << std::endl << std::endl;
+		
+		
+		std::cout << "LOCAL FORWARD: " << transf.getLocalForward().getX() <<
 			", " << transf.getLocalForward().getY() << ", " <<
 			transf.getLocalForward().getZ() << std::endl;
+		std::cout << "LOCAL FORWARD: " << transf.transformDirection(Vector3f::getGlobalForward()).getX() << ", " <<
+			transf.transformDirection(Vector3f::getGlobalForward()).getY() << ", " <<
+			transf.transformDirection(Vector3f::getGlobalForward()).getZ() << std::endl << std::endl;
+
+		std::cout << "ROTATION: " << transf.getLocalRotation().getW() << ", "
+			<< transf.getLocalRotation().getX() << ", "
+			<< transf.getLocalRotation().getY() << ", "
+			<< transf.getLocalRotation().getZ() << std::endl << std::endl;
+
 		std::cout << "***\n\n\n";
 	}
 
 	GameObject *parentTest;
+	GameObject *car;
+	GameObject *camera;
+	GameObject *suzanne;
 	enum parentTest_ActiveObj {
 		ROOT,
 			CONE,
@@ -39,6 +62,27 @@ namespace HoneycombTest {
 	};
 
 	void TestGame::input() {
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_9)) {
+			parentTest->getComponent<InputTransformable>()->getSpace() = Space::LOCAL;
+			parentTest->getChild("Cone")->getComponent<InputTransformable>()->getSpace() = Space::LOCAL;
+			parentTest->getChild("Cone")->getChild("Torus")->getComponent<InputTransformable>()->getSpace() = Space::LOCAL;
+			parentTest->getChild("Cone")->getChild("Torus")->getChild("Sphere")->getComponent<InputTransformable>()->getSpace() = Space::LOCAL;
+			parentTest->getChild("Cylinder")->getComponent<InputTransformable>()->getSpace() = Space::LOCAL;
+			suzanne->getComponent<InputTransformable>()->getSpace() = Space::LOCAL;
+
+			std::cout << "ALL SET TO LOCAL" << std::endl;
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_0)) {
+			parentTest->getComponent<InputTransformable>()->getSpace() = Space::GLOBAL;
+			parentTest->getChild("Cone")->getComponent<InputTransformable>()->getSpace() = Space::GLOBAL;
+			parentTest->getChild("Cone")->getChild("Torus")->getComponent<InputTransformable>()->getSpace() = Space::GLOBAL;
+			parentTest->getChild("Cone")->getChild("Torus")->getChild("Sphere")->getComponent<InputTransformable>()->getSpace() = Space::GLOBAL;
+			parentTest->getChild("Cylinder")->getComponent<InputTransformable>()->getSpace() = Space::GLOBAL;
+			suzanne->getComponent<InputTransformable>()->getSpace() = Space::GLOBAL;
+
+			std::cout << "ALL SET TO GLOBAL" << std::endl;
+		}
+
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_1)) {
 			parentTest->getComponent<InputTransformable>()->start();
 			parentTest->getChild("Cone")->getComponent<InputTransformable>()->stop();
@@ -127,9 +171,6 @@ namespace HoneycombTest {
 
 	}
 
-	GameObject *car;
-	GameObject *camera;
-	GameObject *suzanne;
 	void TestGame::start() {
 		Vector3f a = Vector3f(1, 2, 3);
 		float m[4][4] = {
@@ -172,7 +213,7 @@ namespace HoneycombTest {
 			GameInput::KEY_CODE_R, GameInput::KEY_CODE_T,
 			GameInput::KEY_CODE_F, GameInput::KEY_CODE_G,
 			GameInput::KEY_CODE_V, GameInput::KEY_CODE_B,
-			5.0F, 5.0F);
+			5.0F, 5.0F, Space::GLOBAL);
 		PointLight *suzPointLight = new PointLight();
 		suzPointLight->glVector4fs.setValue(PointLight::COLOR_VEC4, Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
 		suzPointLight->glFloats.setValue(PointLight::INTENSITY_F, 3.0F);
@@ -215,7 +256,7 @@ namespace HoneycombTest {
 		this->gameScene.addChild(*parentTest);
 		this->gameScene.addChild(*ambientLight);
 		this->gameScene.addChild(*camera);
-		this->gameScene.addChild(*car);
+//		this->gameScene.addChild(*car);
 		GameScene::setActiveScene(this->gameScene);
 
 		// Start the Game Scene
@@ -232,8 +273,10 @@ namespace HoneycombTest {
 			system("cls");
 
 			_printPosAndLocals(*camera->getComponent<Transform>());
-			_printPosAndLocals(*car->getChild("Body")->getComponent<Transform>());
+//			_printPosAndLocals(*car->getChild("Body")->getComponent<Transform>());
 			_printPosAndLocals(*suzanne->getComponent<Transform>());
 		}
+
+		parentTest->getComponent<Transform>()->translate(Vector3f(Vector3f::getGlobalForward()), *suzanne->getComponent<Transform>());
 	}
 }

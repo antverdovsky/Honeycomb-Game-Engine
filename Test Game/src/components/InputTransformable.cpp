@@ -5,12 +5,11 @@
 #include "..\..\..\Honeycomb GE\include\math\Vector3f.h"
 
 using Honeycomb::Base::GameInput;
+using Honeycomb::Component::Physics::Space;
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Vector3f;
 
 using namespace Honeycomb::Base;
-
-#include <iostream> //temp af
 
 namespace HoneycombTest::Components {
 	InputTransformable::InputTransformable() : InputTransformable(
@@ -20,14 +19,15 @@ namespace HoneycombTest::Components {
 		GameInput::KEY_CODE_Y, GameInput::KEY_CODE_U, // Pitch up & down
 		GameInput::KEY_CODE_H, GameInput::KEY_CODE_J, // Roll left & right
 		GameInput::KEY_CODE_N, GameInput::KEY_CODE_M, // Yaw left & right
-		3.5F, 3.5F) {
+		3.5F, 3.5F, Space::LOCAL) {
 		
 	}
 
 	InputTransformable::InputTransformable(
 			int mF, int mB, int mL, int mR, int mU, int mD,
 			int pU, int pD, int rL, int rR, int yL, int yR,
-			float sM, float sR) : GameComponent("InputTransformable") {
+			float sM, float sR, Space space) : 
+			GameComponent("InputTransformable") {
 		/// Keys for Movement
 		this->movForward = mF;
 		this->movBackward = mB;
@@ -47,6 +47,8 @@ namespace HoneycombTest::Components {
 		/// Movement Speed Values (not adjusted for Frame Rate)
 		this->speedM = sM;
 		this->speedR = sR;
+
+		this->space = space;
 	}
 
 	InputTransformable::~InputTransformable() {
@@ -55,6 +57,10 @@ namespace HoneycombTest::Components {
 
 	InputTransformable* InputTransformable::clone() const {
 		return new InputTransformable(*this);
+	}
+
+	Space& InputTransformable::getSpace() {
+		return this->space;
 	}
 
 	void InputTransformable::input() {
@@ -72,17 +78,23 @@ namespace HoneycombTest::Components {
 			this->speedR * GameTime::getGameTime()->getDeltaTimeS();
 
 		if (input->getKeyDown(this->movForward))
-			transform->translate( transform->getLocalForward() * adjSpeedM);
+			transform->translate( Vector3f::getGlobalForward() * adjSpeedM,
+				this->space);
 		else if (input->getKeyDown(this->movBackward))
-			transform->translate(-transform->getLocalForward() * adjSpeedM);
+			transform->translate(-Vector3f::getGlobalForward() * adjSpeedM,
+				this->space);
 		if (input->getKeyDown(this->movLeft))
-			transform->translate(-transform->getLocalRight() * adjSpeedM);
+			transform->translate(-Vector3f::getGlobalRight() * adjSpeedM,
+				this->space);
 		else if (input->getKeyDown(this->movRight))
-			transform->translate( transform->getLocalRight() * adjSpeedM);
+			transform->translate( Vector3f::getGlobalRight() *adjSpeedM,
+				this->space);
 		if (input->getKeyDown(this->movUp))
-			transform->translate( transform->getLocalUp() * adjSpeedM);
+			transform->translate( Vector3f::getGlobalUp() * adjSpeedM,
+				this->space);
 		else if (input->getKeyDown(this->movDown))
-			transform->translate(-transform->getLocalUp() * adjSpeedM);
+			transform->translate(-Vector3f::getGlobalUp() * adjSpeedM,
+				this->space);
 
 		if (input->getKeyDown(this->pitchUp))
 			transform->rotate( transform->getLocalRight(), adjSpeedR);
