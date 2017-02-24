@@ -108,6 +108,13 @@ namespace Honeycomb::Component::Physics {
 	const Vector3f& Transform::getLocalTranslation() const {
 		return this->lclTranslation;
 	}
+
+	Vector3f Transform::inverseTransformPoint(const Vector3f &pos) const {
+		if (this->parent == nullptr)
+			return pos;
+		else
+			return pos - this->parent->gblTranslation;
+	}
 	
 	void Transform::start() {
 		this->calculateOrientationMatrix();
@@ -138,14 +145,19 @@ namespace Honeycomb::Component::Physics {
 		this->changedEvent.onEvent();
 	}
 
-	void Transform::setTranslation(const Vector3f &vec) {
-		this->lclTranslation = vec;
-
-		if (this->parent != nullptr) {
-			this->gblTranslation = this->lclTranslation +
-				this->parent->gblTranslation;
+	void Transform::setTranslation(const Vector3f &pos, const Space& space) {
+		if (space == Space::LOCAL) {
+			// If the translation is local, set the local translation and
+			// calculate the new global position using the transform point
+			// method.
+			this->lclTranslation = pos;
+			this->gblTranslation = transformPoint(pos);
 		} else {
-			this->gblTranslation = this->lclTranslation;
+			// If the translation is global, set the global translation and
+			// calculate the new local position using the inverse transform
+			// point.
+			this->gblTranslation = pos;
+			this->lclTranslation = inverseTransformPoint(pos);
 		}
 		
 		this->calculateTranslationMatrix();
@@ -166,13 +178,21 @@ namespace Honeycomb::Component::Physics {
 		return this->rotationMatrix * dir;
 	}
 
+	Vector3f Transform::transformPoint(const Vector3f &pos) const {
+		if (this->parent == nullptr) 
+			return pos;
+		else 
+			return this->parent->gblTranslation + pos;
+	}
+
 	void Transform::translate(const Vector3f &vec, const Space &space) {
 		// If the space specified is global, then the vector passed in is
 		// global and can just be added to the local translation. Otherwise,
 		// if the space specified is local, then the vector must be changed
 		// from the local coordinate system of this Transform to the global.
-		Vector3f global = Space::GLOBAL ? vec : this->transformDirection(vec);
-		this->setTranslation(this->lclTranslation + global);
+		Vector3f global = space == Space::GLOBAL ? 
+			vec : this->transformDirection(vec);
+		this->setTranslation(this->gblTranslation + global);
 	}
 
 	void Transform::translate(const Vector3f &vec, const Transform &relTo) {
@@ -270,7 +290,7 @@ namespace Honeycomb::Component::Physics {
 		// Whenever the parent changes its translation, rotation or scaling,
 		// global variables of this Transform must change as well (though local
 		// always remains the same when parent changes!).
-		this->setTranslation(this->lclTranslation);
+		this->setTranslation(this->lclTranslation, Space::LOCAL);
 	}
 
 	void Transform::setParent(Transform *parent) {

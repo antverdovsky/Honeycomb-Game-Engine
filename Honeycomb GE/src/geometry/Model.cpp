@@ -20,6 +20,7 @@
 using Assimp::Importer;
 
 using Honeycomb::Component::Physics::Transform;
+using Honeycomb::Component::Physics::Space;
 using Honeycomb::Component::Render::MeshRenderer;
 using Honeycomb::Debug::Logger;
 using Honeycomb::Graphics::Material;
@@ -251,7 +252,7 @@ namespace Honeycomb::Geometry {
 		transf->setRotation(Quaternion(rotation.x, rotation.y, rotation.z,
 			rotation.w));
 		transf->setTranslation(Vector3f(position.x, position.y, position.z) *
-			lclSclFactor);
+			lclSclFactor, Space::LOCAL);
 		object->addComponent(*transf);
 
 		// Process all of the Meshes of the Object

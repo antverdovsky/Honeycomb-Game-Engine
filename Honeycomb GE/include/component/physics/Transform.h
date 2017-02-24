@@ -101,6 +101,13 @@ namespace Honeycomb::Component::Physics {
 		/// return : The translation matrix.
 		const Honeycomb::Math::Matrix4f& getTranslationMatrix() const;
 
+		/// Transforms the specified global coordinate system position vector
+		/// into a local coordinate system position vector.
+		/// const Vector3f &pos : The Vector which is to be transformed.
+		/// return : The Transformed Vector.
+		Honeycomb::Math::Vector3f inverseTransformPoint(
+			const Honeycomb::Math::Vector3f &pos) const;
+
 		/// Starts this Transform instance.
 		void start();
 
@@ -112,9 +119,14 @@ namespace Honeycomb::Component::Physics {
 		/// const Vector3f &vec : The new scale vector.
 		void setScale(const Honeycomb::Math::Vector3f &vec);
 
-		/// Sets the position vector of this transform.
-		/// const Vector3f &vec : The new position vector.
-		void setTranslation(const Honeycomb::Math::Vector3f &vec);
+		/// Sets the translation of this Transform in the local or world
+		/// coordinate system space. By default, the Translation is set in the
+		/// global world.
+		/// const Vector3f &pos : The new position of the Transform.
+		/// const Space &space : The coordinate space in which the Transform is
+		///						 to be translated.
+		void setTranslation(const Honeycomb::Math::Vector3f &pos, 
+			const Space &space = Space::GLOBAL);
 
 		/// Rotates this transform by the specified amount of radians on the
 		/// axis. A positive amount will rotate the transform counterclockwise,
@@ -137,6 +149,14 @@ namespace Honeycomb::Component::Physics {
 		/// return : The Transformed Vector.
 		Honeycomb::Math::Vector3f transformDirection(
 			const Honeycomb::Math::Vector3f &dir) const;
+
+		/// Transforms the specified local position vector into a world
+		/// position vector.
+		/// const Vector3f &pos : The local position vector which is to be
+		///						  transformed.
+		/// return : The Transformed vector.
+		Honeycomb::Math::Vector3f transformPoint(
+			const Honeycomb::Math::Vector3f &pos) const;
 
 		/// Translates this transform by the specified amounts on the 
 		/// { X, Y, Z } axes. If the space parameter is set to local, the

@@ -13,14 +13,24 @@ namespace HoneycombTest {
 	// print position and local directions of the specified transform :-)
 	void _printPosAndLocals(Transform &transf) {
 		std::cout << "***TRANSFORM FOR: " << transf.getAttached()->getName() << std::endl;
-		std::cout << "POSITION: " << transf.getLocalTranslation().getX() << 
+		std::cout << "LOCAL POSITION: " << transf.getLocalTranslation().getX() << 
 			", " << transf.getLocalTranslation().getY() << ", " <<
 			transf.getLocalTranslation().getZ() << std::endl;
+		std::cout << "(INV_TRANSF_POS) LOCAL POS: " << transf.inverseTransformPoint(transf.getGlobalTranslation()).getX() << ", "
+			<< transf.inverseTransformPoint(transf.getGlobalTranslation()).getY() << ", " <<
+			transf.inverseTransformPoint(transf.getGlobalTranslation()).getZ() << std::endl << std::endl;
+
+		std::cout << "GLOBAL POSITION: " << transf.getGlobalTranslation().getX() <<
+			", " << transf.getGlobalTranslation().getY() << ", " <<
+			transf.getGlobalTranslation().getZ() << std::endl;
+		std::cout << "(TRANSF_POS) GLOBAL POS: " << transf.transformPoint(transf.getLocalTranslation()).getX() << ", " <<
+			transf.transformPoint(transf.getLocalTranslation()).getY() << ", " <<
+			transf.transformPoint(transf.getLocalTranslation()).getZ() << std::endl << std::endl;
 
 		std::cout << "LOCAL RIGHT: " << transf.getLocalRight().getX() <<
 			", " << transf.getLocalRight().getY() << ", " <<
 			transf.getLocalRight().getZ() << std::endl;
-		std::cout << "LOCAL RIGHT: " << transf.transformDirection(Vector3f::getGlobalRight()).getX() << ", " <<
+		std::cout << "(TRANSF_DIR) LOCAL RIGHT: " << transf.transformDirection(Vector3f::getGlobalRight()).getX() << ", " <<
 			transf.transformDirection(Vector3f::getGlobalRight()).getY() << ", " <<
 			transf.transformDirection(Vector3f::getGlobalRight()).getZ() << std::endl << std::endl;
 
@@ -28,7 +38,7 @@ namespace HoneycombTest {
 		std::cout << "LOCAL UP: " << transf.getLocalUp().getX() <<
 			", " << transf.getLocalUp().getY() << ", " <<
 			transf.getLocalUp().getZ() << std::endl;
-		std::cout << "LOCAL UP: " << transf.transformDirection(Vector3f::getGlobalUp()).getX() << ", " << 
+		std::cout << "(TRANSF_DIR) LOCAL UP: " << transf.transformDirection(Vector3f::getGlobalUp()).getX() << ", " << 
 			transf.transformDirection(Vector3f::getGlobalUp()).getY() << ", " <<
 			transf.transformDirection(Vector3f::getGlobalUp()).getZ() << std::endl << std::endl;
 		
@@ -36,7 +46,7 @@ namespace HoneycombTest {
 		std::cout << "LOCAL FORWARD: " << transf.getLocalForward().getX() <<
 			", " << transf.getLocalForward().getY() << ", " <<
 			transf.getLocalForward().getZ() << std::endl;
-		std::cout << "LOCAL FORWARD: " << transf.transformDirection(Vector3f::getGlobalForward()).getX() << ", " <<
+		std::cout << "(TRANSF_DIR) LOCAL FORWARD: " << transf.transformDirection(Vector3f::getGlobalForward()).getX() << ", " <<
 			transf.transformDirection(Vector3f::getGlobalForward()).getY() << ", " <<
 			transf.transformDirection(Vector3f::getGlobalForward()).getZ() << std::endl << std::endl;
 
@@ -219,7 +229,7 @@ namespace HoneycombTest {
 		suzPointLight->glFloats.setValue(PointLight::INTENSITY_F, 3.0F);
 
 		// Add Suzanne's Components to Suzanne
-		suzanne->addComponent(*suzPointLight);
+		//suzanne->addComponent(*suzPointLight);
 		suzanne->addComponent(*suzInputTransformable);
 
 		// Allow the free movement of the camera
@@ -269,14 +279,19 @@ namespace HoneycombTest {
 
 	int i = 0;
 	void TestGame::update() {
-		if (++i % 120 == 0) {
+//		parentTest->getChild("Cylinder")->getComponent<Transform>()->setTranslation(Vector3f::getGlobalForward() * (i % 120) / 60.0F, Space::LOCAL);
+//		parentTest->getChild("Cylinder")->getComponent<Transform>()->setTranslation(Vector3f::getGlobalForward() * (i % 120) / 60.0F, parentTest->getChild("Cylinder")->getComponent<InputTransformable>()->getSpace());
+		if (++i % 60 == 0) {
 			system("cls");
 
-			_printPosAndLocals(*camera->getComponent<Transform>());
+//			_printPosAndLocals(*camera->getComponent<Transform>());
 //			_printPosAndLocals(*car->getChild("Body")->getComponent<Transform>());
-			_printPosAndLocals(*suzanne->getComponent<Transform>());
+//			_printPosAndLocals(*suzanne->getComponent<Transform>());
+			_printPosAndLocals(*parentTest->getChild("Cone")->getComponent<Transform>());
+//			_printPosAndLocals(*parentTest->getComponent<Transform>());
 		}
-
-		parentTest->getComponent<Transform>()->translate(Vector3f(Vector3f::getGlobalForward()), *suzanne->getComponent<Transform>());
+		
+		//parentTest->getComponent<Transform>()->translate(Vector3f::getGlobalForward() * 0.01F, *suzanne->getComponent<Transform>());
+		//parentTest->getChild("Cylinder")->getComponent<Transform>()->translate(Vector3f::getGlobalForward() * 0.01F, Space::GLOBAL);
 	}
 }
