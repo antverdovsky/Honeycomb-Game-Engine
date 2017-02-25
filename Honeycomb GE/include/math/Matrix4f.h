@@ -2,6 +2,8 @@
 #ifndef MATRIX_4F
 #define MATRIX_4f
 
+#include <array>
+
 #include "Vector2f.h"
 #include "Vector3f.h"
 #include "Vector4f.h"
@@ -9,16 +11,30 @@
 namespace Honeycomb::Math {
 	class Matrix4f {
 	public:
-		/// Creates an empty 4x4 Matrix. The values of the matrix will be set
-		/// to whatever is the default float value of the computer on which
-		/// the engine is running.
+		/// Returns an instance of the Matrix class which is initialized to a 
+		/// 4x4 identity matrix.
+		/// return : The 4x4 identity matrix.
+		static const Matrix4f& identity();
+
+		/// Returns an instance of the Matrix class which is initialized to a
+		/// 4x4 zero matrix.
+		/// return : The 4x4 zero matrix.
+		static const Matrix4f& zero();
+
+		/// Creates an empty 4x4 Matrix. All the values of the Matrix will be
+		/// set to zero.
 		Matrix4f();
 
 		/// Creaates a 4x4 Matrix initialized to the specified 2D 4x4 array.
 		/// float m[4][4] : The 2D 4x4 Matrix array.
-		Matrix4f(float m[4][4]);
+		Matrix4f(const float m[4][4]);
 
-		/// Default Destructor.
+		/// Copies the the specified Matrix into a new Matrix. The Inverse
+		/// Matrix will also be copied into the new Matrix.
+		/// const Matrix4f &matrix : The matrix to be copied into this.
+		Matrix4f(const Matrix4f &matrix);
+
+		/// Destroys this Matrix and its inverse Matrix.
 		~Matrix4f();
 
 		/// Returns an instance of the Matrix class initialized to the matrix
@@ -33,16 +49,10 @@ namespace Honeycomb::Math {
 		/// return : The reference to this matrix, post addition.
 		Matrix4f& addTo(const Matrix4f &m2);
 
-		/// Returns an instance of the Matrix class which is initialized to a 
-		/// 4x4 identity matrix.
-		/// return : The 4x4 identity matrix.
-		static const Matrix4f& identity();
-
-		/// Gets a 1D array of all of the values stored by this Matrix class.
-		/// The values are ordered by row major order (All column values of 
-		/// row 1 precede all column values of row 2, etc).
-		/// return : The array pointer.
-		float* get() const;
+		/// Returns an array of all of the elements of this Matrix. The array
+		/// returned will be in row-major order.
+		/// return : The array containing all of the elements of this Matrix.
+		std::array<float, 16> get() const;
 
 		/// Gets the value in the 4x4 Matrix at the specified row and column.
 		/// const int &r : The row position.
@@ -57,6 +67,16 @@ namespace Honeycomb::Math {
 		///				   instead.
 		/// return : The row of the Matrix.
 		Vector4f getColAt(const int &c) const;
+
+		/// Returns the Determinant of this Matrix.
+		/// return : The Determinant.
+		const float& getDeterminant() const;
+
+		/// Returns the Inverse Matrix of this Matrix. Note that if this Matrix
+		/// does not have an Inverse (i.e. if the Determinant is zero) the
+		/// returned matrix will have all zero values.
+		/// return : The Inverse Matrix.
+		const Matrix4f& getInverse() const;
 
 		/// Returns the specified row of the Matrix as a Vector.
 		/// const int &r : The row which is to be returned (0 is the first row
@@ -123,6 +143,11 @@ namespace Honeycomb::Math {
 		/// Sets the entire matrix to the specified 2D 4x4 array.
 		/// float f[4][4] : The 4x4 array to override this matrix.
 		void setMatrix(const float f[4][4]);
+
+		/// Writes the specified Matrix into this Matrix. The Inverse Matrix
+		/// will also be copied into this Matrix.
+		/// const Matrix4f &matrix : The matrix to be written to this Matrix.
+		Matrix4f& operator=(const Matrix4f &matrix);
 
 		/// Overloads the mulitplication operator to return a matrix instance
 		/// which is equivalent to this matrix, scaled by the specified amount.
@@ -218,10 +243,31 @@ namespace Honeycomb::Math {
 		/// return : This difference matrix.
 		Matrix4f& operator-=(const Matrix4f& m2);
 	private:
-		float matrix[4][4]; // Stores the 4x4 array which represents the matrix
-
 		static float M_IDENTITY[4][4];
+		static float M_ZERO[4][4];
+
 		static Matrix4f IDENTITY;
+		static Matrix4f ZERO;
+
+		/// Constructor which does not initialize an inverse matrix. Inverse
+		/// matrices should be created with this constructor, otherwise there
+		/// will be infinitely many matrices. This matrix will have all values
+		/// of zero by default.
+		/// Matrix4f *orig : The matrix of which this is an inverse of (the
+		///					 original matrix).
+		Matrix4f(Matrix4f *orig);
+
+		float matrix[4][4]; // Stores the 4x4 array which represents the matrix
+		
+		Matrix4f *inverse; // The inverse of this Matrix
+		float determinant; // The determinant of this Matrix
+
+		bool isInverse;    // Is this an inverse Matrix?
+
+		/// Updates the inverse and determinant of this Matrix. Due to the
+		/// expensiveness of these calculations, this should only be called
+		/// when the Matrix is updated.
+		void update();
 	};
 }
 

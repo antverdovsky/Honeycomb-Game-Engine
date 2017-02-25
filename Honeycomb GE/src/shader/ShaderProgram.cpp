@@ -204,7 +204,6 @@ namespace Honeycomb::Shader {
 
 		float *matPtr = &val.get()[0];
 		if (loc >= 0) glUniformMatrix4fv(loc, 1, true, matPtr);
-		delete matPtr;
 	}
 
 	void ShaderProgram::unbindShaderProgram() {
