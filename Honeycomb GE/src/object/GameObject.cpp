@@ -191,6 +191,10 @@ namespace Honeycomb::Object {
 			std::remove(children.begin(), children.end(), o), children.end());
 
 		o->parent = nullptr;
+
+		// Notify child's transform it no longer has a parent
+		Transform *childTransf = o->getComponent<Transform>();
+		if (childTransf) childTransf->setParent(nullptr);
 	}
 
 	void GameObject::removeComponent(GameComponent *c) {

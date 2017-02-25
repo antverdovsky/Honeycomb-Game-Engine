@@ -23,9 +23,9 @@ namespace HoneycombTest {
 		std::cout << "GLOBAL POSITION: " << transf.getGlobalTranslation().getX() <<
 			", " << transf.getGlobalTranslation().getY() << ", " <<
 			transf.getGlobalTranslation().getZ() << std::endl;
-		std::cout << "(TRANSF_POS) GLOBAL POS: " << transf.transformPoint(transf.getLocalTranslation()).getX() << ", " <<
-			transf.transformPoint(transf.getLocalTranslation()).getY() << ", " <<
-			transf.transformPoint(transf.getLocalTranslation()).getZ() << std::endl << std::endl;
+		std::cout << "(TRANSF_POS) GLOBAL POS: " << transf.transformPoint(Vector3f()).getX() << ", " <<
+			transf.transformPoint(Vector3f()).getY() << ", " <<
+			transf.transformPoint(Vector3f()).getZ() << std::endl << std::endl;
 
 		std::cout << "LOCAL RIGHT: " << transf.getLocalRight().getX() <<
 			", " << transf.getLocalRight().getY() << ", " <<
@@ -55,6 +55,16 @@ namespace HoneycombTest {
 			<< transf.getLocalRotation().getY() << ", "
 			<< transf.getLocalRotation().getZ() << std::endl << std::endl;
 
+		std::cout << "GLOBAL RIGHT: " << transf.inverseTransformDirection(transf.getLocalRight()).getX() << ", " <<
+			transf.inverseTransformDirection(transf.getLocalRight()).getY() << ", " <<
+			transf.inverseTransformDirection(transf.getLocalRight()).getZ() << std::endl;
+		std::cout << "GLOBAL UP: " << transf.inverseTransformDirection(transf.getLocalUp()).getX() << ", " <<
+			transf.inverseTransformDirection(transf.getLocalUp()).getY() << ", " <<
+			transf.inverseTransformDirection(transf.getLocalUp()).getZ() << std::endl;
+		std::cout << "GLOBAL FORWARD: " << transf.inverseTransformDirection(transf.getLocalForward()).getX() << ", " <<
+			transf.inverseTransformDirection(transf.getLocalForward()).getY() << ", " <<
+			transf.inverseTransformDirection(transf.getLocalForward()).getZ() << std::endl << std::endl;
+
 		std::cout << "***\n\n\n";
 	}
 
@@ -62,6 +72,7 @@ namespace HoneycombTest {
 	GameObject *car;
 	GameObject *camera;
 	GameObject *suzanne;
+	GameObject *cube;
 	enum parentTest_ActiveObj {
 		ROOT,
 			CONE,
@@ -184,12 +195,14 @@ namespace HoneycombTest {
 	void TestGame::start() {
 		Vector3f a = Vector3f(1, 2, 3);
 		float m[4][4] = {
-			{ 1, 2, 3, 4 },
-			{ 1, 2, 3, 4 },
-			{ 1, 2, 3, 4 },
-			{ 1, 2, 3, 4 }
+			{ 9, 9, 9, 9 },
+			{ 9, 1, -1, 9 },
+			{ 9, -1, 1, 9 },
+			{ 1, 3, 9, 9 }
 		};
 		Matrix4f mat = Matrix4f(m);
+		Matrix4f inv = mat.getInverse();
+		float det = mat.getDeterminant();
 		Vector3f prod = mat * a;
 
 		// Load in all of the Models.
@@ -197,7 +210,7 @@ namespace HoneycombTest {
 			"..\\Test Game\\res\\models\\dodge-challenger.fbx");
 		parentTest = Builder::getBuilder()->newModel(
 			"..\\Test Game\\res\\models\\parentTest1.fbx");
-		GameObject *cube = Builder::getBuilder()->newCube();
+		cube = Builder::getBuilder()->newCube();
 		GameObject *plane = Builder::getBuilder()->newPlane();
 		GameObject *sphere = Builder::getBuilder()->newSphere();
 		suzanne = Builder::getBuilder()->newSuzanne();
@@ -223,7 +236,7 @@ namespace HoneycombTest {
 			GameInput::KEY_CODE_R, GameInput::KEY_CODE_T,
 			GameInput::KEY_CODE_F, GameInput::KEY_CODE_G,
 			GameInput::KEY_CODE_V, GameInput::KEY_CODE_B,
-			5.0F, 5.0F, Space::GLOBAL);
+			5.0F, 5.0F, Space::LOCAL);
 		PointLight *suzPointLight = new PointLight();
 		suzPointLight->glVector4fs.setValue(PointLight::COLOR_VEC4, Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
 		suzPointLight->glFloats.setValue(PointLight::INTENSITY_F, 3.0F);
@@ -237,8 +250,8 @@ namespace HoneycombTest {
 		camera->addComponent(*camInputTransformable);
 
 		// Transform the objects in the scene.
-		cube->getComponent<Transform>()->setTranslation(
-			Vector3f(-2.5F, 1.0F, -2.5F));
+//		cube->getComponent<Transform>()->setTranslation(
+//			Vector3f(0.0F, 0.5F, 0.0F));
 		plane->getComponent<Transform>()->setScale(
 			Vector3f(50.0, 1.0F, 50.0F));
 		sphere->getComponent<Transform>()->setScale(
@@ -249,6 +262,7 @@ namespace HoneycombTest {
 			Vector3f(3.0F, 5.5F, 0.0F));
 		car->getChild("Body")->addComponent(*suzInputTransformable->clone());
 
+		cube->addComponent(*suzInputTransformable->clone());
 
 		parentTest->addComponent(*suzInputTransformable->clone());
 		parentTest->getChild("Cone")->addComponent(*suzInputTransformable->clone());
@@ -258,11 +272,11 @@ namespace HoneycombTest {
 
 
 		// Add all objects to the scene
-//		this->gameScene.addChild(*cube);
+		this->gameScene.addChild(*cube);
 		this->gameScene.addChild(*plane);
 //		this->gameScene.addChild(*sphere);
-		this->gameScene.addChild(*suzanne);
-		this->gameScene.addChild(*directionalLight);
+//		this->gameScene.addChild(*suzanne);
+//		this->gameScene.addChild(*directionalLight);
 		this->gameScene.addChild(*parentTest);
 		this->gameScene.addChild(*ambientLight);
 		this->gameScene.addChild(*camera);
@@ -279,6 +293,7 @@ namespace HoneycombTest {
 
 	int i = 0;
 	void TestGame::update() {
+		//cube->getComponent<Transform>()->setTranslation(Vector3f((i % 120) / 100.0F, 0.0F, 0.0F));
 //		parentTest->getChild("Cylinder")->getComponent<Transform>()->setTranslation(Vector3f::getGlobalForward() * (i % 120) / 60.0F, Space::LOCAL);
 //		parentTest->getChild("Cylinder")->getComponent<Transform>()->setTranslation(Vector3f::getGlobalForward() * (i % 120) / 60.0F, parentTest->getChild("Cylinder")->getComponent<InputTransformable>()->getSpace());
 		if (++i % 60 == 0) {
@@ -288,6 +303,7 @@ namespace HoneycombTest {
 //			_printPosAndLocals(*car->getChild("Body")->getComponent<Transform>());
 //			_printPosAndLocals(*suzanne->getComponent<Transform>());
 			_printPosAndLocals(*parentTest->getChild("Cone")->getComponent<Transform>());
+//			_printPosAndLocals(*cube->getComponent<Transform>());
 //			_printPosAndLocals(*parentTest->getComponent<Transform>());
 		}
 		

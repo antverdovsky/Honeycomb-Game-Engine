@@ -109,11 +109,12 @@ namespace Honeycomb::Component::Physics {
 		return this->lclTranslation;
 	}
 
+	Vector3f Transform::inverseTransformDirection(const Vector3f &dir) const {
+		return this->rotationMatrix.getInverse() * dir;
+	}
+
 	Vector3f Transform::inverseTransformPoint(const Vector3f &pos) const {
-		if (this->parent == nullptr)
-			return pos;
-		else
-			return pos - this->parent->gblTranslation;
+		return this->transformationMatrix.getInverse() * pos;
 	}
 	
 	void Transform::start() {
@@ -145,24 +146,26 @@ namespace Honeycomb::Component::Physics {
 		this->changedEvent.onEvent();
 	}
 
-	void Transform::setTranslation(const Vector3f &pos, const Space& space) {
+	void Transform::setTranslation(const Vector3f &p, const Space& space) {
 		if (space == Space::LOCAL) {
 			// If the translation is local, set the local translation and
 			// calculate the new global position using the transform point
-			// method.
-			this->lclTranslation = pos;
-			this->gblTranslation = transformPoint(pos);
+			// relative to the parent.
+			this->lclTranslation = p; 
+			if (this->parent == nullptr)  this->gblTranslation = p;
+			else this->gblTranslation = this->parent->transformPoint(p);
 		} else {
 			// If the translation is global, set the global translation and
 			// calculate the new local position using the inverse transform
-			// point.
-			this->gblTranslation = pos;
-			this->lclTranslation = inverseTransformPoint(pos);
+			// point relative to the parent.
+			this->gblTranslation = p;
+			if (this->parent == nullptr) this->lclTranslation = p;
+			else this->lclTranslation = this->parent->inverseTransformPoint(p);
 		}
 		
+		// Recalculate Translation & Transformation, trigger changed event
 		this->calculateTranslationMatrix();
 		this->calculateTransformationMatrix();
-
 		this->changedEvent.onEvent();
 	}
 
@@ -179,10 +182,9 @@ namespace Honeycomb::Component::Physics {
 	}
 
 	Vector3f Transform::transformPoint(const Vector3f &pos) const {
-		if (this->parent == nullptr) 
-			return pos;
-		else 
-			return this->parent->gblTranslation + pos;
+		// Multiply pos by the transformation matrix in order to account for
+		// all transformations (scale, rotation, position).
+		return this->transformationMatrix * pos;
 	}
 
 	void Transform::translate(const Vector3f &vec, const Space &space) {
@@ -239,7 +241,7 @@ namespace Honeycomb::Component::Physics {
 
 		// Perform matrix multiplication on the components (first scale, then
 		// rotate, then translate).
-		this->transformationMatrix = transMat *  rotMat * sclMat;
+		this->transformationMatrix = transMat * rotMat * sclMat;
 		return this->transformationMatrix;
 	}
 
@@ -290,6 +292,8 @@ namespace Honeycomb::Component::Physics {
 		// Whenever the parent changes its translation, rotation or scaling,
 		// global variables of this Transform must change as well (though local
 		// always remains the same when parent changes!).
+//		this->gblTranslation = this->parent->gblTranslation +
+//			this->lclTranslation;
 		this->setTranslation(this->lclTranslation, Space::LOCAL);
 	}
 

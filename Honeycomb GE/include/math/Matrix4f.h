@@ -92,15 +92,15 @@ namespace Honeycomb::Math {
 		Matrix4f multiply(const Matrix4f& m2) const;
 
 		/// Returns an instance of a Vector2f equal to the product of this
-		/// Matrix and the specified Vector. Do note that this Matrix will be
-		/// treated as a 2x2 for this calculation.
+		/// Matrix and the specified Vector. The Vector specified will be
+		/// converted to a Vector4f with 1.0F as the values of Z and W.
 		/// const Vector2f &v : The vector to be multiplied by this instance.
 		/// return : The product of this matrix and that vector.
 		Vector2f multiply(const Vector2f &v) const;
 
 		/// Returns an instance of a Vector3f equal to the product of this
-		/// Matrix and the specified Vector. Do note that this Matrix will be
-		/// treated as a 3x3 for this calculation.
+		/// Matrix and the specified Vector. The Vector specified will be
+		/// converted to a Vector4f with 1.0F as the value of Z.
 		/// const Vector3f &v : The vector to be multiplied by this instance.
 		/// return : The product of this matrix and that vector.
 		Vector3f multiply(const Vector3f &v) const;

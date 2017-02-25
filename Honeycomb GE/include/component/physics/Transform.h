@@ -101,6 +101,13 @@ namespace Honeycomb::Component::Physics {
 		/// return : The translation matrix.
 		const Honeycomb::Math::Matrix4f& getTranslationMatrix() const;
 
+		/// Transforms the specified local coordinate system direction vector
+		/// into a global coordinate system direction vector.
+		/// const Vector3f &pos : The Vector which is to be transformed.
+		/// return : The transformed vector.
+		Honeycomb::Math::Vector3f inverseTransformDirection(
+			const Honeycomb::Math::Vector3f &dir) const;
+
 		/// Transforms the specified global coordinate system position vector
 		/// into a local coordinate system position vector.
 		/// const Vector3f &pos : The Vector which is to be transformed.
@@ -144,19 +151,21 @@ namespace Honeycomb::Component::Physics {
 		void rotate(const Honeycomb::Math::Quaternion &quat);
 
 		/// Transforms the specified Local coordinate system direction vector
-		/// into a World coordinate system direction vector.
+		/// into a World coordinate system direction vector. Only the rotation
+		/// of this Transform is taken into account for this calculation.
 		/// const Vector3f &dir : The Vector which is to be transformed.
 		/// return : The Transformed Vector.
 		Honeycomb::Math::Vector3f transformDirection(
 			const Honeycomb::Math::Vector3f &dir) const;
 
 		/// Transforms the specified local position vector into a world
-		/// position vector.
-		/// const Vector3f &pos : The local position vector which is to be
-		///						  transformed.
+		/// position vector. The rotation, position and scale of this Transform
+		/// is taken into account for this calculation.
+		/// const Vector3f &p : The local position vector which is to be 
+		///                     transformed.
 		/// return : The Transformed vector.
 		Honeycomb::Math::Vector3f transformPoint(
-			const Honeycomb::Math::Vector3f &pos) const;
+			const Honeycomb::Math::Vector3f &p) const;
 
 		/// Translates this transform by the specified amounts on the 
 		/// { X, Y, Z } axes. If the space parameter is set to local, the

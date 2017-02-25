@@ -106,7 +106,7 @@ namespace Honeycomb::Math {
 		float rowArray[4]; // Stores the row in an Array
 
 		// Get each column of the row, and put it into the row array
-		for (int i = 0; i < 3; ++i) rowArray[i] = this->matrix[r][i];
+		for (int i = 0; i < 4; ++i) rowArray[i] = this->matrix[r][i];
 
 		// Construct a Vector out of all the row's elements and return
 		return Vector4f(rowArray[0], rowArray[1], rowArray[2], rowArray[3]);
@@ -131,9 +131,9 @@ namespace Honeycomb::Math {
 	}
 
 	Vector2f Matrix4f::multiply(const Vector2f &v) const {
-		// Convert the specified Vector2 to a Vector4 with zero Z, W components
+		// Convert the specified Vector2 to a Vector4 with 1.0F Z, W components
 		// and compute the product of this matrix with the Vector4.
-		Vector4f v4 = Vector4f(v.getX(), v.getY(), 0.0F, 0.0F);
+		Vector4f v4 = Vector4f(v.getX(), v.getY(), 1.0F, 1.0F);
 		Vector4f prod = this->multiply(v4);
 
 		// Truncate the Z, W component, return the remaining Vector2
@@ -141,9 +141,9 @@ namespace Honeycomb::Math {
 	}
 
 	Vector3f Matrix4f::multiply(const Vector3f &v) const {
-		// Convert the specified Vector3 to a Vector4 with a zero W component
+		// Convert the specified Vector3 to a Vector4 with a 1.0F W component
 		// and compute the product of this matrix with the Vector4.
-		Vector4f v4 = Vector4f(v.getX(), v.getY(), v.getZ(), 0.0F);
+		Vector4f v4 = Vector4f(v.getX(), v.getY(), v.getZ(), 1.0F);
 		Vector4f prod = this->multiply(v4);
 
 		// Truncate the W component, return the remaining Vector3
@@ -153,7 +153,7 @@ namespace Honeycomb::Math {
 	Vector4f Matrix4f::multiply(const Vector4f &v) const {
 		float result[4]; // The resulting Vector4f
 
-		for (int i = 0; i < 3; ++i) { // Go through first 3 rows of matrix
+		for (int i = 0; i < 4; ++i) { // Go through first 4 rows of matrix
 			// Get the current row
 			Vector4f row = this->getRowAt(i);
 
