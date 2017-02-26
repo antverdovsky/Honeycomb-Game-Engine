@@ -177,6 +177,30 @@ namespace Honeycomb::Component::Physics {
 		this->setRotation(quat * this->lclRotation);
 	}
 
+	void Transform::rotateAround(const Vector3f &center, const Vector3f &axis, 
+			const float &rad) {
+		// Fetch the old position and rotation of this Transform
+		Vector3f oldPos = this->gblTranslation;
+		Quaternion oldRot = this->lclRotation;
+		
+		// Get the rotation quaternion for the axis and radian amount provided
+		// and the displacement from the current position to the center of the
+		// axis of rotation. Rotate this displacement using the rotation 
+		// quaternion.
+		Quaternion rot = Quaternion(axis, rad);
+		Vector3f direction = oldPos - center;
+		direction = direction.rotate(rot);
+
+		// Calculate the new translation of the Transform and the new rotation
+		// (for the rotation, the object should look at the center position).
+		Vector3f newPos = center + direction;
+		Quaternion newRot = oldRot * oldRot.getInverse() * rot * oldRot;
+
+		// Apply the new Rotation and Translation
+		this->setTranslation(center + direction);
+		this->setRotation(newRot);
+	}
+
 	Vector3f Transform::transformDirection(const Vector3f &dir) const {
 		return this->rotationMatrix * dir;
 	}
@@ -292,8 +316,6 @@ namespace Honeycomb::Component::Physics {
 		// Whenever the parent changes its translation, rotation or scaling,
 		// global variables of this Transform must change as well (though local
 		// always remains the same when parent changes!).
-//		this->gblTranslation = this->parent->gblTranslation +
-//			this->lclTranslation;
 		this->setTranslation(this->lclTranslation, Space::LOCAL);
 	}
 

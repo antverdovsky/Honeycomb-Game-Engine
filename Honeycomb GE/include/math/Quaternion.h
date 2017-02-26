@@ -51,6 +51,10 @@ namespace Honeycomb::Math {
 		/// return : The forward direction vector.
 		Vector3f getForwardVector() const;
 
+		/// Returns the inverse Quaternion of this Quaternion.
+		/// return : The inverse Quaternion.
+		Quaternion getInverse() const;
+
 		/// Gets a vector representing the right of this Quaternion.
 		/// return : The right direction vector.
 		Vector3f getRightVector() const;
@@ -94,6 +98,10 @@ namespace Honeycomb::Math {
 		/// Gets the magnitude of the Quaternion.
 		/// return : The magnitude.
 		float magnitude() const;
+
+		/// Gets the magnitude of the Quaternion squared.
+		/// return : The squared magnitude.
+		float magnitude2() const;
 
 		/// Multiplies this and the specified quaternion and returns the 
 		/// quaternion representing the product. Neither this nor the specified

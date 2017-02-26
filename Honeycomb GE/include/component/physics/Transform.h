@@ -150,6 +150,19 @@ namespace Honeycomb::Component::Physics {
 		///							 transform.
 		void rotate(const Honeycomb::Math::Quaternion &quat);
 
+		/// Rotates this transform around the specified world axis by the
+		/// specified amount of radians.
+		/// const Vector3f &center : The position in the world through which 
+		///							 the axis vector goes through.
+		/// const Vector3f &axis : The axis on which to rotate the vector,
+		///						   this axis goes through the position given.
+		/// const float &rad : The amount by which to rotate the vector, in 
+		///					   radians. A positive amount rotates the vector 
+		///					   counterclockwise, and a negative amount rotates 
+		///					   the angle clockwise.
+		void rotateAround(const Honeycomb::Math::Vector3f &center, 
+			const Honeycomb::Math::Vector3f &axis,  const float &rad);
+
 		/// Transforms the specified Local coordinate system direction vector
 		/// into a World coordinate system direction vector. Only the rotation
 		/// of this Transform is taken into account for this calculation.

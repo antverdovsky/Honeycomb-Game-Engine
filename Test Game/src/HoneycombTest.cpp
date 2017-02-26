@@ -252,6 +252,7 @@ namespace HoneycombTest {
 		// Transform the objects in the scene.
 //		cube->getComponent<Transform>()->setTranslation(
 //			Vector3f(0.0F, 0.5F, 0.0F));
+//		cube->getComponent<Transform>()->setTranslation(Vector3f::getGlobalRight() * 10.0F);
 		plane->getComponent<Transform>()->setScale(
 			Vector3f(50.0, 1.0F, 50.0F));
 		sphere->getComponent<Transform>()->setScale(
@@ -275,16 +276,19 @@ namespace HoneycombTest {
 		this->gameScene.addChild(*cube);
 		this->gameScene.addChild(*plane);
 //		this->gameScene.addChild(*sphere);
-//		this->gameScene.addChild(*suzanne);
-//		this->gameScene.addChild(*directionalLight);
-		this->gameScene.addChild(*parentTest);
+		this->gameScene.addChild(*suzanne);
+		this->gameScene.addChild(*directionalLight);
+//		this->gameScene.addChild(*parentTest);
 		this->gameScene.addChild(*ambientLight);
 		this->gameScene.addChild(*camera);
 //		this->gameScene.addChild(*car);
 		GameScene::setActiveScene(this->gameScene);
+		suzanne->getComponent<Transform>()->setTranslation(Vector3f(5, 0, 0));
 
 		// Start the Game Scene
 		this->gameScene.start();
+
+		//cube->getComponent<Transform>()->rotateAround(Vector3f(0, 0, 0), Vector3f::getGlobalUp(), PI);
 	}
 
 	void TestGame::stop() {
@@ -293,17 +297,19 @@ namespace HoneycombTest {
 
 	int i = 0;
 	void TestGame::update() {
+    	cube->getComponent<Transform>()->rotateAround(suzanne->getComponent<Transform>()->getGlobalTranslation(), suzanne->getComponent<Transform>()->getLocalUp(), 0.02F);
 		//cube->getComponent<Transform>()->setTranslation(Vector3f((i % 120) / 100.0F, 0.0F, 0.0F));
 //		parentTest->getChild("Cylinder")->getComponent<Transform>()->setTranslation(Vector3f::getGlobalForward() * (i % 120) / 60.0F, Space::LOCAL);
 //		parentTest->getChild("Cylinder")->getComponent<Transform>()->setTranslation(Vector3f::getGlobalForward() * (i % 120) / 60.0F, parentTest->getChild("Cylinder")->getComponent<InputTransformable>()->getSpace());
 		if (++i % 60 == 0) {
-			system("cls");
+//			system("cls");
 
 //			_printPosAndLocals(*camera->getComponent<Transform>());
 //			_printPosAndLocals(*car->getChild("Body")->getComponent<Transform>());
 //			_printPosAndLocals(*suzanne->getComponent<Transform>());
-			_printPosAndLocals(*parentTest->getChild("Cone")->getComponent<Transform>());
-//			_printPosAndLocals(*cube->getComponent<Transform>());
+//			_printPosAndLocals(*parentTest->getChild("Cone")->getComponent<Transform>());
+		_printPosAndLocals(*cube->getComponent<Transform>());
+			int a = 32;
 //			_printPosAndLocals(*parentTest->getComponent<Transform>());
 		}
 		

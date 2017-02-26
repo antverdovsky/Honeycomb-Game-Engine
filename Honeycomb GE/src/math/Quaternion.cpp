@@ -60,6 +60,12 @@ namespace Honeycomb::Math {
 		return Vector3f::getGlobalForward().rotate(*this);
 	}
 
+	Quaternion Quaternion::getInverse() const {
+		float mag2 = this->magnitude2();
+		return Quaternion(
+			-this->x / mag2, -this->y / mag2, -this->z / mag2, this->w / mag2);
+	}
+
 	Vector3f Quaternion::getRightVector() const {
 		return Vector3f::getGlobalRight().rotate(*this);
 	}
@@ -101,9 +107,13 @@ namespace Honeycomb::Math {
 	}
 
 	float Quaternion::magnitude() const {
-		return (float)sqrt(x * x + y * y + z * z + w * w);
+		return (float)sqrt(this->magnitude2());
 	}
 
+	float Quaternion::magnitude2() const {
+		return (float)(x * x + y * y + z * z + w * w);
+	}
+	
 	Quaternion Quaternion::multiply(const Quaternion &q2) const {
 		// Calculate the vectors composed of the real components of the
 		// quaternions and calculate the cross and dot products of the vectors.
