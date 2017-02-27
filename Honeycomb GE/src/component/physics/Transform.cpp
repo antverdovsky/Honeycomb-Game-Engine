@@ -169,12 +169,15 @@ namespace Honeycomb::Component::Physics {
 		this->changedEvent.onEvent();
 	}
 
-	void Transform::rotate(const Vector3f &axis, const float &rad) {
-		this->rotate(Quaternion(axis, rad));
-	}
-
-	void Transform::rotate(const Quaternion &quat) {
-		this->setRotation(quat * this->lclRotation);
+	void Transform::rotate(const Vector3f &axis, const float &rad, 
+			const Space &space) {
+		// If the space specified is global, then the vector passed in is
+		// global and can just be passed to RotateAround. Otherwise, if the 
+		// space specified is local, then the vector must be changed from the 
+		// local coordinate system of this Transform to the global.
+		Vector3f global = space == Space::GLOBAL ?
+			axis : this->transformDirection(axis);
+		this->rotateAround(this->gblTranslation, global, rad);
 	}
 
 	void Transform::rotateAround(const Vector3f &center, const Vector3f &axis, 
@@ -186,8 +189,9 @@ namespace Honeycomb::Component::Physics {
 		// Get the rotation quaternion for the axis and radian amount provided
 		// and the displacement from the current position to the center of the
 		// axis of rotation. Rotate this displacement using the rotation 
-		// quaternion.
-		Quaternion rot = Quaternion(axis, rad);
+		// quaternion. Axis must be normalized or the object will rotate more
+		// than the amount of radians specified!
+		Quaternion rot = Quaternion(axis.normalized(), rad);
 		Vector3f direction = oldPos - center;
 		direction = direction.rotate(rot);
 

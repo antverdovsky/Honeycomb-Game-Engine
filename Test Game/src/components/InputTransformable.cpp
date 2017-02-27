@@ -97,16 +97,22 @@ namespace HoneycombTest::Components {
 				this->space);
 
 		if (input->getKeyDown(this->pitchUp))
-			transform->rotate( transform->getLocalRight(), adjSpeedR);
+			transform->rotate( Vector3f::getGlobalRight(), adjSpeedR, 
+				this->space);
 		else if (input->getKeyDown(this->pitchDown))
-			transform->rotate(-transform->getLocalRight(), adjSpeedR);
+			transform->rotate(-Vector3f::getGlobalRight(), adjSpeedR, 
+				this->space);
 		if (input->getKeyDown(this->rollLeft))
-			transform->rotate(-transform->getLocalForward(), adjSpeedR);
+			transform->rotate(-Vector3f::getGlobalForward(), adjSpeedR, 
+				this->space);
 		else if (input->getKeyDown(this->rollRight))
-			transform->rotate( transform->getLocalForward(), adjSpeedR);
+			transform->rotate( Vector3f::getGlobalForward(), adjSpeedR, 
+				this->space);
 		if (input->getKeyDown(this->yawLeft))
-			transform->rotate( transform->getLocalUp(), adjSpeedR);
+			transform->rotate( Vector3f::getGlobalUp(), adjSpeedR, 
+				this->space);
 		else if (input->getKeyDown(this->yawRight))
-			transform->rotate(-transform->getLocalUp(), adjSpeedR);
+			transform->rotate(-Vector3f::getGlobalUp(), adjSpeedR, 
+				this->space);
 	}
 }

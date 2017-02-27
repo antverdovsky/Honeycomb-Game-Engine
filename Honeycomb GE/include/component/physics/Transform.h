@@ -136,19 +136,19 @@ namespace Honeycomb::Component::Physics {
 			const Space &space = Space::GLOBAL);
 
 		/// Rotates this transform by the specified amount of radians on the
-		/// axis. A positive amount will rotate the transform counterclockwise,
-		/// and a negative amount will rotate the transform clockwise.
+		/// axis, where the axis is relative to the world or to the object.
 		/// const Vector3f &axis : The axis on which to rotate the vector.
 		/// const float &rad : The amount by which to rotate the vector, in 
 		///					   radians. A positive amount rotates the vector 
 		///					   counterclockwise, and a negative amount rotates 
 		///					   the angle clockwise.
-		void rotate(const Honeycomb::Math::Vector3f &axis, const float &rad);
-
-		/// Rotates this transform by the specified quaternion.
-		/// const Quaternion &quat : The quaternion with which to rotate this
-		///							 transform.
-		void rotate(const Honeycomb::Math::Quaternion &quat);
+		/// const Space &space : The space in which the rotation is to occur.
+		///						 If this is set to LOCAL or left off, the
+		///						 object will rotate around its own local axes.
+		///						 Otherwise, the object will rotate around the
+		///						 global world axes.
+		void rotate(const Honeycomb::Math::Vector3f &axis, const float &rad,
+			const Space &space = Space::LOCAL);
 
 		/// Rotates this transform around the specified world axis by the
 		/// specified amount of radians.
@@ -161,7 +161,7 @@ namespace Honeycomb::Component::Physics {
 		///					   counterclockwise, and a negative amount rotates 
 		///					   the angle clockwise.
 		void rotateAround(const Honeycomb::Math::Vector3f &center, 
-			const Honeycomb::Math::Vector3f &axis,  const float &rad);
+			const Honeycomb::Math::Vector3f &axis, const float &rad);
 
 		/// Transforms the specified Local coordinate system direction vector
 		/// into a World coordinate system direction vector. Only the rotation

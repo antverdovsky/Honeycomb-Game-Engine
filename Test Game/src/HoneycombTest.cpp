@@ -297,7 +297,7 @@ namespace HoneycombTest {
 
 	int i = 0;
 	void TestGame::update() {
-    	cube->getComponent<Transform>()->rotateAround(suzanne->getComponent<Transform>()->getGlobalTranslation(), suzanne->getComponent<Transform>()->getLocalUp(), 0.02F);
+    	cube->getComponent<Transform>()->rotateAround(suzanne->getComponent<Transform>()->getGlobalTranslation(), suzanne->getComponent<Transform>()->getLocalUp() * 100.0F, 0.02F);
 		//cube->getComponent<Transform>()->setTranslation(Vector3f((i % 120) / 100.0F, 0.0F, 0.0F));
 //		parentTest->getChild("Cylinder")->getComponent<Transform>()->setTranslation(Vector3f::getGlobalForward() * (i % 120) / 60.0F, Space::LOCAL);
 //		parentTest->getChild("Cylinder")->getComponent<Transform>()->setTranslation(Vector3f::getGlobalForward() * (i % 120) / 60.0F, parentTest->getChild("Cylinder")->getComponent<InputTransformable>()->getSpace());
