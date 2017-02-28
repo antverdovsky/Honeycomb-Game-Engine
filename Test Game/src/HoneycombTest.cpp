@@ -50,7 +50,11 @@ namespace HoneycombTest {
 			transf.transformDirection(Vector3f::getGlobalForward()).getY() << ", " <<
 			transf.transformDirection(Vector3f::getGlobalForward()).getZ() << std::endl << std::endl;
 
-		std::cout << "ROTATION: " << transf.getLocalRotation().getW() << ", "
+		std::cout << "GLOBAL ROTATION: " << transf.getLocalRotation().getW() << ", "
+			<< transf.getGlobalRotation().getX() << ", "
+			<< transf.getLocalRotation().getY() << ", "
+			<< transf.getLocalRotation().getZ() << std::endl;
+		std::cout << "LOCAL ROTATION: " << transf.getLocalRotation().getW() << ", "
 			<< transf.getLocalRotation().getX() << ", "
 			<< transf.getLocalRotation().getY() << ", "
 			<< transf.getLocalRotation().getZ() << std::endl << std::endl;
@@ -110,6 +114,7 @@ namespace HoneycombTest {
 			parentTest->getChild("Cone")->getChild("Torus")->getComponent<InputTransformable>()->stop();
 			parentTest->getChild("Cone")->getChild("Torus")->getChild("Sphere")->getComponent<InputTransformable>()->stop();
 			parentTest->getChild("Cylinder")->getComponent<InputTransformable>()->stop();
+			suzanne->getComponent<InputTransformable>()->stop();
 
 			Transform *ptr = parentTest->getComponent<Transform>();
 			std::cout << "ROOT LOCAL: " << ptr->getLocalTranslation().getX() << ", " <<
@@ -125,6 +130,7 @@ namespace HoneycombTest {
 			parentTest->getChild("Cone")->getChild("Torus")->getComponent<InputTransformable>()->stop();
 			parentTest->getChild("Cone")->getChild("Torus")->getChild("Sphere")->getComponent<InputTransformable>()->stop();
 			parentTest->getChild("Cylinder")->getComponent<InputTransformable>()->stop();
+			suzanne->getComponent<InputTransformable>()->start();
 				
 			Transform *ptr = parentTest->getChild("Cone")->getComponent<Transform>();
 			std::cout << "CONE LOCAL: " << ptr->getLocalTranslation().getX() << ", " <<
@@ -236,7 +242,7 @@ namespace HoneycombTest {
 			GameInput::KEY_CODE_R, GameInput::KEY_CODE_T,
 			GameInput::KEY_CODE_F, GameInput::KEY_CODE_G,
 			GameInput::KEY_CODE_V, GameInput::KEY_CODE_B,
-			5.0F, 5.0F, Space::LOCAL);
+			10.0F, 10.0F, Space::LOCAL);
 		PointLight *suzPointLight = new PointLight();
 		suzPointLight->glVector4fs.setValue(PointLight::COLOR_VEC4, Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
 		suzPointLight->glFloats.setValue(PointLight::INTENSITY_F, 3.0F);
@@ -273,21 +279,37 @@ namespace HoneycombTest {
 
 
 		// Add all objects to the scene
-		this->gameScene.addChild(*cube);
+//		this->gameScene.addChild(*cube);
 		this->gameScene.addChild(*plane);
 //		this->gameScene.addChild(*sphere);
-		this->gameScene.addChild(*suzanne);
+//		this->gameScene.addChild(*suzanne);
 		this->gameScene.addChild(*directionalLight);
-//		this->gameScene.addChild(*parentTest);
+		this->gameScene.addChild(*parentTest);
 		this->gameScene.addChild(*ambientLight);
 		this->gameScene.addChild(*camera);
 //		this->gameScene.addChild(*car);
 		GameScene::setActiveScene(this->gameScene);
 		suzanne->getComponent<Transform>()->setTranslation(Vector3f(5, 0, 0));
 
+		//cube->addChild(*suzanne);
+		suzanne->getComponent<Transform>()->translate(Vector3f::getGlobalUp() * 5.0F);
+
 		// Start the Game Scene
 		this->gameScene.start();
 
+//		parentTest->getComponent<Transform>()->rotate(Vector3f::getGlobalUp(), -PI / 2);
+//		parentTest->getChild("Cylinder")->getComponent<Transform>()->rotate(Vector3f::getGlobalUp(), PI / 2);
+
+		std::cout << "LOCAL: " << parentTest->getChild("Cylinder")->getComponent<Transform>()->getLocalRotation().getW() << ", "
+			<< parentTest->getChild("Cylinder")->getComponent<Transform>()->getLocalRotation().getX() << ", "
+			<< parentTest->getChild("Cylinder")->getComponent<Transform>()->getLocalRotation().getY() << ", " 
+			<< parentTest->getChild("Cylinder")->getComponent<Transform>()->getLocalRotation().getZ() << std::endl;
+		std::cout << "GLOBAL: " << parentTest->getChild("Cylinder")->getComponent<Transform>()->getGlobalRotation().getW() << ", "
+			<< parentTest->getChild("Cylinder")->getComponent<Transform>()->getGlobalRotation().getX() << ", "
+			<< parentTest->getChild("Cylinder")->getComponent<Transform>()->getGlobalRotation().getY() << ", "
+			<< parentTest->getChild("Cylinder")->getComponent<Transform>()->getLocalRotation().getZ() << std::endl;
+
+		int b = 32;
 		//cube->getComponent<Transform>()->rotateAround(Vector3f(0, 0, 0), Vector3f::getGlobalUp(), PI);
 	}
 
@@ -297,10 +319,11 @@ namespace HoneycombTest {
 
 	int i = 0;
 	void TestGame::update() {
-    	cube->getComponent<Transform>()->rotateAround(suzanne->getComponent<Transform>()->getGlobalTranslation(), suzanne->getComponent<Transform>()->getLocalUp() * 100.0F, 0.02F);
+ //   	cube->getComponent<Transform>()->rotateAround(suzanne->getComponent<Transform>()->getGlobalTranslation(), suzanne->getComponent<Transform>()->getLocalUp() * 100.0F, 0.02F);
 		//cube->getComponent<Transform>()->setTranslation(Vector3f((i % 120) / 100.0F, 0.0F, 0.0F));
 //		parentTest->getChild("Cylinder")->getComponent<Transform>()->setTranslation(Vector3f::getGlobalForward() * (i % 120) / 60.0F, Space::LOCAL);
 //		parentTest->getChild("Cylinder")->getComponent<Transform>()->setTranslation(Vector3f::getGlobalForward() * (i % 120) / 60.0F, parentTest->getChild("Cylinder")->getComponent<InputTransformable>()->getSpace());
+//		cube->getComponent<Transform>()->rotate(Vector3f::getGlobalRight(), 0.01F);
 		if (++i % 60 == 0) {
 //			system("cls");
 
@@ -308,9 +331,9 @@ namespace HoneycombTest {
 //			_printPosAndLocals(*car->getChild("Body")->getComponent<Transform>());
 //			_printPosAndLocals(*suzanne->getComponent<Transform>());
 //			_printPosAndLocals(*parentTest->getChild("Cone")->getComponent<Transform>());
-		_printPosAndLocals(*cube->getComponent<Transform>());
+//			_printPosAndLocals(*cube->getComponent<Transform>());
 			int a = 32;
-//			_printPosAndLocals(*parentTest->getComponent<Transform>());
+			_printPosAndLocals(*parentTest->getChild("Cylinder")->getComponent<Transform>());
 		}
 		
 		//parentTest->getComponent<Transform>()->translate(Vector3f::getGlobalForward() * 0.01F, *suzanne->getComponent<Transform>());

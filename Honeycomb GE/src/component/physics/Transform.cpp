@@ -61,6 +61,10 @@ namespace Honeycomb::Component::Physics {
 		return this->changedEvent;
 	}
 
+	const Quaternion& Transform::getGlobalRotation() const {
+		return this->gblRotation;
+	}
+
 	const Vector3f& Transform::getGlobalTranslation() const {
 		return this->gblTranslation;
 	}
@@ -127,8 +131,17 @@ namespace Honeycomb::Component::Physics {
 		this->changedEvent.onEvent();
 	}
 
-	void Transform::setRotation(const Quaternion &quat) {
-		this->lclRotation = quat;
+	void Transform::setRotation(const Quaternion &quat, const Space &space) {
+		if (space == Space::LOCAL) {
+			this->lclRotation = quat;
+			if (this->parent == nullptr) this->gblRotation = quat;
+			else this->gblRotation = this->parent->gblRotation * quat;
+		} else {
+			this->gblRotation = quat;
+			if (this->parent == nullptr) this->lclRotation = quat;
+			else this->lclRotation = 
+				this->parent->gblRotation.getInverse() * quat;
+		}
 
 		this->calculateOrientationMatrix();
 		this->calculateRotationMatrix();
@@ -184,7 +197,7 @@ namespace Honeycomb::Component::Physics {
 			const float &rad) {
 		// Fetch the old position and rotation of this Transform
 		Vector3f oldPos = this->gblTranslation;
-		Quaternion oldRot = this->lclRotation;
+		Quaternion oldRot = this->gblRotation;
 		
 		// Get the rotation quaternion for the axis and radian amount provided
 		// and the displacement from the current position to the center of the
@@ -236,9 +249,9 @@ namespace Honeycomb::Component::Physics {
 		this->orientationMatrix = Matrix4f::identity();
 
 		// Calculate new directions using the rotations
-		this->forward = this->lclRotation.getForwardVector().normalized();
-		this->right = this->lclRotation.getRightVector().normalized();
-		this->up = this->lclRotation.getUpVector().normalized();
+		this->forward = this->gblRotation.getForwardVector().normalized();
+		this->right = this->gblRotation.getRightVector().normalized();
+		this->up = this->gblRotation.getUpVector().normalized();
 
 		// Copy each X component from each directional vector to Orientation,
 		// so the result of the first column looks like: [ r.X, u.X, f.X ]'.
@@ -274,7 +287,7 @@ namespace Honeycomb::Component::Physics {
 	}
 
 	const Matrix4f& Transform::calculateRotationMatrix() {
-		this->rotationMatrix = this->lclRotation.toRotationMatrix4f();
+		this->rotationMatrix = this->gblRotation.toRotationMatrix4f();
 
 		return this->rotationMatrix;
 	}
@@ -321,6 +334,7 @@ namespace Honeycomb::Component::Physics {
 		// global variables of this Transform must change as well (though local
 		// always remains the same when parent changes!).
 		this->setTranslation(this->lclTranslation, Space::LOCAL);
+		this->setRotation(this->lclRotation, Space::LOCAL);
 	}
 
 	void Transform::setParent(Transform *parent) {

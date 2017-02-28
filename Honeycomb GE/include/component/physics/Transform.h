@@ -49,6 +49,11 @@ namespace Honeycomb::Component::Physics {
 		/// return : The constant reference to the event.
 		const Honeycomb::Conjuncture::Event& getChangedEvent() const;
 
+		/// Gets the quaternion representing the global rotation of this
+		/// transform.
+		/// return : The global rotation quaternion.
+		const Honeycomb::Math::Quaternion& getGlobalRotation() const;
+
 		/// Gets the vector representing the global translation of this
 		/// transform.
 		/// return : The global translation vector.
@@ -73,7 +78,7 @@ namespace Honeycomb::Component::Physics {
 		/// return : The orientation matrix.
 		const Honeycomb::Math::Matrix4f& getOrientationMatrix() const;
 
-		/// Gets the rotation quaternion of this transform.
+		/// Gets the local rotation quaternion of this transform.
 		/// return : The rotation quaternion.
 		const Honeycomb::Math::Quaternion& getLocalRotation() const;
 
@@ -118,9 +123,14 @@ namespace Honeycomb::Component::Physics {
 		/// Starts this Transform instance.
 		void start();
 
-		/// Sets the rotation vector of this transform.
+		/// Sets the rotation of this transform in the local or world
+		/// coordinate system space. By default, the Rotation is set in the
+		/// global world space.
 		/// const Quaternion &quat : The new rotation quaternion.
-		void setRotation(const Honeycomb::Math::Quaternion &quat);
+		/// const Space &space : The coordinate space in which the Transform is
+		///						 to be rotated.
+		void setRotation(const Honeycomb::Math::Quaternion &quat,
+			const Space &space = Space::GLOBAL);
 
 		/// Sets the scale vector of this transform.
 		/// const Vector3f &vec : The new scale vector.
@@ -128,7 +138,7 @@ namespace Honeycomb::Component::Physics {
 
 		/// Sets the translation of this Transform in the local or world
 		/// coordinate system space. By default, the Translation is set in the
-		/// global world.
+		/// global world space.
 		/// const Vector3f &pos : The new position of the Transform.
 		/// const Space &space : The coordinate space in which the Transform is
 		///						 to be translated.
@@ -208,7 +218,7 @@ namespace Honeycomb::Component::Physics {
 		Honeycomb::Math::Vector3f lclScale;		   // Local scale Vector
 
 		Honeycomb::Math::Vector3f gblTranslation;  // Global position Vector
-//		Honeycomb::Math::Quaternion gblRotation;   // Global rotation Quat.
+		Honeycomb::Math::Quaternion gblRotation;   // Global rotation Quat.
 //		Honeycomb::Math::Vector3f gblScale;		   // Global scale Vector
 
 		Honeycomb::Math::Vector3f forward;	// Local Forward Direction
