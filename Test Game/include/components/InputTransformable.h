@@ -9,19 +9,20 @@
 namespace HoneycombTest::Components {
 	class InputTransformable : public Honeycomb::Component::GameComponent {
 	public:
-		/// Creates a new instance of the input movable component. The W and S
+		/// Creates a new instance of the input transf. component. The W and S
 		/// keys will be used to move forward and backward, A and D keys used 
 		/// to move left and right, Q and E keys used to move up and down. The 
 		/// Y and U keys will rotate the transform left and right on the 
 		/// x-axis, H and J keys will rotate the transform left and right on 
 		/// the y-axis, N and M keys will rotate the transform left and right 
-		/// on the z-axis. By default, the transform will translate relative to
-		/// its own local coordinate system.
+		/// on the z-axis. No keys will be set for scaling the Transform. By 
+		/// default, the transform will translate relative to its own local
+		/// coordinate system.
 		InputTransformable();
 
-		/// Creates a new instance of the input movable component. For all 
-		/// keys, if the transform is to not be moved or rotated, a negative
-		/// integer can be provided instead of the key code.
+		/// Creates a new instance of the input transformable component. For 
+		/// all keys, if the transform is to not be moved or rotated, a 
+		/// negative integer can be provided instead of the key code.
 		/// int mF : The key to move the transform forward.
 		/// int mB : The key to move the transform backwards.
 		/// int mL : The key to move the transform left.
@@ -34,13 +35,22 @@ namespace HoneycombTest::Components {
 		/// int rR : The key to roll the transform right.
 		/// int yL : The key to yaw the transform left on Z-axis.
 		/// int yR : The key to yaw the transform right on Z-axis.
+		/// int sUR : The key to scale up on the right axis.
+		/// int sDR : The key to scale down on the right axis.
+		/// int sUF : The key to scale up on the forward axis.
+		/// int sDF : The key to scale down on the forward axis.
+		/// int sUU : The key to scale up on the up axis.
+		/// int sDU : The key to scale down on the up axis.
 		/// float sM : The speed by which the transform is moved.
 		/// float sR : The speed by which the transform is rotated.
+		/// float sS : The speed by which the transform is scaled.
 		/// Space space : The space (LOCAL or GLOBAL) relative to which the
 		///				  Transform is to translate.
 		InputTransformable(int mF, int mB, int mL, int mR, int mU, int mD,
 			int pU, int pD, int rL, int rR, int yL, int yR,
-			float sM, float sR, Honeycomb::Component::Physics::Space space);
+			int sUR, int sDR, int sUF, int sDF, int sUU, int sDU, 
+			float sM, float sR, float sS, Honeycomb::Component::Physics::Space 
+			space);
 
 		/// Default Destructor.
 		~InputTransformable();
@@ -61,6 +71,7 @@ namespace HoneycombTest::Components {
 	private:
 		float speedM; // The speed with which the transform is moved
 		float speedR; // The speed with which the transform is rotated
+		float speedS; // The speed with which the transform is scaled
 
 		/// Key Codes for moving the Transform
 		int movForward = 0;
@@ -77,6 +88,14 @@ namespace HoneycombTest::Components {
 		int rollRight = 0;
 		int yawLeft = 0;
 		int yawRight = 0;
+
+		/// Key codes for scaling the Transform
+		int scaleUpR = 0;
+		int scaleUpU = 0;
+		int scaleUpF = 0;
+		int scaleDownR = 0;
+		int scaleDownU = 0;
+		int scaleDownF = 0;
 
 		// The space relative to which the translation is to occur
 		Honeycomb::Component::Physics::Space space;

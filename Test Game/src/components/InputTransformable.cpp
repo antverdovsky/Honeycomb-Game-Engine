@@ -14,19 +14,20 @@ using namespace Honeycomb::Base;
 namespace HoneycombTest::Components {
 	InputTransformable::InputTransformable() : InputTransformable(
 		GameInput::KEY_CODE_W, GameInput::KEY_CODE_S, // Move forward & back
-		GameInput::KEY_CODE_A, GameInput::KEY_CODE_D, // Move left & right
+		GameInput::KEY_CODE_A, GameInput::KEY_CODE_D, // Move left & raight
 		GameInput::KEY_CODE_Q, GameInput::KEY_CODE_E, // Move up & down
-		GameInput::KEY_CODE_Y, GameInput::KEY_CODE_U, // Pitch up & down
-		GameInput::KEY_CODE_H, GameInput::KEY_CODE_J, // Roll left & right
-		GameInput::KEY_CODE_N, GameInput::KEY_CODE_M, // Yaw left & right
-		3.5F, 3.5F, Space::LOCAL) {
+		GameInput::KEY_CODE_T, GameInput::KEY_CODE_G, // Pitch up & down
+		GameInput::KEY_CODE_F, GameInput::KEY_CODE_H, // Roll left & right
+		GameInput::KEY_CODE_R, GameInput::KEY_CODE_Y, // Yaw left & right
+		-1, -1, -1, -1, -1, -1, 3.5F, 3.5F, 3.5F, Space::LOCAL) {
 		
 	}
 
 	InputTransformable::InputTransformable(
 			int mF, int mB, int mL, int mR, int mU, int mD,
 			int pU, int pD, int rL, int rR, int yL, int yR,
-			float sM, float sR, Space space) : 
+			int sUR, int sDR, int sUF, int sDF, int sUU, int sDU,
+			float sM, float sR, float sS, Space space) :
 			GameComponent("InputTransformable") {
 		/// Keys for Movement
 		this->movForward = mF;
@@ -44,9 +45,18 @@ namespace HoneycombTest::Components {
 		this->yawLeft = yL;
 		this->yawRight = yR;
 
+		/// Keys for Scaling
+		this->scaleUpR = sUR;
+		this->scaleUpU = sUU;
+		this->scaleUpF = sUF;
+		this->scaleDownR = sDR;
+		this->scaleDownU = sDU;
+		this->scaleDownF = sDF;
+
 		/// Movement Speed Values (not adjusted for Frame Rate)
 		this->speedM = sM;
 		this->speedR = sR;
+		this->speedS = sS;
 
 		this->space = space;
 	}
@@ -71,48 +81,53 @@ namespace HoneycombTest::Components {
 			this->attached->getComponent<Transform>();
 		GameInput *input = GameInput::getGameInput();
 
+		// Get the forward, up and right vectors
+		Vector3f forward = Vector3f::getGlobalForward();
+		Vector3f right = Vector3f::getGlobalRight();
+		Vector3f up = Vector3f::getGlobalUp();
+
 		// Adjust the speed values for the frame rate
-		float adjSpeedM = 
-			this->speedM * GameTime::getGameTime()->getDeltaTimeS();
-		float adjSpeedR = 
-			this->speedR * GameTime::getGameTime()->getDeltaTimeS();
+		float sM = this->speedM * GameTime::getGameTime()->getDeltaTimeS();
+		float sR = this->speedR * GameTime::getGameTime()->getDeltaTimeS();
+		float sS = this->speedS * GameTime::getGameTime()->getDeltaTimeS();
 
 		if (input->getKeyDown(this->movForward))
-			transform->translate( Vector3f::getGlobalForward() * adjSpeedM,
-				this->space);
+			transform->translate( forward * sM, this->space);
 		else if (input->getKeyDown(this->movBackward))
-			transform->translate(-Vector3f::getGlobalForward() * adjSpeedM,
-				this->space);
-		if (input->getKeyDown(this->movLeft))
-			transform->translate(-Vector3f::getGlobalRight() * adjSpeedM,
-				this->space);
-		else if (input->getKeyDown(this->movRight))
-			transform->translate( Vector3f::getGlobalRight() *adjSpeedM,
-				this->space);
+			transform->translate(-forward * sM, this->space);
+		if (input->getKeyDown(this->movRight))
+			transform->translate( right * sM, this->space);
+		else if (input->getKeyDown(this->movLeft))
+			transform->translate(-right * sM, this->space);
 		if (input->getKeyDown(this->movUp))
-			transform->translate( Vector3f::getGlobalUp() * adjSpeedM,
-				this->space);
+			transform->translate( up * sM, this->space);
 		else if (input->getKeyDown(this->movDown))
-			transform->translate(-Vector3f::getGlobalUp() * adjSpeedM,
-				this->space);
+			transform->translate(-up * sM, this->space);
 
 		if (input->getKeyDown(this->pitchUp))
-			transform->rotate( Vector3f::getGlobalRight(), adjSpeedR, 
-				this->space);
+			transform->rotate( right, sR, this->space);
 		else if (input->getKeyDown(this->pitchDown))
-			transform->rotate(-Vector3f::getGlobalRight(), adjSpeedR, 
-				this->space);
+			transform->rotate(-right, sR, this->space);
 		if (input->getKeyDown(this->rollLeft))
-			transform->rotate(-Vector3f::getGlobalForward(), adjSpeedR, 
-				this->space);
+			transform->rotate(-forward, sR, this->space);
 		else if (input->getKeyDown(this->rollRight))
-			transform->rotate( Vector3f::getGlobalForward(), adjSpeedR, 
-				this->space);
+			transform->rotate( forward, sR, this->space);
 		if (input->getKeyDown(this->yawLeft))
-			transform->rotate( Vector3f::getGlobalUp(), adjSpeedR, 
-				this->space);
+			transform->rotate( up, sR, this->space);
 		else if (input->getKeyDown(this->yawRight))
-			transform->rotate(-Vector3f::getGlobalUp(), adjSpeedR, 
-				this->space);
+			transform->rotate(-up, sR, this->space);
+
+		if (input->getKeyDown(this->scaleUpR))
+			transform->setScale(transform->getLocalScale() + (right * sS));
+		else if (input->getKeyDown(this->scaleDownR))
+			transform->setScale(transform->getLocalScale() - (right * sS));
+		if (input->getKeyDown(this->scaleUpU))
+			transform->setScale(transform->getLocalScale() + (up * sS));
+		else if (input->getKeyDown(this->scaleDownU))
+			transform->setScale(transform->getLocalScale() - (up * sS));
+		if (input->getKeyDown(this->scaleUpF))
+			transform->setScale(transform->getLocalScale() + (forward * sS));
+		else if (input->getKeyDown(this->scaleDownF))
+			transform->setScale(transform->getLocalScale() - (forward * sS));
 	}
 }
