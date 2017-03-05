@@ -65,6 +65,10 @@ namespace Honeycomb::Component::Physics {
 		return this->gblRotation;
 	}
 
+	const Vector3f& Transform::getGlobalScale() const {
+		return this->gblScale;
+	}
+
 	const Vector3f& Transform::getGlobalTranslation() const {
 		return this->gblTranslation;
 	}
@@ -150,8 +154,20 @@ namespace Honeycomb::Component::Physics {
 		this->changedEvent.onEvent();
 	}
 
-	void Transform::setScale(const Vector3f &vec) {
-		this->lclScale = vec;
+	void Transform::setScale(const Vector3f &scl, const Space &space) {
+		if (space == Space::LOCAL) {
+			// If the scaling is local, set the local scale and calculate the 
+			// new global scale using the parent's global scale.
+			this->lclScale = scl;
+			if (this->parent == nullptr) this->gblScale = scl;
+			else this->gblScale = this->parent->gblScale.multiply(scl);
+		} else {
+			// If the scaling is global, set the global scale and calculate the 
+			// new local scale using the inverse of the parent's global scale.
+			this->gblScale = scl;
+			if (this->parent == nullptr) this->lclScale = scl;
+			else this->lclScale = this->parent->gblScale.divide(scl);
+		}
 
 		this->calculateScaleMatrix();
 		this->calculateTransformationMatrix();
@@ -297,9 +313,9 @@ namespace Honeycomb::Component::Physics {
 
 		// A scale matrix is composed as an identity matrix whose diagonal
 		// equals { X, Y, Z, 1 }
-		this->scaleMatrix.setAt(0, 0, this->lclScale.getX());
-		this->scaleMatrix.setAt(1, 1, this->lclScale.getY());
-		this->scaleMatrix.setAt(2, 2, this->lclScale.getZ());
+		this->scaleMatrix.setAt(0, 0, this->gblScale.getX());
+		this->scaleMatrix.setAt(1, 1, this->gblScale.getY());
+		this->scaleMatrix.setAt(2, 2, this->gblScale.getZ());
 
 		// Return the Scale Matrix, which should look like
 		// [  X   0.0  0.0  0.0 ]
@@ -335,6 +351,7 @@ namespace Honeycomb::Component::Physics {
 		// always remains the same when parent changes!).
 		this->setTranslation(this->lclTranslation, Space::LOCAL);
 		this->setRotation(this->lclRotation, Space::LOCAL);
+		this->setScale(this->lclScale, Space::LOCAL);
 	}
 
 	void Transform::setParent(Transform *parent) {

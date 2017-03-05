@@ -117,17 +117,20 @@ namespace HoneycombTest::Components {
 		else if (input->getKeyDown(this->yawRight))
 			transform->rotate(-up, sR, this->space);
 
+		Vector3f scale = this->space == Space::GLOBAL ?
+			transform->getGlobalScale() : transform->getLocalScale();
+
 		if (input->getKeyDown(this->scaleUpR))
-			transform->setScale(transform->getLocalScale() + (right * sS));
+			transform->setScale(scale + (right * sS), this->space);
 		else if (input->getKeyDown(this->scaleDownR))
-			transform->setScale(transform->getLocalScale() - (right * sS));
+			transform->setScale(scale - (right * sS), this->space);
 		if (input->getKeyDown(this->scaleUpU))
-			transform->setScale(transform->getLocalScale() + (up * sS));
+			transform->setScale(scale + (up * sS), this->space);
 		else if (input->getKeyDown(this->scaleDownU))
-			transform->setScale(transform->getLocalScale() - (up * sS));
+			transform->setScale(scale - (up * sS), this->space);
 		if (input->getKeyDown(this->scaleUpF))
-			transform->setScale(transform->getLocalScale() + (forward * sS));
+			transform->setScale(scale + (forward * sS), this->space);
 		else if (input->getKeyDown(this->scaleDownF))
-			transform->setScale(transform->getLocalScale() - (forward * sS));
+			transform->setScale(scale - (forward * sS), this->space);
 	}
 }

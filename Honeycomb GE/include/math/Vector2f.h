@@ -67,15 +67,13 @@ namespace Honeycomb::Math {
 		float magnitude() const;
 
 		/// Returns an instance of a Vector2f equal to the product of this
-		/// Vector and the specified Matrix. Do note that this Matrix will be
-		/// treated as a 2x2 for this calculation.
+		/// Vector and the specified Matrix.
 		/// const Matrix4f &mat : The matrix to be multiplied by this instance.
 		/// return : The product of this vector and that matrix.
 		Vector2f multiply(const Matrix4f &mat) const;
 
 		/// Multiplies this instance by the specified Matrix and returns this
-		/// instance. Do note that the Matrix will be treated as a 2x2 for this
-		/// calculation.
+		/// instance.
 		/// const Matrix4f &mat : The matrix to be multiplied to this instance.
 		/// return : This instance, as the product of this Vector and the 
 		///			 matrix.

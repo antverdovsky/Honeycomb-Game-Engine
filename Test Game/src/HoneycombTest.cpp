@@ -72,6 +72,9 @@ namespace HoneycombTest {
 		std::cout << "LOCAL SCALE: " << transf.getLocalScale().getX() << ", " <<
 			transf.getLocalScale().getY() << ", " <<
 			transf.getLocalScale().getZ() << ", " << std::endl << std::endl;
+		std::cout << "GLOBAL SCALE: " << transf.getGlobalScale().getX() << ", " <<
+			transf.getGlobalScale().getY() << ", " <<
+			transf.getGlobalScale().getZ() << ", " << std::endl << std::endl;
 
 		std::cout << "***\n\n\n";
 	}
@@ -249,7 +252,7 @@ namespace HoneycombTest {
 			GameInput::KEY_CODE_Z, GameInput::KEY_CODE_X, // scale
 			GameInput::KEY_CODE_C, GameInput::KEY_CODE_V,
 			GameInput::KEY_CODE_B, GameInput::KEY_CODE_N,
-			10.0F, 10.0F, 10.0F, Space::LOCAL);
+			10.0F, 10.0F, 3.0F, Space::LOCAL);
 		PointLight *suzPointLight = new PointLight();
 		suzPointLight->glVector4fs.setValue(PointLight::COLOR_VEC4, Vector4f(1.0F, 1.0F, 1.0F, 1.0F));
 		suzPointLight->glFloats.setValue(PointLight::INTENSITY_F, 3.0F);
@@ -286,12 +289,12 @@ namespace HoneycombTest {
 
 
 		// Add all objects to the scene
-		this->gameScene.addChild(*cube);
+		//this->gameScene.addChild(*cube);
 		this->gameScene.addChild(*plane);
 //		this->gameScene.addChild(*sphere);
 //		this->gameScene.addChild(*suzanne);
 		this->gameScene.addChild(*directionalLight);
-//		this->gameScene.addChild(*parentTest);
+		this->gameScene.addChild(*parentTest);
 		this->gameScene.addChild(*ambientLight);
 		this->gameScene.addChild(*camera);
 //		this->gameScene.addChild(*car);
@@ -337,10 +340,10 @@ namespace HoneycombTest {
 //			_printPosAndLocals(*camera->getComponent<Transform>());
 //			_printPosAndLocals(*car->getChild("Body")->getComponent<Transform>());
 //			_printPosAndLocals(*suzanne->getComponent<Transform>());
-//			_printPosAndLocals(*parentTest->getChild("Cone")->getComponent<Transform>());
+			_printPosAndLocals(*parentTest->getChild("Cylinder")->getComponent<Transform>());
 //			_printPosAndLocals(*cube->getComponent<Transform>());
 			int a = 32;
-			_printPosAndLocals(*cube->getComponent<Transform>());
+			//_printPosAndLocals(*cube->getComponent<Transform>());
 		}
 		
 		//parentTest->getComponent<Transform>()->translate(Vector3f::getGlobalForward() * 0.01F, *suzanne->getComponent<Transform>());

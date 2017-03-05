@@ -57,6 +57,17 @@ namespace Honeycomb::Math {
 		return *this;
 	}
 
+	Vector3f Vector3f::divide(const Vector3f &vec) const {
+		return Vector3f(this->x / vec.x, this->y / vec.y, this->z / vec.z);
+	}
+
+	Vector3f& Vector3f::divideTo(const Vector3f &vec) {
+		Vector3f prod = this->divide(vec);
+
+		this->set(prod.x, prod.y, prod.z);
+		return *this;
+	}
+
 	float Vector3f::dot(const Vector3f& v2) const {
 		return this->x * v2.x + this->y * v2.y + this->z * v2.z;
 	}
@@ -111,8 +122,19 @@ namespace Honeycomb::Math {
 		return mat.multiply(*this);
 	}
 
+	Vector3f Vector3f::multiply(const Vector3f &vec) const {
+		return Vector3f(this->x * vec.x, this->y * vec.y, this->z * vec.z);
+	}
+
 	Vector3f& Vector3f::multiplyTo(const Matrix4f &mat) {
 		Vector3f prod = this->multiply(mat);
+
+		this->set(prod.x, prod.y, prod.z);
+		return *this;
+	}
+
+	Vector3f& Vector3f::multiplyTo(const Vector3f &vec) {
+		Vector3f prod = this->multiply(vec);
 
 		this->set(prod.x, prod.y, prod.z);
 		return *this;

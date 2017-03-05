@@ -52,6 +52,22 @@ namespace Honeycomb::Math {
 		/// return : This reference to this cross product vector.
 		Vector3f& crossTo(const Vector3f& v2);
 
+		/// Returns an instance of a Vector3f equal to the inverse product of 
+		/// this Vector and the specified Vector, where the product Vector is a
+		/// Vector whose components are the products of this' and the specified
+		/// Vector's components.
+		/// const Vector3f &vec : The other vector.
+		/// return : The inverse product of this vector and the specified 
+		///			 vector.
+		Vector3f divide(const Vector3f &vec) const;
+
+		/// Divides this instance's individual components by the individual
+		/// components of the specified Vector.
+		/// const Vector3f &vec : The other vector.
+		/// return : This instance, as the inverse product of this Vector and 
+		///			 the specified Vector.
+		Vector3f& divideTo(const Vector3f &vec);
+
 		/// Gets the dot product of this vector and the specified second vetor.
 		/// const Vector3f &v2 : The second vector.
 		/// return : The dot product scalar.
@@ -105,19 +121,32 @@ namespace Honeycomb::Math {
 		float magnitude() const;
 
 		/// Returns an instance of a Vector3f equal to the product of this
-		/// Vector and the specified Matrix. Do note that this Matrix will be
-		/// treated as a 3x3 for this calculation.
+		/// Vector and the specified Matrix.
 		/// const Matrix4f &mat : The matrix to be multiplied by this instance.
 		/// return : The product of this vector and that matrix.
 		Vector3f multiply(const Matrix4f &mat) const;
 
+		/// Returns an instance of a Vector3f equal to the product of this
+		/// Vector and the specified Vector, where the product Vector is a
+		/// Vector whose components are the products of this' and the specified
+		/// Vector's components.
+		/// const Vector3f &vec : The other vector.
+		/// return : The product of this vector and the specified vector.
+		Vector3f multiply(const Vector3f &vec) const;
+
 		/// Multiplies this instance by the specified Matrix and returns this
-		/// instance. Do note that the Matrix will be treated as a 3x3 for this
-		/// calculation.
+		/// instance.
 		/// const Matrix4f &mat : The matrix to be multiplied to this instance.
 		/// return : This instance, as the product of this Vector and the 
 		///			 matrix.
 		Vector3f& multiplyTo(const Matrix4f &mat);
+
+		/// Multiplies this instance's individual components by the individual
+		/// components of the specified Vector.
+		/// const Vector3f &vec : The other vector.
+		/// return : This instance, as the product of this Vector and the
+		///			 specified Vector.
+		Vector3f& multiplyTo(const Vector3f &vec);
 
 		/// Normalizes this vector.
 		/// return : This normalized vector, pointing in the same direction as
