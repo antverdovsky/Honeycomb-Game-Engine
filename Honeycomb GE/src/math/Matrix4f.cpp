@@ -221,6 +221,11 @@ namespace Honeycomb::Math {
 	}
 
 	Matrix4f& Matrix4f::operator=(const Matrix4f &matrix) {
+		if (this == &matrix) return *this; // Prevent self-assignment
+
+		// Delete the inverse of this if it this is not an inverse
+		if (!this->isInverse) delete this->inverse;
+
 		this->isInverse = matrix.isInverse;
 
 		this->inverse = !this->isInverse ? new Matrix4f(this) : matrix.inverse;
