@@ -207,6 +207,11 @@ namespace Honeycomb::Object {
 		/// ShaderProgram &shader : The shader to be used when rendering.
 		virtual void render(Honeycomb::Shader::ShaderProgram &shader);
 
+		/// Sets the Game Scene of this Game Object and all of the children of
+		/// this Game Object.
+		/// GameScene *scene : The new scene of this Game Object.
+		void setScene(Honeycomb::Scene::GameScene *scene);
+
 		/// Handles any starting events for this component, if necessary.
 		/// Additionally, this method will make this object active when
 		/// called.

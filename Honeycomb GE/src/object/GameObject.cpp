@@ -215,6 +215,13 @@ namespace Honeycomb::Object {
 			comp->render(shader);
 	}
 
+	void GameObject::setScene(GameScene *scene) {
+		this->scene = scene;
+
+		for (GameObject *child : this->children)
+			child->setScene(scene);
+	}
+
 	void GameObject::start() {
 		if (this->isActive) return;
 		this->isActive = true;

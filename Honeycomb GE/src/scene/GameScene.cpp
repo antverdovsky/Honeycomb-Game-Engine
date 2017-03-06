@@ -16,7 +16,7 @@ namespace Honeycomb::Scene {
 	}
 
 	void GameScene::addChild(GameObject &obj) {
-		obj.scene = this;
+		obj.setScene(this);
 
 		GameObject::addChild(obj);
 	}
