@@ -9,6 +9,29 @@
 namespace Honeycomb::Render {
 	class Renderer {
 	public:
+		/// A wrapper enum for the clockwise and counterclockwise winding
+		/// orders.
+		enum WindingOrder {
+			CLOCKWISE			= 0x0900,	// from GL_CW
+			COUNTER_CLOCKWISE	= 0x0901	// from GL_CCW
+		};
+
+		/// A wrapper enum for the front, back and front-and-back faces of a
+		/// polygon.
+		enum PolygonFace {
+			BACK				= 0x405,	// from GL_BACK
+			FRONT				= 0x404,	// from GL_FRONT
+			FRONT_AND_BACK		= 0x408		// from GL_FRONT_AND_BACK
+		};
+
+		/// A wrapper enum for the polygon modes, using which, a face can be
+		///	rendered.
+		enum PolygonMode {
+			POINT				= 0x1B00,	// from GL_POINT
+			LINE				= 0x1B01,	// from GL_LINE	
+			FILL				= 0x1B02	// from GL_FILL
+		};
+
 		/// Gets the singleton instance of the Renderer.
 		/// return : The pointer to the singleton.
 		static Renderer* getRenderer();
@@ -17,17 +40,53 @@ namespace Honeycomb::Render {
 		/// scene.
 		/// GameScene &scene : The game scene to be rendered.
 		virtual void render(Honeycomb::Scene::GameScene &scene);
+
+		/// Sets the polygon face which is to be culled.
+		/// const Polygon Face &f : The polygon face (front, back or front-and-
+		///							back).
+		void setCullingFace(const PolygonFace &f);
+
+		/// Should the renderer cull the non-normal faces?
+		/// const bool &b : True if the renderer should cull the non-normal
+		///					faces, false otherwise.
+		void setDoCullFaces(const bool &b);
+
+		/// Should the renderer perform a depth test when rendering faces?
+		/// const bool &b : True if the renderer should perform a depth test,
+		///					false otherwise.
+		void setDoDepthTest(const bool &b);
+
+		/// Should the renderer perform a stencil test when rendering faces?
+		/// const bool &b : True if the renderer should perform a stencil test,
+		///				    false otherwise.
+		void setDoStencilTest(const bool &b);
+
+		/// Sets the winding order of the Front Face of a polygon.
+		/// const WindingOrder &w : The winding order (either clockwise or
+		///							counterclockwise).
+		void setFrontFace(const WindingOrder &w);
+
+		/// Sets the polygon rasterization mode of the specified face type.
+		/// const PolygonFace &f : The face for which the Polygon rasterization
+		///						   mode is to be set.
+		/// const PolygonMode &m : The rasterization mode which is to be used
+		///						   for rendering said faces.
+		void setPolygonMode(const PolygonFace &f, const PolygonMode &m);
 	protected:
 		static Renderer *renderer; // Singleton Instance
 
-		/// TODO: More Options
-//		const int CULL_FACE = GL_BACK; // Which face should be culled
-		const Honeycomb::Math::Vector4f CLEAR_SCREEN_COLOR = // Clear Color
-			Honeycomb::Math::Vector4f(0.0F, 0.0F, 0.0F, 0.0F);
-		const bool DEPTH_TEST = true; // Should depth tests occur?
-		const bool DO_CULL_FACES = false; // Should the cull face be culled?
-		const bool MSAA_SAMPLING = true; // Do Multisampling?
-//		const int POLYGON_MODE = GL_FILL; // Render mode (wireframe, poly, etc)
+		// Face culling variables
+		PolygonFace cullingFace;
+		WindingOrder frontFace;
+		bool doCullFaces;
+		
+		// Depth and Stencil Tests
+		bool doDepthTest;
+		bool doStencilTest;
+
+		// Polygon modes for rendering back and front faces
+		PolygonMode polygonModeBack;
+		PolygonMode polygonModeFront;
 
 		/// Initializes a new renderer and sets the appropriate OpenGL
 		/// graphics settings to match the new engine instance.

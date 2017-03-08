@@ -16,18 +16,60 @@ namespace Honeycomb::Render {
 	}
 
 	void Renderer::render(GameScene &scene) {
-		
+
+	}
+
+	void Renderer::setCullingFace(const PolygonFace &f) {
+		this->cullingFace = f;
+		glCullFace((GLenum)f);
+	}
+
+	void Renderer::setDoCullFaces(const bool &b) {
+		this->doCullFaces = b;
+		this->setBoolSettingGL(GL_CULL_FACE, b);
+	}
+
+	void Renderer::setDoDepthTest(const bool &b) {
+		this->doDepthTest = b;
+		this->setBoolSettingGL(GL_DEPTH_TEST, b);
+	}
+
+	void Renderer::setDoStencilTest(const bool &b) {
+		this->doStencilTest = b;
+		this->setBoolSettingGL(GL_STENCIL_TEST, b);
+	}
+
+	void Renderer::setFrontFace(const WindingOrder &w) {
+		this->frontFace = w;
+		glFrontFace((GLenum)w);
+	}
+
+	void Renderer::setPolygonMode(const PolygonFace &f, const PolygonMode &m) {
+		switch (f) {
+		case PolygonFace::BACK:
+			this->polygonModeBack = m;
+			break;
+		case PolygonFace::FRONT:
+			this->polygonModeFront = m;
+			break;
+		case PolygonFace::FRONT_AND_BACK:
+			this->polygonModeBack = m;
+			this->polygonModeFront = m;
+			break;
+		}
+
+		glPolygonMode((GLenum)f, (GLenum)m);
 	}
 
 	Renderer::Renderer() {
-//		glCullFace(this->CULL_FACE);
-		glClearColor(
-			this->CLEAR_SCREEN_COLOR.getX(), this->CLEAR_SCREEN_COLOR.getY(),
-			this->CLEAR_SCREEN_COLOR.getZ(), this->CLEAR_SCREEN_COLOR.getW());
-		setBoolSettingGL(GL_DEPTH_TEST, this->DEPTH_TEST);
-		setBoolSettingGL(GL_CULL_FACE, this->DO_CULL_FACES);
-		setBoolSettingGL(GL_MULTISAMPLE, this->MSAA_SAMPLING);
-//		glPolygonMode(GL_FRONT_AND_BACK, this->POLYGON_MODE);
+		this->setFrontFace(WindingOrder::COUNTER_CLOCKWISE);
+		this->setCullingFace(PolygonFace::BACK);
+		this->setDoCullFaces(true);
+
+		this->setDoDepthTest(true);
+		this->setDoStencilTest(false);
+		
+		this->setPolygonMode(PolygonFace::FRONT, PolygonMode::FILL);
 	}
 
 	Renderer::~Renderer() {
@@ -35,7 +77,7 @@ namespace Honeycomb::Render {
 	}
 
 	void Renderer::setBoolSettingGL(const int &cap, const bool &val) {
-		if (val) glEnable(cap);
-		else glDisable(cap);
+		if (val)	glEnable((GLenum)cap);
+		else		glDisable((GLenum)cap);
 	}
 }
