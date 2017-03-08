@@ -124,6 +124,12 @@ namespace Honeycomb::Component::Physics {
 		Honeycomb::Math::Vector3f inverseTransformPoint(
 			const Honeycomb::Math::Vector3f &pos) const;
 
+		/// Checks if this Transform is negatively scaled on an odd number of
+		/// axes (either one or three).
+		/// return : True if the axis is negatively scaled on an odd number of
+		///			 axes; False otherwise.
+		bool isOddNegativelyScaled() const;
+
 		/// Starts this Transform instance.
 		void start();
 

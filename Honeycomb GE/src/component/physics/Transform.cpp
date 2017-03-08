@@ -125,6 +125,17 @@ namespace Honeycomb::Component::Physics {
 		return this->transformationMatrix.getInverse() * pos;
 	}
 	
+	bool Transform::isOddNegativelyScaled() const {
+		// If the Transform is negatively scaled on an odd number of axes, the
+		// product of all of the components of the scale will be negative, so
+		// we return true. Else, the product of all the components of the scale
+		// will be positive, so we return false.
+		return 0 >
+			this->gblScale.getX() * 
+			this->gblScale.getY() *  
+			this->gblScale.getZ();
+	}
+
 	void Transform::start() {
 		this->calculateOrientationMatrix();
 		this->calculateTranslationMatrix();

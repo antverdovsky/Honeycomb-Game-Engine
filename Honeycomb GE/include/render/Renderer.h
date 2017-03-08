@@ -6,8 +6,11 @@
 #include "..\scene\GameScene.h"
 #include "..\shader\ShaderProgram.h"
 
+namespace Honeycomb::Component::Render { class MeshRenderer; };
+
 namespace Honeycomb::Render {
 	class Renderer {
+		friend class Honeycomb::Component::Render::MeshRenderer;
 	public:
 		/// A wrapper enum for the clockwise and counterclockwise winding
 		/// orders.

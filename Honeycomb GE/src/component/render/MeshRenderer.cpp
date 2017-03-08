@@ -9,12 +9,14 @@
 #include "..\..\..\include\component\physics\Transform.h"
 #include "..\..\..\include\component\render\CameraController.h"
 #include "..\..\..\include\object\GameObject.h"
+#include "..\..\..\include\render\Renderer.h"
 
 using Honeycomb::Component::Render::CameraController;
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Geometry::Mesh;
 using Honeycomb::Graphics::Material;
 using Honeycomb::Shader::ShaderProgram;
+using Honeycomb::Render::Renderer;
 
 using namespace Honeycomb::File;
 
@@ -44,9 +46,24 @@ namespace Honeycomb::Component::Render {
 		shader.setUniform_mat4("objTransform",
 			this->transform->getTransformationMatrix());
 
+		// If the current Transform is negatively scaled on an odd number of
+		// axes, then flip the winding order for the front face.
+		Renderer::WindingOrder frontFace = Renderer::getRenderer()->frontFace;
+		if (this->transform->isOddNegativelyScaled()) {
+			if (frontFace == Renderer::WindingOrder::CLOCKWISE)
+				glFrontFace(Renderer::WindingOrder::COUNTER_CLOCKWISE);
+			else
+				glFrontFace(Renderer::WindingOrder::CLOCKWISE);
+		}
+
 		// Render the mesh using the shader and material provided.
 		if (this->material != nullptr) this->material->toShader(shader, "material"); // todo
 		if (this->mesh != nullptr) this->mesh->draw(shader);
+
+		// Undo the winding order flip for the front face, if necessary.
+		if (this->transform->isOddNegativelyScaled()) {
+			glFrontFace(frontFace);
+		}
 	}
 
 	void MeshRenderer::setMaterial(const Honeycomb::Graphics::Material *mat) {

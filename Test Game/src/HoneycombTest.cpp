@@ -25,6 +25,7 @@ namespace HoneycombTest {
 		this->cube = Builder::getBuilder()->newCube();
 		this->plane = Builder::getBuilder()->newPlane();
 		this->sphere = Builder::getBuilder()->newSphere();
+		this->suzanne = Builder::getBuilder()->newSuzanne();
 
 		// Give the Plane a special material with a colorful texture
 		Material *colorMaterial = new Material(
@@ -36,6 +37,20 @@ namespace HoneycombTest {
 		colorMaterial->glSampler2Ds.setValue("albedoTexture", *colorTexture);
 		this->plane->getComponent<MeshRenderer>()->
 			setMaterial(*colorMaterial);
+
+		// Give Suzanne an Input Transformable Component
+		InputTransformable *suzInputTranfs = new InputTransformable(
+			GameInput::KEY_CODE_UP, GameInput::KEY_CODE_DOWN,
+			GameInput::KEY_CODE_LEFT, GameInput::KEY_CODE_RIGHT,
+			GameInput::KEY_CODE_COMMA, GameInput::KEY_CODE_PERIOD,
+			GameInput::KEY_CODE_I, GameInput::KEY_CODE_K,
+			GameInput::KEY_CODE_J, GameInput::KEY_CODE_L,
+			GameInput::KEY_CODE_U, GameInput::KEY_CODE_O,
+			GameInput::KEY_CODE_Z, GameInput::KEY_CODE_X,
+			GameInput::KEY_CODE_C, GameInput::KEY_CODE_V,
+			GameInput::KEY_CODE_B, GameInput::KEY_CODE_N,
+			3.5F, 3.5F, 3.5F, Space::GLOBAL);
+		this->suzanne->addComponent(*suzInputTranfs);
 
 		// Construct a default Ambient and Directional Light; decrease the
 		// intensity of the lights so they don't overwhelm the scene
@@ -94,6 +109,7 @@ namespace HoneycombTest {
 		this->gameScene.addChild(*this->cube);
 		this->gameScene.addChild(*this->plane);
 		this->gameScene.addChild(*this->sphere);
+		this->gameScene.addChild(*this->suzanne);
 		this->gameScene.addChild(*this->ambient);
 		this->gameScene.addChild(*this->directional);
 		this->gameScene.addChild(*this->camera);
