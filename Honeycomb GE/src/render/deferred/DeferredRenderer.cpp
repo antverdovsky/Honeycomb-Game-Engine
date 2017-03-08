@@ -115,7 +115,7 @@ namespace Honeycomb::Render::Deferred {
 		this->spotLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
 			"\\render\\deferred\\light\\spotLightFS.glsl", GL_FRAGMENT_SHADER);
 		this->spotLightShader.finalizeShaderProgram();
-
+		
 		this->geometryShader.initialize();
 		this->geometryShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
 			"render\\deferred\\pass\\geometryVS.glsl", GL_VERTEX_SHADER);
@@ -183,9 +183,21 @@ namespace Honeycomb::Render::Deferred {
 		// Bind the G Buffer for Drawing Geometry
 		this->gBuffer.bindDrawGeometry();
 
+		// Draw the geometry using the mode requested by the user
+		glPolygonMode(PolygonFace::FRONT, this->polygonModeFront);
+		glPolygonMode(PolygonFace::BACK, this->polygonModeBack);
+
+		// Cull faces as necessary, if the user wants to
+		glFrontFace(this->frontFace);
+		glCullFace(this->cullingFace);
+		this->setBoolSettingGL(GL_CULL_FACE, this->doCullFaces);
+
+		// Enable Depth Testing geometry, if the user wants to
+		this->setBoolSettingGL(GL_DEPTH_TEST, this->doDepthTest);
+		this->setBoolSettingGL(GL_STENCIL_TEST, this->doStencilTest);
+
 		glDepthMask(GL_TRUE); // Only Geometry Render writes to the Depth
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear Buffer
-		glEnable(GL_DEPTH_TEST); // Enable the Depth Test for Geometry Render
 		
 		scene.render(this->geometryShader); // Render the Game Scene Meshes
 
@@ -193,6 +205,10 @@ namespace Honeycomb::Render::Deferred {
 	}
 
 	void DeferredRenderer::renderLightsPass(GameScene &scene) {
+		// Since the polygon mode only applies to geometry, change to FILL
+		// mode when drawing lights.
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 		for (BaseLight *bL : scene.getActiveLights()) {
 			switch (bL->getType()) {
 			case LightType::LIGHT_TYPE_AMBIENT:
