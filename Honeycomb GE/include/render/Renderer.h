@@ -12,11 +12,17 @@ namespace Honeycomb::Render {
 	class Renderer {
 		friend class Honeycomb::Component::Render::MeshRenderer;
 	public:
-		/// A wrapper enum for the clockwise and counterclockwise winding
-		/// orders.
-		enum WindingOrder {
-			CLOCKWISE			= 0x0900,	// from GL_CW
-			COUNTER_CLOCKWISE	= 0x0901	// from GL_CCW
+		/// A wrapper enum for the depth and stencil functions which can be 
+		///	used when depth or stencil testing.
+		enum TestFunction {
+			NEVER				= 0x0200,	// from GL_NEVER
+			LESS				= 0x0201,	// from GL_LESS
+			EQUAL				= 0x0202,	// from GL_EQUAL
+			LESS_OR_EQUAL		= 0x0203,	// from GL_LEQUAL
+			GREATER				= 0x0204,	// from GL_GREATER
+			NOT_EQUAL			= 0x0205,	// from GL_NOTEQUAL
+			GREATER_OR_EQUAL	= 0x0206,	// from GL_GEQUAL
+			ALWAYS				= 0x0207	// from GL_ALWAYS
 		};
 
 		/// A wrapper enum for the front, back and front-and-back faces of a
@@ -35,6 +41,13 @@ namespace Honeycomb::Render {
 			FILL				= 0x1B02	// from GL_FILL
 		};
 
+		/// A wrapper enum for the clockwise and counterclockwise winding
+		/// orders.
+		enum WindingOrder {
+			CLOCKWISE			= 0x0900,	// from GL_CW
+			COUNTER_CLOCKWISE	= 0x0901	// from GL_CCW
+		};
+
 		/// Gets the singleton instance of the Renderer.
 		/// return : The pointer to the singleton.
 		static Renderer* getRenderer();
@@ -45,9 +58,13 @@ namespace Honeycomb::Render {
 		virtual void render(Honeycomb::Scene::GameScene &scene);
 
 		/// Sets the polygon face which is to be culled.
-		/// const Polygon Face &f : The polygon face (front, back or front-and-
-		///							back).
+		/// const PolygonFace &f : The polygon face (front, back or front-and-
+		///						   back).
 		void setCullingFace(const PolygonFace &f);
+		
+		/// Sets the depth function which is to be used when depth testing.
+		/// const TestFunction &f : The function which is to be used.
+		void setDepthFunction(const TestFunction &f);
 
 		/// Should the renderer cull the non-normal faces?
 		/// const bool &b : True if the renderer should cull the non-normal
@@ -83,9 +100,9 @@ namespace Honeycomb::Render {
 		WindingOrder frontFace;
 		bool doCullFaces;
 		
-		// Depth and Stencil Tests
+		// Should the depth test be run, and which function should be used?
 		bool doDepthTest;
-		bool doStencilTest;
+		TestFunction depthFunction;
 
 		// Polygon modes for rendering back and front faces
 		PolygonMode polygonModeBack;

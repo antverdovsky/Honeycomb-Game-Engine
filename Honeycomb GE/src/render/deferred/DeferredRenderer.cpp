@@ -192,7 +192,8 @@ namespace Honeycomb::Render::Deferred {
 		glCullFace(this->cullingFace);
 		this->setBoolSettingGL(GL_CULL_FACE, this->doCullFaces);
 
-		// Enable Depth Testing geometry, if the user wants to
+		// Enable Depth Testing and Stencil Testing geometry, if the user
+		// wants to.
 		this->setBoolSettingGL(GL_DEPTH_TEST, this->doDepthTest);
 		this->setBoolSettingGL(GL_STENCIL_TEST, this->doStencilTest);
 

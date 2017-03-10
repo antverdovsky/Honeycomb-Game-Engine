@@ -24,6 +24,11 @@ namespace Honeycomb::Render {
 		glCullFace((GLenum)f);
 	}
 
+	void Renderer::setDepthFunction(const TestFunction &f) {
+		this->depthFunction = f;
+		glDepthFunc((GLenum)f);
+	}
+
 	void Renderer::setDoCullFaces(const bool &b) {
 		this->doCullFaces = b;
 		this->setBoolSettingGL(GL_CULL_FACE, b);
@@ -32,11 +37,6 @@ namespace Honeycomb::Render {
 	void Renderer::setDoDepthTest(const bool &b) {
 		this->doDepthTest = b;
 		this->setBoolSettingGL(GL_DEPTH_TEST, b);
-	}
-
-	void Renderer::setDoStencilTest(const bool &b) {
-		this->doStencilTest = b;
-		this->setBoolSettingGL(GL_STENCIL_TEST, b);
 	}
 
 	void Renderer::setFrontFace(const WindingOrder &w) {
@@ -67,7 +67,7 @@ namespace Honeycomb::Render {
 		this->setDoCullFaces(true);
 
 		this->setDoDepthTest(true);
-		this->setDoStencilTest(false);
+		this->setDepthFunction(TestFunction::LESS);
 		
 		this->setPolygonMode(PolygonFace::FRONT, PolygonMode::FILL);
 	}
