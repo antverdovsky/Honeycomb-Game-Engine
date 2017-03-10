@@ -75,7 +75,7 @@ namespace Honeycomb::Render {
 	}
 
 	Renderer::Renderer() {
-		this->doPostProcess = true;
+		this->setDoPostProcess(true);
 
 		this->setFrontFace(WindingOrder::COUNTER_CLOCKWISE);
 		this->setCullingFace(PolygonFace::BACK);

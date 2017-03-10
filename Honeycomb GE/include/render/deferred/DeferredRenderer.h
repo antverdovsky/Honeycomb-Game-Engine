@@ -60,11 +60,15 @@ namespace Honeycomb::Render::Deferred {
 		/// Initializes the Quad Mesh.
 		void initializeQuad();
 
-		/// Post processes the final producted texture.
-		void renderPostProcess();
+		/// Post processes the final producted texture and returns the
+		/// texture which contains the final "final" texture (post processed).
+		/// return : The texture type containing the post processed image.
+		GBufferTextureType renderPostProcess();
 
-		/// Renders the final produced texture from the GBuffer to the screen.
-		void renderFinal();
+		/// Renders the specified texture to the screen.
+		/// const GBufferTextureType &tex : The texture which is to be rendered
+		///									as a full screen quad.
+		void renderTexture(const GBufferTextureType &tex);
 
 		/// Renders the geometry of the specified scene.
 		/// GameScene &scene : The scene whose geometry is to be rendered.

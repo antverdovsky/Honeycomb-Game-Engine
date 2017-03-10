@@ -28,7 +28,14 @@ namespace HoneycombTest {
 			"post-processing\\inversionFS.glsl", 0x8B30);
 		this->inversionShader.finalizeShaderProgram();
 
-		Renderer::getRenderer()->getPostShaders().push_back(this->inversionShader);
+		this->sharpShader.initialize();
+		this->sharpShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
+			"post-processing\\postProcessingVS.glsl", 0x8B31);
+		this->sharpShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
+			"post-processing\\sharpFS.glsl", 0x8B30);
+		this->sharpShader.finalizeShaderProgram();
+
+		Renderer::getRenderer()->getPostShaders().push_back(this->sharpShader);
 
 		// Import all of the mesh game objects and construct them
 		this->car = Builder::getBuilder()->

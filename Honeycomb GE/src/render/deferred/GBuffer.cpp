@@ -18,6 +18,7 @@ namespace Honeycomb::Render::Deferred {
 		"gBufferTexture",
 		"gBufferSpecular",
 		"gBufferDepth",
+		"gBufferFinal",
 		"gBufferFinal"
 	};
 
@@ -52,13 +53,13 @@ namespace Honeycomb::Render::Deferred {
 	}
 
 	void GBuffer::bindDrawLight(ShaderProgram &shader) {
-		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL);
+		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL_1);
 		
 		this->bindColorTextures(shader);
 	}
 
 	void GBuffer::bindDrawLight(ShaderProgram &shader, const LightType &type) {
-		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL);
+		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL_1);
 
 		switch (type) {
 		case LightType::LIGHT_TYPE_AMBIENT:
@@ -109,9 +110,9 @@ namespace Honeycomb::Render::Deferred {
 	}
 
 	void GBuffer::frameBegin() {
-		// Clear the final texture attached to this GBuffer
+		// Clear the FINAL_1 texture attached to this GBuffer
 		this->bindDraw();
-		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL);
+		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL_1);
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
@@ -168,15 +169,26 @@ namespace Honeycomb::Render::Deferred {
 			GL_TEXTURE_2D, this->bufferTextures[GBufferTextureType::DEPTH].
 			getTextureID(), 0);
 
-		// Create the Final Image Texture
-		this->bufferTextures[GBufferTextureType::FINAL].initialize();
-		this->bufferTextures[GBufferTextureType::FINAL].bind();
-		this->bufferTextures[GBufferTextureType::FINAL].setImageData(NULL,
+		// Create the FINAL_1 Image Texture
+		this->bufferTextures[GBufferTextureType::FINAL_1].initialize();
+		this->bufferTextures[GBufferTextureType::FINAL_1].bind();
+		this->bufferTextures[GBufferTextureType::FINAL_1].setImageData(NULL,
 			GL_FLOAT, GL_RGBA, GL_RGB, this->textureWidth, this->textureHeight
 		);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, 
-			GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL,
-			GL_TEXTURE_2D, this->bufferTextures[GBufferTextureType::FINAL].
+			GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL_1,
+			GL_TEXTURE_2D, this->bufferTextures[GBufferTextureType::FINAL_1].
+			getTextureID(), 0);
+
+		// Create the FINAL_2 Image Texture
+		this->bufferTextures[GBufferTextureType::FINAL_2].initialize();
+		this->bufferTextures[GBufferTextureType::FINAL_2].bind();
+		this->bufferTextures[GBufferTextureType::FINAL_2].setImageData(NULL,
+			GL_FLOAT, GL_RGBA, GL_RGB, this->textureWidth, this->textureHeight
+		);
+		glFramebufferTexture2D(GL_FRAMEBUFFER,
+			GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL_2,
+			GL_TEXTURE_2D, this->bufferTextures[GBufferTextureType::FINAL_2].
 			getTextureID(), 0);
 
 		// Bind the 5 buffers as the color buffers which will be used when
@@ -220,7 +232,7 @@ namespace Honeycomb::Render::Deferred {
 		this->bufferTextures[GBufferTextureType::DEPTH].setImageData(NULL,
 			GL_FLOAT_32_UNSIGNED_INT_24_8_REV, GL_DEPTH32F_STENCIL8,
 			GL_DEPTH_STENCIL, this->textureWidth, this->textureHeight);
-		this->bufferTextures[GBufferTextureType::FINAL].setImageData(NULL,
+		this->bufferTextures[GBufferTextureType::FINAL_1].setImageData(NULL,
 			GL_FLOAT, GL_RGBA, GL_RGB, this->textureWidth, this->textureHeight
 		);
 	}

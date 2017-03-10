@@ -160,19 +160,34 @@ namespace Honeycomb::Render::Deferred {
 		this->quad.setIndexData(indices, 6);
 	}
 
-	void DeferredRenderer::renderPostProcess() {
-		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL);
+	GBufferTextureType DeferredRenderer::renderPostProcess() {
+		// Since we are going to read from one buffer and write to another,
+		// establish now which buffer will be read from and which one we will
+		// write to.
+		GBufferTextureType readBuffer = GBufferTextureType::FINAL_1;
+		GBufferTextureType writeBuffer = GBufferTextureType::FINAL_2;
 
 		for (ShaderProgram &s :this->getPostShaders()) {
-			this->gBuffer.bindTexture(GBufferTextureType::FINAL, s);
+			glDrawBuffer(GL_COLOR_ATTACHMENT0 + writeBuffer);
+			this->gBuffer.bindTexture(readBuffer, s);
 
 			quad.draw(s);
+
+			// Now read and write the other way (swap read and write buffers)
+			GBufferTextureType tmp = readBuffer;
+			readBuffer = writeBuffer;
+			writeBuffer = tmp;
 		}
+
+		// Image to which we wrote last is the FINAL final (note that since we
+		// swapped the buffers, the image to which we wrote last is now the
+		// read buffer).
+		return readBuffer;
 	}
 
-	void DeferredRenderer::renderFinal() {
+	void DeferredRenderer::renderTexture(const GBufferTextureType &tex) {
 		this->gBuffer.unbind();
-		this->gBuffer.bindTexture(GBufferTextureType::FINAL);
+		this->gBuffer.bindTexture(tex);
 
 		quad.draw(this->quadShader);
 	}
@@ -186,10 +201,14 @@ namespace Honeycomb::Render::Deferred {
 		this->renderGeometryPass(scene); // Render Geometry
 		this->renderLightsPass(scene); // Render Lights
 		
-		if (this->doPostProcess)
-			this->renderPostProcess(); // Post Process the Scene
+		// Post process the scene if necessary and store the texture type
+		// containing the final image. If the user does not want to post
+		// process the image, the final image must be in FINAL_1, so set that
+		// as the image to be rendered.
+		GBufferTextureType final = (this->doPostProcess) ?
+			this->renderPostProcess() : GBufferTextureType::FINAL_1;
 
-		this->renderFinal();
+		this->renderTexture(final); // Render the final image
 	}
 
 	void DeferredRenderer::renderGeometryPass(GameScene &scene) {

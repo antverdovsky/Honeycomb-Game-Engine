@@ -15,7 +15,12 @@ namespace Honeycomb::Render::Deferred {
 		TEXTURE,	// Texture Coordinates Buffer
 		SPECULAR,   // Specular Buffer
 		DEPTH,		// Depth Buffer (also equal to the number of color buffers)
-		FINAL,		// Final Buffer (image which is to be drawn to the screen)
+		
+		// When post processing, we cannot read from and write to the same
+		// buffer, so we must read from one and write to the other, so we
+		// require two final buffers.
+		FINAL_1,	// Final Buffer 1
+		FINAL_2,	// Final Buffer 2
 
 		COUNT		// The total number of buffers
 	};

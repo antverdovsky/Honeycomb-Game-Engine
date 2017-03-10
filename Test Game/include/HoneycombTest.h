@@ -22,6 +22,7 @@ namespace HoneycombTest {
 	private:
 		// Post Processing Shaders
 		Honeycomb::Shader::ShaderProgram inversionShader; // Inversion Shader
+		Honeycomb::Shader::ShaderProgram sharpShader; // Sharp Shader
 
 		Honeycomb::Scene::GameScene gameScene;	 // The main scene
 
