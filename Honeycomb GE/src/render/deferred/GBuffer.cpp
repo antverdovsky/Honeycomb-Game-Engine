@@ -86,6 +86,12 @@ namespace Honeycomb::Render::Deferred {
 		this->bufferTextures[type].bind(type);
 	}
 
+	void GBuffer::bindTexture(const GBufferTextureType &type, ShaderProgram
+			&shader, const std::string &uniform) {
+		shader.setUniform_i(uniform, type);
+		this->bufferTextures[type].bind(type);
+	}
+
 	void GBuffer::bindColorTextures(ShaderProgram &shader) {
 		this->bindTexture(GBufferTextureType::POSITION, shader);
 		this->bindTexture(GBufferTextureType::DIFFUSE, shader);

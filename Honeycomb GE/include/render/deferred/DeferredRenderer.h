@@ -60,6 +60,9 @@ namespace Honeycomb::Render::Deferred {
 		/// Initializes the Quad Mesh.
 		void initializeQuad();
 
+		/// Post processes the final producted texture.
+		void renderPostProcess();
+
 		/// Renders the final produced texture from the GBuffer to the screen.
 		void renderFinal();
 

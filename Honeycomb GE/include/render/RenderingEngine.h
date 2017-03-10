@@ -13,6 +13,7 @@ namespace Honeycomb::Render {
 	};
 
 	class RenderingEngine {
+		friend class Renderer;
 	public:
 		/// Returns the pointer to the singleton instance of the rendering
 		/// engine.

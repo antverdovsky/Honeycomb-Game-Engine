@@ -1,13 +1,14 @@
 #include "..\include\HoneycombTest.h"
 
 #include "..\..\Honeycomb GE\include\HoneycombEngine.h"
-
+#include "..\..\Honeycomb GE\include\render\Renderer.h"
 #include "..\include\components\InputTransformable.h"
 #include "..\..\Honeycomb GE\include\debug\Logger.h"
 
 using namespace HoneycombEngine;
 using namespace HoneycombTest::Components;
 using Honeycomb::Debug::Logger;
+using Honeycomb::Render::Renderer;
 
 namespace HoneycombTest {
 	void TestGame::input() {
@@ -19,6 +20,16 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::start() {
+		// Create the Post Processing Shaders and add to the Renderer
+		this->inversionShader.initialize();
+		this->inversionShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
+			"post-processing\\postProcessingVS.glsl", 0x8B31);
+		this->inversionShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
+			"post-processing\\inversionFS.glsl", 0x8B30);
+		this->inversionShader.finalizeShaderProgram();
+
+		Renderer::getRenderer()->getPostShaders().push_back(this->inversionShader);
+
 		// Import all of the mesh game objects and construct them
 		this->car = Builder::getBuilder()->
 			newModel("..\\Test Game\\res\\models\\car.fbx");

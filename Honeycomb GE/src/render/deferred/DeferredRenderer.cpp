@@ -160,6 +160,16 @@ namespace Honeycomb::Render::Deferred {
 		this->quad.setIndexData(indices, 6);
 	}
 
+	void DeferredRenderer::renderPostProcess() {
+		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL);
+
+		for (ShaderProgram &s :this->getPostShaders()) {
+			this->gBuffer.bindTexture(GBufferTextureType::FINAL, s);
+
+			quad.draw(s);
+		}
+	}
+
 	void DeferredRenderer::renderFinal() {
 		this->gBuffer.unbind();
 		this->gBuffer.bindTexture(GBufferTextureType::FINAL);
@@ -175,6 +185,9 @@ namespace Honeycomb::Render::Deferred {
 
 		this->renderGeometryPass(scene); // Render Geometry
 		this->renderLightsPass(scene); // Render Lights
+		
+		if (this->doPostProcess)
+			this->renderPostProcess(); // Post Process the Scene
 
 		this->renderFinal();
 	}
@@ -192,10 +205,8 @@ namespace Honeycomb::Render::Deferred {
 		glCullFace(this->cullingFace);
 		this->setBoolSettingGL(GL_CULL_FACE, this->doCullFaces);
 
-		// Enable Depth Testing and Stencil Testing geometry, if the user
-		// wants to.
+		// Enable Depth Testing, if the user wants to.
 		this->setBoolSettingGL(GL_DEPTH_TEST, this->doDepthTest);
-		this->setBoolSettingGL(GL_STENCIL_TEST, this->doStencilTest);
 
 		glDepthMask(GL_TRUE); // Only Geometry Render writes to the Depth
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear Buffer

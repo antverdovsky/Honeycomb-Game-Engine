@@ -20,6 +20,9 @@ namespace HoneycombTest {
 
 		void update();
 	private:
+		// Post Processing Shaders
+		Honeycomb::Shader::ShaderProgram inversionShader; // Inversion Shader
+
 		Honeycomb::Scene::GameScene gameScene;	 // The main scene
 
 		Honeycomb::Object::GameObject *plane;		// The plane Game Object

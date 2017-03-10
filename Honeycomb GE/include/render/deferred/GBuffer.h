@@ -22,7 +22,6 @@ namespace Honeycomb::Render::Deferred {
 
 	class GBuffer : public Honeycomb::Base::GLItem {
 		friend class DeferredRenderer;
-
 	public:
 		// Event Handler for the Window Resize Event
 		Honeycomb::Conjuncture::EventHandler windowResizeHandler;
@@ -74,9 +73,18 @@ namespace Honeycomb::Render::Deferred {
 		/// Shader.
 		/// const GBufferTextureType &type : The type of the GBuffer texture.
 		/// ShaderProgram &shader : The Shader Program for which the texture
-		/// is to be binded.
+		///							is to be binded.
 		void bindTexture(const GBufferTextureType &type, Honeycomb::Shader::
 				ShaderProgram &shader);
+
+		/// Binds the texture of the specified GBuffer type to the specified
+		/// Shader with the specified uniform anme.
+		/// const GBufferTextureType &type : The type of the GBuffer texture.
+		/// ShaderProgram &shader : The Shader Program for which the texture
+		///							is to be binded.
+		/// const string &uniform : The uniform name in the Shader.
+		void bindTexture(const GBufferTextureType &type, Honeycomb::Shader::
+			ShaderProgram &shader, const std::string &uniform);
 
 		/// Binds all of the color attachment textures (with the exception of
 		/// the texture coordinates texture) of this GBuffer to the specified 

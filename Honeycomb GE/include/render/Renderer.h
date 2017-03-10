@@ -52,6 +52,11 @@ namespace Honeycomb::Render {
 		/// return : The pointer to the singleton.
 		static Renderer* getRenderer();
 
+		/// Returns all of the shaders used in Post Processing the final image
+		/// by reference.
+		/// return : The modifiable list of all of the shaders used.
+		std::vector<Honeycomb::Shader::ShaderProgram>& getPostShaders();
+
 		/// Virtual method which should be overriden to render the specified
 		/// scene.
 		/// GameScene &scene : The game scene to be rendered.
@@ -76,10 +81,11 @@ namespace Honeycomb::Render {
 		///					false otherwise.
 		void setDoDepthTest(const bool &b);
 
-		/// Should the renderer perform a stencil test when rendering faces?
-		/// const bool &b : True if the renderer should perform a stencil test,
-		///				    false otherwise.
-		void setDoStencilTest(const bool &b);
+		/// Should the renderer post process the image according to the post
+		/// processing shaders?
+		/// const bool &b : True if the renderer should perform post processing
+		///					and false otherwise.
+		void setDoPostProcess(const bool &b);
 
 		/// Sets the winding order of the Front Face of a polygon.
 		/// const WindingOrder &w : The winding order (either clockwise or
@@ -94,6 +100,10 @@ namespace Honeycomb::Render {
 		void setPolygonMode(const PolygonFace &f, const PolygonMode &m);
 	protected:
 		static Renderer *renderer; // Singleton Instance
+		
+		// Shaders for post processing the Final Image
+		std::vector<Honeycomb::Shader::ShaderProgram> postShaders;
+		bool doPostProcess;
 
 		// Face culling variables
 		PolygonFace cullingFace;

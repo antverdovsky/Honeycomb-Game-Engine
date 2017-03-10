@@ -2,6 +2,8 @@
 
 #include <GL\glew.h>
 
+#include "..\..\include\render\RenderingEngine.h"
+
 using Honeycomb::Scene::GameScene;
 using Honeycomb::Shader::ShaderProgram;
 
@@ -9,10 +11,17 @@ namespace Honeycomb::Render {
 	Renderer* Renderer::renderer = nullptr;
 
 	Renderer* Renderer::getRenderer() {
+		// Since the RenderingEngine is the component which determines which
+		// Renderer is to be used, it makes more sense to fetch the Renderer
+		// from the Rendering Engine.
 		if (renderer == nullptr)
-			renderer = new Renderer();
+			renderer = RenderingEngine::getRenderingEngine()->renderer;
 
 		return renderer;
+	}
+
+	std::vector<ShaderProgram>& Renderer::getPostShaders() {
+		return this->postShaders;
 	}
 
 	void Renderer::render(GameScene &scene) {
@@ -39,6 +48,10 @@ namespace Honeycomb::Render {
 		this->setBoolSettingGL(GL_DEPTH_TEST, b);
 	}
 
+	void Renderer::setDoPostProcess(const bool &b) {
+		this->doPostProcess = b;
+	}
+
 	void Renderer::setFrontFace(const WindingOrder &w) {
 		this->frontFace = w;
 		glFrontFace((GLenum)w);
@@ -62,6 +75,8 @@ namespace Honeycomb::Render {
 	}
 
 	Renderer::Renderer() {
+		this->doPostProcess = true;
+
 		this->setFrontFace(WindingOrder::COUNTER_CLOCKWISE);
 		this->setCullingFace(PolygonFace::BACK);
 		this->setDoCullFaces(true);
@@ -70,6 +85,7 @@ namespace Honeycomb::Render {
 		this->setDepthFunction(TestFunction::LESS);
 		
 		this->setPolygonMode(PolygonFace::FRONT, PolygonMode::FILL);
+		this->setPolygonMode(PolygonFace::BACK, PolygonMode::FILL);
 	}
 
 	Renderer::~Renderer() {
