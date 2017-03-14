@@ -223,6 +223,7 @@
     <ClCompile Include="src\conjuncture\Event.cpp" />
     <ClCompile Include="src\conjuncture\EventHandler.cpp" />
     <ClCompile Include="src\file\LineOperation.cpp" />
+    <ClCompile Include="src\graphics\Cubemap.cpp" />
     <ClCompile Include="src\render\deferred\DeferredRenderer.cpp" />
     <ClCompile Include="src\render\deferred\GBuffer.cpp" />
     <ClCompile Include="src\render\ForwardRendererMulti.cpp" />
@@ -268,6 +269,7 @@
     <ClInclude Include="include\conjuncture\Event.h" />
     <ClInclude Include="include\conjuncture\EventHandler.h" />
     <ClInclude Include="include\file\LineOperation.h" />
+    <ClInclude Include="include\graphics\Cubemap.h" />
     <ClInclude Include="include\render\deferred\DeferredRenderer.h" />
     <ClInclude Include="include\render\deferred\GBuffer.h" />
     <ClInclude Include="include\render\ForwardRendererMulti.h" />

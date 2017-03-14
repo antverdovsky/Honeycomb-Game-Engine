@@ -31,6 +31,10 @@ namespace Honeycomb::Graphics {
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 
+	const std::string& Texture2D::getDirectory() const {
+		return this->directory;
+	}
+
 	const int& Texture2D::getTextureID() const {
 		return this->textureID;
 	}

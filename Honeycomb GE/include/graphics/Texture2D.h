@@ -23,6 +23,10 @@ namespace Honeycomb::Graphics {
 		/// Generates a MipMap for the texture.
 		void genMipMap();
 
+		/// Returns the directory of this 2D Texture.
+		/// return : The system directory.
+		const std::string& getDirectory() const;
+
 		/// Returns the texture ID of this 2D Texture.
 		/// return : The Texture ID.
 		const int& getTextureID() const;
