@@ -160,6 +160,32 @@ namespace Honeycomb::Render::Deferred {
 		this->quad.setIndexData(indices, 6);
 	}
 
+	void DeferredRenderer::renderBackground() {
+		// Skybox will be drawn to the final image
+		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL_1);
+		
+		// Do NOT write to the depth buffer, but do enable a depth test and
+		// render the skybox if the depth buffer value is less than or equal to
+		// 1.0F (skybox depth is at 1.0F, so it must be less than or equal).
+		glDepthMask(GL_FALSE);
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
+		glDisable(GL_CULL_FACE);
+
+		// Bind the Skybox Shader and write the camera's properties to it
+		this->skyboxShader.bindShaderProgram();
+		CameraController::getActiveCamera()->toShader(this->skyboxShader,
+			"camera");
+		this->skyboxShader.setUniform_i("cube", 0);
+		this->skybox.bind(0);
+		this->skyboxMesh.draw(this->skyboxShader);
+
+		// Undo the Depth Mask and Depth Test changes
+		glDepthMask(GL_TRUE);
+		glDisable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+	}
+
 	GBufferTextureType DeferredRenderer::renderPostProcess() {
 		// Since we are going to read from one buffer and write to another,
 		// establish now which buffer will be read from and which one we will
@@ -189,6 +215,8 @@ namespace Honeycomb::Render::Deferred {
 		this->gBuffer.unbind();
 		this->gBuffer.bindTexture(tex);
 
+		glDisable(GL_DEPTH_TEST);
+
 		quad.draw(this->quadShader);
 	}
 
@@ -200,6 +228,7 @@ namespace Honeycomb::Render::Deferred {
 
 		this->renderGeometryPass(scene); // Render Geometry
 		this->renderLightsPass(scene); // Render Lights
+		this->renderBackground(); // Render background cubebox
 		
 		// Post process the scene if necessary and store the texture type
 		// containing the final image. If the user does not want to post

@@ -2,8 +2,13 @@
 
 #include <GL\glew.h>
 
+#include "..\..\include\component\render\MeshRenderer.h"
+#include "..\..\include\object\Builder.h"
+#include "..\..\include\object\GameObject.h"
 #include "..\..\include\render\RenderingEngine.h"
 
+using Honeycomb::Component::Render::MeshRenderer;
+using Honeycomb::Object::Builder;
 using Honeycomb::Scene::GameScene;
 using Honeycomb::Shader::ShaderProgram;
 
@@ -74,7 +79,22 @@ namespace Honeycomb::Render {
 		glPolygonMode((GLenum)f, (GLenum)m);
 	}
 
+	void Renderer::setSkybox(const Honeycomb::Graphics::Cubemap &sky) {
+		this->skybox = sky;
+	}
+
 	Renderer::Renderer() {
+		auto cube = Builder::getBuilder()->newCube();
+		this->skyboxMesh = cube->getComponent<MeshRenderer>()->getMesh();
+		delete cube;
+
+		this->skyboxShader.initialize();
+		this->skyboxShader.addShader("..\\Honeycomb GE\\res\\shaders"
+			"\\cubemap\\skyboxVS.glsl", GL_VERTEX_SHADER);
+		this->skyboxShader.addShader("..\\Honeycomb GE\\res\\shaders"
+			"\\cubemap\\skyboxFS.glsl", GL_FRAGMENT_SHADER);
+		this->skyboxShader.finalizeShaderProgram();
+
 		this->setDoPostProcess(true);
 
 		this->setFrontFace(WindingOrder::COUNTER_CLOCKWISE);

@@ -22,6 +22,7 @@ namespace Honeycomb::Component::Render {
 	CameraController *CameraController::activeCamera = nullptr;
 
 	const std::string CameraController::PROJECTION_MAT4 = "projection";
+	const std::string CameraController::VIEW_MAT4 = "view";
 	const std::string CameraController::TRANSLATION_VEC3 = "translation";
 	const std::string CameraController::WIDTH_F = "width";
 	const std::string CameraController::HEIGHT_F = "height";
@@ -179,6 +180,8 @@ namespace Honeycomb::Component::Render {
 			this->projection);
 		this->glVector3fs.setValue(CameraController::TRANSLATION_VEC3,
 			this->transform->getGlobalTranslation());
+		this->glMatrix4fs.setValue(CameraController::VIEW_MAT4,
+			this->projectionView * this->projectionOrien);
 
 		return this->getProjection();
 	}

@@ -2,6 +2,8 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include "..\geometry\Mesh.h"
+#include "..\graphics\Cubemap.h"
 #include "..\math\Vector4f.h"
 #include "..\scene\GameScene.h"
 #include "..\shader\ShaderProgram.h"
@@ -98,8 +100,18 @@ namespace Honeycomb::Render {
 		/// const PolygonMode &m : The rasterization mode which is to be used
 		///						   for rendering said faces.
 		void setPolygonMode(const PolygonFace &f, const PolygonMode &m);
+
+		/// Sets the skybox which is to be used when rendering the background
+		/// color of the scene.
+		/// const Cubemap &sky : The skybox cubemap.
+		void setSkybox(const Honeycomb::Graphics::Cubemap &sky);
 	protected:
 		static Renderer *renderer; // Singleton Instance
+
+		// Background Color / Skybox
+		Honeycomb::Graphics::Cubemap skybox;
+		Honeycomb::Geometry::Mesh skyboxMesh;
+		Honeycomb::Shader::ShaderProgram skyboxShader;
 		
 		// Shaders for post processing the Final Image
 		std::vector<Honeycomb::Shader::ShaderProgram> postShaders;

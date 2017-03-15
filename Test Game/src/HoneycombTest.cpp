@@ -20,6 +20,22 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::start() {
+		// Build the Skybox and send to the Renderer
+		std::string skyboxDir =
+			"..\\Honeycomb GE\\res\\textures\\default\\mountain_skybox\\";
+		std::string skyboxTex[6] = {
+			skyboxDir + "right.bmp",
+			skyboxDir + "left.bmp",
+			skyboxDir + "top.bmp",
+			skyboxDir + "bottom.bmp",
+			skyboxDir + "back.bmp",
+			skyboxDir + "front.bmp"
+		};
+		Cubemap skybox;
+		skybox.initialize();
+		skybox.setFaces(skyboxTex);
+		Renderer::getRenderer()->setSkybox(skybox);
+
 		// Create the Post Processing Shaders and add to the Renderer
 		this->inversionShader.initialize();
 		this->inversionShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
@@ -36,6 +52,7 @@ namespace HoneycombTest {
 		this->sharpShader.finalizeShaderProgram();
 
 		Renderer::getRenderer()->getPostShaders().push_back(this->sharpShader);
+		Renderer::getRenderer()->setDoPostProcess(false);
 
 		// Import all of the mesh game objects and construct them
 		this->car = Builder::getBuilder()->

@@ -333,5 +333,7 @@
     <None Include="res\shaders\render\deferred\light\directionalLightFS.glsl" />
     <None Include="res\shaders\render\deferred\light\ambientLightFS.glsl" />
     <None Include="res\shaders\render\deferred\light\spotLightFS.glsl" />
+    <None Include="res\shaders\cubemap\skyboxFS.glsl" />
+    <None Include="res\shaders\cubemap\skyboxVS.glsl" />
   </ItemGroup>
 </Project>

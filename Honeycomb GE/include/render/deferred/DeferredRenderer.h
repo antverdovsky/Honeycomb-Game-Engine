@@ -60,6 +60,10 @@ namespace Honeycomb::Render::Deferred {
 		/// Initializes the Quad Mesh.
 		void initializeQuad();
 
+		/// Renders the background (solid color or skybox, depending on the
+		/// settings of the Renderer) of the scene.
+		void renderBackground();
+
 		/// Post processes the final producted texture and returns the
 		/// texture which contains the final "final" texture (post processed).
 		/// return : The texture type containing the post processed image.
