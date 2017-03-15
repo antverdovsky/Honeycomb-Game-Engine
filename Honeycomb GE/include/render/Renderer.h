@@ -14,6 +14,12 @@ namespace Honeycomb::Render {
 	class Renderer {
 		friend class Honeycomb::Component::Render::MeshRenderer;
 	public:
+		/// Represents the modes used for the background of the scene
+		enum BackgroundMode {
+			SOLID_COLOR			= 0,
+			SKYBOX				= 1
+		};
+
 		/// A wrapper enum for the depth and stencil functions which can be 
 		///	used when depth or stencil testing.
 		enum TestFunction {
@@ -64,6 +70,11 @@ namespace Honeycomb::Render {
 		/// GameScene &scene : The game scene to be rendered.
 		virtual void render(Honeycomb::Scene::GameScene &scene);
 
+		/// Sets the background mode which is to be used for rendering the
+		/// background of the scene.
+		/// const BackgroundMode &m : The mode which is to be used.
+		void setBackgroundMode(const BackgroundMode &m);
+
 		/// Sets the polygon face which is to be culled.
 		/// const PolygonFace &f : The polygon face (front, back or front-and-
 		///						   back).
@@ -105,12 +116,22 @@ namespace Honeycomb::Render {
 		/// color of the scene.
 		/// const Cubemap &sky : The skybox cubemap.
 		void setSkybox(const Honeycomb::Graphics::Cubemap &sky);
+
+		/// Sets the solid color which is to be used when rendering the
+		/// background color of the scene.
+		/// const Vector4f &col : The solid color.
+		void setSolidColor(const Honeycomb::Math::Vector4f &col);
 	protected:
 		static Renderer *renderer; // Singleton Instance
 
-		// Background Color / Skybox
+		// Properties for a Background Color & Skybox
+		BackgroundMode backgroundMode;
+		Honeycomb::Geometry::Mesh cubemapMesh;
+
+		Honeycomb::Math::Vector4f solidColor;
+		Honeycomb::Shader::ShaderProgram solidColorShader;
+
 		Honeycomb::Graphics::Cubemap skybox;
-		Honeycomb::Geometry::Mesh skyboxMesh;
 		Honeycomb::Shader::ShaderProgram skyboxShader;
 		
 		// Shaders for post processing the Final Image
@@ -136,6 +157,9 @@ namespace Honeycomb::Render {
 
 		/// Destroys this renderer.
 		~Renderer();
+
+		/// Initializes the dependencies of the Cubemap (Mesh and Shaders).
+		void initializeCubemapDependencies();
 
 		/// Calls the OpenGL "glEnable" function for the specified cap if val 
 		/// is true. Otherwise, calls the OpenGL "glDisable" function

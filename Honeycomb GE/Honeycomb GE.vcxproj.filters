@@ -335,5 +335,9 @@
     <None Include="res\shaders\render\deferred\light\spotLightFS.glsl" />
     <None Include="res\shaders\cubemap\skyboxFS.glsl" />
     <None Include="res\shaders\cubemap\skyboxVS.glsl" />
+    <None Include="res\shaders\post-processing\grayscaleFS.glsl" />
+    <None Include="res\shaders\post-processing\inversionFS.glsl" />
+    <None Include="res\shaders\post-processing\postProcessingVS.glsl" />
+    <None Include="res\shaders\post-processing\sharpFS.glsl" />
   </ItemGroup>
 </Project>

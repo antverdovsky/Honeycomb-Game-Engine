@@ -8,7 +8,9 @@
 #include "..\..\include\render\RenderingEngine.h"
 
 using Honeycomb::Component::Render::MeshRenderer;
+using Honeycomb::Graphics::Cubemap;
 using Honeycomb::Object::Builder;
+using Honeycomb::Math::Vector4f;
 using Honeycomb::Scene::GameScene;
 using Honeycomb::Shader::ShaderProgram;
 
@@ -31,6 +33,10 @@ namespace Honeycomb::Render {
 
 	void Renderer::render(GameScene &scene) {
 
+	}
+
+	void Renderer::setBackgroundMode(const BackgroundMode &m) {
+		this->backgroundMode = m;
 	}
 
 	void Renderer::setCullingFace(const PolygonFace &f) {
@@ -83,17 +89,15 @@ namespace Honeycomb::Render {
 		this->skybox = sky;
 	}
 
-	Renderer::Renderer() {
-		auto cube = Builder::getBuilder()->newCube();
-		this->skyboxMesh = cube->getComponent<MeshRenderer>()->getMesh();
-		delete cube;
+	void Renderer::setSolidColor(const Honeycomb::Math::Vector4f &col) {
+		this->solidColor = col;
+	}
 
-		this->skyboxShader.initialize();
-		this->skyboxShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\cubemap\\skyboxVS.glsl", GL_VERTEX_SHADER);
-		this->skyboxShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\cubemap\\skyboxFS.glsl", GL_FRAGMENT_SHADER);
-		this->skyboxShader.finalizeShaderProgram();
+	Renderer::Renderer() {
+		this->initializeCubemapDependencies();
+		this->setBackgroundMode(BackgroundMode::SKYBOX);
+		this->setSkybox(Cubemap());
+		this->setSolidColor(Vector4f(0.0F, 0.0F, 0.0F, 0.0F));
 
 		this->setDoPostProcess(true);
 
@@ -110,6 +114,29 @@ namespace Honeycomb::Render {
 
 	Renderer::~Renderer() {
 
+	}
+
+	void Renderer::initializeCubemapDependencies() {
+		// Initialize Skybox Mesh (steal it from a Cube)
+		auto cube = Builder::getBuilder()->newCube();
+		this->cubemapMesh = cube->getComponent<MeshRenderer>()->getMesh();
+		delete cube;
+
+		// Initialize Skybox Shader
+		this->skyboxShader.initialize();
+		this->skyboxShader.addShader("..\\Honeycomb GE\\res\\shaders"
+			"\\cubemap\\skyboxVS.glsl", GL_VERTEX_SHADER);
+		this->skyboxShader.addShader("..\\Honeycomb GE\\res\\shaders"
+			"\\cubemap\\texturedSkyboxFS.glsl", GL_FRAGMENT_SHADER);
+		this->skyboxShader.finalizeShaderProgram();
+
+		// Initialize Solid Color Shader
+		this->solidColorShader.initialize();
+		this->solidColorShader.addShader("..\\Honeycomb GE\\res\\shaders"
+			"\\cubemap\\skyboxVS.glsl", GL_VERTEX_SHADER);
+		this->solidColorShader.addShader("..\\Honeycomb GE\\res\\shaders"
+			"\\cubemap\\solidColorSkyboxFS.glsl", GL_FRAGMENT_SHADER);
+		this->solidColorShader.finalizeShaderProgram();
 	}
 
 	void Renderer::setBoolSettingGL(const int &cap, const bool &val) {

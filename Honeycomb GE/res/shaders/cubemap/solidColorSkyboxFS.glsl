@@ -8,10 +8,9 @@ in vec3 out_vs_pos; // The position of the vertex in the world
 
 out vec4 color; // Fragment color
 
-uniform samplerCube cube;
+uniform vec4 solidColor; // Solid Color of the Skybox
 
 void main() {
-    // Set the color of the fragment by fetching from the cube
-	color = texture(cube, out_vs_texCoord);
-	//color = vec4(out_vs_texCoord, 1.0F);
+    // Set the color of the fragment to the solid color of the uniform
+	color = solidColor;
 }

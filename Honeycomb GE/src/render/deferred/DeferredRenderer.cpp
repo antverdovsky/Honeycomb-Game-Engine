@@ -172,13 +172,26 @@ namespace Honeycomb::Render::Deferred {
 		glDepthFunc(GL_LEQUAL);
 		glDisable(GL_CULL_FACE);
 
-		// Bind the Skybox Shader and write the camera's properties to it
-		this->skyboxShader.bindShaderProgram();
-		CameraController::getActiveCamera()->toShader(this->skyboxShader,
-			"camera");
-		this->skyboxShader.setUniform_i("cube", 0);
-		this->skybox.bind(0);
-		this->skyboxMesh.draw(this->skyboxShader);
+		switch (this->backgroundMode) {
+		case BackgroundMode::SKYBOX:
+			this->skyboxShader.bindShaderProgram();
+			CameraController::getActiveCamera()->toShader(
+				this->skyboxShader, "camera");
+			this->skyboxShader.setUniform_i("cube", 0);
+			this->skybox.bind(0);
+
+			this->cubemapMesh.draw(this->skyboxShader);
+			break;
+		case BackgroundMode::SOLID_COLOR:
+			this->solidColorShader.bindShaderProgram();
+			CameraController::getActiveCamera()->toShader(
+				this->solidColorShader, "camera");
+			this->solidColorShader.setUniform_vec4(
+				"solidColor", this->solidColor);
+
+			this->cubemapMesh.draw(this->solidColorShader);
+			break;
+		}
 
 		// Undo the Depth Mask and Depth Test changes
 		glDepthMask(GL_TRUE);
