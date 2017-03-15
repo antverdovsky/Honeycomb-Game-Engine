@@ -52,6 +52,8 @@ namespace Honeycomb::Render::Deferred {
 		this->initializeLightVolumes();
 		this->initializeQuad();
 		this->initializeShaders();
+
+		this->setFinalTexture(FinalTexture::FINAL);
 	}
 
 	DeferredRenderer::~DeferredRenderer() {
@@ -162,7 +164,7 @@ namespace Honeycomb::Render::Deferred {
 
 	void DeferredRenderer::renderBackground() {
 		// Skybox will be drawn to the final image
-		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL_1);
+		glDrawBuffer(GL_COLOR_ATTACHMENT0 + this->final);
 		
 		// Do NOT write to the depth buffer, but do enable a depth test and
 		// render the skybox if the depth buffer value is less than or equal to
@@ -203,12 +205,12 @@ namespace Honeycomb::Render::Deferred {
 		// Since we are going to read from one buffer and write to another,
 		// establish now which buffer will be read from and which one we will
 		// write to.
-		GBufferTextureType readBuffer = GBufferTextureType::FINAL_1;
+		GBufferTextureType readBuffer = (GBufferTextureType)(this->final);
 		GBufferTextureType writeBuffer = GBufferTextureType::FINAL_2;
 
 		for (ShaderProgram &s :this->getPostShaders()) {
 			glDrawBuffer(GL_COLOR_ATTACHMENT0 + writeBuffer);
-			this->gBuffer.bindTexture(readBuffer, s);
+			this->gBuffer.bindTexture(readBuffer, s, "gBufferFinal");
 
 			quad.draw(s);
 
@@ -240,17 +242,24 @@ namespace Honeycomb::Render::Deferred {
 		this->gBuffer.frameBegin(); // Clear rendered texture from last frame 
 
 		this->renderGeometryPass(scene); // Render Geometry
-		this->renderLightsPass(scene); // Render Lights
+		
+		// Render Lights if necessary
+		if (this->final == FinalTexture::FINAL) this->renderLightsPass(scene);
+		
 		this->renderBackground(); // Render background cubebox
 		
 		// Post process the scene if necessary and store the texture type
 		// containing the final image. If the user does not want to post
 		// process the image, the final image must be in FINAL_1, so set that
 		// as the image to be rendered.
-		GBufferTextureType final = (this->doPostProcess) ?
-			this->renderPostProcess() : GBufferTextureType::FINAL_1;
+		GBufferTextureType final = (GBufferTextureType)((this->doPostProcess) ?
+			this->renderPostProcess() : this->final);
 
 		this->renderTexture(final); // Render the final image
+	}
+
+	void DeferredRenderer::setFinalTexture(const FinalTexture &fin) {
+		this->final = fin;
 	}
 
 	void DeferredRenderer::renderGeometryPass(GameScene &scene) {

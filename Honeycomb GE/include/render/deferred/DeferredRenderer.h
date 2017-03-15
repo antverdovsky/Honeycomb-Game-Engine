@@ -10,6 +10,18 @@
 namespace Honeycomb::Render::Deferred {
 	class DeferredRenderer : public Honeycomb::Render::Renderer {
 	public:
+		// Enum representing what the final texture rendered should be.
+		enum FinalTexture {
+			POSITION				= GBufferTextureType::POSITION,
+			DEPTH					= GBufferTextureType::DEPTH,
+			DIFFUSE					= GBufferTextureType::DIFFUSE,
+			NORMAL					= GBufferTextureType::NORMAL,
+			TEXTURE					= GBufferTextureType::TEXTURE,
+			SPECULAR				= GBufferTextureType::SPECULAR,
+
+			FINAL					= GBufferTextureType::FINAL_1
+		};
+
 		/// Returns the Deferred Renderer singleton instance.
 		/// return : A pointer to the singleton instance of the Deferred
 		///			 Renderer structure.
@@ -18,6 +30,13 @@ namespace Honeycomb::Render::Deferred {
 		/// Renders the specified Game Scene using this Deferred Renderer.
 		/// GameScene &scene : The scene which is to be rendered.
 		void render(Honeycomb::Scene::GameScene &scene);
+
+		/// Sets the final texture which will be rendered to the screen after
+		/// the entire Deferred Renderer pipeline. Do note that the lights will
+		/// ONLY be rendered for the FINAL texture, and that the background
+		/// mode is IGNORED for the DEPTH Texture.
+		/// const FinalTexture &fin : The final texture to be rendered.
+		void setFinalTexture(const FinalTexture &fin);
 	private:
 		static DeferredRenderer *deferredRenderer; // Singleton instance
 
@@ -29,6 +48,7 @@ namespace Honeycomb::Render::Deferred {
 		Honeycomb::Geometry::Mesh quad;
 
 		GBuffer gBuffer; // The G Buffer of the Renderer
+		FinalTexture final; // The texture which will be rendered to screen
 
 		Honeycomb::Shader::ShaderProgram geometryShader;
 		Honeycomb::Shader::ShaderProgram quadShader;

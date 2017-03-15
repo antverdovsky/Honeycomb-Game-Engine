@@ -2,6 +2,7 @@
 
 #include "..\..\Honeycomb GE\include\HoneycombEngine.h"
 #include "..\..\Honeycomb GE\include\render\Renderer.h"
+#include "..\..\Honeycomb GE\include\render\deferred\DeferredRenderer.h"
 #include "..\include\components\InputTransformable.h"
 #include "..\..\Honeycomb GE\include\debug\Logger.h"
 
@@ -9,6 +10,7 @@ using namespace HoneycombEngine;
 using namespace HoneycombTest::Components;
 using Honeycomb::Debug::Logger;
 using Honeycomb::Render::Renderer;
+using Honeycomb::Render::Deferred::DeferredRenderer;
 
 namespace HoneycombTest {
 	void TestGame::input() {
@@ -22,7 +24,7 @@ namespace HoneycombTest {
 	void TestGame::start() {
 		// Build the Skybox and send to the Renderer
 		std::string skyboxDir =
-			"..\\Honeycomb GE\\res\\textures\\default\\mountain_skybox\\";
+			"..\\Honeycomb GE\\res\\textures\\default\\aurora_skybox\\";
 		std::string skyboxTex[6] = {
 			skyboxDir + "right.bmp",
 			skyboxDir + "left.bmp",
