@@ -3,12 +3,9 @@
 #include <..\..\..\standard\include\stdMaterial.glsl>
 #include <..\..\..\standard\include\light\stdDirectionalLight.glsl>
 
-in vec2 out_vs_texCoord; // Take in texture coordinate outputted by VS
-in vec3 out_vs_norm; // Take in the normal outputted by VS
 in vec3 out_vs_pos; // Take in the world position outputted by VS
 
 uniform DirectionalLight directionalLight; // The Directional Light
-uniform Material material; // The material
 uniform Camera camera;
 
 uniform sampler2D gBufferPosition;

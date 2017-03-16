@@ -3,12 +3,9 @@
 #include <..\..\..\standard\include\stdMaterial.glsl>
 #include <..\..\..\standard\include\light\stdSpotLight.glsl>
 
-in vec2 out_vs_texCoord; // Take in texture coordinate outputted by VS
-in vec3 out_vs_norm; // Take in the normal outputted by VS
 in vec3 out_vs_pos; // Take in the world position outputted by VS
 
 uniform SpotLight spotLight; // The point light
-uniform Material material; // The material
 uniform Camera camera;
 
 uniform sampler2D gBufferPosition;
@@ -28,6 +25,6 @@ void main() {
 	vec3 spec = texture2D(gBufferSpecular, screenCoord).xyz;
 	float shine = texture2D(gBufferSpecular, screenCoord).w;
 
-	fragColor = calculateSpotLight(spotLight, camera, pos, norm, 
-        shine, spec) * vec4(dif, 1.0F);
+	fragColor = calculateSpotLight(spotLight, camera, pos, norm, shine, spec) *
+		vec4(dif, 1.0F);
 }

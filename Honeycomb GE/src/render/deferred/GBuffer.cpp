@@ -235,5 +235,8 @@ namespace Honeycomb::Render::Deferred {
 		this->bufferTextures[GBufferTextureType::FINAL_1].setImageData(NULL,
 			GL_FLOAT, GL_RGBA, GL_RGB, this->textureWidth, this->textureHeight
 		);
+		this->bufferTextures[GBufferTextureType::FINAL_2].setImageData(NULL,
+			GL_FLOAT, GL_RGBA, GL_RGB, this->textureWidth, this->textureHeight
+		);
 	}
 }
