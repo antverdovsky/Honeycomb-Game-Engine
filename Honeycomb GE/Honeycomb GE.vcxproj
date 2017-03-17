@@ -307,6 +307,8 @@
   <ItemGroup>
     <None Include="res\shaders\cubemap\skyboxFS.glsl" />
     <None Include="res\shaders\cubemap\skyboxVS.glsl" />
+    <None Include="res\shaders\cubemap\solidColorSkyboxFS.glsl" />
+    <None Include="res\shaders\cubemap\texturedSkyboxFS.glsl" />
     <None Include="res\shaders\defGeometryFS.glsl" />
     <None Include="res\shaders\defGeometryVS.glsl" />
     <None Include="res\shaders\phong\fragShader.glsl" />

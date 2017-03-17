@@ -339,5 +339,7 @@
     <None Include="res\shaders\post-processing\inversionFS.glsl" />
     <None Include="res\shaders\post-processing\postProcessingVS.glsl" />
     <None Include="res\shaders\post-processing\sharpFS.glsl" />
+    <None Include="res\shaders\cubemap\solidColorSkyboxFS.glsl" />
+    <None Include="res\shaders\cubemap\texturedSkyboxFS.glsl" />
   </ItemGroup>
 </Project>

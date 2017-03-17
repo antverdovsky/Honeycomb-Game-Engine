@@ -221,18 +221,19 @@ namespace Honeycomb::Shader {
 		// will identify any string containing the word uniform followed by at
 		// least one space, followed by a word (1st group: uniform type),
 		// followed by at least one space, followed by a word (2nd group:
-		// uniform name).
-		std::regex regex = std::regex("uniform\\s+(\\w+)\\s+(\\w+)");
+		// uniform name), which is followed by a semicolon.
+		std::regex regexField = std::regex("uniform\\s+(\\w+)\\s+(\\w+);");
 
-		std::sregex_iterator uniform(this->source.cbegin(), 
-			this->source.cend(), regex); // Iterator through all uniforms
+		std::sregex_iterator uniformFields(this->source.cbegin(), 
+			this->source.cend(), regexField); // Iterator through all uniforms
 		std::sregex_iterator end; // End defined by Default Constructor
 
-		for (; uniform != end; uniform++) { // Go through all matched uniforms
+		// Go through all matched uniforms
+		for (; uniformFields != end; uniformFields++) {
 			// The first group represents the uniform type; the second the
 			// uniform name (see regex description).
-			std::string type = uniform->str(1);
-			std::string name = uniform->str(2);
+			std::string type = uniformFields->str(1);
+			std::string name = uniformFields->str(2);
 
 			// If the uniform type is a type of a user defined struct
 			if (this->detStructs.count(type)) {
@@ -246,9 +247,49 @@ namespace Honeycomb::Shader {
 					this->detUniforms.push_back(SourceVariable(name + "." + 
 						structVar.name, structVar.type));
 				}
-			}
-			else { // If the uniform type is not a user defined struct
+			} else { // If the uniform type is not a user defined struct
 				this->detUniforms.push_back(SourceVariable(name, type));
+			}
+		}
+
+		// Regex for automatically detecting uniform array type, name and size.
+		// The regex will identify any string containing the word uniform 
+		// followed by at least one space, followed by a word (1st group: 
+		// uniform type), followed by at least one space, followed by a word 
+		// (2nd group: uniform name), followed by a number, surrounded by
+		// brackets (3rd group: array size), which is followed by a semicolon.
+		std::regex regexArray = std::regex(
+			"uniform\\s+(\\w+)\\s+(\\w+)\\s*\\[(\\d+)\\];");
+
+		std::sregex_iterator uniformArrays(this->source.cbegin(),
+			this->source.cend(), regexArray); // Iterator through all uniforms
+		
+		// Go through all matched uniforms
+		for (; uniformArrays != end; uniformArrays++) {
+			// The first group represents the uniform type; the second the
+			// uniform name (see regex description); the third the size of the
+			// array
+			std::string type = uniformArrays->str(1);
+			std::string name = uniformArrays->str(2);
+			int size = atoi(uniformArrays->str(3).c_str());
+
+			for (int i = 0; i < size; ++i) {
+				// If the uniform type is a type of a user defined struct
+				if (this->detStructs.count(type)) {
+					// Get all of the variables of the struct
+					std::vector<SourceVariable> structVars =
+						this->detStructs[type];
+
+					for (const SourceVariable& structVar : structVars) {
+						// Add the full uniform name (uniform name + index + 
+						// variable name) to detected uniforms.
+						this->detUniforms.push_back(SourceVariable(name + "[" +
+							std::to_string(i) + "]" + "." + structVar.name, 
+							structVar.type));
+					}
+				} else { // If the uniform type is not a user defined struct
+					this->detUniforms.push_back(SourceVariable(name, type));
+				}
 			}
 		}
 	}

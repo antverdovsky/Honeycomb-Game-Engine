@@ -13,7 +13,7 @@
 // the specified vertex attribute array pointers (see Mesh.cpp)
 layout (location = 0) in vec3 in_vs_pos;
 
-uniform mat4 objTransform = mat4(1.0); // Transform Matrix (pos, rot, scl)
+uniform mat4 objTransform; // Transform Matrix (pos, rot, scl)
 
 uniform Camera camera; // Camera Structure
 
