@@ -18,7 +18,7 @@ namespace Honeycomb::Graphics {
 	}
 
 	void Cubemap::bind(const int &loc) const {
-		glActiveTexture(loc);
+		glActiveTexture(GL_TEXTURE0 + loc);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, this->textureID);
 	}
 

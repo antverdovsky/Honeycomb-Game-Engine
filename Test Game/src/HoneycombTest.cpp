@@ -75,6 +75,19 @@ namespace HoneycombTest {
 		this->plane->getComponent<MeshRenderer>()->
 			setMaterial(*colorMaterial);
 
+		// Give the sphere and suzanne a special reflective material (skybox)
+		Material *reflectiveMaterial = new Material(
+			this->sphere->getComponent<MeshRenderer>()->getMaterial());
+		reflectiveMaterial->glFloats.setValue("refIndexFrom", 1.0F);
+		reflectiveMaterial->glFloats.setValue("refIndexTo", 2.42F);
+		reflectiveMaterial->glFloats.setValue("reflectionStrength", 1.0F);
+		this->suzanne->getComponent<MeshRenderer>()->setMaterial(
+			*reflectiveMaterial);
+		this->sphere->getComponent<MeshRenderer>()->setMaterial(
+			*reflectiveMaterial);
+		this->car->getChild("Body")->getComponent<MeshRenderer>()->setMaterial(
+			*reflectiveMaterial);
+
 		// Give Suzanne an Input Transformable Component
 		InputTransformable *suzInputTranfs = new InputTransformable(
 			GameInput::KEY_CODE_UP, GameInput::KEY_CODE_DOWN,

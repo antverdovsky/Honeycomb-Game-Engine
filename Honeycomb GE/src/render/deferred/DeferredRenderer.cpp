@@ -280,6 +280,11 @@ namespace Honeycomb::Render::Deferred {
 
 		glDepthMask(GL_TRUE); // Only Geometry Render writes to the Depth
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear Buffer
+
+		// Bind the skybox for Reflection
+		this->geometryShader.bindShaderProgram();
+		this->geometryShader.setUniform_i("skybox", 1);						// TODO: Cannot bind at 0 since material's albedo is binded at 0!!!
+		this->skybox.bind(1);
 		
 		scene.render(this->geometryShader); // Render the Game Scene Meshes
 
