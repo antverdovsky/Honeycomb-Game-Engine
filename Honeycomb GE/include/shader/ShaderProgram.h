@@ -14,6 +14,12 @@
 #include "..\math\Matrix4f.h"
 
 namespace Honeycomb::Shader {
+	enum ShaderType {
+		FRAGMENT_SHADER				= 0x8B30,	// from GL_FRAGMENT_SHADER
+		GEOMETRY_SHADER				= 0x8DD9,	// from GL_GEOMETRY_SHADER
+		VERTEX_SHADER				= 0x8B31,	// from GL_VERTEX_SHADER
+	};
+
 	class ShaderProgram : public Honeycomb::Base::GLItem {
 	public:
 		/// Instantiates this Shader instance with the specified name, or the
@@ -24,10 +30,8 @@ namespace Honeycomb::Shader {
 		/// Links the Shader from the specified file to this Shader instance.
 		/// const string &file : The file path from which to read in the shader
 		///						 code.
-		/// const int &type : The type of shader to be added 
-		///					  (GL_FRAGMENT_SHADER, GL_GEOMETRY_SHADER, 
-		///					  GL_VERTEX_SHADER).
-		void addShader(const std::string &file, const int &type);
+		/// const ShaderType &type : The type of shader to be added.
+		void addShader(const std::string &file, const ShaderType &type);
 
 		/// Adds the specified shader uniform (GLSL variable) to this shader 
 		/// program.

@@ -13,6 +13,7 @@ using Honeycomb::Object::Builder;
 using Honeycomb::Math::Vector4f;
 using Honeycomb::Scene::GameScene;
 using Honeycomb::Shader::ShaderProgram;
+using Honeycomb::Shader::ShaderType;
 
 namespace Honeycomb::Render {
 	Renderer* Renderer::renderer = nullptr;
@@ -125,17 +126,17 @@ namespace Honeycomb::Render {
 		// Initialize Skybox Shader
 		this->skyboxShader.initialize();
 		this->skyboxShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\cubemap\\skyboxVS.glsl", GL_VERTEX_SHADER);
+			"\\cubemap\\skyboxVS.glsl", ShaderType::VERTEX_SHADER);
 		this->skyboxShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\cubemap\\texturedSkyboxFS.glsl", GL_FRAGMENT_SHADER);
+			"\\cubemap\\texturedSkyboxFS.glsl", ShaderType::FRAGMENT_SHADER);
 		this->skyboxShader.finalizeShaderProgram();
 
 		// Initialize Solid Color Shader
 		this->solidColorShader.initialize();
 		this->solidColorShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\cubemap\\skyboxVS.glsl", GL_VERTEX_SHADER);
+			"\\cubemap\\skyboxVS.glsl", ShaderType::VERTEX_SHADER);
 		this->solidColorShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\cubemap\\solidColorSkyboxFS.glsl", GL_FRAGMENT_SHADER);
+			"\\cubemap\\solidColorSkyboxFS.glsl", ShaderType::FRAGMENT_SHADER);
 		this->solidColorShader.finalizeShaderProgram();
 	}
 

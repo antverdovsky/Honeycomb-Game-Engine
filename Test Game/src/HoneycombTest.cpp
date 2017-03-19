@@ -41,16 +41,18 @@ namespace HoneycombTest {
 		// Create the Post Processing Shaders and add to the Renderer
 		this->inversionShader.initialize();
 		this->inversionShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"post-processing\\postProcessingVS.glsl", 0x8B31);
+			"post-processing\\postProcessingVS.glsl", 
+			ShaderType::VERTEX_SHADER);
 		this->inversionShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"post-processing\\inversionFS.glsl", 0x8B30);
+			"post-processing\\inversionFS.glsl", ShaderType::FRAGMENT_SHADER);
 		this->inversionShader.finalizeShaderProgram();
 
 		this->sharpShader.initialize();
 		this->sharpShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"post-processing\\postProcessingVS.glsl", 0x8B31);
+			"post-processing\\postProcessingVS.glsl", 
+			ShaderType::VERTEX_SHADER);
 		this->sharpShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"post-processing\\sharpFS.glsl", 0x8B30);
+			"post-processing\\sharpFS.glsl", ShaderType::FRAGMENT_SHADER);
 		this->sharpShader.finalizeShaderProgram();
 
 		Renderer::getRenderer()->getPostShaders().push_back(this->sharpShader);
@@ -79,7 +81,7 @@ namespace HoneycombTest {
 		Material *reflectiveMaterial = new Material(
 			this->sphere->getComponent<MeshRenderer>()->getMaterial());
 		reflectiveMaterial->glFloats.setValue("refIndexFrom", 1.0F);
-		reflectiveMaterial->glFloats.setValue("refIndexTo", 2.42F);
+		reflectiveMaterial->glFloats.setValue("refIndexTo", 1.52F);
 		reflectiveMaterial->glFloats.setValue("reflectionStrength", 1.0F);
 		this->suzanne->getComponent<MeshRenderer>()->setMaterial(
 			*reflectiveMaterial);

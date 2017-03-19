@@ -29,6 +29,7 @@ using Honeycomb::Math::Vector2f;
 using Honeycomb::Object::Builder;
 using Honeycomb::Object::GameObject;
 using Honeycomb::Scene::GameScene;
+using Honeycomb::Shader::ShaderType;
 using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb::Render::Deferred {
@@ -90,53 +91,65 @@ namespace Honeycomb::Render::Deferred {
 	void DeferredRenderer::initializeShaders() {
 		this->ambientShader.initialize();
 		this->ambientShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\render\\deferred\\pass\\simpleVS.glsl", GL_VERTEX_SHADER);
+			"\\render\\deferred\\pass\\simpleVS.glsl", 
+			ShaderType::VERTEX_SHADER);
 		this->ambientShader.addShader("..\\Honeycomb GE\\res\\shaders"
 			"\\render\\deferred\\light\\ambientLightFS.glsl",
-			GL_FRAGMENT_SHADER);
+			ShaderType::FRAGMENT_SHADER);
 		this->ambientShader.finalizeShaderProgram();
 
 		this->directionalLightShader.initialize();
 		this->directionalLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\render\\deferred\\pass\\simpleVS.glsl", GL_VERTEX_SHADER);
+			"\\render\\deferred\\pass\\simpleVS.glsl", 
+			ShaderType::VERTEX_SHADER);
 		this->directionalLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
 			"\\render\\deferred\\light\\directionalLightFS.glsl",
-			GL_FRAGMENT_SHADER);
+			ShaderType::FRAGMENT_SHADER);
 		this->directionalLightShader.finalizeShaderProgram();
 
 		this->pointLightShader.initialize();
 		this->pointLightShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\light\\lightVS.glsl", GL_VERTEX_SHADER);
+			"render\\deferred\\light\\lightVS.glsl",
+			ShaderType::VERTEX_SHADER);
 		this->pointLightShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\light\\pointLightFS.glsl", GL_FRAGMENT_SHADER);
+			"render\\deferred\\light\\pointLightFS.glsl", 
+			ShaderType::FRAGMENT_SHADER);
 		this->pointLightShader.finalizeShaderProgram();
 
 		this->spotLightShader.initialize();
 		this->spotLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\render\\deferred\\light\\lightVS.glsl", GL_VERTEX_SHADER);
+			"\\render\\deferred\\light\\lightVS.glsl", 
+			ShaderType::VERTEX_SHADER);
 		this->spotLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\render\\deferred\\light\\spotLightFS.glsl", GL_FRAGMENT_SHADER);
+			"\\render\\deferred\\light\\spotLightFS.glsl", 
+			ShaderType::FRAGMENT_SHADER);
 		this->spotLightShader.finalizeShaderProgram();
 		
 		this->geometryShader.initialize();
 		this->geometryShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\pass\\geometryVS.glsl", GL_VERTEX_SHADER);
+			"render\\deferred\\pass\\geometryVS.glsl", 
+			ShaderType::VERTEX_SHADER);
 		this->geometryShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\pass\\geometryFS.glsl", GL_FRAGMENT_SHADER);
+			"render\\deferred\\pass\\geometryFS.glsl", 
+			ShaderType::FRAGMENT_SHADER);
 		this->geometryShader.finalizeShaderProgram();
 
 		this->stencilShader.initialize();
 		this->stencilShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\pass\\stencilVS.glsl", GL_VERTEX_SHADER);
+			"render\\deferred\\pass\\stencilVS.glsl", 
+			ShaderType::VERTEX_SHADER);
 		this->stencilShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\pass\\stencilFS.glsl", GL_FRAGMENT_SHADER);
+			"render\\deferred\\pass\\stencilFS.glsl", 
+			ShaderType::FRAGMENT_SHADER);
 		this->stencilShader.finalizeShaderProgram();
 
 		this->quadShader.initialize();
 		this->quadShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\pass\\simpleVS.glsl", GL_VERTEX_SHADER);
+			"render\\deferred\\pass\\simpleVS.glsl", 
+			ShaderType::VERTEX_SHADER);
 		this->quadShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\pass\\simpleFS.glsl", GL_FRAGMENT_SHADER);
+			"render\\deferred\\pass\\simpleFS.glsl", 
+			ShaderType::FRAGMENT_SHADER);
 		this->quadShader.finalizeShaderProgram();
 	}
 

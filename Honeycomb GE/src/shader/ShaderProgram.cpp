@@ -26,7 +26,8 @@ namespace Honeycomb::Shader {
 		this->name = name;
 	}
 	
-	void ShaderProgram::addShader(const std::string &file, const int &type) {
+	void ShaderProgram::addShader(const std::string &file, 
+			const ShaderType &type) {
 		this->bindShaderProgram();
 
 		// Read in & process the source code from the file specified, and get
