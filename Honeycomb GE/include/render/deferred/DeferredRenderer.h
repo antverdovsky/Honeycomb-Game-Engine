@@ -83,11 +83,17 @@ namespace Honeycomb::Render::Deferred {
 		/// Renders the background (solid color or skybox, depending on the
 		/// settings of the Renderer) of the scene.
 		void renderBackground();
+		
+		/// Postprocesses the image using the FXAA antialiasing correction
+		/// algorithm.
+		void renderFXAA();
 
-		/// Post processes the final producted texture and returns the
+		/// Post processes the specified target texture and returns the
 		/// texture which contains the final "final" texture (post processed).
+		/// const GBufferTextureType &trg : The target texture to be post
+		///									processed.
 		/// return : The texture type containing the post processed image.
-		GBufferTextureType renderPostProcess();
+		GBufferTextureType renderPostProcess(const GBufferTextureType &trg);
 
 		/// Renders the specified texture to the screen.
 		/// const GBufferTextureType &tex : The texture which is to be rendered

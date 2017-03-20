@@ -36,6 +36,10 @@ namespace Honeycomb::Render {
 
 	}
 
+	void Renderer::setAntiAliasing(const AntiAliasing &aa) {
+		this->antiAliasing = aa;
+	}
+
 	void Renderer::setBackgroundMode(const BackgroundMode &m) {
 		this->backgroundMode = m;
 	}
@@ -95,6 +99,9 @@ namespace Honeycomb::Render {
 	}
 
 	Renderer::Renderer() {
+		this->initializeFXAAShader();
+		this->setAntiAliasing(AntiAliasing::FXAA);
+
 		this->initializeCubemapDependencies();
 		this->setBackgroundMode(BackgroundMode::SKYBOX);
 		this->setSkybox(Cubemap());
@@ -138,6 +145,19 @@ namespace Honeycomb::Render {
 		this->solidColorShader.addShader("..\\Honeycomb GE\\res\\shaders"
 			"\\cubemap\\solidColorSkyboxFS.glsl", ShaderType::FRAGMENT_SHADER);
 		this->solidColorShader.finalizeShaderProgram();
+	}
+
+	void Renderer::initializeFXAAShader() {
+		this->fxaaShader.initialize();
+		this->fxaaShader.addShader("..\\Honeycomb GE\\res\\shaders\\render\\"
+			"antialiasing\\fxaa\\fxaaVS.glsl", ShaderType::VERTEX_SHADER);
+		this->fxaaShader.addShader("..\\Honeycomb GE\\res\\shaders\\render\\"
+			"antialiasing\\fxaa\\fxaaFS.glsl", ShaderType::FRAGMENT_SHADER);
+		this->fxaaShader.finalizeShaderProgram();
+
+		this->fxaaShader.setUniform_f("spanMax", 8.0F);
+		this->fxaaShader.setUniform_f("reduceMin", 1.0F / 128.0F);
+		this->fxaaShader.setUniform_f("reduceMul", 1.0F / 8.0F);
 	}
 
 	void Renderer::setBoolSettingGL(const int &cap, const bool &val) {

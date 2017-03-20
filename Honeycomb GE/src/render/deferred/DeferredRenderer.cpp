@@ -214,11 +214,29 @@ namespace Honeycomb::Render::Deferred {
 		glEnable(GL_CULL_FACE);
 	}
 
-	GBufferTextureType DeferredRenderer::renderPostProcess() {
+	void DeferredRenderer::renderFXAA() {
+		// The preprocessed image resides in the GBuffer we marked as final.
+		// The postprocess image is to reside in the FINAL_2 GBuffer.
+		GBufferTextureType readBuffer  = (GBufferTextureType)(this->final);
+		GBufferTextureType writeBuffer = GBufferTextureType::FINAL_2;
+
+		// Bind the buffer to which we will write the FXAA corrected image.
+		// Bind the preprocessed image to the FXAA Shader, and write the camera
+		// information to the Shader.
+		glDrawBuffer(GL_COLOR_ATTACHMENT0 + writeBuffer);
+		this->gBuffer.bindTexture(readBuffer, this->fxaaShader, 
+			"gBufferFinal");
+		CameraController::getActiveCamera()->toShader(this->fxaaShader, 
+			"camera");
+		quad.draw(this->fxaaShader);
+	}
+
+	GBufferTextureType DeferredRenderer::renderPostProcess(
+			const GBufferTextureType &trg) {
 		// Since we are going to read from one buffer and write to another,
 		// establish now which buffer will be read from and which one we will
 		// write to.
-		GBufferTextureType readBuffer = (GBufferTextureType)(this->final);
+		GBufferTextureType readBuffer  = trg;
 		GBufferTextureType writeBuffer = GBufferTextureType::FINAL_2;
 
 		for (ShaderProgram &s :this->getPostShaders()) {
@@ -249,6 +267,8 @@ namespace Honeycomb::Render::Deferred {
 	}
 
 	void DeferredRenderer::render(Honeycomb::Scene::GameScene &scene) {
+		GBufferTextureType target; // Target to which we will render scene
+
 		CameraController::getActiveCamera()->toShader(this->geometryShader,
 			"camera");
 		
@@ -261,14 +281,27 @@ namespace Honeycomb::Render::Deferred {
 		
 		this->renderBackground(); // Render background cubebox
 		
+		switch (this->antiAliasing) {
+		// If FXAA is to be used, set the final target texture to FINAL_2 since
+		// the write buffer in FXAA rendering is FINAL_2.
+		case AntiAliasing::FXAA:
+			this->renderFXAA(); // FXAA correct the image
+			target = GBufferTextureType::FINAL_2;
+			break;
+		// If no antialiasing is used, the final target texture remains FINAL_1
+		case AntiAliasing::NONE:
+			target = GBufferTextureType::FINAL_1;
+			break;
+		}
+
 		// Post process the scene if necessary and store the texture type
 		// containing the final image. If the user does not want to post
-		// process the image, the final image must be in FINAL_1, so set that
-		// as the image to be rendered.
-		GBufferTextureType final = (GBufferTextureType)((this->doPostProcess) ?
-			this->renderPostProcess() : this->final);
+		// process the image, the final image must be in the target which we
+		// calulcated above when checking if we're using AntiAliasing.
+		target = (GBufferTextureType)
+			((this->doPostProcess) ? this->renderPostProcess(target) : target);
 
-		this->renderTexture(final); // Render the final image
+		this->renderTexture(target); // Render the final image
 	}
 
 	void DeferredRenderer::setFinalTexture(const FinalTexture &fin) {

@@ -14,6 +14,13 @@ namespace Honeycomb::Render {
 	class Renderer {
 		friend class Honeycomb::Component::Render::MeshRenderer;
 	public:
+		/// Represents the different types of Antialiasing supported by the
+		/// engine.
+		enum AntiAliasing {
+			FXAA				= 0,
+			NONE				= 1
+		};
+
 		/// Represents the modes used for the background of the scene
 		enum BackgroundMode {
 			SOLID_COLOR			= 0,
@@ -70,6 +77,11 @@ namespace Honeycomb::Render {
 		/// GameScene &scene : The game scene to be rendered.
 		virtual void render(Honeycomb::Scene::GameScene &scene);
 
+		/// Sets the Anti-Aliasing to the specified algorithm, or none.
+		/// const AntiAliasing &aa : The Anti-Aliasing to be used when 
+		///							 rendering the scene, or none.
+		void setAntiAliasing(const AntiAliasing &aa);
+
 		/// Sets the background mode which is to be used for rendering the
 		/// background of the scene.
 		/// const BackgroundMode &m : The mode which is to be used.
@@ -124,13 +136,15 @@ namespace Honeycomb::Render {
 	protected:
 		static Renderer *renderer; // Singleton Instance
 
+		// Antialiasing Variables
+		AntiAliasing antiAliasing;
+		Honeycomb::Shader::ShaderProgram fxaaShader;
+
 		// Properties for a Background Color & Skybox
 		BackgroundMode backgroundMode;
 		Honeycomb::Geometry::Mesh cubemapMesh;
-
 		Honeycomb::Math::Vector4f solidColor;
 		Honeycomb::Shader::ShaderProgram solidColorShader;
-
 		Honeycomb::Graphics::Cubemap skybox;
 		Honeycomb::Shader::ShaderProgram skyboxShader;
 		
@@ -160,6 +174,10 @@ namespace Honeycomb::Render {
 
 		/// Initializes the dependencies of the Cubemap (Mesh and Shaders).
 		void initializeCubemapDependencies();
+
+		/// Initializes the Shader used by the Fast Approximate Anti Aliasing
+		/// (FXAA).
+		void initializeFXAAShader();
 
 		/// Calls the OpenGL "glEnable" function for the specified cap if val 
 		/// is true. Otherwise, calls the OpenGL "glDisable" function
