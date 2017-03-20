@@ -62,7 +62,7 @@ vec4 calculateSpecularReflection(BaseLight bL, Camera cam, vec3 wP,
 	vec3 dirHalf = normalize(dirLight + dirView); // Get the halfway direction
     
     // Calculate the specular reflection factor.
-	float spec = pow(max(dot(-dirHalf, norm), 0.0F), shine);
+	float spec = pow(max(dot(dirHalf, norm), 0.0F), shine);
 
     // Calculate the specular light but do NOT apply the intensity to the W
     // component, so that the surface does not become transparent if the

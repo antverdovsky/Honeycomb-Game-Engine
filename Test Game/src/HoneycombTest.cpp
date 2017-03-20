@@ -83,6 +83,9 @@ namespace HoneycombTest {
 		reflectiveMaterial->glFloats.setValue("refIndexFrom", 1.0F);
 		reflectiveMaterial->glFloats.setValue("refIndexTo", 1.52F);
 		reflectiveMaterial->glFloats.setValue("reflectionStrength", 1.0F);
+		reflectiveMaterial->glVector3fs.setValue("specularColor", 
+			Vector3f(0.0F, 0.0F, 1.0F));
+		reflectiveMaterial->glFloats.setValue("shininess", 32.0F);
 		this->suzanne->getComponent<MeshRenderer>()->setMaterial(
 			*reflectiveMaterial);
 		this->sphere->getComponent<MeshRenderer>()->setMaterial(
@@ -129,7 +132,7 @@ namespace HoneycombTest {
 		this->sphere->getComponent<Transform>()->setScale(
 			Vector3f(PI, PI, PI));
 		this->sphere->getComponent<Transform>()->setTranslation(
-			Vector3f(3.0F, PI, -7.5F));
+			Vector3f(3.0F, 0.0F, -7.5F));
 		this->car->getComponent<Transform>()->setTranslation(
 			Vector3f(-3.0F, 1.36F, 10.0F));
 		this->car->getComponent<Transform>()->setScale(
@@ -143,14 +146,14 @@ namespace HoneycombTest {
 		this->car->addChild(*carHeadlightR);
 		carHeadlightL->getComponent<SpotLight>()->setAttenuation(
 			Attenuation(1.0F, 0.0F, 0.05F));
-		carHeadlightL->getComponent<SpotLight>()->getRange() = 20.0F;
+		carHeadlightL->getComponent<SpotLight>()->getRange() = 30.0F;
 		carHeadlightL->getComponent<SpotLight>()->getAngle() = PI / 2.0F;
 		carHeadlightL->getComponent<SpotLight>()->setIntensity(4.0F);
 		carHeadlightL->getComponent<Transform>()->setTranslation(
 			Vector3f(-4.391F, 0.309F, 5.821F));
 		carHeadlightR->getComponent<SpotLight>()->setAttenuation(
 			Attenuation(1.0F, 0.0F, 0.05F));
-		carHeadlightR->getComponent<SpotLight>()->getRange() = 20.0F;
+		carHeadlightR->getComponent<SpotLight>()->getRange() = 30.0F;
 		carHeadlightR->getComponent<SpotLight>()->getAngle() = PI / 2.0F;
 		carHeadlightR->getComponent<SpotLight>()->setIntensity(4.0F);
 		carHeadlightR->getComponent<Transform>()->setTranslation(

@@ -144,12 +144,30 @@ namespace Honeycomb::Render::Deferred {
 		// everything was correctly initialized.
 		GLenum colorBuffers[GBufferTextureType::DEPTH];
 
-		// Generate the textures for everything but the Depth Buffer
-		for (int i = 0; i < GBufferTextureType::DEPTH; i++) {
-			// Create an empty texture
+		// Generate RGB textures for everything except the Specular Buffer
+		int i = 0;
+		for (; i < GBufferTextureType::SPECULAR; i++) {
+			// Create an empty texture. Use RGB16F, to allow us to store
+			// values in the texture outside of the standard [0, 1] clamp.
 			this->bufferTextures[i].initialize();
 			this->bufferTextures[i].bind();
-			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGB32F, 
+			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGB16F, 
+				GL_RGB, this->textureWidth, this->textureHeight);
+
+			// Bind the texture to the Frame Buffer Object
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i,
+				GL_TEXTURE_2D, this->bufferTextures[i].getTextureID(), 0);
+
+			colorBuffers[i] = GL_COLOR_ATTACHMENT0 + i; // Add to Color Buffers
+		}
+
+		// Generate RGBA texture for the Specular Buffer
+		for (; i < GBufferTextureType::DEPTH; i++) {
+			// Create an empty texture. Use RGBA16F, to allow us to store
+			// values in the texture outside of the standard [0, 1] clamp.
+			this->bufferTextures[i].initialize();
+			this->bufferTextures[i].bind();
+			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGBA16F,
 				GL_RGB, this->textureWidth, this->textureHeight);
 
 			// Bind the texture to the Frame Buffer Object

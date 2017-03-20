@@ -49,5 +49,5 @@ void main() {
     out_fs_diffuse = calculateDiffuse();
     out_fs_normal = out_vs_norm;
     out_fs_texCoord = vec3(out_vs_texCoord, 0.0F);
-	out_fs_specular = material.specularColor;
+	out_fs_specular = vec4(material.specularColor, material.shininess);
 }
