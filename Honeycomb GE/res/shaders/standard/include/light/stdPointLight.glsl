@@ -53,5 +53,5 @@ vec4 calculatePointLight(PointLight pL, Camera cam, vec3 wP, vec3 norm,
     specular = vec4(specular.xyz * intensity, specular.w);
     
     // Return the blend of the Diffuse and Specular lighting
-    return vec4(vec3(diffuse.xyz + specular.xyz), diffuse.w + specular.w);
+    return diffuse + specular;
 }

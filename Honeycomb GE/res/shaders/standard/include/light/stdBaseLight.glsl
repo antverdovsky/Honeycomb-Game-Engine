@@ -61,8 +61,19 @@ vec4 calculateSpecularReflection(BaseLight bL, Camera cam, vec3 wP,
     vec3 dirView = normalize(cP - wP); // Direction from Cam to Frag
 	vec3 dirHalf = normalize(dirLight + dirView); // Get the halfway direction
     
-    // Calculate the specular reflection factor.
-	float spec = pow(max(dot(dirHalf, norm), 0.0F), shine);
+	// Calculate the diffuse factor (same as in the above calculateDiffuse
+	// Light function) and fetch the sign of said factor. The sign will either
+	// be <= 0 if we should discard the specular factor for this fragment 
+	// or == 1 if we should calculate the specular factor for this fragment.
+	// Set the specular-diffuse factor equal to zero if we will discard this
+	// specular value, or to one if we will keep it.
+	float diff = dot(-dirLight, norm);
+	float diffSign = sign(diff);
+	float specDiff = max(diffSign, 0.0F);
+
+    // Calculate the specular reflection factor and multiply by the specular
+	// diffuse factor (one for keep, zero for discard).
+	float spec = pow(max(dot(dirHalf, norm), 0.0F), shine) * specDiff;
 
     // Calculate the specular light but do NOT apply the intensity to the W
     // component, so that the surface does not become transparent if the

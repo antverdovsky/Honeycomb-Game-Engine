@@ -66,17 +66,6 @@ namespace HoneycombTest {
 		this->sphere = Builder::getBuilder()->newSphere();
 		this->suzanne = Builder::getBuilder()->newSuzanne();
 
-		// Give the Plane a special material with a colorful texture
-		Material *colorMaterial = new Material(
-			this->plane->getComponent<MeshRenderer>()->getMaterial());
-		Texture2D *colorTexture = new Texture2D();
-		colorTexture->initialize();
-		colorTexture->
-			setImageData("..\\Test Game\\res\\textures\\colors.bmp");
-		colorMaterial->glSampler2Ds.setValue("albedoTexture", *colorTexture);
-		this->plane->getComponent<MeshRenderer>()->
-			setMaterial(*colorMaterial);
-
 		// Give the sphere and suzanne a special reflective material (skybox)
 		Material *reflectiveMaterial = new Material(
 			this->sphere->getComponent<MeshRenderer>()->getMaterial());
@@ -107,13 +96,28 @@ namespace HoneycombTest {
 			3.5F, 3.5F, 3.5F, Space::GLOBAL);
 		this->suzanne->addComponent(*suzInputTranfs);
 
+		// Give Suzanne a Spot Light and a Point Light
+		GameObject *suzSpLight = Builder::getBuilder()->newSpotLight();
+		GameObject *suzPtLight = Builder::getBuilder()->newPointLight();
+		suzSpLight->getComponent<SpotLight>()->setColor(
+			Vector4f(0.0F, 0.0F, 1.0F, 1.0F));
+		suzSpLight->getComponent<SpotLight>()->setIntensity(20.0F);
+		suzSpLight->getComponent<SpotLight>()->getRange() = 30.0F;
+		suzSpLight->getComponent<SpotLight>()->getAngle() = PI / 3.0F;
+		suzPtLight->getComponent<PointLight>()->setColor(
+			Vector4f(1.0F, 0.0F, 0.0F, 1.0F));
+		suzPtLight->getComponent<PointLight>()->setIntensity(10.0F);
+		suzPtLight->getComponent<PointLight>()->setRange(20.0F);
+		suzanne->addChild(*suzSpLight);
+		suzanne->addChild(*suzPtLight);
+
 		// Construct a default Ambient and Directional Light; decrease the
 		// intensity of the lights so they don't overwhelm the scene
 		this->ambient = Builder::getBuilder()->newAmbientLight();
 		this->directional = Builder::getBuilder()->newDirectionalLight();
-		this->ambient->getComponent<AmbientLight>()->setIntensity(0.22F);
+		this->ambient->getComponent<AmbientLight>()->setIntensity(0.05F);
 		this->directional->getComponent<DirectionalLight>()->
-			setIntensity(0.33F);
+			setIntensity(0.10F);
 
 		// Construct a default Camera and give it a default Input Transformable
 		// component and a moderately strong Directional Light.
