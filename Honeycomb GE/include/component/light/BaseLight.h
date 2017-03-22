@@ -3,7 +3,7 @@
 #define BASE_LIGHT_H
 
 #include "..\GameComponent.h"
-#include "..\..\math\Vector4f.h"
+#include "..\..\math\Vector3f.h"
 #include "..\..\shader\ShaderProgram.h"
 #include "..\..\shader\GenericStruct.h"
 
@@ -20,7 +20,7 @@ namespace Honeycomb::Component::Light {
 			public Honeycomb::Component::GameComponent {
 	public:
 		// Uniforms containing the color and intensity of the light
-		static const std::string COLOR_VEC4;
+		static const std::string COLOR_VEC3;
 		static const std::string INTENSITY_F;
 
 		/// Initializes a new base light with the specified Shader Source and
@@ -62,11 +62,11 @@ namespace Honeycomb::Component::Light {
 
 		/// Returns a reference to the color of this Base Light.
 		/// return : The color reference.
-		Honeycomb::Math::Vector4f& getColor();
+		Honeycomb::Math::Vector3f& getColor();
 
 		/// Returns a constant reference to the color of this Base Light.
 		/// return : The constant color reference.
-		const Honeycomb::Math::Vector4f& getColor() const;
+		const Honeycomb::Math::Vector3f& getColor() const;
 
 		/// Returns a reference to the intensity of this Base Light.
 		/// return : The intensity reference.
@@ -82,7 +82,7 @@ namespace Honeycomb::Component::Light {
 
 		/// Sets the color of this Base Light.
 		/// const Vector4f &col : The new color of this BaseLight.
-		void setColor(const Honeycomb::Math::Vector4f &col);
+		void setColor(const Honeycomb::Math::Vector3f &col);
 
 		/// Sets the intensity of this Base Light.
 		/// const float &inten : The new intensity of this Base Light.

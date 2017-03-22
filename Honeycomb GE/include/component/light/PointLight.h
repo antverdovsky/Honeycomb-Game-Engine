@@ -10,13 +10,13 @@ namespace Honeycomb::Component::Light {
 	class PointLight : public BaseLight {
 	public:
 		// Variables defining the color and intensity of the light.
-		const static std::string COLOR_VEC4;
+		const static std::string COLOR_VEC3;
 		const static std::string INTENSITY_F;
 		const static std::string POSITION_VEC3;
 		const static std::string RANGE_F;
 
-		/// Initializes a new Point Light with a white { 1.0F, 1.0F, 1.0F, 
-		/// 1.0F } color, 1.0F intensity, default attenuation, and 10.0F range.
+		/// Initializes a new Point Light with a white { 1.0F, 1.0F, 1.0F }
+		/// color, 1.0F intensity, default attenuation, and 10.0F range.
 		/// The position will be set to the default Vector3 until the Point 
 		/// Light is started and the Transform translation takes over.
 		PointLight();
@@ -26,10 +26,10 @@ namespace Honeycomb::Component::Light {
 		/// to the default Vector3 until the Point Light is started and the 
 		/// Transform translation takes over.
 		/// const float &inten : The intensity of this light.
-		/// const Vector4f &col : The color of this light.
+		/// const Vector3f &col : The color of this light.
 		/// const Attenuation &atten : The attenuation of this light.
 		/// const float &ran : The range of this light.
-		PointLight(const float &inten, const Honeycomb::Math::Vector4f &col, 
+		PointLight(const float &inten, const Honeycomb::Math::Vector3f &col, 
 				const Honeycomb::Component::Light::Attenuation &atten, const 
 				float &ran);
 

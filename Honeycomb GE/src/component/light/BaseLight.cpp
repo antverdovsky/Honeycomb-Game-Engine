@@ -7,13 +7,13 @@
 #include "..\..\..\include\scene\GameScene.h"
 
 using Honeycomb::Debug::Logger;
-using Honeycomb::Math::Vector4f;
+using Honeycomb::Math::Vector3f;
 using Honeycomb::Shader::GenericStruct;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Shader::ShaderSource;
 
 namespace Honeycomb::Component::Light {
-	const std::string BaseLight::COLOR_VEC4 = "base.color";
+	const std::string BaseLight::COLOR_VEC3 = "base.color";
 	const std::string BaseLight::INTENSITY_F = "base.intensity";
 
 	BaseLight::BaseLight(const Honeycomb::Shader::ShaderSource &src, const
@@ -27,12 +27,12 @@ namespace Honeycomb::Component::Light {
 			GenericStruct::structName, this->type);
 	}
 
-	Vector4f& BaseLight::getColor() {
-		return this->glVector4fs.getValue(BaseLight::COLOR_VEC4);
+	Vector3f& BaseLight::getColor() {
+		return this->glVector3fs.getValue(BaseLight::COLOR_VEC3);
 	}
 
-	const Vector4f& BaseLight::getColor() const {
-		return this->glVector4fs.getValue(BaseLight::COLOR_VEC4);
+	const Vector3f& BaseLight::getColor() const {
+		return this->glVector3fs.getValue(BaseLight::COLOR_VEC3);
 	}
 
 	float& BaseLight::getIntensity() {
@@ -47,7 +47,7 @@ namespace Honeycomb::Component::Light {
 		return this->type;
 	}
 
-	void BaseLight::setColor(const Honeycomb::Math::Vector4f &col) {
+	void BaseLight::setColor(const Honeycomb::Math::Vector3f &col) {
 		this->getColor() = col;
 	}
 
@@ -95,8 +95,8 @@ namespace Honeycomb::Component::Light {
 			&atten, const float &minI) {
 		// Retrieve the RGBA color of the Light and get the maximum RGB 
 		// component of the color.
-		Vector4f rgba = bL.glVector4fs.getValue(PointLight::COLOR_VEC4);
-		float kM = fmaxf(rgba.getX(), fmaxf(rgba.getY(), rgba.getZ()));
+		Vector3f rgb = bL.glVector3fs.getValue(PointLight::COLOR_VEC3);
+		float kM = fmaxf(rgb.getX(), fmaxf(rgb.getY(), rgb.getZ()));
 
 		// Constant representing the inverse of the brightness at the radius of
 		// the sphere.

@@ -25,7 +25,8 @@ struct SpotLight {
 /// vec3 norm : The normalized normal of the surface.
 /// float shine : The shiness of the reflection (for specular reflection).
 /// vec3 specColor : The color of the reflection (for specular reflection).
-vec4 calculateSpotLight(SpotLight sL, Camera cam, vec3 wP, vec3 norm, 
+/// return : The spot light color.
+vec3 calculateSpotLight(SpotLight sL, Camera cam, vec3 wP, vec3 norm, 
         float shine, vec3 specColor) {
     // Calculate the displacement vector between the world position of the
     // fragment and the spot light position.
@@ -58,12 +59,10 @@ vec4 calculateSpotLight(SpotLight sL, Camera cam, vec3 wP, vec3 norm,
     
     // Calculate the Diffuse and Specular Light components of the Spot Light 
     // and scale by the attenuation to adjust the light with distance.
-    vec4 diffuse = calculateDiffuseLight(sL.base, direction, norm);
-    vec4 specular = calculateSpecularReflection(sL.base,  cam, wP, direction,
-        norm, shine, specColor);
-    diffuse = vec4(diffuse.xyz * intensity, diffuse.w);
-    specular = vec4(specular.xyz * intensity, specular.w);
+    vec3 diffuse = calculateDiffuseLight(sL.base, direction, norm);
+    vec3 specular = calculateSpecularReflection(sL.base,  cam, wP, direction, 
+		norm, shine, specColor);
 
     // Return the blend of the Diffuse and Specular lighting
-    return diffuse + specular;
+    return (diffuse + specular) * intensity;
 }

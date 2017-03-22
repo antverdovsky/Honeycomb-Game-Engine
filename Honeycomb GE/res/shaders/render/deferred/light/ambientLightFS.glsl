@@ -18,5 +18,5 @@ void main() {
 
 	vec3 dif = texture2D(gBufferDiffuse, screenCoord).xyz;
 
-	fragColor = calculateAmbientLight(ambientLight) * vec4(dif, 1.0F);
+	fragColor = vec4(calculateAmbientLight(ambientLight) * dif, 1.0F);
 }

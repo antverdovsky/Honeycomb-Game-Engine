@@ -9,12 +9,12 @@ namespace Honeycomb::Component::Light {
 	class DirectionalLight : public BaseLight {
 	public:
 		// Variables defining the color and intensity of the light.
-		const static std::string COLOR_VEC4;
+		const static std::string COLOR_VEC3;
 		const static std::string INTENSITY_F;
 		const static std::string DIRECTION_VEC3;
 
-		/// Creates a new directional light with a white { 1.0F, 1.0F, 1.0F, 
-		/// 1.0F } color, and an intensity of 1.0F. The direction will be set
+		/// Creates a new directional light with a white { 1.0F, 1.0F, 1.0F }
+		/// color, and an intensity of 1.0F. The direction will be set
 		/// to the default Vector3 until the Directional Light is started and
 		/// the Transform direction takes over.
 		DirectionalLight();
@@ -24,8 +24,8 @@ namespace Honeycomb::Component::Light {
 		/// Directional Light is started and the Transform direction takes 
 		/// over.
 		/// const float &inten : The intensity of this light.
-		/// const Vector4f &col : The color of this light.
-		DirectionalLight(const float &inten, const Honeycomb::Math::Vector4f 
+		/// const Vector3f &col : The color of this light.
+		DirectionalLight(const float &inten, const Honeycomb::Math::Vector3f 
 				&col);
 
 		/// Clones this Directional Light into a new, dynamically allocated,

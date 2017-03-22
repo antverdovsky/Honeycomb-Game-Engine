@@ -4,7 +4,7 @@
 /// The basic structure for all lights.
 /// 
 struct BaseLight {
-    vec4 color; // The color of the light
+    vec3 color;		 // The color of the light
     float intensity; // The intensity of the light
 };
 
@@ -12,8 +12,8 @@ struct BaseLight {
 /// The attenuation structure for non-uniform lights.
 ///
 struct Attenuation {
-	float constant; // The constant coefficient in the attenuation equation
-	float linear; // The linear coefficient in the attenuation equation
+	float constant;  // The constant coefficient in the attenuation equation
+	float linear;	 // The linear coefficient in the attenuation equation
 	float quadratic; // The quadratic coefficient in the attenuation equation
 };
 
@@ -32,15 +32,10 @@ float calculateAttenuation(Attenuation atten, float d) {
 /// vec3 dir : The direction with which the BaseLight shines upon the surface.
 /// vec3 norm : The normal of the surface on which the BaseLight shines upon.
 ///             This should be normalized, prior to being passed in.
-/// return : The vector which can be used to add or detract lighting from the
-///          fragment.
-vec4 calculateDiffuseLight(BaseLight bL, vec3 dir, vec3 norm) {
+/// return : The diffuse lighting color.
+vec3 calculateDiffuseLight(BaseLight bL, vec3 dir, vec3 norm) {
     float diff = max(dot(-dir, norm), 0.0F);
-    
-    // Calculate the diffuse light but do NOT apply the intensity to the W
-    // component, so that the surface does not become transparent if the
-    // intensity is less than 1.0F.
-    return vec4(vec3(diff * bL.intensity * bL.color.xyz), bL.color.w);
+    return clamp(diff * bL.intensity * bL.color, 0.0F, 1.0F);
 }
 
 /// Calculates the specular reflection for this fragment given the light for
@@ -53,8 +48,8 @@ vec4 calculateDiffuseLight(BaseLight bL, vec3 dir, vec3 norm) {
 /// vec3 norm : The normal to the surface.
 /// float shine : The shininess of the specular reflection.
 /// vec3 color : The color of the specular reflection.
-/// return : The specular reflection.
-vec4 calculateSpecularReflection(BaseLight bL, Camera cam, vec3 wP, 
+/// return : The specular reflection color.
+vec3 calculateSpecularReflection(BaseLight bL, Camera cam, vec3 wP, 
 		vec3 dirLight, vec3 norm, float shine, vec3 color) {
     vec3 cP = cam.translation; // Camera Position
         
@@ -75,8 +70,6 @@ vec4 calculateSpecularReflection(BaseLight bL, Camera cam, vec3 wP,
 	// diffuse factor (one for keep, zero for discard).
 	float spec = pow(max(dot(dirHalf, norm), 0.0F), shine) * specDiff;
 
-    // Calculate the specular light but do NOT apply the intensity to the W
-    // component, so that the surface does not become transparent if the
-    // intensity is less than 1.0F.
-    return vec4(vec3(spec * bL.intensity * bL.color.xyz * color), bL.color.w);
+    // Calculate the specular light
+	return clamp(spec * bL.intensity * bL.color * color, 0.0F, 1.0F);
 }

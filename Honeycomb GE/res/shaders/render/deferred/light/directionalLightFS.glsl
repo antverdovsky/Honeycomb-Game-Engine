@@ -25,6 +25,6 @@ void main() {
 	vec3 spec = texture2D(gBufferSpecular, screenCoord).xyz;
 	float shine = texture2D(gBufferSpecular, screenCoord).w;
 
-	fragColor = calculateDirectionalLight(directionalLight, camera, pos, norm, 
-        shine, spec) * vec4(dif, 1.0F);
+	fragColor = vec4(calculateDirectionalLight(directionalLight, camera, pos, 
+		norm, shine, spec) * dif, 1.0F);
 }
