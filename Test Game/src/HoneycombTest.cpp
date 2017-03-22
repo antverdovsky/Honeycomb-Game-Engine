@@ -66,6 +66,17 @@ namespace HoneycombTest {
 		this->sphere = Builder::getBuilder()->newSphere();
 		this->suzanne = Builder::getBuilder()->newSuzanne();
 
+		Material *colorMaterial = new Material(
+			this->plane->getComponent<MeshRenderer>()->getMaterial());
+		Texture2D *colorTexture = new Texture2D();
+		colorTexture->initialize();
+		colorTexture->
+			setImageData("..\\Test Game\\res\\textures\\colors.bmp");
+		colorMaterial->glSampler2Ds.setValue("albedoTexture", *colorTexture);
+		colorMaterial->glFloats.setValue("shininess", 128.0F);
+		this->plane->getComponent<MeshRenderer>()->
+			setMaterial(*colorMaterial);
+
 		// Give the sphere and suzanne a special reflective material (skybox)
 		Material *reflectiveMaterial = new Material(
 			this->sphere->getComponent<MeshRenderer>()->getMaterial());
@@ -74,7 +85,7 @@ namespace HoneycombTest {
 		reflectiveMaterial->glFloats.setValue("reflectionStrength", 1.0F);
 		reflectiveMaterial->glVector3fs.setValue("specularColor", 
 			Vector3f(1.0F, 1.0F, 1.0F));
-		reflectiveMaterial->glFloats.setValue("shininess", 128.0F);
+		reflectiveMaterial->glFloats.setValue("shininess", 64.0F);
 		this->suzanne->getComponent<MeshRenderer>()->setMaterial(
 			*reflectiveMaterial);
 		this->sphere->getComponent<MeshRenderer>()->setMaterial(
@@ -101,12 +112,12 @@ namespace HoneycombTest {
 		GameObject *suzPtLight = Builder::getBuilder()->newPointLight();
 		suzSpLight->getComponent<SpotLight>()->setColor(
 			Vector3f(0.0F, 0.0F, 1.0F));
-		suzSpLight->getComponent<SpotLight>()->setIntensity(10.0F);
+		suzSpLight->getComponent<SpotLight>()->setIntensity(5.0F);
 		suzSpLight->getComponent<SpotLight>()->getRange() = 30.0F;
 		suzSpLight->getComponent<SpotLight>()->getAngle() = PI / 2.0F;
-		//suzPtLight->getComponent<PointLight>()->setColor(
-		//	Vector3f(1.0F, 0.0F, 0.0F));
-		suzPtLight->getComponent<PointLight>()->setIntensity(5.0F);
+		suzPtLight->getComponent<PointLight>()->setColor(
+			Vector3f(1.0F, 0.0F, 0.0F));
+		suzPtLight->getComponent<PointLight>()->setIntensity(2.5F);
 		suzPtLight->getComponent<PointLight>()->setRange(10.0F);
 		suzanne->addChild(*suzSpLight);
 		suzanne->addChild(*suzPtLight);
@@ -117,16 +128,12 @@ namespace HoneycombTest {
 		this->directional = Builder::getBuilder()->newDirectionalLight();
 		this->ambient->getComponent<AmbientLight>()->setIntensity(0.10F);
 		this->directional->getComponent<DirectionalLight>()->
-			setIntensity(1.10F);
+			setIntensity(0.10F);
 
 		// Construct a default Camera and give it a default Input Transformable
-		// component and a moderately strong Directional Light.
 		this->camera = Builder::getBuilder()->newCamera();
 		InputTransformable *camTransf = new InputTransformable();
-		DirectionalLight *dirLight = new DirectionalLight();
-		dirLight->setIntensity(0.05F);
 		this->camera->addComponent(*camTransf);
-		this->camera->addComponent(*dirLight);
 		
 		// Scale and position the Game Objects
 		this->plane->getComponent<Transform>()->setScale(
@@ -143,6 +150,8 @@ namespace HoneycombTest {
 			Vector3f(2.0F, 2.0F, 2.0F));
 		this->suzanne->getComponent<Transform>()->setTranslation(
 			Vector3f(3.0F, 2.5F, 3.0F));
+		this->directional->getComponent<Transform>()->rotate(
+			Vector3f::getGlobalRight(), -PI / 4);
 
 		// Construct a left and right spotlight for the front of the car and
 		// add to the car (similar to headlights).

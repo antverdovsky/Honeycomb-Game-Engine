@@ -19,15 +19,17 @@ struct DirectionalLight {
 ///             prior to being passed in.
 /// float shine : The shininess of the reflection (for specular reflection).
 /// vec3 specColor : The color of the reflection (for specular reflection).
+/// vec3 dif : The diffuse material color of this fragment before applying the
+///			   lighting.
 /// return : The directional light color.
 vec3 calculateDirectionalLight(DirectionalLight dL, Camera cam, vec3 wP, 
-        vec3 norm, float shine, vec3 specColor) {
+        vec3 norm, float shine, vec3 specColor, vec3 dif) {
     // Calculate the Diffuse and Specular Light components of the Directional
     // Light.
     vec3 diffuse = calculateDiffuseLight(dL.base, dL.direction, norm);
-    vec3 specular = calculateSpecularReflection(dL.base, cam, wP, dL.direction,
-        norm, shine, specColor);
+    vec3 specular = calculateSpecularReflection(dL.base, cam, wP, 
+		dL.direction, norm, shine, specColor);
     
     // Return the blend of the Diffuse and Specular lighting
-    return diffuse + specular;
+    return (dif * diffuse) + specular;
 }

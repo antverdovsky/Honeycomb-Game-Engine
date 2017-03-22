@@ -26,5 +26,5 @@ void main() {
 	float shine = texture2D(gBufferSpecular, screenCoord).w;
 
 	fragColor = vec4(calculateDirectionalLight(directionalLight, camera, pos, 
-		norm, shine, spec) * dif, 1.0F);
+		norm, shine, spec, dif), 1.0F);
 }
