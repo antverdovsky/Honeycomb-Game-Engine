@@ -159,7 +159,7 @@ namespace Honeycomb::Shader {
 		// detect any string containing a word defining the type of variable
 		// (1st group), followed by at least one space, followed by another
 		// word defining the name of the variable (2nd group).
-		std::regex varRegex = std::regex("(\\w+)\\s+(\\w+);");
+		std::regex varRegex = std::regex("(\\w+)\\s+(\\w+)");
 
 		std::sregex_iterator structDecl(this->source.cbegin(), 
 			this->source.cend(), structRegex); // Iterator through all structs
@@ -180,8 +180,10 @@ namespace Honeycomb::Shader {
 			auto structBegin = this->source.cbegin() + structDecl->position();
 			auto structEnd = structBegin + structDecl->length();
 
-			// Iterator through all of the variables of this struct
+			// Iterator through all of the variables of this struct. Increment
+			// said iterator because the first "variable" is this struct.
 			std::sregex_iterator varDecl(structBegin, structEnd, varRegex);
+			++varDecl;
 
 			for (; varDecl != end; varDecl++) {
 				// Get the type of the variable (first group) and the name of
@@ -221,8 +223,10 @@ namespace Honeycomb::Shader {
 		// will identify any string containing the word uniform followed by at
 		// least one space, followed by a word (1st group: uniform type),
 		// followed by at least one space, followed by a word (2nd group:
-		// uniform name), which is followed by a semicolon.
-		std::regex regexField = std::regex("uniform\\s+(\\w+)\\s+(\\w+);");
+		// uniform name), which is NOT followed by an open bracket (that
+		// indicates an array).
+		std::regex regexField = std::regex(
+			"uniform\\s+(\\w+)\\s+(\\w+)\\s*(?!.*\\[)");
 
 		std::sregex_iterator uniformFields(this->source.cbegin(), 
 			this->source.cend(), regexField); // Iterator through all uniforms
@@ -259,7 +263,7 @@ namespace Honeycomb::Shader {
 		// (2nd group: uniform name), followed by a number, surrounded by
 		// brackets (3rd group: array size), which is followed by a semicolon.
 		std::regex regexArray = std::regex(
-			"uniform\\s+(\\w+)\\s+(\\w+)\\s*\\[(\\d+)\\];");
+			"uniform\\s+(\\w+)\\s+(\\w+)\\s*(?=\\[(\\d+)\\])");
 
 		std::sregex_iterator uniformArrays(this->source.cbegin(),
 			this->source.cend(), regexArray); // Iterator through all uniforms
