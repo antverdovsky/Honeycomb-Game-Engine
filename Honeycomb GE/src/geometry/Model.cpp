@@ -164,6 +164,18 @@ namespace Honeycomb::Geometry {
 			diffuseTexture->setImageData();
 		}
 
+		// Retrieve the Specular Texture from ASSIMP
+		Texture2D *specularTexture = new Texture2D();
+		specularTexture->initialize();
+		if (aMat->GetTextureCount(aiTextureType_SPECULAR)) {
+			aiString dir;
+			aMat->GetTexture(aiTextureType_SPECULAR, 0, &dir);
+
+			specularTexture->setImageData(dir.C_Str());
+		} else {
+			specularTexture->setImageData();
+		}
+
 		// Create the material.
 		Material *mat = new Material();
 		mat->glVector3fs.setValue("diffuseColor",
@@ -173,14 +185,21 @@ namespace Honeycomb::Geometry {
 		mat->glFloats.setValue("shininess", matShininess);
 		mat->glFloats.setValue("refractiveIndex", matRefIndex);
 		mat->glFloats.setValue("reflectionStrength", matRefStrength);
-		mat->glSampler2Ds.setValue("diffuseTexture", *diffuseTexture);
-		mat->glVector2fs.setValue("diffuseTextureTiling", 
+		mat->glSampler2Ds.setValue("diffuseTexture.sampler", *diffuseTexture);
+		mat->glVector2fs.setValue("diffuseTexture.tiling", 
 			Vector2f(1.0F, 1.0F));
-		mat->glVector2fs.setValue("diffuseTextureOffset", 
+		mat->glVector2fs.setValue("diffuseTexture.offset", 
+			Vector2f(0.0F, 0.0F));
+		mat->glSampler2Ds.setValue("specularTexture.sampler", 
+			*specularTexture);
+		mat->glVector2fs.setValue("specularTexture.tiling",
+			Vector2f(1.0F, 1.0F));
+		mat->glVector2fs.setValue("specularTexture.offset",
 			Vector2f(0.0F, 0.0F));
 
 		// Save the texture and material
 		this->textures.push_back(diffuseTexture);
+		this->textures.push_back(specularTexture);
 		this->materials.push_back(mat);
 
 		return mat;

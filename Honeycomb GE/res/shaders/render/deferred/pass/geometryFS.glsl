@@ -36,13 +36,27 @@ vec3 calculateDiffuse() {
 	vec3 reflection = refStr + texture(skybox, refVec).xyz;
 
 	// Fetch material texture & diffuse
-	vec2 texCoord = out_vs_texCoord * material.diffuseTextureTiling +
-		material.diffuseTextureOffset;
-	vec3 texture = texture2D(material.diffuseTexture, texCoord).xyz;
+	vec2 texCoord = out_vs_texCoord * material.diffuseTexture.tiling +
+		material.diffuseTexture.offset;
+	vec3 texture = texture2D(material.diffuseTexture.sampler, texCoord).xyz;
 	vec3 diffuse = material.diffuseColor.xyz;
 
 	// Return Texture + Diffuse + Reflection
 	return texture * diffuse * reflection;
+}
+
+/// Calculates the Specular Color and shininess of this object's fragment.
+/// return : The specular color and shininess.
+vec4 calculateSpecular() {
+	// Fetch Specular properties from the Materials
+	vec3 color = material.specularColor;
+	vec2 texCoord = out_vs_texCoord * material.specularTexture.tiling +
+		material.specularTexture.offset;
+	vec3 tex = texture2D(material.specularTexture.sampler, texCoord).xyz;
+	float shine = material.shininess;
+
+	// Return Color + Texture, Shininess
+	return vec4(tex * color, shine);
 }
 
 void main() {
@@ -50,5 +64,5 @@ void main() {
     out_fs_diffuse = calculateDiffuse();
     out_fs_normal = out_vs_norm;
     out_fs_texCoord = vec3(out_vs_texCoord, 0.0F);
-	out_fs_specular = vec4(material.specularColor, material.shininess);
+	out_fs_specular = calculateSpecular();
 }

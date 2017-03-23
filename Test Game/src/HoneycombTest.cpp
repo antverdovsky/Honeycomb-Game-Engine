@@ -65,6 +65,8 @@ namespace HoneycombTest {
 		this->plane = Builder::getBuilder()->newPlane();
 		this->sphere = Builder::getBuilder()->newSphere();
 		this->suzanne = Builder::getBuilder()->newSuzanne();
+		this->earth = Builder::getBuilder()->newModel(
+			"..\\Test Game\\res\\models\\planet-earth\\earth.fbx");
 
 		// Give the plane a textured material
 		Material *colorMaterial = new Material(
@@ -73,9 +75,10 @@ namespace HoneycombTest {
 		colorTexture->initialize();
 		colorTexture->
 			setImageData("..\\Test Game\\res\\textures\\colors.bmp");
-		colorMaterial->glSampler2Ds.setValue("diffuseTexture", *colorTexture);
+		colorMaterial->glSampler2Ds.setValue("diffuseTexture.sampler", 
+			*colorTexture);
 		colorMaterial->glFloats.setValue("shininess", 128.0F);
-		colorMaterial->glVector2fs.setValue("diffuseTextureTiling",
+		colorMaterial->glVector2fs.setValue("diffuseTexture.tiling",
 			Vector2f(10.0F, 10.0F));
 		this->plane->getComponent<MeshRenderer>()->
 			setMaterial(*colorMaterial);
@@ -151,9 +154,13 @@ namespace HoneycombTest {
 		this->car->getComponent<Transform>()->setScale(
 			Vector3f(2.0F, 2.0F, 2.0F));
 		this->suzanne->getComponent<Transform>()->setTranslation(
-			Vector3f(3.0F, 2.5F, 3.0F));
+			Vector3f(2.0F, 2.5F, 3.0F));
 		this->directional->getComponent<Transform>()->rotate(
 			Vector3f::getGlobalRight(), -PI / 4);
+		this->earth->getComponent<Transform>()->setScale(
+			Vector3f(5.0F, 5.0F, 5.0F));
+		this->earth->getComponent<Transform>()->setTranslation(
+			Vector3f(7.5F, 5.0F, 5.0F));
 
 		// Construct a left and right spotlight for the front of the car and
 		// add to the car (similar to headlights).
@@ -181,6 +188,7 @@ namespace HoneycombTest {
 		this->gameScene.addChild(*this->cube);
 		this->gameScene.addChild(*this->plane);
 		this->gameScene.addChild(*this->sphere);
+		this->gameScene.addChild(*this->earth);
 		this->gameScene.addChild(*this->suzanne);
 		this->gameScene.addChild(*this->ambient);
 		this->gameScene.addChild(*this->directional);

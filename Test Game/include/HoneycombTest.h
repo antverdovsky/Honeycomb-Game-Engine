@@ -31,6 +31,7 @@ namespace HoneycombTest {
 		Honeycomb::Object::GameObject *sphere;		// The sphere Game Object
 		Honeycomb::Object::GameObject *car;			// The car Game Object
 		Honeycomb::Object::GameObject *suzanne;		// The suzanne Game Object
+		Honeycomb::Object::GameObject *earth;		// The Earth Game Object
 
 		Honeycomb::Object::GameObject *camera;		// The scene Camera
 		Honeycomb::Object::GameObject *ambient;		// The ambient lighting
