@@ -75,6 +75,13 @@ namespace Honeycomb::Shader {
 		/// Sets the specified uniform variable to the specified value. If the
 		/// uniform does not exist, no changes will be made.
 		/// const string &uni : The name of the uniform variable to be set.
+		/// const Vector2f &val : The new Vector2f value of the uniform.
+		void setUniform_vec2(const std::string &uni,
+				const Honeycomb::Math::Vector2f &val);
+
+		/// Sets the specified uniform variable to the specified value. If the
+		/// uniform does not exist, no changes will be made.
+		/// const string &uni : The name of the uniform variable to be set.
 		/// const Vector3f &val : The new Vector3f value of the uniform.
 		void setUniform_vec3(const std::string &uni, 
 				const Honeycomb::Math::Vector3f &val);

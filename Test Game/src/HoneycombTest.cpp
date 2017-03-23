@@ -66,22 +66,24 @@ namespace HoneycombTest {
 		this->sphere = Builder::getBuilder()->newSphere();
 		this->suzanne = Builder::getBuilder()->newSuzanne();
 
+		// Give the plane a textured material
 		Material *colorMaterial = new Material(
 			this->plane->getComponent<MeshRenderer>()->getMaterial());
 		Texture2D *colorTexture = new Texture2D();
 		colorTexture->initialize();
 		colorTexture->
 			setImageData("..\\Test Game\\res\\textures\\colors.bmp");
-		colorMaterial->glSampler2Ds.setValue("albedoTexture", *colorTexture);
+		colorMaterial->glSampler2Ds.setValue("diffuseTexture", *colorTexture);
 		colorMaterial->glFloats.setValue("shininess", 128.0F);
+		colorMaterial->glVector2fs.setValue("diffuseTextureTiling",
+			Vector2f(10.0F, 10.0F));
 		this->plane->getComponent<MeshRenderer>()->
 			setMaterial(*colorMaterial);
 
 		// Give the sphere and suzanne a special reflective material (skybox)
 		Material *reflectiveMaterial = new Material(
 			this->sphere->getComponent<MeshRenderer>()->getMaterial());
-		reflectiveMaterial->glFloats.setValue("refIndexFrom", 1.0F);
-		reflectiveMaterial->glFloats.setValue("refIndexTo", 1.52F);
+		reflectiveMaterial->glFloats.setValue("refractiveIndex", 1.55F);
 		reflectiveMaterial->glFloats.setValue("reflectionStrength", 1.0F);
 		reflectiveMaterial->glVector3fs.setValue("specularColor", 
 			Vector3f(1.0F, 1.0F, 1.0F));

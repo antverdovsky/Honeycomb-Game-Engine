@@ -16,6 +16,7 @@
 #include "..\..\include\file\FileIO.h"
 
 using namespace Honeycomb::File;
+using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
 using Honeycomb::Math::Matrix4f;
@@ -167,7 +168,7 @@ namespace Honeycomb::Shader {
 	}
 
 	void ShaderProgram::setUniform_f(const std::string &uni,
-		const float &val) {
+			const float &val) {
 		this->bindShaderProgram();
 
 		int loc = getUniformLocation(uni); // Get uniform location
@@ -181,8 +182,16 @@ namespace Honeycomb::Shader {
 		if (loc >= 0) glUniform1i(loc, val);
 	}
 
+	void ShaderProgram::setUniform_vec2(const std::string &uni,
+			const Vector2f &val) {
+		this->bindShaderProgram();
+
+		int loc = getUniformLocation(uni);
+		if (loc >= 0) glUniform2f(loc, val.getX(), val.getY());
+	}
+
 	void ShaderProgram::setUniform_vec3(const std::string &uni,
-		const Vector3f &val) {
+			const Vector3f &val) {
 		this->bindShaderProgram();
 
 		int loc = getUniformLocation(uni);
@@ -190,7 +199,7 @@ namespace Honeycomb::Shader {
 	}
 
 	void ShaderProgram::setUniform_vec4(const std::string &uni,
-		const Vector4f &val) {
+			const Vector4f &val) {
 		this->bindShaderProgram();
 
 		int loc = getUniformLocation(uni);
@@ -199,7 +208,7 @@ namespace Honeycomb::Shader {
 	}
 
 	void ShaderProgram::setUniform_mat4(const std::string &uni,
-		const Matrix4f &val) {
+			const Matrix4f &val) {
 		this->bindShaderProgram();
 		int loc = getUniformLocation(uni);
 

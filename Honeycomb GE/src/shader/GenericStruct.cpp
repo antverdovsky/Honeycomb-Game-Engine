@@ -19,6 +19,8 @@ namespace Honeycomb::Shader {
 			shader.setUniform_i(uniDot + var.first, var.second);
 		for (const auto &var : this->glMatrix4fs.map)
 			shader.setUniform_mat4(uniDot + var.first, var.second);
+		for (const auto &var : this->glVector2fs.map)
+			shader.setUniform_vec2(uniDot + var.first, var.second);
 		for (const auto &var : this->glVector3fs.map)
 			shader.setUniform_vec3(uniDot + var.first, var.second);
 		for (const auto &var : this->glVector4fs.map)
@@ -47,6 +49,8 @@ namespace Honeycomb::Shader {
 				this->glInts.map.insert({ var.name, 0 });
 			else if (var.type == "mat4")
 				this->glMatrix4fs.map.insert({ var.name, Matrix4f() });
+			else if (var.type == "vec2")
+				this->glVector2fs.map.insert({ var.name, Vector2f() });
 			else if (var.type == "vec3")
 				this->glVector3fs.map.insert({ var.name, Vector3f() });
 			else if (var.type == "vec4")

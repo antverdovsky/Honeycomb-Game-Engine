@@ -139,44 +139,48 @@ namespace Honeycomb::Geometry {
 	}
 
 	Material* Model::processAiMeshMaterial(aiMaterial* aMat) {
-		aiString matName; // Name of the Material
-		Texture2D *texture = new Texture2D(); // Albedo Texture of the Material
-		aiColor3D matAmbient; // Ambient Property of the Material
-		aiColor3D matDiffuse; // Diffuse Property of the Material
-		aiColor3D matSpecular; // Specular Property of the Material
-		float matShininess; // Shininess Property of the Material
+		aiColor3D matDiffuse;	// Diffuse Property
+		aiColor3D matSpecular;	// Specular Property
+		float matShininess;		// Shininess Property
+		float matRefIndex;		// Refractive Index
+		float matRefStrength;	// Reflectivity Strength
 
 		// Retrieve all of the Material properties from ASSIMP
-		aMat->Get(AI_MATKEY_NAME, matName);
-		aMat->Get(AI_MATKEY_COLOR_AMBIENT, matAmbient);
 		aMat->Get(AI_MATKEY_COLOR_DIFFUSE, matDiffuse);
 		aMat->Get(AI_MATKEY_COLOR_SPECULAR, matSpecular);
 		aMat->Get(AI_MATKEY_SHININESS, matShininess);
+		aMat->Get(AI_MATKEY_REFRACTI, matRefIndex);
+		aMat->Get(AI_MATKEY_REFLECTIVITY, matRefStrength);
 
-		texture->initialize();
+		// Retrieve the Diffuse Texture from ASSIMP
+		Texture2D *diffuseTexture = new Texture2D();
+		diffuseTexture->initialize();
 		if (aMat->GetTextureCount(aiTextureType_DIFFUSE)) {
-			///
-			/// TODO: SUPPORT FOR MORE TEXTURES.
-			/// [will need to change the material class first]
 			aiString dir;
 			aMat->GetTexture(aiTextureType_DIFFUSE, 0, &dir);
 
-			texture->setImageData(dir.C_Str());
+			diffuseTexture->setImageData(dir.C_Str());
 		} else {
-			texture->setImageData();
+			diffuseTexture->setImageData();
 		}
 
-		// Build the Material and return it [TODO, use material name not sub!]
+		// Create the material.
 		Material *mat = new Material();
 		mat->glVector3fs.setValue("diffuseColor",
 			Vector3f(matDiffuse.r, matDiffuse.g, matDiffuse.b));
 		mat->glVector3fs.setValue("specularColor",
 			Vector3f(matSpecular.r, matSpecular.g, matSpecular.b));
 		mat->glFloats.setValue("shininess", matShininess);
-		mat->glSampler2Ds.setValue("albedoTexture", *texture);
+		mat->glFloats.setValue("refractiveIndex", matRefIndex);
+		mat->glFloats.setValue("reflectionStrength", matRefStrength);
+		mat->glSampler2Ds.setValue("diffuseTexture", *diffuseTexture);
+		mat->glVector2fs.setValue("diffuseTextureTiling", 
+			Vector2f(1.0F, 1.0F));
+		mat->glVector2fs.setValue("diffuseTextureOffset", 
+			Vector2f(0.0F, 0.0F));
 
 		// Save the texture and material
-		this->textures.push_back(texture);
+		this->textures.push_back(diffuseTexture);
 		this->materials.push_back(mat);
 
 		return mat;

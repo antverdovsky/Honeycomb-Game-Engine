@@ -28,16 +28,17 @@ uniform Camera camera;      // Scene Camera
 /// return : The diffuse color.
 vec3 calculateDiffuse() {
 	// Calculate the Reflection Color
-	float refRatio = material.refIndexFrom / material.refIndexTo;
+	float matRefStr = clamp(material.reflectionStrength, 0.0F, 1.0F);
 	vec3 viewVec = normalize(out_vs_pos - camera.translation);
-	vec3 refVec = refract(viewVec, -normalize(out_vs_norm), refRatio);
-	vec3 refStr = vec3(1.0F - material.reflectionStrength,
-		1.0F - material.reflectionStrength,
-		1.0F - material.reflectionStrength);
+	vec3 refVec = refract(viewVec, -normalize(out_vs_norm), 
+		1.0F / material.refractiveIndex);
+	vec3 refStr = vec3(1.0F) - vec3(matRefStr);
 	vec3 reflection = refStr + texture(skybox, refVec).xyz;
 
 	// Fetch material texture & diffuse
-	vec3 texture = texture2D(material.albedoTexture, out_vs_texCoord).xyz;
+	vec2 texCoord = out_vs_texCoord * material.diffuseTextureTiling +
+		material.diffuseTextureOffset;
+	vec3 texture = texture2D(material.diffuseTexture, texCoord).xyz;
 	vec3 diffuse = material.diffuseColor.xyz;
 
 	// Return Texture + Diffuse + Reflection
