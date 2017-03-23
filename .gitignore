@@ -285,9 +285,10 @@ __pycache__/
 *.pyc
 
 # Resource Files
-Honeycomb GE/res/models/default/_.blend
-Honeycomb GE/res/models/light-volumes/_.blend
-Test Game/res/models/_.blend
+Honeycomb GE/res/models/
+Honeycomb GE/res/textures
+Test Game/res/models
+Test Game/res/textures
 
 # Builds Folder
 Honeycomb GE/Builds
