@@ -88,40 +88,20 @@ namespace Honeycomb::Render::Deferred {
 		/// algorithm.
 		void renderFXAA();
 
-		/// Post processes the specified target texture and returns the
-		/// texture which contains the final "final" texture (post processed).
-		/// const GBufferTextureType &trg : The target texture to be post
-		///									processed.
-		/// return : The texture type containing the post processed image.
-		GBufferTextureType renderPostProcess(const GBufferTextureType &trg);
-
-		/// Renders the specified texture to the screen.
-		/// const GBufferTextureType &tex : The texture which is to be rendered
-		///									as a full screen quad.
-		void renderTexture(const GBufferTextureType &tex);
-
-		/// Renders the geometry of the specified scene.
-		/// GameScene &scene : The scene whose geometry is to be rendered.
-		void renderGeometryPass(Honeycomb::Scene::GameScene &scene);
-
-		/// Renders the lights of the specified scene.
-		/// GameScene &scene : The scene whose lights are to be rendered.
-		void renderLightsPass(Honeycomb::Scene::GameScene &scene);
-
 		/// Renders the specified Ambient Light using Deferred Rendering.
 		/// const AmbientLight &aL : The ambient light to be rendered.
 		void renderLightAmbient(const Honeycomb::Component::Light::AmbientLight
-				&aL);
+			&aL);
 
 		/// Renders the specified Directional Light using Deferred Rendering.
 		/// const DirectionalLight &dL : The directional light to be rendered.
 		void renderLightDirectional(const Honeycomb::Component::Light::
-				DirectionalLight &dL);
+			DirectionalLight &dL);
 
 		/// Renders the specified Point Light using Deferred Rendering.
 		/// const PointLight &pL : The point light to be rendered.
-		void renderLightPoint(const Honeycomb::Component::Light::PointLight	
-				&pL);
+		void renderLightPoint(const Honeycomb::Component::Light::PointLight
+			&pL);
 
 		/// Renders the specified Spot Light using Deferred Rendering.
 		/// const SpotLight &pL : The spot light to be rendered.
@@ -133,8 +113,8 @@ namespace Honeycomb::Render::Deferred {
 		///								  rendering the light quad.
 		/// const string &name : The name of the light uniform in the Shader.
 		void renderLightQuad(const Honeycomb::Component::Light::BaseLight &bL,
-				Honeycomb::Shader::ShaderProgram &shader, const std::string 
-				&name);
+			Honeycomb::Shader::ShaderProgram &shader, const std::string
+			&name);
 
 		/// Renders the specified Base Light using a full screen quad.
 		/// const BaseLight &bL : The base light to be rendered.
@@ -143,10 +123,30 @@ namespace Honeycomb::Render::Deferred {
 		/// const ShaderProgram &shader : The shader program to be used when
 		///								  rendering the light quad.
 		/// const string &name : The name of the light uniform in the Shader.
-		void renderLightVolume(const Honeycomb::Component::Light::BaseLight 
-				&bL, Honeycomb::Object::GameObject &volume, 
-				Honeycomb::Shader::ShaderProgram &shader, const std::string 
-				&name);
+		void renderLightVolume(const Honeycomb::Component::Light::BaseLight
+			&bL, Honeycomb::Object::GameObject &volume,
+			Honeycomb::Shader::ShaderProgram &shader, const std::string
+			&name);
+
+		/// Renders the geometry of the specified scene.
+		/// GameScene &scene : The scene whose geometry is to be rendered.
+		void renderPassGeometry(Honeycomb::Scene::GameScene &scene);
+
+		/// Renders the lights of the specified scene.
+		/// GameScene &scene : The scene whose lights are to be rendered.
+		void renderPassLight(Honeycomb::Scene::GameScene &scene);
+
+		/// Post processes the specified target texture and returns the
+		/// texture which contains the final "final" texture (post processed).
+		/// const GBufferTextureType &trg : The target texture to be post
+		///									processed.
+		/// return : The texture type containing the post processed image.
+		GBufferTextureType renderPostProcess(const GBufferTextureType &trg);
+
+		/// Renders the specified texture to the screen.
+		/// const GBufferTextureType &tex : The texture which is to be rendered
+		///									as a full screen quad.
+		void renderTexture(const GBufferTextureType &tex);
 
 		/// Performs the stencil pass on the light with the specified light
 		///	volume.

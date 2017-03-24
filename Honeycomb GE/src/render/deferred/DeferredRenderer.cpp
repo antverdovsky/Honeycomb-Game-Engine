@@ -47,6 +47,48 @@ namespace Honeycomb::Render::Deferred {
 		return DeferredRenderer::deferredRenderer;
 	}
 
+	void DeferredRenderer::render(Honeycomb::Scene::GameScene &scene) {
+		GBufferTextureType target; // Target to which we will render scene
+
+		CameraController::getActiveCamera()->toShader(this->geometryShader,
+			"camera");
+
+		this->gBuffer.frameBegin(); // Clear rendered texture from last frame 
+
+		this->renderPassGeometry(scene); // Render Geometry
+
+		// Render Lights if necessary
+		if (this->final == FinalTexture::FINAL) this->renderPassLight(scene);
+
+		this->renderBackground(); // Render background cubebox
+
+		switch (this->antiAliasing) {
+		// If FXAA is to be used, set the final target texture to FINAL_2 since
+		// the write buffer in FXAA rendering is FINAL_2.
+		case AntiAliasing::FXAA:
+			this->renderFXAA(); // FXAA correct the image
+			target = GBufferTextureType::FINAL_2;
+			break;
+		// If no antialiasing is used, the final target texture remains FINAL_1
+		case AntiAliasing::NONE:
+			target = GBufferTextureType::FINAL_1;
+			break;
+		}
+
+		// Post process the scene if necessary and store the texture type
+		// containing the final image. If the user does not want to post
+		// process the image, the final image must be in the target which we
+		// calulcated above when checking if we're using AntiAliasing.
+		target = (GBufferTextureType)
+			((this->doPostProcess) ? this->renderPostProcess(target) : target);
+
+		this->renderTexture(target); // Render the final image
+	}
+
+	void DeferredRenderer::setFinalTexture(const FinalTexture &fin) {
+		this->final = fin;
+	}
+
 	DeferredRenderer::DeferredRenderer() : Renderer() {
 		this->gBuffer.initialize();
 
@@ -231,6 +273,137 @@ namespace Honeycomb::Render::Deferred {
 		quad.draw(this->fxaaShader);
 	}
 
+	void DeferredRenderer::renderLightAmbient(const AmbientLight &aL) {
+		glDisable(GL_STENCIL_TEST);
+
+		this->renderLightQuad(aL, this->ambientShader, "ambientLight");
+	}
+
+	void DeferredRenderer::renderLightDirectional(const DirectionalLight &dL) {
+		glDisable(GL_STENCIL_TEST);
+
+		this->renderLightQuad(dL, this->directionalLightShader,
+			"directionalLight");
+	}
+
+	void DeferredRenderer::renderLightPoint(const PointLight &pL) {
+		glEnable(GL_STENCIL_TEST);
+
+		this->transformLightPointVolume(pL);
+		this->stencilLightVolume(*(this->lightVolumePoint));
+		this->renderLightVolume(pL, *(this->lightVolumePoint),
+			this->pointLightShader, "pointLight");
+	}
+
+	void DeferredRenderer::renderLightSpot(const SpotLight &sL) {
+		glEnable(GL_STENCIL_TEST); // Enable Stencil Testing for S.L.s
+
+		this->transformLightSpotVolume(sL);
+		this->stencilLightVolume(*(this->lightVolumeSpot));
+		this->renderLightVolume(sL, *(this->lightVolumeSpot),
+			this->spotLightShader, "spotLight");
+	}
+
+	void DeferredRenderer::renderLightQuad(const BaseLight &bL,
+		ShaderProgram &shader, const std::string &name) {
+		CameraController::getActiveCamera()->toShader(shader, "camera");
+		bL.toShader(shader, name);
+
+		glDisable(GL_DEPTH_TEST); // Light does not need Depth Testing
+		glEnable(GL_BLEND); // Each light's contribution is blended together
+		glBlendEquation(GL_FUNC_ADD); // Lights are added together with an
+		glBlendFunc(GL_ONE, GL_ONE);  // equal contribution from each source
+
+		glEnable(GL_CULL_FACE);
+
+		this->gBuffer.bindDrawLight(shader, bL.getType());
+		quad.draw(shader);
+
+		glDisable(GL_BLEND);
+	}
+
+	void DeferredRenderer::renderLightVolume(const BaseLight &bL,
+		GameObject &obj, ShaderProgram &shader, const std::string &name) {
+		// Write the Camera Projection & Light to the Point Light Shader
+		CameraController::getActiveCamera()->toShader(shader, "camera");
+		bL.toShader(shader, name);
+
+		this->gBuffer.bindDrawLight(shader, bL.getType());
+
+		// Set the Stencil Function to pass when the stencil value != 0
+		glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
+
+		glDisable(GL_DEPTH_TEST); // Light does not need Depth Testing
+		glEnable(GL_BLEND); // Each light's contribution is blended together
+		glBlendEquation(GL_FUNC_ADD); // Lights are added together with an
+		glBlendFunc(GL_ONE, GL_ONE);  // equal contribution from each source
+
+		// Enable the culling of the front facing faces 
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
+
+		// Render the point light sphere with the given shader
+		obj.render(shader);
+
+		// Enable the culling of the back facing faces
+		glCullFace(GL_BACK);
+		glDisable(GL_BLEND);
+	}
+
+	void DeferredRenderer::renderPassGeometry(GameScene &scene) {
+		// Bind the G Buffer for Drawing Geometry
+		this->gBuffer.bindDrawGeometry();
+
+		// Draw the geometry using the mode requested by the user
+		glPolygonMode(PolygonFace::FRONT, this->polygonModeFront);
+		glPolygonMode(PolygonFace::BACK, this->polygonModeBack);
+
+		// Cull faces as necessary, if the user wants to
+		glFrontFace(this->frontFace);
+		glCullFace(this->cullingFace);
+		this->setBoolSettingGL(GL_CULL_FACE, this->doCullFaces);
+
+		// Enable Depth Testing, if the user wants to.
+		this->setBoolSettingGL(GL_DEPTH_TEST, this->doDepthTest);
+
+		glDepthMask(GL_TRUE); // Only Geometry Render writes to the Depth
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear Buffer
+
+		// Bind the skybox for Reflection (reason for binding it to 31 is so
+		// that the material can take the other GL_TEXTURE fields for itself).
+		this->geometryShader.bindShaderProgram();
+		this->geometryShader.setUniform_i("skybox", 31);
+		this->skybox.bind(31);
+
+		scene.render(this->geometryShader); // Render the Game Scene Meshes
+
+		glDepthMask(GL_FALSE); // Only Geometry Render writes to the Depth
+	}
+
+	void DeferredRenderer::renderPassLight(GameScene &scene) {
+		// Since the polygon mode only applies to geometry, change to FILL
+		// mode when drawing lights.
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+		for (BaseLight *bL : scene.getActiveLights()) {
+			switch (bL->getType()) {
+			case LightType::LIGHT_TYPE_AMBIENT:
+				this->renderLightAmbient(*(bL->downcast<AmbientLight>()));
+				break;
+			case LightType::LIGHT_TYPE_DIRECTIONAL:
+				this->renderLightDirectional(*(
+					bL->downcast<DirectionalLight>()));
+				break;
+			case LightType::LIGHT_TYPE_POINT:
+				this->renderLightPoint(*(bL->downcast<PointLight>()));
+				break;
+			case LightType::LIGHT_TYPE_SPOT:
+				this->renderLightSpot(*(bL->downcast<SpotLight>()));
+				break;
+			}
+		}
+	}
+
 	GBufferTextureType DeferredRenderer::renderPostProcess(
 			const GBufferTextureType &trg) {
 		// Since we are going to read from one buffer and write to another,
@@ -264,179 +437,6 @@ namespace Honeycomb::Render::Deferred {
 		glDisable(GL_DEPTH_TEST);
 
 		quad.draw(this->quadShader);
-	}
-
-	void DeferredRenderer::render(Honeycomb::Scene::GameScene &scene) {
-		GBufferTextureType target; // Target to which we will render scene
-
-		CameraController::getActiveCamera()->toShader(this->geometryShader,
-			"camera");
-		
-		this->gBuffer.frameBegin(); // Clear rendered texture from last frame 
-
-		this->renderGeometryPass(scene); // Render Geometry
-		
-		// Render Lights if necessary
-		if (this->final == FinalTexture::FINAL) this->renderLightsPass(scene);
-		
-		this->renderBackground(); // Render background cubebox
-		
-		switch (this->antiAliasing) {
-		// If FXAA is to be used, set the final target texture to FINAL_2 since
-		// the write buffer in FXAA rendering is FINAL_2.
-		case AntiAliasing::FXAA:
-			this->renderFXAA(); // FXAA correct the image
-			target = GBufferTextureType::FINAL_2;
-			break;
-		// If no antialiasing is used, the final target texture remains FINAL_1
-		case AntiAliasing::NONE:
-			target = GBufferTextureType::FINAL_1;
-			break;
-		}
-
-		// Post process the scene if necessary and store the texture type
-		// containing the final image. If the user does not want to post
-		// process the image, the final image must be in the target which we
-		// calulcated above when checking if we're using AntiAliasing.
-		target = (GBufferTextureType)
-			((this->doPostProcess) ? this->renderPostProcess(target) : target);
-
-		this->renderTexture(target); // Render the final image
-	}
-
-	void DeferredRenderer::setFinalTexture(const FinalTexture &fin) {
-		this->final = fin;
-	}
-
-	void DeferredRenderer::renderGeometryPass(GameScene &scene) {
-		// Bind the G Buffer for Drawing Geometry
-		this->gBuffer.bindDrawGeometry();
-
-		// Draw the geometry using the mode requested by the user
-		glPolygonMode(PolygonFace::FRONT, this->polygonModeFront);
-		glPolygonMode(PolygonFace::BACK, this->polygonModeBack);
-
-		// Cull faces as necessary, if the user wants to
-		glFrontFace(this->frontFace);
-		glCullFace(this->cullingFace);
-		this->setBoolSettingGL(GL_CULL_FACE, this->doCullFaces);
-
-		// Enable Depth Testing, if the user wants to.
-		this->setBoolSettingGL(GL_DEPTH_TEST, this->doDepthTest);
-
-		glDepthMask(GL_TRUE); // Only Geometry Render writes to the Depth
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear Buffer
-
-		// Bind the skybox for Reflection (reason for binding it to 31 is so
-		// that the material can take the other GL_TEXTURE fields for itself).
-		this->geometryShader.bindShaderProgram();
-		this->geometryShader.setUniform_i("skybox", 31);
-		this->skybox.bind(31);
-		
-		scene.render(this->geometryShader); // Render the Game Scene Meshes
-
-		glDepthMask(GL_FALSE); // Only Geometry Render writes to the Depth
-	}
-
-	void DeferredRenderer::renderLightsPass(GameScene &scene) {
-		// Since the polygon mode only applies to geometry, change to FILL
-		// mode when drawing lights.
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-		for (BaseLight *bL : scene.getActiveLights()) {
-			switch (bL->getType()) {
-			case LightType::LIGHT_TYPE_AMBIENT:
-				this->renderLightAmbient(*(bL->downcast<AmbientLight>()));
-				break;
-			case LightType::LIGHT_TYPE_DIRECTIONAL:
-				this->renderLightDirectional(*(
-					bL->downcast<DirectionalLight>()));
-				break;
-			case LightType::LIGHT_TYPE_POINT:
-				this->renderLightPoint(*(bL->downcast<PointLight>()));
-				break;
-			case LightType::LIGHT_TYPE_SPOT:
-				this->renderLightSpot(*(bL->downcast<SpotLight>()));
-				break;
-			}
-		}
-	}
-
-	void DeferredRenderer::renderLightAmbient(const AmbientLight &aL) {
-		glDisable(GL_STENCIL_TEST);
-
-		this->renderLightQuad(aL, this->ambientShader, "ambientLight");
-	}
-
-	void DeferredRenderer::renderLightDirectional(const DirectionalLight &dL) {
-		glDisable(GL_STENCIL_TEST);
-		
-		this->renderLightQuad(dL, this->directionalLightShader, 
-			"directionalLight");
-	}
-
-	void DeferredRenderer::renderLightPoint(const PointLight &pL) {
-		glEnable(GL_STENCIL_TEST);
-
-		this->transformLightPointVolume(pL);
-		this->stencilLightVolume(*(this->lightVolumePoint));
-		this->renderLightVolume(pL, *(this->lightVolumePoint), 
-			this->pointLightShader, "pointLight");
-	}
-
-	void DeferredRenderer::renderLightSpot(const SpotLight &sL) {
-		glEnable(GL_STENCIL_TEST); // Enable Stencil Testing for S.L.s
-
-		this->transformLightSpotVolume(sL);
-		this->stencilLightVolume(*(this->lightVolumeSpot));
-		this->renderLightVolume(sL, *(this->lightVolumeSpot),
-			this->spotLightShader, "spotLight");
-	}
-
-	void DeferredRenderer::renderLightQuad(const BaseLight &bL, 
-			ShaderProgram &shader, const std::string &name) {
-		CameraController::getActiveCamera()->toShader(shader, "camera");
-		bL.toShader(shader, name);
-
-		glDisable(GL_DEPTH_TEST); // Light does not need Depth Testing
-		glEnable(GL_BLEND); // Each light's contribution is blended together
-		glBlendEquation(GL_FUNC_ADD); // Lights are added together with an
-		glBlendFunc(GL_ONE, GL_ONE);  // equal contribution from each source
-
-		glEnable(GL_CULL_FACE);
-
-		this->gBuffer.bindDrawLight(shader, bL.getType());
-		quad.draw(shader);
-
-		glDisable(GL_BLEND);
-	}
-
-	void DeferredRenderer::renderLightVolume(const BaseLight &bL,
-			GameObject &obj, ShaderProgram &shader, const std::string &name) {
-		// Write the Camera Projection & Light to the Point Light Shader
-		CameraController::getActiveCamera()->toShader(shader, "camera");
-		bL.toShader(shader, name);
-
-		this->gBuffer.bindDrawLight(shader, bL.getType());
-
-		// Set the Stencil Function to pass when the stencil value != 0
-		glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
-
-		glDisable(GL_DEPTH_TEST); // Light does not need Depth Testing
-		glEnable(GL_BLEND); // Each light's contribution is blended together
-		glBlendEquation(GL_FUNC_ADD); // Lights are added together with an
-		glBlendFunc(GL_ONE, GL_ONE);  // equal contribution from each source
-
-		// Enable the culling of the front facing faces 
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
-
-		// Render the point light sphere with the given shader
-		obj.render(shader);
-
-		// Enable the culling of the back facing faces
-		glCullFace(GL_BACK);
-		glDisable(GL_BLEND);
 	}
 
 	void DeferredRenderer::stencilLightVolume(GameObject &volume) {
