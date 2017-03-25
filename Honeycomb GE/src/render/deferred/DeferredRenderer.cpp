@@ -48,41 +48,18 @@ namespace Honeycomb::Render::Deferred {
 	}
 
 	void DeferredRenderer::render(Honeycomb::Scene::GameScene &scene) {
-		GBufferTextureType target; // Target to which we will render scene
+		GBufferTextureType target; // Target containing the final image
 
 		CameraController::getActiveCamera()->toShader(this->geometryShader,
 			"camera");
+		this->gBuffer.frameBegin(); 
 
-		this->gBuffer.frameBegin(); // Clear rendered texture from last frame 
-
-		this->renderPassGeometry(scene); // Render Geometry
-
-		// Render Lights if necessary
-		if (this->final == FinalTexture::FINAL) this->renderPassLight(scene);
-
-		this->renderBackground(); // Render background cubebox
-
-		switch (this->antiAliasing) {
-		// If FXAA is to be used, set the final target texture to FINAL_2 since
-		// the write buffer in FXAA rendering is FINAL_2.
-		case AntiAliasing::FXAA:
-			this->renderFXAA(); // FXAA correct the image
-			target = GBufferTextureType::FINAL_2;
-			break;
-		// If no antialiasing is used, the final target texture remains FINAL_1
-		case AntiAliasing::NONE:
-			target = GBufferTextureType::FINAL_1;
-			break;
-		}
-
-		// Post process the scene if necessary and store the texture type
-		// containing the final image. If the user does not want to post
-		// process the image, the final image must be in the target which we
-		// calulcated above when checking if we're using AntiAliasing.
-		target = (GBufferTextureType)
-			((this->doPostProcess) ? this->renderPostProcess(target) : target);
-
-		this->renderTexture(target); // Render the final image
+		this->renderPassGeometry(scene);	// Render Geometry
+		this->renderPassLight(scene);		// Render Lights
+		this->renderBackground();			// Render Background Cubebox
+		
+		target = this->renderPostProcess(); // Post Process the Final Image
+		this->renderTexture(target);		// Render the final image
 	}
 
 	void DeferredRenderer::setFinalTexture(const FinalTexture &fin) {
@@ -256,18 +233,13 @@ namespace Honeycomb::Render::Deferred {
 		glEnable(GL_CULL_FACE);
 	}
 
-	void DeferredRenderer::renderFXAA() {
-		// The preprocessed image resides in the GBuffer we marked as final.
-		// The postprocess image is to reside in the FINAL_2 GBuffer.
-		GBufferTextureType readBuffer  = (GBufferTextureType)(this->final);
-		GBufferTextureType writeBuffer = GBufferTextureType::FINAL_2;
-
+	void DeferredRenderer::renderFXAA(const GBufferTextureType &r,
+			const GBufferTextureType &w) {
 		// Bind the buffer to which we will write the FXAA corrected image.
 		// Bind the preprocessed image to the FXAA Shader, and write the camera
 		// information to the Shader.
-		glDrawBuffer(GL_COLOR_ATTACHMENT0 + writeBuffer);
-		this->gBuffer.bindTexture(readBuffer, this->fxaaShader, 
-			"gBufferFinal");
+		glDrawBuffer(GL_COLOR_ATTACHMENT0 + w);
+		this->gBuffer.bindTexture(r, this->fxaaShader, "gBufferFinal");
 		CameraController::getActiveCamera()->toShader(this->fxaaShader, 
 			"camera");
 		quad.draw(this->fxaaShader);
@@ -381,6 +353,9 @@ namespace Honeycomb::Render::Deferred {
 	}
 
 	void DeferredRenderer::renderPassLight(GameScene &scene) {
+		// Don't render any lights if we are not using the final render target
+		if (this->final != FinalTexture::FINAL) return;
+
 		// Since the polygon mode only applies to geometry, change to FILL
 		// mode when drawing lights.
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -404,19 +379,32 @@ namespace Honeycomb::Render::Deferred {
 		}
 	}
 
-	GBufferTextureType DeferredRenderer::renderPostProcess(
-			const GBufferTextureType &trg) {
+	GBufferTextureType DeferredRenderer::renderPostProcess() {
 		// Since we are going to read from one buffer and write to another,
 		// establish now which buffer will be read from and which one we will
 		// write to.
-		GBufferTextureType readBuffer  = trg;
+		GBufferTextureType readBuffer  = GBufferTextureType::FINAL_1;
 		GBufferTextureType writeBuffer = GBufferTextureType::FINAL_2;
 
-		for (ShaderProgram &s :this->getPostShaders()) {
-			glDrawBuffer(GL_COLOR_ATTACHMENT0 + writeBuffer);
-			this->gBuffer.bindTexture(readBuffer, s, "gBufferFinal");
+		// Post Process using the user's post process shaders
+		if (this->doPostProcess) {
+			for (ShaderProgram &s : this->getPostShaders()) {
+				// Set the draw buffer to write and render image using this
+				// post processing shader
+				glDrawBuffer(GL_COLOR_ATTACHMENT0 + writeBuffer);
+				this->gBuffer.bindTexture(readBuffer, s, "gBufferFinal");
+				quad.draw(s);
 
-			quad.draw(s);
+				// Now read and write the other way (swap read and write)
+				GBufferTextureType tmp = readBuffer;
+				readBuffer = writeBuffer;
+				writeBuffer = tmp;
+			}
+		}
+
+		// If Anti Aliasing is enabled, apply the FXAA Post Processing Shader
+		if (this->antiAliasing == AntiAliasing::FXAA) {
+			this->renderFXAA(readBuffer, writeBuffer);
 
 			// Now read and write the other way (swap read and write buffers)
 			GBufferTextureType tmp = readBuffer;

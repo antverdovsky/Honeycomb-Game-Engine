@@ -86,7 +86,12 @@ namespace Honeycomb::Render::Deferred {
 		
 		/// Postprocesses the image using the FXAA antialiasing correction
 		/// algorithm.
-		void renderFXAA();
+		/// const GBufferTextureType &r : The buffer from which we read the
+		///								  image which will be FXAA corrected.
+		/// const GBufferTextureType &r : The buffer to which we write the
+		///								  image which will be FXAA corrected.
+		void renderFXAA(const GBufferTextureType &r, 
+			const GBufferTextureType &w);
 
 		/// Renders the specified Ambient Light using Deferred Rendering.
 		/// const AmbientLight &aL : The ambient light to be rendered.
@@ -132,16 +137,15 @@ namespace Honeycomb::Render::Deferred {
 		/// GameScene &scene : The scene whose geometry is to be rendered.
 		void renderPassGeometry(Honeycomb::Scene::GameScene &scene);
 
-		/// Renders the lights of the specified scene.
+		/// Renders the lights of the specified scene, if the final target of
+		/// this Renderer is set to FINAL.
 		/// GameScene &scene : The scene whose lights are to be rendered.
 		void renderPassLight(Honeycomb::Scene::GameScene &scene);
 
 		/// Post processes the specified target texture and returns the
 		/// texture which contains the final "final" texture (post processed).
-		/// const GBufferTextureType &trg : The target texture to be post
-		///									processed.
 		/// return : The texture type containing the post processed image.
-		GBufferTextureType renderPostProcess(const GBufferTextureType &trg);
+		GBufferTextureType renderPostProcess();
 
 		/// Renders the specified texture to the screen.
 		/// const GBufferTextureType &tex : The texture which is to be rendered
