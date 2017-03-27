@@ -74,6 +74,11 @@ namespace Honeycomb::Render::Deferred {
 		this->initializeShaders();
 
 		this->setFinalTexture(FinalTexture::FINAL);
+		
+		// Even though the color space is set in the parent Renderer class, we
+		// have to set it here again since we must write the gamma value to our
+		// geometry pass shader.
+		this->setColorSpace(ColorSpace::GAMMA_POST);
 	}
 
 	DeferredRenderer::~DeferredRenderer() {
@@ -245,6 +250,15 @@ namespace Honeycomb::Render::Deferred {
 		quad.draw(this->fxaaShader);
 	}
 
+	void DeferredRenderer::renderGamma(const GBufferTextureType &r,
+			const GBufferTextureType &w) {
+		// Bind the buffer to which we will write the Gamma corrected image.
+		// Bind the preprocessed image to the Gamma Shader, and post process.
+		glDrawBuffer(GL_COLOR_ATTACHMENT0 + w);
+		this->gBuffer.bindTexture(r, this->gammaShader, "gBufferFinal");
+		quad.draw(this->gammaShader);
+	}
+
 	void DeferredRenderer::renderLightAmbient(const AmbientLight &aL) {
 		glDisable(GL_STENCIL_TEST);
 
@@ -412,6 +426,17 @@ namespace Honeycomb::Render::Deferred {
 			writeBuffer = tmp;
 		}
 
+		// If post processing Gamma correction is enabled, apply the gamma
+		// shader.
+		if (this->colorSpace == ColorSpace::GAMMA_POST) {
+			this->renderGamma(readBuffer, writeBuffer);
+
+			// Now read and write the other way (swap read and write buffers)
+			GBufferTextureType tmp = readBuffer;
+			readBuffer = writeBuffer;
+			writeBuffer = tmp;
+		}
+
 		// Image to which we wrote last is the FINAL final (note that since we
 		// swapped the buffers, the image to which we wrote last is now the
 		// read buffer).
@@ -425,6 +450,13 @@ namespace Honeycomb::Render::Deferred {
 		glDisable(GL_DEPTH_TEST);
 
 		quad.draw(this->quadShader);
+	}
+
+	void DeferredRenderer::setGamma(const float &g) {
+		Renderer::setGamma(g);
+
+		this->geometryShader.setUniform_f("gamma", g);
+		this->skyboxShader.setUniform_f("gamma", g);
 	}
 
 	void DeferredRenderer::stencilLightVolume(GameObject &volume) {

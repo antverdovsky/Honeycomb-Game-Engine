@@ -343,5 +343,7 @@
     <None Include="res\shaders\cubemap\texturedSkyboxFS.glsl" />
     <None Include="res\shaders\render\antialiasing\fxaa\fxaaVS.glsl" />
     <None Include="res\shaders\render\antialiasing\fxaa\fxaaFS.glsl" />
+    <None Include="res\shaders\render\gamma\gammaFS.glsl" />
+    <None Include="res\shaders\render\gamma\gammaVS.glsl" />
   </ItemGroup>
 </Project>

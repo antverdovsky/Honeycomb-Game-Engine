@@ -44,6 +44,14 @@ namespace Honeycomb::Render {
 		this->backgroundMode = m;
 	}
 
+	void Renderer::setColorSpace(const ColorSpace &cs) {
+		this->colorSpace = cs;
+
+		// If gamma is enabled, set it to some value; else, keep gamma at 1.
+		if (cs == ColorSpace::GAMMA_POST) this->setGamma(2.2F);
+		else this->setGamma(1.0F);
+	}
+
 	void Renderer::setCullingFace(const PolygonFace &f) {
 		this->cullingFace = f;
 		glCullFace((GLenum)f);
@@ -101,6 +109,9 @@ namespace Honeycomb::Render {
 	Renderer::Renderer() {
 		this->initializeFXAAShader();
 		this->setAntiAliasing(AntiAliasing::FXAA);
+
+		this->initializeGammaShader();
+		this->setColorSpace(ColorSpace::GAMMA_POST);
 
 		this->initializeCubemapDependencies();
 		this->setBackgroundMode(BackgroundMode::SKYBOX);
@@ -160,8 +171,23 @@ namespace Honeycomb::Render {
 		this->fxaaShader.setUniform_f("reduceMul", 1.0F / 8.0F);
 	}
 
+	void Renderer::initializeGammaShader() {
+		this->gammaShader.initialize();
+		this->gammaShader.addShader("..\\Honeycomb GE\\res\\shaders\\render\\"
+			"gamma\\gammaVS.glsl", ShaderType::VERTEX_SHADER);
+		this->gammaShader.addShader("..\\Honeycomb GE\\res\\shaders\\render\\"
+			"gamma\\gammaFS.glsl", ShaderType::FRAGMENT_SHADER);
+		this->gammaShader.finalizeShaderProgram();
+
+		this->gammaShader.setUniform_f("gamma", 2.2F);
+	}
+
 	void Renderer::setBoolSettingGL(const int &cap, const bool &val) {
 		if (val)	glEnable((GLenum)cap);
 		else		glDisable((GLenum)cap);
+	}
+
+	void Renderer::setGamma(const float &g) {
+		this->gammaShader.setUniform_f("gamma", g);
 	}
 }

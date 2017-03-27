@@ -93,6 +93,14 @@ namespace Honeycomb::Render::Deferred {
 		void renderFXAA(const GBufferTextureType &r, 
 			const GBufferTextureType &w);
 
+		/// Postprocesses the image using the Gamma correction algorithm.
+		/// const GBufferTextureType &r : The buffer from which we read the
+		///								  image which will be FXAA corrected.
+		/// const GBufferTextureType &r : The buffer to which we write the
+		///								  image which will be FXAA corrected.
+		void renderGamma(const GBufferTextureType &r,
+			const GBufferTextureType &w);
+
 		/// Renders the specified Ambient Light using Deferred Rendering.
 		/// const AmbientLight &aL : The ambient light to be rendered.
 		void renderLightAmbient(const Honeycomb::Component::Light::AmbientLight
@@ -151,6 +159,10 @@ namespace Honeycomb::Render::Deferred {
 		/// const GBufferTextureType &tex : The texture which is to be rendered
 		///									as a full screen quad.
 		void renderTexture(const GBufferTextureType &tex);
+
+		/// Sets the value of the gamma to be used for non-linear color space.
+		/// const float &g : The gamma value.
+		void setGamma(const float &g);
 
 		/// Performs the stencil pass on the light with the specified light
 		///	volume.

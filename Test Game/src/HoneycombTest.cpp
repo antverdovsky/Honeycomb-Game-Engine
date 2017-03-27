@@ -14,7 +14,12 @@ using Honeycomb::Render::Deferred::DeferredRenderer;
 
 namespace HoneycombTest {
 	void TestGame::input() {
-
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_1)) {
+			Renderer::getRenderer()->setColorSpace(Renderer::ColorSpace::GAMMA_POST);
+		}
+		else if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_2)) {
+			Renderer::getRenderer()->setColorSpace(Renderer::ColorSpace::LINEAR);
+		}
 	}
 
 	void TestGame::render() {

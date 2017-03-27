@@ -27,6 +27,12 @@ namespace Honeycomb::Render {
 			SKYBOX				= 1
 		};
 
+		/// Represents the different color spaces supported
+		enum ColorSpace {
+			LINEAR				= 0,		// Standard Linear Color Space
+			GAMMA_POST			= 1			// Post Processing Gamma Shader
+		};
+
 		/// A wrapper enum for the depth and stencil functions which can be 
 		///	used when depth or stencil testing.
 		enum TestFunction {
@@ -87,6 +93,10 @@ namespace Honeycomb::Render {
 		/// const BackgroundMode &m : The mode which is to be used.
 		void setBackgroundMode(const BackgroundMode &m);
 
+		/// Sets the color space which is to be used when rendering the scene.
+		/// const ColorSpace &cs : The color space.
+		void setColorSpace(const ColorSpace &cs);
+
 		/// Sets the polygon face which is to be culled.
 		/// const PolygonFace &f : The polygon face (front, back or front-and-
 		///						   back).
@@ -140,6 +150,10 @@ namespace Honeycomb::Render {
 		AntiAliasing antiAliasing;
 		Honeycomb::Shader::ShaderProgram fxaaShader;
 
+		// Color Space Variables
+		ColorSpace colorSpace;
+		Honeycomb::Shader::ShaderProgram gammaShader;
+
 		// Properties for a Background Color & Skybox
 		BackgroundMode backgroundMode;
 		Honeycomb::Geometry::Mesh cubemapMesh;
@@ -175,6 +189,10 @@ namespace Honeycomb::Render {
 		/// Initializes the dependencies of the Cubemap (Mesh and Shaders).
 		void initializeCubemapDependencies();
 
+		/// Initializes the Shader used by the Gamma Correction Post Processing
+		/// color spacec algorithm.
+		void initializeGammaShader();
+
 		/// Initializes the Shader used by the Fast Approximate Anti Aliasing
 		/// (FXAA).
 		void initializeFXAAShader();
@@ -183,9 +201,13 @@ namespace Honeycomb::Render {
 		/// is true. Otherwise, calls the OpenGL "glDisable" function
 		/// for the specified cap.
 		/// const int& &cap : The OpenGL parameter which is to be enabled or
-		///					disabled.
+		///					  disabled.
 		/// const bool &val : Whether the setting is to be enabled or disabled.
 		void setBoolSettingGL(const int &cap, const bool &val);
+
+		/// Sets the value of the gamma to be used for non-linear color space.
+		/// const float &g : The gamma value.
+		virtual void setGamma(const float &g);
 	};
 }
 
