@@ -43,6 +43,9 @@ namespace HoneycombTest {
 		skybox.setFaces(skyboxTex);
 		Renderer::getRenderer()->setSkybox(skybox);
 
+		DeferredRenderer::getDeferredRenderer()->setFinalTexture(
+			DeferredRenderer::FinalTexture::NORMAL);
+
 		// Create the Post Processing Shaders and add to the Renderer
 		this->inversionShader.initialize();
 		this->inversionShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
@@ -66,7 +69,8 @@ namespace HoneycombTest {
 		// Import all of the mesh game objects and construct them
 		this->car = Builder::getBuilder()->
 			newModel("..\\Test Game\\res\\models\\car.fbx");
-		this->cube = Builder::getBuilder()->newCube();
+		this->cube = Builder::getBuilder()->
+			newModel("..\\Test Game\\res\\models\\brick-cube\\cube.fbx");
 		this->plane = Builder::getBuilder()->newPlane();
 		this->sphere = Builder::getBuilder()->newSphere();
 		this->suzanne = Builder::getBuilder()->newSuzanne();

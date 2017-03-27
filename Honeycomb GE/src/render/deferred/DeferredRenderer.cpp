@@ -397,7 +397,7 @@ namespace Honeycomb::Render::Deferred {
 		// Since we are going to read from one buffer and write to another,
 		// establish now which buffer will be read from and which one we will
 		// write to.
-		GBufferTextureType readBuffer  = GBufferTextureType::FINAL_1;
+		GBufferTextureType readBuffer  = (GBufferTextureType)(this->final);
 		GBufferTextureType writeBuffer = GBufferTextureType::FINAL_2;
 
 		// Post Process using the user's post process shaders

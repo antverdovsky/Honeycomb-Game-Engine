@@ -48,6 +48,17 @@ vec3 calculateDiffuse() {
 	return texture * diffuse * reflection;
 }
 
+/// Calculates the Normal/Bump map vector of this object's fragment.
+/// return : The normal vector.
+vec3 calculateNormal() {
+	// Fetch value from the Normal Map of the Material (temp)
+	vec2 texCoord = out_vs_texCoord * material.normalsTexture.tiling +
+		material.normalsTexture.offset;
+	vec3 tex = texture2D(material.normalsTexture.sampler, texCoord).xyz;
+
+	return tex;
+}
+
 /// Calculates the Specular Color and shininess of this object's fragment.
 /// return : The specular color and shininess.
 vec4 calculateSpecular() {
@@ -65,7 +76,7 @@ vec4 calculateSpecular() {
 void main() {
     out_fs_pos = out_vs_pos;
     out_fs_diffuse = calculateDiffuse();
-    out_fs_normal = out_vs_norm;
+    out_fs_normal = calculateNormal();
     out_fs_texCoord = vec3(out_vs_texCoord, 0.0F);
 	out_fs_specular = calculateSpecular();
 }

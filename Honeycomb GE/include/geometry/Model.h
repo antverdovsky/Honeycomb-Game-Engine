@@ -15,6 +15,8 @@ struct aiMesh;
 struct aiNode;
 struct aiScene;
 
+enum aiTextureType;
+
 namespace Honeycomb::Geometry {
 	struct ModelSettings {
 		friend class Model;
@@ -142,6 +144,17 @@ namespace Honeycomb::Geometry {
 		/// const ModelSettings &settings : The settings to be used when
 		///									importing the model.
 		Model(const std::string &path, const ModelSettings &settings);
+
+		/// Fetches the texture of the specified texture type from the 
+		///	specified ASSIMP material.
+		/// const aiMaterial &mat : The ASSIMP Material.
+		/// aiTextureType tT : The texture type.
+		/// return : The initialized and ready to be used Texture. If the
+		///			 material does not contain the texture of the specified
+		///			 type, an empty texture (initialized to a white pixel) is 
+		///			 returned instead.
+		Honeycomb::Graphics::Texture2D* fetchTexture(const aiMaterial &mat, 
+				aiTextureType tT);
 
 		/// Loads the model object from the file path and using settings stored
 		/// in this Model.

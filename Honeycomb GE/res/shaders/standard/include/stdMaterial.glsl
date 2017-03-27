@@ -18,6 +18,8 @@ struct Material {
 	Texture2D specularTexture;	// Specular texture of the Material
 	float shininess;			// The shininess of the specular reflection
 
+	Texture2D normalsTexture;	// Normal/Bump Map
+
 	float refractiveIndex;		// Index of refraction
 	float reflectionStrength;	// The strength of the Reflection [0, 1]
 };

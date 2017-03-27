@@ -120,6 +120,26 @@ namespace Honeycomb::Geometry {
 		this->imports.push_back(this);
 	}
 
+	Texture2D* Model::fetchTexture(const aiMaterial &mat, aiTextureType tT) {
+		// Create and initialize the texture
+		Texture2D *texture = new Texture2D();
+		texture->initialize();
+
+		if (mat.GetTextureCount(tT)) { // If material has the texture we want
+			// Get the texture directory
+			aiString dir;
+			mat.GetTexture(tT, 0, &dir);
+
+			// Set the previously initialized texture to contain the data
+			texture->setImageData(dir.C_Str());
+		} else {
+			// Set the previously initialized texture to empty texture
+			texture->setImageData();
+		}
+
+		return texture; // Return the texture
+	}
+
 	void Model::loadFromPath() {
 		// Import the Scene from ASSIMP and Check for Errors.
 		Importer aImp = Importer();
@@ -152,29 +172,13 @@ namespace Honeycomb::Geometry {
 		aMat->Get(AI_MATKEY_REFRACTI, matRefIndex);
 		aMat->Get(AI_MATKEY_REFLECTIVITY, matRefStrength);
 
-		// Retrieve the Diffuse Texture from ASSIMP
-		Texture2D *diffuseTexture = new Texture2D();
-		diffuseTexture->initialize();
-		if (aMat->GetTextureCount(aiTextureType_DIFFUSE)) {
-			aiString dir;
-			aMat->GetTexture(aiTextureType_DIFFUSE, 0, &dir);
-
-			diffuseTexture->setImageData(dir.C_Str());
-		} else {
-			diffuseTexture->setImageData();
-		}
-
-		// Retrieve the Specular Texture from ASSIMP
-		Texture2D *specularTexture = new Texture2D();
-		specularTexture->initialize();
-		if (aMat->GetTextureCount(aiTextureType_SPECULAR)) {
-			aiString dir;
-			aMat->GetTexture(aiTextureType_SPECULAR, 0, &dir);
-
-			specularTexture->setImageData(dir.C_Str());
-		} else {
-			specularTexture->setImageData();
-		}
+		// Retrieve the Textures from ASSIMP
+		Texture2D *diffuseTexture = this->fetchTexture(*aMat, 
+			aiTextureType::aiTextureType_DIFFUSE);
+		Texture2D *specularTexture = this->fetchTexture(*aMat,
+			aiTextureType::aiTextureType_SPECULAR);
+		Texture2D *normalsTexture = this->fetchTexture(*aMat,
+			aiTextureType::aiTextureType_NORMALS);
 
 		// Create the material.
 		Material *mat = new Material();
@@ -196,10 +200,17 @@ namespace Honeycomb::Geometry {
 			Vector2f(1.0F, 1.0F));
 		mat->glVector2fs.setValue("specularTexture.offset",
 			Vector2f(0.0F, 0.0F));
+		mat->glSampler2Ds.setValue("normalsTexture.sampler",
+			*normalsTexture);
+		mat->glVector2fs.setValue("normalsTexture.tiling",
+			Vector2f(1.0F, 1.0F));
+		mat->glVector2fs.setValue("normalsTexture.offset",
+			Vector2f(0.0F, 0.0F));
 
 		// Save the texture and material
 		this->textures.push_back(diffuseTexture);
 		this->textures.push_back(specularTexture);
+		this->textures.push_back(normalsTexture);
 		this->materials.push_back(mat);
 
 		return mat;
