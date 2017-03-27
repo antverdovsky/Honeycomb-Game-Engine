@@ -28,22 +28,20 @@ uniform float gamma;		// Gamma value for reading in textures
 /// Calculates the Diffuse Color of this object's fragment.
 /// return : The diffuse color.
 vec3 calculateDiffuse() {
-	vec3 gammaVec3 = vec3(gamma);
-
 	// Calculate the Reflection Color
 	float matRefStr = clamp(material.reflectionStrength, 0.0F, 1.0F);
 	vec3 viewVec = normalize(out_vs_pos - camera.translation);
 	vec3 refVec = refract(viewVec, -normalize(out_vs_norm), 
 		1.0F / material.refractiveIndex);
 	vec3 refStr = vec3(1.0F) - vec3(matRefStr);
-	vec4 refTexture = texture(skybox, refVec);
-	vec3 reflection = refStr + pow(refTexture.xyz, gammaVec3);
+	vec3 refTexture = textureCubeSRGB(skybox, refVec, gamma).rgb;
+	vec3 reflection = refStr + refTexture;
 
 	// Fetch material texture & diffuse
-	vec2 texCoord = out_vs_texCoord * material.diffuseTexture.tiling +
+	vec2 coord = out_vs_texCoord * material.diffuseTexture.tiling +
 		material.diffuseTexture.offset;
-	vec3 texture = pow(
-		texture2D(material.diffuseTexture.sampler, texCoord).xyz, gammaVec3);
+	vec3 texture = texture2DSRGB(
+		material.diffuseTexture.sampler, coord, gamma).rgb;
 	vec3 diffuse = material.diffuseColor.xyz;
 
 	// Return Texture + Diffuse + Reflection
