@@ -181,13 +181,13 @@ namespace Honeycomb::Render::Deferred {
 		// The vertices for a full screen Quad
 		Vertex quadVerts[4] = {
 			Vertex(Vector3f(0.0F, 0.0F, 0.0F), Vector3f(-1.0F, -1.0F, 0.0F), 
-				Vector2f(0.0F, 0.0F)),
+				Vector2f(0.0F, 0.0F), Vector3f(0.0F, 0.0F, 0.0F)),
 			Vertex(Vector3f(0.0F, 0.0F, 0.0F), Vector3f(-1.0F,  1.0F, 0.0F), 
-				Vector2f(0.0F, 1.0F)),
+				Vector2f(0.0F, 1.0F), Vector3f(0.0F, 0.0F, 0.0F)),
 			Vertex(Vector3f(0.0F, 0.0F, 0.0F), Vector3f(1.0F,  1.0F, 0.0F), 
-				Vector2f(1.0F, 1.0F)),
+				Vector2f(1.0F, 1.0F), Vector3f(0.0F, 0.0F, 0.0F)),
 			Vertex(Vector3f(0.0F, 0.0F, 0.0F), Vector3f(1.0F, -1.0F, 0.0F), 
-				Vector2f(1.0F, 0.0F))
+				Vector2f(1.0F, 0.0F), Vector3f(0.0F, 0.0F, 0.0F))
 		};
 
 		// The indices of the two triangles of the Quad

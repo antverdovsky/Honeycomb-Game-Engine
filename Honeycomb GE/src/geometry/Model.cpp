@@ -222,20 +222,22 @@ namespace Honeycomb::Geometry {
 
 		// Go through all the vertices of the Mesh
 		for (unsigned int i = 0; i < aMesh->mNumVertices; i++) {
-			// Get all of the normals, positions and UV coordinates for this
-			// vertex.
-			// TODO: Worry about the other 7 texture coordinates of the vertex?
-			aiVector3D vertNorms = aMesh->mNormals[i];
-			aiVector3D vertPos = aMesh->mVertices[i];
+			// Get all of the needed properties of the vertex
+			aiVector3D vertNorms = aMesh->HasNormals() ?
+				aMesh->mNormals[i] : aiVector3D();
+			aiVector3D vertPos = aMesh->HasPositions() ? 
+				aMesh->mVertices[i] : aiVector3D();
 			aiVector3D vertUV = aMesh->HasTextureCoords(0) ?
-				aMesh->mTextureCoords[0][i] : // TODO: Multiple Texture Support
-				aiVector3D(0.0F, 0.0F, 0.0F);
+				aMesh->mTextureCoords[0][i] : aiVector3D();
+			aiVector3D vertTan = aMesh->HasTangentsAndBitangents() ? 
+				aMesh->mTangents[i] : aiVector3D();
 
 			// Generate a Vertex using the fetched Vertex information
 			Vertex vertex = Vertex(
 				Vector3f(vertNorms.x, vertNorms.y, vertNorms.z),
 				Vector3f(vertPos.x, vertPos.y, vertPos.z),
-				Vector2f(vertUV.x, vertUV.y)
+				Vector2f(vertUV.x, vertUV.y),
+				Vector3f(vertTan.x, vertTan.y, vertTan.z)
 			);
 
 			vertices.push_back(vertex); // Add the vertex to Mesh data

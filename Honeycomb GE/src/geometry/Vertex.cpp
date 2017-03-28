@@ -10,13 +10,19 @@ namespace Honeycomb::Geometry {
 		this->normal = Vector3f();
 		this->position = Vector3f();
 		this->uv = Vector2f();
+		this->tangent = Vector3f();
 	}
 
 	Vertex::Vertex(const Vector3f &norm, const Vector3f &pos, 
-			const Vector2f &uv) {
+			const Vector2f &uv, const Vector3f &bit) {
 		this->normal.set(norm.getX(), norm.getY(), norm.getZ());
 		this->position.set(pos.getX(), pos.getY(), pos.getZ());
 		this->uv.set(uv.getX(), uv.getY());
+		this->tangent.set(bit.getX(), bit.getY(), bit.getZ());
+	}
+
+	const Vector3f& Vertex::getTangent() const {
+		return this->tangent;
 	}
 
 	const Vector3f& Vertex::getNormal() const {
@@ -29,6 +35,10 @@ namespace Honeycomb::Geometry {
 
 	const Vector2f& Vertex::getUV() const {
 		return this->uv;
+	}
+
+	void Vertex::setTangent(const Vector3f &bit) {
+		this->tangent = bit;
 	}
 
 	void Vertex::setNormal(const Vector3f &norm) {
@@ -45,29 +55,34 @@ namespace Honeycomb::Geometry {
 
 	float* Vertex::toFloatBuffer(Vertex verts[], const int &count) {
 		// The float buffer needs to store 3 floats for the position, 2 floats
-		// for the texture coordinates and 3 floats for the normal of the
-		// vertex (total of 8 floats for each vertex).
-		float* floatBuffer = new float[count * 8];
+		// for the texture coordinates, 3 floats for the normal of the
+		// vertex and 3 floats for the tangent. 
+		// (total of 3 + 2 + 3 + 3 = 11 floats for each vertex).
+		float* floatBuffer = new float[count * 11];
 
-		for (int i = 0; i < count * 8;) {
-			int curVertNum = i / 8; // Current vertex number
+		for (int i = 0; i < count * 11;) {
+			int curVertNum = i / 11; // Current vertex number
 
 			Vector3f curPos = verts[curVertNum].getPosition();
 			Vector2f curUV = verts[curVertNum].getUV();
 			Vector3f curNorm = verts[curVertNum].getNormal();
+			Vector3f curBit = verts[curVertNum].getTangent();
 
 			// Store each component of the element into the float buffer. Each 
 			// time a component is copied over, the current index is increased 
 			// so that the next component is copied into the next slot in the 
 			// float buffer.
-			floatBuffer[i++] = verts[curVertNum].getPosition().getX();
-			floatBuffer[i++] = verts[curVertNum].getPosition().getY();
-			floatBuffer[i++] = verts[curVertNum].getPosition().getZ();
-			floatBuffer[i++] = verts[curVertNum].getUV().getX();
-			floatBuffer[i++] = verts[curVertNum].getUV().getY();
-			floatBuffer[i++] = verts[curVertNum].getNormal().getX();
-			floatBuffer[i++] = verts[curVertNum].getNormal().getY();
-			floatBuffer[i++] = verts[curVertNum].getNormal().getZ();
+			floatBuffer[i++] = curPos.getX();
+			floatBuffer[i++] = curPos.getY();
+			floatBuffer[i++] = curPos.getZ();
+			floatBuffer[i++] = curUV.getX();
+			floatBuffer[i++] = curUV.getY();
+			floatBuffer[i++] = curNorm.getX();
+			floatBuffer[i++] = curNorm.getY();
+			floatBuffer[i++] = curNorm.getZ();
+			floatBuffer[i++] = curBit.getX();
+			floatBuffer[i++] = curBit.getY();
+			floatBuffer[i++] = curBit.getZ();
 		}
 
 		return floatBuffer; // Return the float buffer

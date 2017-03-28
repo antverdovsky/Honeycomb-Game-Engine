@@ -59,6 +59,7 @@ namespace Honeycomb::Geometry {
 		glEnableVertexAttribArray(0); // The position
 		glEnableVertexAttribArray(1); // The texture coordinates
 		glEnableVertexAttribArray(2); // The normals
+		glEnableVertexAttribArray(3); // The tangents
 
 		// Bind the buffer to the VBO.
 		glBindBuffer(GL_ARRAY_BUFFER, this->vertexBufferObj);
@@ -66,9 +67,10 @@ namespace Honeycomb::Geometry {
 		// The positions are to be stored at 0, with each one containing 3 
 		// floats per face, normalization is not needed, size is taken from the
 		// variable stored for this mesh, and the data starts at 0.
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 32, (void*)0);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 32, (void*)12);
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 32, (void*)20);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 44, (void*)0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 44, (void*)12);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 44, (void*)20);
+		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 44, (void*)32);
 
 		// Bind the buffer to the IBO.
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBufferObj);
@@ -82,6 +84,7 @@ namespace Honeycomb::Geometry {
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
 		glDisableVertexAttribArray(2);
+		glDisableVertexAttribArray(3);
 	}
 
 	void Mesh::setIndexData(int indices[], const int &iC) {
@@ -118,7 +121,7 @@ namespace Honeycomb::Geometry {
 		// (8 due to 3 position floats, 2 texture coordianate floats, and 3
 		// normals floats) multiplied by the number of vertices in the array.
 		this->vertCount = vC;
-		this->vertSize = 8 * sizeof(GLfloat) * this->vertCount;
+		this->vertSize = 11 * sizeof(GLfloat) * this->vertCount;
 
 		// Send the vertex data to the buffer (Static Draw indicates that the
 		// data is constant).

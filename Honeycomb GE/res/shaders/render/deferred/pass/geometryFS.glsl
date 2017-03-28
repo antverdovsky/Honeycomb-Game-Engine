@@ -12,6 +12,8 @@
 in vec2 out_vs_texCoord;
 in vec3 out_vs_norm;
 in vec3 out_vs_pos;
+in vec3 out_vs_tangent;
+in vec3 out_vs_bitangent;
 
 // Outputs correlating to the texture ID in the G-Buffer
 layout (location = 0) out vec3 out_fs_pos;
