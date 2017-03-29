@@ -7,8 +7,6 @@
 
 namespace Honeycomb::Render {
 	enum RenderingType {
-		TYPE_FORWARD_RENDERER_SINGLE,
-		TYPE_FORWARD_RENDERER_MULTI,
 		TYPE_DEFERRED_RENDERER
 	};
 

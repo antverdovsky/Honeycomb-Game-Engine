@@ -14,12 +14,14 @@
 #include "base\GameInput.h"
 #include "base\GameTime.h"
 #include "base\GameWindow.h"
+#include "base\GLItem.h"
 
 #include "component\GameComponent.h"
 #include "component\light\AmbientLight.h"
 #include "component\light\BaseLight.h"
 #include "component\light\DirectionalLight.h"
 #include "component\light\PointLight.h"
+#include "component\light\SpotLight.h"
 #include "component\physics\Transform.h"
 #include "component\render\CameraController.h"
 #include "component\render\MeshRenderer.h"
@@ -27,12 +29,16 @@
 #include "conjuncture\Event.h"
 #include "conjuncture\EventHandler.h"
 
+#include "debug\Logger.h"
+
 #include "file\FileIO.h"
+#include "file\LineOperation.h"
 
 #include "geometry\Mesh.h"
 #include "geometry\Model.h"
 #include "geometry\Vertex.h"
 
+#include "graphics\Cubemap.h"
 #include "graphics\Material.h"
 #include "graphics\Texture2D.h"
 
@@ -46,9 +52,16 @@
 #include "object\Builder.h"
 #include "object\GameObject.h"
 
+#include "render\Renderer.h"
+#include "render\RenderingEngine.h"
+#include "render\deferred\DeferredRenderer.h"
+#include "render\deferred\GBuffer.h"
+
 #include "scene\GameScene.h"
 
+#include "shader\GenericStruct.h"
 #include "shader\ShaderProgram.h"
+#include "shader\ShaderSource.h"
 
 namespace HoneycombEngine {
 	using namespace Honeycomb::Base;
@@ -70,6 +83,9 @@ namespace HoneycombEngine {
 	using namespace Honeycomb::Math::Utils;
 
 	using namespace Honeycomb::Object;
+
+	using namespace Honeycomb::Render;
+	using namespace Honeycomb::Render::Deferred;
 
 	using namespace Honeycomb::Scene;
 

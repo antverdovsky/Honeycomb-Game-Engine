@@ -226,8 +226,6 @@
     <ClCompile Include="src\graphics\Cubemap.cpp" />
     <ClCompile Include="src\render\deferred\DeferredRenderer.cpp" />
     <ClCompile Include="src\render\deferred\GBuffer.cpp" />
-    <ClCompile Include="src\render\ForwardRendererMulti.cpp" />
-    <ClCompile Include="src\render\ForwardRendererSingle.cpp" />
     <ClCompile Include="src\render\Renderer.cpp" />
     <ClCompile Include="src\render\RenderingEngine.cpp" />
     <ClCompile Include="src\scene\GameScene.cpp" />
@@ -272,8 +270,6 @@
     <ClInclude Include="include\graphics\Cubemap.h" />
     <ClInclude Include="include\render\deferred\DeferredRenderer.h" />
     <ClInclude Include="include\render\deferred\GBuffer.h" />
-    <ClInclude Include="include\render\ForwardRendererMulti.h" />
-    <ClInclude Include="include\render\ForwardRendererSingle.h" />
     <ClInclude Include="include\render\Renderer.h" />
     <ClInclude Include="include\render\RenderingEngine.h" />
     <ClInclude Include="include\scene\GameScene.h" />

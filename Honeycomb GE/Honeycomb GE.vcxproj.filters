@@ -120,12 +120,6 @@
     <ClCompile Include="src\render\RenderingEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\render\ForwardRendererSingle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\render\ForwardRendererMulti.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\file\LineOperation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -255,12 +249,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\render\RenderingEngine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\render\ForwardRendererSingle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\render\ForwardRendererMulti.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\file\LineOperation.h">
