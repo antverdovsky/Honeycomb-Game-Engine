@@ -101,8 +101,8 @@ namespace Honeycomb::Geometry {
 		/// re-imported to prevent duplication. The settings will only be used
 		/// if the model has not been previously imported.
 		/// const std::string &path : The path to the model.
-		static const Model& loadModel(const std::string &path, 
-				const ModelSettings &settings = ModelSettings());
+		static const Model& loadModel(const std::string &path,
+			const ModelSettings &settings = ModelSettings());
 
 		/// Returns the Game Object loaded in from the Model. This game object
 		/// is directly linked to the Model and IS NOT independent of the
@@ -145,6 +145,43 @@ namespace Honeycomb::Geometry {
 		///									importing the model.
 		Model(const std::string &path, const ModelSettings &settings);
 
+		/// Fetches the specified float property from the given material and
+		/// returns it. For the three parameters "pKey", "type", "idx", it is
+		/// suggested that they are passed via AI_MATKEY_<PROPERTY>.
+		/// const aiMaterial &mat : The ASSIMP Material.
+		/// const char *pKey : The string containing the name of the material
+		///					   property.
+		/// unsigned int type : The property type.
+		/// unsigned int idx : The property index.
+		/// const float &def : If an error occurs, this will be the value
+		///					   returned.
+		/// bool err : Logs a warning to the Honeycomb Logger if an error
+		///			   occurs and this is true. No log otherwise.
+		/// return : The property retrieved from the material, OR the def
+		///			 parameter if an error occurs.
+		float fetchMaterialProperty(const aiMaterial &mat, const char *pKey,
+			unsigned int type, unsigned int idx, const float &def = 0.0F,
+			bool err = true);
+
+		/// Fetches the specified Vector3 property from the given material and
+		/// returns it. For the three parameters "pKey", "type", "idx", it is
+		/// suggested that they are passed via AI_MATKEY_<PROPERTY>.
+		/// const aiMaterial &mat : The ASSIMP Material.
+		/// const char *pKey : The string containing the name of the material
+		///					   property.
+		/// unsigned int type : The property type.
+		/// unsigned int idx : The property index.
+		/// const Vector3f &def : If an error occurs, this will be the value
+		///						  returned.
+		/// bool err : Logs a warning to the Honeycomb Logger if an error
+		///			   occurs and this is true. No log otherwise.
+		/// return : The property retrieved from the material, OR the def
+		///			 parameter if an error occurs.
+		Honeycomb::Math::Vector3f fetchMaterialProperty(const aiMaterial &mat,
+			const char *pKey, unsigned int type, unsigned int idx,
+			const Honeycomb::Math::Vector3f &def =
+			Honeycomb::Math::Vector3f(), bool err = true);
+
 		/// Fetches the texture of the specified texture type from the 
 		///	specified ASSIMP material.
 		/// const aiMaterial &mat : The ASSIMP Material.
@@ -162,9 +199,9 @@ namespace Honeycomb::Geometry {
 		///			 material does not contain the texture of the specified
 		///			 type, a 1x1 pixel set to the specified color (white by
 		///			 default) is returned instead.
-		Honeycomb::Graphics::Texture2D* fetchTexture(const aiMaterial &mat, 
-				aiTextureType tT, const int &r = 255, const int &g = 255,
-				const int &b = 255);
+		Honeycomb::Graphics::Texture2D* fetchMaterialTexture(const aiMaterial
+			&mat, aiTextureType tT, const int &r = 255, const int &g = 255,
+			const int &b = 255);
 
 		/// Loads the model object from the file path and using settings stored
 		/// in this Model.

@@ -90,8 +90,8 @@ namespace Honeycomb::Geometry {
 		this->meshes.clear();
 	}
 
-	const Model& Model::loadModel(const std::string &path, 
-			const ModelSettings &settings) {
+	const Model& Model::loadModel(const std::string &path,
+		const ModelSettings &settings) {
 		for (const Model *model : Model::imports) {
 			if (model->path == path)
 				return *model;
@@ -115,13 +115,52 @@ namespace Honeycomb::Geometry {
 	Model::Model(const std::string &path, const ModelSettings &settings) {
 		this->path = path;
 		this->settings = settings;
-		
+
 		this->loadFromPath();
 		this->imports.push_back(this);
 	}
 
-	Texture2D* Model::fetchTexture(const aiMaterial &mat, aiTextureType tT,
-			const int &r, const int &g, const int &b) {
+	float Model::fetchMaterialProperty(const aiMaterial &mat, const char *pKey,
+			unsigned int type, unsigned int idx, const float &def, bool err) {
+		// Fetch the property from the material
+		float prop;
+		aiReturn result = mat.Get(pKey, type, idx, prop);
+
+		if (result == aiReturn::aiReturn_SUCCESS) {
+			return prop; // Return the property
+		} else {
+			if (err) { // Print a warning message if applicable
+				Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
+					"Unable to retrieve property " + std::string(pKey) +
+					" from material for object " + this->path);
+			}
+
+			return def; // Return the default value
+		}
+	}
+
+	Vector3f Model::fetchMaterialProperty(const aiMaterial &mat,
+		const char *pKey, unsigned int type, unsigned int idx, const
+		Vector3f &def, bool err) {
+		// Fetch the property from the material
+		aiColor3D vec3;
+		aiReturn result = mat.Get(pKey, type, idx, vec3);
+
+		if (result == aiReturn::aiReturn_SUCCESS) {
+			return Vector3f(vec3.r, vec3.g, vec3.b); // Return the property
+		} else {
+			if (err) { // Print a warning message if applicable
+				Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
+					"Unable to retrieve property " + std::string(pKey) +
+					" from material for object " + this->path);
+			}
+
+			return def; // Return the default value
+		}
+	}
+
+	Texture2D* Model::fetchMaterialTexture(const aiMaterial &mat,
+		aiTextureType tT, const int &r, const int &g, const int &b) {
 		// Create and initialize the texture
 		Texture2D *texture = new Texture2D();
 		texture->initialize();
@@ -160,44 +199,41 @@ namespace Honeycomb::Geometry {
 	}
 
 	Material* Model::processAiMeshMaterial(aiMaterial* aMat) {
-		aiColor3D matDiffuse;	// Diffuse Property
-		aiColor3D matSpecular;	// Specular Property
-		float matShininess;		// Shininess Property
-		float matRefIndex;		// Refractive Index
-		float matRefStrength;	// Reflectivity Strength
-
 		// Retrieve all of the Material properties from ASSIMP
-		aMat->Get(AI_MATKEY_COLOR_DIFFUSE, matDiffuse);
-		aMat->Get(AI_MATKEY_COLOR_SPECULAR, matSpecular);
-		aMat->Get(AI_MATKEY_SHININESS, matShininess);
-		aMat->Get(AI_MATKEY_REFRACTI, matRefIndex);
-		aMat->Get(AI_MATKEY_REFLECTIVITY, matRefStrength);
+		Vector3f diffuse = this->fetchMaterialProperty(*aMat,
+			AI_MATKEY_COLOR_DIFFUSE, Vector3f(1.0F, 1.0F, 1.0F));
+		Vector3f specular = this->fetchMaterialProperty(*aMat,
+			AI_MATKEY_COLOR_SPECULAR, Vector3f(1.0F, 1.0F, 1.0F));
+		float shininess = this->fetchMaterialProperty(*aMat,
+			AI_MATKEY_SHININESS, 0.0F);
+		float refIndex = this->fetchMaterialProperty(*aMat,
+			AI_MATKEY_REFRACTI, 1.0F);
+		float refStrength = this->fetchMaterialProperty(*aMat,
+			AI_MATKEY_REFLECTIVITY, 0.0F);
 
 		// Retrieve the Textures from ASSIMP. For normals/bump mapping, if
 		// there is no bump map, set the texture to a black pixel, which will
 		// indicate to the shaders that it is to use the interpolated VS norms.
-		Texture2D *diffuseTexture = this->fetchTexture(*aMat, 
-			aiTextureType::aiTextureType_DIFFUSE);
-		Texture2D *specularTexture = this->fetchTexture(*aMat,
-			aiTextureType::aiTextureType_SPECULAR);
-		Texture2D *normalsTexture = this->fetchTexture(*aMat,
+		Texture2D *diffuseTexture = this->fetchMaterialTexture(*aMat,
+			aiTextureType::aiTextureType_DIFFUSE, 255, 255, 255);
+		Texture2D *specularTexture = this->fetchMaterialTexture(*aMat,
+			aiTextureType::aiTextureType_SPECULAR, 255, 255, 255);
+		Texture2D *normalsTexture = this->fetchMaterialTexture(*aMat,
 			aiTextureType::aiTextureType_NORMALS, 0, 0, 0);
 
 		// Create the material.
 		Material *mat = new Material();
-		mat->glVector3fs.setValue("diffuseColor",
-			Vector3f(matDiffuse.r, matDiffuse.g, matDiffuse.b));
-		mat->glVector3fs.setValue("specularColor",
-			Vector3f(matSpecular.r, matSpecular.g, matSpecular.b));
-		mat->glFloats.setValue("shininess", matShininess);
-		mat->glFloats.setValue("refractiveIndex", matRefIndex);
-		mat->glFloats.setValue("reflectionStrength", matRefStrength);
+		mat->glVector3fs.setValue("diffuseColor", diffuse);
+		mat->glVector3fs.setValue("specularColor", specular);
+		mat->glFloats.setValue("shininess", shininess);
+		mat->glFloats.setValue("refractiveIndex", refIndex);
+		mat->glFloats.setValue("reflectionStrength", refStrength);
 		mat->glSampler2Ds.setValue("diffuseTexture.sampler", *diffuseTexture);
-		mat->glVector2fs.setValue("diffuseTexture.tiling", 
+		mat->glVector2fs.setValue("diffuseTexture.tiling",
 			Vector2f(1.0F, 1.0F));
-		mat->glVector2fs.setValue("diffuseTexture.offset", 
+		mat->glVector2fs.setValue("diffuseTexture.offset",
 			Vector2f(0.0F, 0.0F));
-		mat->glSampler2Ds.setValue("specularTexture.sampler", 
+		mat->glSampler2Ds.setValue("specularTexture.sampler",
 			*specularTexture);
 		mat->glVector2fs.setValue("specularTexture.tiling",
 			Vector2f(1.0F, 1.0F));
@@ -223,17 +259,20 @@ namespace Honeycomb::Geometry {
 		std::vector<Vertex> vertices; // Vertices Data
 		std::vector<int> indices; // Indices Data
 
-		// Go through all the vertices of the Mesh
+		// Go through all the vertices of the Mesh (for the tangents, if the
+		// Mesh has no tangents, we should not use a default Vector3 of values
+		// { 0, 0, 0 } since this can cause some division by zero errors in the
+		// Shaders).
 		for (unsigned int i = 0; i < aMesh->mNumVertices; i++) {
 			// Get all of the needed properties of the vertex
 			aiVector3D vertNorms = aMesh->HasNormals() ?
 				aMesh->mNormals[i] : aiVector3D();
-			aiVector3D vertPos = aMesh->HasPositions() ? 
+			aiVector3D vertPos = aMesh->HasPositions() ?
 				aMesh->mVertices[i] : aiVector3D();
 			aiVector3D vertUV = aMesh->HasTextureCoords(0) ?
 				aMesh->mTextureCoords[0][i] : aiVector3D();
-			aiVector3D vertTan = aMesh->HasTangentsAndBitangents() ? 
-				aMesh->mTangents[i] : aiVector3D();
+			aiVector3D vertTan = aMesh->HasTangentsAndBitangents() ?
+				aMesh->mTangents[i] : aiVector3D(1.0F, 1.0F, 1.0F);
 
 			// Generate a Vertex using the fetched Vertex information
 			Vertex vertex = Vertex(
@@ -304,8 +343,7 @@ namespace Honeycomb::Geometry {
 			if (aMesh->mMaterialIndex >= 0) { // Get Material, if it exists
 				aMat = this->scene->mMaterials[aMesh->mMaterialIndex];
 				mat = this->processAiMeshMaterial(aMat);
-			}
-			else { // Otherwise, create a default Material
+			} else { // Otherwise, create a default Material
 				mat = new Material();
 			}
 

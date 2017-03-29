@@ -34,14 +34,20 @@ uniform float gamma;		// Gamma value for reading in textures
 /// mapping).
 /// return : The diffuse color.
 vec3 calculateDiffuse() {
-	// Calculate the Reflection Color
+	// Calculate the Reflection Color. To avoid an if statement, calculate the
+	// reflection strength as one minus the material's reflection strength.
+	// This strength will be one if the material reflection is zero, or zero
+	// if the material reflection is one. Then, add the reflected vector to the
+	// strength, so that if the strength is one, it remains one (after being
+	// clamped) or if the strength is zero, it becomes equal to the reflected
+	// vector.
 	float matRefStr = clamp(material.reflectionStrength, 0.0F, 1.0F);
 	vec3 viewVec = normalize(out_vs_pos - camera.translation);
 	vec3 refVec = refract(viewVec, -normalize(out_fs_normal), 
 		1.0F / material.refractiveIndex);
 	vec3 refStr = vec3(1.0F) - vec3(matRefStr);
 	vec3 refTexture = textureCubeSRGB(skybox, refVec, gamma).rgb;
-	vec3 reflection = refStr + refTexture;
+	vec3 reflection = clamp(refStr + refTexture, 0.0F, 1.0F);
 
 	// Fetch material texture & diffuse
 	vec2 coord = out_vs_texCoord * material.diffuseTexture.tiling +
@@ -72,7 +78,7 @@ vec3 calculateNormal() {
 
 	// Orient the normal map according to the Tangent-Bitangent-Normal Matrix
 	texNorm = normalize(out_vs_tbnMatrix * texNorm);
-
+	
 	// Multiply by the ceiling of the original texture value. If this object
 	// has a texture map, the ceiling of the texture will be a { 1, 1, 1 }
 	// white vector, and will therefore not modify the texture map. If this
@@ -90,7 +96,7 @@ vec3 calculateNormal() {
 	// Since either vsNorm is zero or texNorm is zero, but not both, sum them
 	// up and the result will be equal to the non zero value, which is the one
 	// we want.
-	return vsNorm + texNorm;
+	return texNorm + vsNorm;
 }
 
 /// Calculates the Specular Color and shininess of this object's fragment.
