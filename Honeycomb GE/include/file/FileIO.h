@@ -15,8 +15,12 @@ namespace Honeycomb::File {
 	/// const string &img : The path of the image which is to be read in.
 	/// int &w : The reference for where to store the width of the image.
 	/// int &h : The reference for where to store the height of the image.
-	/// return : The pointer to the contents of the file.
-	unsigned char* readImageToUChar(const std::string &img, int &w, int &h);
+	/// const bool &err : Should a warning be logged to the Honeycomb Logger if
+	///					  an error occurs?
+	/// return : The pointer to the contents of the file, or a nullptr if the
+	///			 file cannot be read in.
+	unsigned char* readImageToUChar(const std::string &img, int &w, int &h,
+			const bool &err = true);
 	
 	/// Reads in the file from the specified file path and returns a pointer to
 	/// its contents. The contents are dynamically allocated and should be

@@ -55,32 +55,32 @@ namespace Honeycomb::Graphics {
 		glDeleteTextures(1, &texID); // Delete Texture from OpenGL
 	}
 
-	void Texture2D::setImageData(const std::string &file) {
-		if (file.empty()) { // If empty file -> Create a 1x1 white RGBA texture
-			this->setImageData(255, 255, 255);
-		} else { // Otherwise, import the texture from file
-			this->setImageData(file, GL_RGB, GL_RGB);
-		}
-	}
-
 	void Texture2D::setImageData(const int &r, const int &g, const int &b) {
 		this->bind();
 
 		GLubyte color[] = { r, g, b };
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB, 
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB,
 			GL_UNSIGNED_BYTE, color);
 	}
 
+	void Texture2D::setImageData(const std::string &file, 
+			const int &r, const int &g, const int &b) {
+		this->setImageData(file, GL_RGB, GL_RGB, r, g, b);
+	}
+
 	void Texture2D::setImageData(const std::string &file, const int &in, 
-			const int &ex) {
-		this->directory = file;
+			const int &ex, const int &r, const int &g, const int &b) {
+		// Read in the data from the image file
+		int w, h;
+		auto data = File::readImageToUChar(file, w, h);
 
-		// Store the width, height and image data.
-		int width, height;
-		unsigned char *data = File::readImageToUChar(file, width, height);
+		if (data != nullptr) {	// Data was read in -> Send to texture
+			this->setImageData(data, GL_UNSIGNED_BYTE, in, ex, w, h);
+		} else {				// Data was not read in -> Send RGB to texture
+			this->setImageData(r, g, b);
 
-		this->setImageData(data, GL_UNSIGNED_BYTE, in, ex, width, height);
-		delete data;
+			delete data;		// Delete the data
+		}
 	}
 
 	void Texture2D::setImageData(unsigned char *data, const int &type, 

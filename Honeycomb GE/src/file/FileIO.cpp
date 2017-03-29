@@ -11,9 +11,19 @@
 using Honeycomb::Debug::Logger;
 
 namespace Honeycomb::File {
-	unsigned char* readImageToUChar(const std::string &img, int &w, int &h) {
+	unsigned char* readImageToUChar(const std::string &img, int &w, int &h, 
+			const bool &err) {
 		// Use the SOIL library to load in the image and return its data
-		return SOIL_load_image(img.c_str(), &w, &h, 0, SOIL_LOAD_AUTO);
+		unsigned char *data = SOIL_load_image(img.c_str(), &w, &h, 0, 
+			SOIL_LOAD_AUTO);
+
+		if (data == nullptr && err) { // Log an error if necessary
+			Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
+				"Unable to read in image from file \"" + img + "\"\n\t" + 
+				"Result returned: " + std::string(SOIL_last_result()));
+		}
+
+		return data;
 	}
 
 	std::string* readFileToStr(const std::string &file) {

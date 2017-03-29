@@ -39,28 +39,44 @@ namespace Honeycomb::Graphics {
 		/// texture buffer.
 		void destroy();
 
-		/// Gets the image data from the specified image file and passes it to
-		/// OpenGL, using the GL_RGB formats. If the file string is empty, this
-		/// texture will be instead initialized to a 1x1 white RGB bitmap 
-		/// (default "non-texture).
-		/// const string &file : The file path to the image file, or empty for
-		///						 a non-texture.
-		void setImageData(const std::string &file = "");
-
 		/// Creates a 1x1 pixel of the specified color and sets it data to this
 		/// Texture's data.
 		/// const int &r : The red component of the color [0, 255].
 		/// const int &g : The green component of the color [0, 255].
 		/// const int &b : The blue component of the color [0, 255].
-		void setImageData(const int &r, const int &g, const int &b);
+		void setImageData(const int &r = 255, const int &g = 255,
+			const int &b = 255);
 
 		/// Gets the image data from the specified image file and passes it to
-		/// OpenGL, using the specified internal and external formats.
+		/// OpenGL, using the GL_RGB formats. If the file cannot be read in
+		/// from the directory specified, the texture will be set to a 1x1
+		/// pixel texture containing the color specified (white by default).
+		/// const string &file : The file path to the image file.
+		/// const int &r : The red component of the color [0, 255] if an error
+		///				   occurs reading in the file.
+		/// const int &g : The green component of the color [0, 255] if an 
+		///				   error occurs reading in the file.
+		/// const int &b : The blue component of the color [0, 255] if an error
+		///				   occurs reading in the file.
+		void setImageData(const std::string &file, 
+			const int &r = 255, const int &g = 255, const int &b = 255);
+
+		/// Gets the image data from the specified image file and passes it to
+		/// OpenGL, using the specified internal and external formats. If the 
+		/// file cannot be read in from the directory specified, the texture 
+		/// will be set to a 1x1 pixel texture containing the color specified 
+		/// (white by default).
 		/// const string &file : The file path to the image file.
 		/// const int &in : The internal format with which to store the image.
 		/// const int &ex : The external format of the data passed in.
+		/// const int &r : The red component of the color [0, 255] if an error
+		///				   occurs reading in the file.
+		/// const int &g : The green component of the color [0, 255] if an 
+		///				   error occurs reading in the file.
+		/// const int &b : The blue component of the color [0, 255] if an error
+		///				   occurs reading in the file.
 		void setImageData(const std::string &file, const int &in, 
-			const int &ex);
+			const int &ex, const int &r, const int &g, const int &b);
 
 		/// Passes the specified image data to OpenGL.
 		/// unsigned char *data : The image data to be sent to OpenGL.
