@@ -47,6 +47,13 @@ namespace Honeycomb::Graphics {
 		///						 a non-texture.
 		void setImageData(const std::string &file = "");
 
+		/// Creates a 1x1 pixel of the specified color and sets it data to this
+		/// Texture's data.
+		/// const int &r : The red component of the color [0, 255].
+		/// const int &g : The green component of the color [0, 255].
+		/// const int &b : The blue component of the color [0, 255].
+		void setImageData(const int &r, const int &g, const int &b);
+
 		/// Gets the image data from the specified image file and passes it to
 		/// OpenGL, using the specified internal and external formats.
 		/// const string &file : The file path to the image file.

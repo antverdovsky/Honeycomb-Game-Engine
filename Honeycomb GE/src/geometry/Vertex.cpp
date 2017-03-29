@@ -14,11 +14,11 @@ namespace Honeycomb::Geometry {
 	}
 
 	Vertex::Vertex(const Vector3f &norm, const Vector3f &pos, 
-			const Vector2f &uv, const Vector3f &bit) {
+			const Vector2f &uv, const Vector3f &tan) {
 		this->normal.set(norm.getX(), norm.getY(), norm.getZ());
 		this->position.set(pos.getX(), pos.getY(), pos.getZ());
 		this->uv.set(uv.getX(), uv.getY());
-		this->tangent.set(bit.getX(), bit.getY(), bit.getZ());
+		this->tangent.set(tan.getX(), tan.getY(), tan.getZ());
 	}
 
 	const Vector3f& Vertex::getTangent() const {
@@ -37,8 +37,8 @@ namespace Honeycomb::Geometry {
 		return this->uv;
 	}
 
-	void Vertex::setTangent(const Vector3f &bit) {
-		this->tangent = bit;
+	void Vertex::setTangent(const Vector3f &tan) {
+		this->tangent = tan;
 	}
 
 	void Vertex::setNormal(const Vector3f &norm) {
@@ -66,7 +66,7 @@ namespace Honeycomb::Geometry {
 			Vector3f curPos = verts[curVertNum].getPosition();
 			Vector2f curUV = verts[curVertNum].getUV();
 			Vector3f curNorm = verts[curVertNum].getNormal();
-			Vector3f curBit = verts[curVertNum].getTangent();
+			Vector3f curTan = verts[curVertNum].getTangent();
 
 			// Store each component of the element into the float buffer. Each 
 			// time a component is copied over, the current index is increased 
@@ -80,9 +80,9 @@ namespace Honeycomb::Geometry {
 			floatBuffer[i++] = curNorm.getX();
 			floatBuffer[i++] = curNorm.getY();
 			floatBuffer[i++] = curNorm.getZ();
-			floatBuffer[i++] = curBit.getX();
-			floatBuffer[i++] = curBit.getY();
-			floatBuffer[i++] = curBit.getZ();
+			floatBuffer[i++] = curTan.getX();
+			floatBuffer[i++] = curTan.getY();
+			floatBuffer[i++] = curTan.getZ();
 		}
 
 		return floatBuffer; // Return the float buffer

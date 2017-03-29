@@ -149,12 +149,22 @@ namespace Honeycomb::Geometry {
 		///	specified ASSIMP material.
 		/// const aiMaterial &mat : The ASSIMP Material.
 		/// aiTextureType tT : The texture type.
+		/// const int &r : The red component of the texture to be set to
+		///				   the color of the texture IF the texture does
+		///				   cannot be imported. Bounded to [0, 255].
+		/// const int &g : The green component of the texture to be set to
+		///				   the color of the texture IF the texture does
+		///				   cannot be imported. Bounded to [0, 255].
+		/// const int &b : The blue component of the texture to be set to
+		///				   the color of the texture IF the texture does
+		///				   cannot be imported. Bounded to [0, 255].
 		/// return : The initialized and ready to be used Texture. If the
 		///			 material does not contain the texture of the specified
-		///			 type, an empty texture (initialized to a white pixel) is 
-		///			 returned instead.
+		///			 type, a 1x1 pixel set to the specified color (white by
+		///			 default) is returned instead.
 		Honeycomb::Graphics::Texture2D* fetchTexture(const aiMaterial &mat, 
-				aiTextureType tT);
+				aiTextureType tT, const int &r = 255, const int &g = 255,
+				const int &b = 255);
 
 		/// Loads the model object from the file path and using settings stored
 		/// in this Model.

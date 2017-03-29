@@ -120,7 +120,8 @@ namespace Honeycomb::Geometry {
 		this->imports.push_back(this);
 	}
 
-	Texture2D* Model::fetchTexture(const aiMaterial &mat, aiTextureType tT) {
+	Texture2D* Model::fetchTexture(const aiMaterial &mat, aiTextureType tT,
+			const int &r, const int &g, const int &b) {
 		// Create and initialize the texture
 		Texture2D *texture = new Texture2D();
 		texture->initialize();
@@ -134,7 +135,7 @@ namespace Honeycomb::Geometry {
 			texture->setImageData(dir.C_Str());
 		} else {
 			// Set the previously initialized texture to empty texture
-			texture->setImageData();
+			texture->setImageData(r, g, b);
 		}
 
 		return texture; // Return the texture
@@ -172,13 +173,15 @@ namespace Honeycomb::Geometry {
 		aMat->Get(AI_MATKEY_REFRACTI, matRefIndex);
 		aMat->Get(AI_MATKEY_REFLECTIVITY, matRefStrength);
 
-		// Retrieve the Textures from ASSIMP
+		// Retrieve the Textures from ASSIMP. For normals/bump mapping, if
+		// there is no bump map, set the texture to a black pixel, which will
+		// indicate to the shaders that it is to use the interpolated VS norms.
 		Texture2D *diffuseTexture = this->fetchTexture(*aMat, 
 			aiTextureType::aiTextureType_DIFFUSE);
 		Texture2D *specularTexture = this->fetchTexture(*aMat,
 			aiTextureType::aiTextureType_SPECULAR);
 		Texture2D *normalsTexture = this->fetchTexture(*aMat,
-			aiTextureType::aiTextureType_NORMALS);
+			aiTextureType::aiTextureType_NORMALS, 0, 0, 0);
 
 		// Create the material.
 		Material *mat = new Material();
