@@ -187,39 +187,28 @@ namespace Honeycomb::Render::Deferred {
 			GL_TEXTURE_2D, this->bufferTextures[GBufferTextureType::DEPTH].
 			getTextureID(), 0);
 
-		// Create the FINAL_1 Image Texture
-		this->bufferTextures[GBufferTextureType::FINAL_1].initialize();
-		this->bufferTextures[GBufferTextureType::FINAL_1].bind();
-		this->bufferTextures[GBufferTextureType::FINAL_1].setImageData(NULL,
-			GL_FLOAT, GL_RGBA, GL_RGB, this->textureWidth, this->textureHeight
-		);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, 
-			GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL_1,
-			GL_TEXTURE_2D, this->bufferTextures[GBufferTextureType::FINAL_1].
-			getTextureID(), 0);
+		// Create the FINAL_1 and FINAL_2 Image Texture
+		i = GBufferTextureType::FINAL_1;
+		for (; i <= GBufferTextureType::FINAL_2; ++i) {
+			this->bufferTextures[i].initialize();
+			this->bufferTextures[i].bind();
+			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGBA, 
+				GL_RGB, this->textureWidth, this->textureHeight);
 
-		// Create the FINAL_2 Image Texture
-		this->bufferTextures[GBufferTextureType::FINAL_2].initialize();
-		this->bufferTextures[GBufferTextureType::FINAL_2].bind();
-		this->bufferTextures[GBufferTextureType::FINAL_2].setImageData(NULL,
-			GL_FLOAT, GL_RGBA, GL_RGB, this->textureWidth, this->textureHeight
-		);
-		glFramebufferTexture2D(GL_FRAMEBUFFER,
-			GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL_2,
-			GL_TEXTURE_2D, this->bufferTextures[GBufferTextureType::FINAL_2].
-			getTextureID(), 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER,
+				GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, 
+				this->bufferTextures[i].getTextureID(), 0);
+		}
 
 		// Bind the 5 buffers as the color buffers which will be used when
 		// drawing & check that all the color buffers were initialized properly
 		glDrawBuffers(GBufferTextureType::DEPTH, colorBuffers);
 		
 		GLenum bufferStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-		
 		if (bufferStatus != GL_FRAMEBUFFER_COMPLETE) {
 			Logger::getLogger().logError(__FUNCTION__, __LINE__,
 				"Unable to Create Deferred GBuffer!");
 		}
-
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // Bind Default FrameBuffer
 		
 		this->isInitialized = true;
@@ -242,19 +231,26 @@ namespace Honeycomb::Render::Deferred {
 		this->textureHeight = GameWindow::getGameWindow()->getWindowHeight();
 		this->textureWidth = GameWindow::getGameWindow()->getWindowWidth();
 		
-		for (int i = 0; i < GBufferTextureType::DEPTH; i++) {
-			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGB32F,
+		// Resize RGB16 textures (all color buffers except for specular)
+		for (int i = 0; i < GBufferTextureType::SPECULAR; i++) {
+			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGB16F,
 				GL_RGB, this->textureWidth, this->textureHeight);
 		}
 
+		// Resize RGBA16 textures (just the specular for now)
+		this->bufferTextures[GBufferTextureType::SPECULAR].setImageData(NULL, 
+			GL_FLOAT, GL_RGBA16F, GL_RGB, 
+			this->textureWidth, this->textureHeight);
+
+		// Resize the depth texture
 		this->bufferTextures[GBufferTextureType::DEPTH].setImageData(NULL,
 			GL_FLOAT_32_UNSIGNED_INT_24_8_REV, GL_DEPTH32F_STENCIL8,
 			GL_DEPTH_STENCIL, this->textureWidth, this->textureHeight);
-		this->bufferTextures[GBufferTextureType::FINAL_1].setImageData(NULL,
-			GL_FLOAT, GL_RGBA, GL_RGB, this->textureWidth, this->textureHeight
-		);
-		this->bufferTextures[GBufferTextureType::FINAL_2].setImageData(NULL,
-			GL_FLOAT, GL_RGBA, GL_RGB, this->textureWidth, this->textureHeight
-		);
+
+		// Resize the two final textures
+		for (int i = GBufferTextureType::FINAL_1; i <= FINAL_2; ++i) {
+			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGBA, 
+				GL_RGB, this->textureWidth, this->textureHeight);
+		}
 	}
 }
