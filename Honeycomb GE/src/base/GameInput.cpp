@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "..\..\include\base\BaseMain.h"
-#include "..\..\include\base\GameInput.h"
-#include "..\..\include\base\GameWindow.h"
+#include "../../include/base/BaseMain.h"
+#include "../../include/base/GameInput.h"
+#include "../../include/base/GameWindow.h"
 
 using Honeycomb::Math::Vector2f;
 

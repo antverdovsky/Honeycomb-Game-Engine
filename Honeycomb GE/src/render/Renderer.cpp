@@ -1,11 +1,11 @@
-#include "..\..\include\render\Renderer.h"
+#include "../../include/render/Renderer.h"
 
-#include <GL\glew.h>
+#include <GL/glew.h>
 
-#include "..\..\include\component\render\MeshRenderer.h"
-#include "..\..\include\object\Builder.h"
-#include "..\..\include\object\GameObject.h"
-#include "..\..\include\render\RenderingEngine.h"
+#include "../../include/component/render/MeshRenderer.h"
+#include "../../include/object/Builder.h"
+#include "../../include/object/GameObject.h"
+#include "../../include/render/RenderingEngine.h"
 
 using Honeycomb::Component::Render::MeshRenderer;
 using Honeycomb::Graphics::Cubemap;
@@ -143,27 +143,27 @@ namespace Honeycomb::Render {
 
 		// Initialize Skybox Shader
 		this->skyboxShader.initialize();
-		this->skyboxShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\cubemap\\skyboxVS.glsl", ShaderType::VERTEX_SHADER);
-		this->skyboxShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\cubemap\\texturedSkyboxFS.glsl", ShaderType::FRAGMENT_SHADER);
+		this->skyboxShader.addShader("../Honeycomb GE/res/shaders"
+			"/cubemap/skyboxVS.glsl", ShaderType::VERTEX_SHADER);
+		this->skyboxShader.addShader("../Honeycomb GE/res/shaders"
+			"/cubemap/texturedSkyboxFS.glsl", ShaderType::FRAGMENT_SHADER);
 		this->skyboxShader.finalizeShaderProgram();
 
 		// Initialize Solid Color Shader
 		this->solidColorShader.initialize();
-		this->solidColorShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\cubemap\\skyboxVS.glsl", ShaderType::VERTEX_SHADER);
-		this->solidColorShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\cubemap\\solidColorSkyboxFS.glsl", ShaderType::FRAGMENT_SHADER);
+		this->solidColorShader.addShader("../Honeycomb GE/res/shaders"
+			"/cubemap/skyboxVS.glsl", ShaderType::VERTEX_SHADER);
+		this->solidColorShader.addShader("../Honeycomb GE/res/shaders"
+			"/cubemap/solidColorSkyboxFS.glsl", ShaderType::FRAGMENT_SHADER);
 		this->solidColorShader.finalizeShaderProgram();
 	}
 
 	void Renderer::initializeFXAAShader() {
 		this->fxaaShader.initialize();
-		this->fxaaShader.addShader("..\\Honeycomb GE\\res\\shaders\\render\\"
-			"antialiasing\\fxaa\\fxaaVS.glsl", ShaderType::VERTEX_SHADER);
-		this->fxaaShader.addShader("..\\Honeycomb GE\\res\\shaders\\render\\"
-			"antialiasing\\fxaa\\fxaaFS.glsl", ShaderType::FRAGMENT_SHADER);
+		this->fxaaShader.addShader("../Honeycomb GE/res/shaders/render/"
+			"antialiasing/fxaa/fxaaVS.glsl", ShaderType::VERTEX_SHADER);
+		this->fxaaShader.addShader("../Honeycomb GE/res/shaders/render/"
+			"antialiasing/fxaa/fxaaFS.glsl", ShaderType::FRAGMENT_SHADER);
 		this->fxaaShader.finalizeShaderProgram();
 
 		this->fxaaShader.setUniform_f("spanMax", 8.0F);
@@ -173,10 +173,10 @@ namespace Honeycomb::Render {
 
 	void Renderer::initializeGammaShader() {
 		this->gammaShader.initialize();
-		this->gammaShader.addShader("..\\Honeycomb GE\\res\\shaders\\render\\"
-			"gamma\\gammaVS.glsl", ShaderType::VERTEX_SHADER);
-		this->gammaShader.addShader("..\\Honeycomb GE\\res\\shaders\\render\\"
-			"gamma\\gammaFS.glsl", ShaderType::FRAGMENT_SHADER);
+		this->gammaShader.addShader("../Honeycomb GE/res/shaders/render/"
+			"gamma/gammaVS.glsl", ShaderType::VERTEX_SHADER);
+		this->gammaShader.addShader("../Honeycomb GE/res/shaders/render/"
+			"gamma/gammaFS.glsl", ShaderType::FRAGMENT_SHADER);
 		this->gammaShader.finalizeShaderProgram();
 
 		this->gammaShader.setUniform_f("gamma", 2.2F);

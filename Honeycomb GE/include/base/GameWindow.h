@@ -2,11 +2,11 @@
 #ifndef GAME_WINDOW_H
 #define GAME_WINDOW_H
 
-#include <GLFW\glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include <string>
 
-#include "..\conjuncture\Event.h"
+#include "../conjuncture/Event.h"
 
 namespace Honeycomb::Base {
 	class GameWindow {

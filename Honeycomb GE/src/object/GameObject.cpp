@@ -1,10 +1,10 @@
-#include "..\..\include\object\GameObject.h"
+#include "../../include/object/GameObject.h"
 
 #include <algorithm>
 #include <iostream>
 
-#include "..\..\include\shader\ShaderProgram.h"
-#include "..\..\include\component\physics\Transform.h"
+#include "../../include/shader/ShaderProgram.h"
+#include "../../include/component/physics/Transform.h"
 
 using Honeycomb::Component::GameComponent;
 using Honeycomb::Component::Physics::Transform;

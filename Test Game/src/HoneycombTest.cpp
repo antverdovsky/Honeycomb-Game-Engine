@@ -1,10 +1,10 @@
-#include "..\include\HoneycombTest.h"
+#include "../include/HoneycombTest.h"
 
-#include "..\..\Honeycomb GE\include\HoneycombEngine.h"
-#include "..\..\Honeycomb GE\include\render\Renderer.h"
-#include "..\..\Honeycomb GE\include\render\deferred\DeferredRenderer.h"
-#include "..\include\components\InputTransformable.h"
-#include "..\..\Honeycomb GE\include\debug\Logger.h"
+#include "../../Honeycomb GE/include/HoneycombEngine.h"
+#include "../../Honeycomb GE/include/render/Renderer.h"
+#include "../../Honeycomb GE/include/render/deferred/DeferredRenderer.h"
+#include "../include/components/InputTransformable.h"
+#include "../../Honeycomb GE/include/debug/Logger.h"
 
 using namespace HoneycombEngine;
 using namespace HoneycombTest::Components;
@@ -14,12 +14,7 @@ using Honeycomb::Render::Deferred::DeferredRenderer;
 
 namespace HoneycombTest {
 	void TestGame::input() {
-		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_1)) {
-			Renderer::getRenderer()->setColorSpace(Renderer::ColorSpace::GAMMA_POST);
-		}
-		else if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_2)) {
-			Renderer::getRenderer()->setColorSpace(Renderer::ColorSpace::LINEAR);
-		}
+
 	}
 
 	void TestGame::render() {
@@ -29,7 +24,7 @@ namespace HoneycombTest {
 	void TestGame::start() {
 		// Build the Skybox and send to the Renderer
 		std::string skyboxDir =
-			"..\\Honeycomb GE\\res\\textures\\default\\aurora_skybox\\";
+			"../Honeycomb GE/res/textures/default/aurora_skybox/";
 		std::string skyboxTex[6] = {
 			skyboxDir + "right.bmp",
 			skyboxDir + "left.bmp",
@@ -43,24 +38,21 @@ namespace HoneycombTest {
 		skybox.setFaces(skyboxTex);
 		Renderer::getRenderer()->setSkybox(skybox);
 
-		DeferredRenderer::getDeferredRenderer()->setFinalTexture(
-			DeferredRenderer::FinalTexture::NORMAL);
-
 		// Create the Post Processing Shaders and add to the Renderer
 		this->inversionShader.initialize();
-		this->inversionShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"post-processing\\postProcessingVS.glsl", 
+		this->inversionShader.addShader("../Honeycomb GE/res/shaders/"
+			"post-processing/postProcessingVS.glsl", 
 			ShaderType::VERTEX_SHADER);
-		this->inversionShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"post-processing\\inversionFS.glsl", ShaderType::FRAGMENT_SHADER);
+		this->inversionShader.addShader("../Honeycomb GE/res/shaders/"
+			"post-processing/inversionFS.glsl", ShaderType::FRAGMENT_SHADER);
 		this->inversionShader.finalizeShaderProgram();
 
 		this->sharpShader.initialize();
-		this->sharpShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"post-processing\\postProcessingVS.glsl", 
+		this->sharpShader.addShader("../Honeycomb GE/res/shaders/"
+			"post-processing/postProcessingVS.glsl", 
 			ShaderType::VERTEX_SHADER);
-		this->sharpShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"post-processing\\sharpFS.glsl", ShaderType::FRAGMENT_SHADER);
+		this->sharpShader.addShader("../Honeycomb GE/res/shaders/"
+			"post-processing/sharpFS.glsl", ShaderType::FRAGMENT_SHADER);
 		this->sharpShader.finalizeShaderProgram();
 
 		Renderer::getRenderer()->getPostShaders().push_back(this->sharpShader);
@@ -68,14 +60,14 @@ namespace HoneycombTest {
 
 		// Import all of the mesh game objects and construct them
 		this->car = Builder::getBuilder()->
-			newModel("..\\Test Game\\res\\models\\car.fbx");
+			newModel("../Test Game/res/models/car.fbx");
 		this->cube = Builder::getBuilder()->
-			newModel("..\\Test Game\\res\\models\\brick-cube\\cube.fbx");
+			newModel("../Test Game/res/models/brick-cube/cube.fbx");
 		this->plane = Builder::getBuilder()->newPlane();
 		this->sphere = Builder::getBuilder()->newSphere();
 		this->suzanne = Builder::getBuilder()->newSuzanne();
 		this->earth = Builder::getBuilder()->newModel(
-			"..\\Test Game\\res\\models\\planet-earth\\earth.fbx");
+			"../Test Game/res/models/planet-earth/earth.fbx");
 
 		// Give the plane a textured material
 		Material *colorMaterial = new Material(
@@ -83,7 +75,7 @@ namespace HoneycombTest {
 		Texture2D *colorTexture = new Texture2D();
 		colorTexture->initialize();
 		colorTexture->
-			setImageData("..\\Test Game\\res\\textures\\colors.bmp");
+			setImageData("../Test Game/res/textures/colors.bmp");
 		colorMaterial->glSampler2Ds.setValue("diffuseTexture.sampler", 
 			*colorTexture);
 		colorMaterial->glFloats.setValue("shininess", 128.0F);

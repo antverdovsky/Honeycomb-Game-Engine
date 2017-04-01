@@ -5,12 +5,12 @@
 #include <unordered_map>
 
 #include "ShaderProgram.h"
-#include "..\debug\Logger.h"
-#include "..\graphics\Texture2D.h"
-#include "..\math\Matrix4f.h"
-#include "..\math\Vector2f.h"
-#include "..\math\Vector3f.h"
-#include "..\math\Vector4f.h"
+#include "../debug/Logger.h"
+#include "../graphics/Texture2D.h"
+#include "../math/Matrix4f.h"
+#include "../math/Vector2f.h"
+#include "../math/Vector3f.h"
+#include "../math/Vector4f.h"
 
 namespace Honeycomb::Shader {
 	template<typename VariableType>

@@ -6,12 +6,12 @@
 #include <unordered_map>
 
 #include "ShaderSource.h"
-#include "..\base\GLItem.h"
-#include "..\file\FileIO.h"
-#include "..\file\LineOperation.h"
-#include "..\math\Vector3f.h"
-#include "..\math\Vector4f.h"
-#include "..\math\Matrix4f.h"
+#include "../base/GLItem.h"
+#include "../file/FileIO.h"
+#include "../file/LineOperation.h"
+#include "../math/Vector3f.h"
+#include "../math/Vector4f.h"
+#include "../math/Matrix4f.h"
 
 namespace Honeycomb::Shader {
 	enum ShaderType {

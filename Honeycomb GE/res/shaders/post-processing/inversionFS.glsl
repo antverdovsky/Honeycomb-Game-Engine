@@ -5,8 +5,8 @@
 
 #version 410 core
 
-#include <..\standard\include\stdCamera.glsl>
-#include <..\standard\include\stdMaterial.glsl>
+#include <../standard/include/stdCamera.glsl>
+#include <../standard/include/stdMaterial.glsl>
 
 in vec2 out_vs_texCoord; // Take in texture coordinate outputted by VS
 in vec3 out_vs_norm; // Take in the normal outputted by VS

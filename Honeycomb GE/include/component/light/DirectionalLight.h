@@ -3,7 +3,7 @@
 #define DIRECTIONAL_LIGHT
 
 #include "BaseLight.h"
-#include "..\GameComponent.h"
+#include "../GameComponent.h"
 
 namespace Honeycomb::Component::Light {
 	class DirectionalLight : public BaseLight {

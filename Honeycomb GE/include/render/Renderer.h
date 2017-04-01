@@ -2,11 +2,11 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
-#include "..\geometry\Mesh.h"
-#include "..\graphics\Cubemap.h"
-#include "..\math\Vector4f.h"
-#include "..\scene\GameScene.h"
-#include "..\shader\ShaderProgram.h"
+#include "../geometry/Mesh.h"
+#include "../graphics/Cubemap.h"
+#include "../math/Vector4f.h"
+#include "../scene/GameScene.h"
+#include "../shader/ShaderProgram.h"
 
 namespace Honeycomb::Component::Render { class MeshRenderer; };
 

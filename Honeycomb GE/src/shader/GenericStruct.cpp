@@ -1,4 +1,4 @@
-#include "..\..\include\shader\GenericStruct.h"
+#include "../../include/shader/GenericStruct.h"
 
 using Honeycomb::Graphics::Texture2D;
 using Honeycomb::Math::Matrix4f;

@@ -39,7 +39,8 @@ namespace Honeycomb::File {
 	/// LineOperation &lnOp : The instance of the line operation which is to be
 	///						  called for each line.
 	/// return : The pointer to the contents of the file.
-	std::string* readFileToStr(const std::string &file, LineOperation &lnOp);
+	std::string* readFileToStr(const std::string &file, const LineOperation 
+        &lnOp);
 }
 
 #endif

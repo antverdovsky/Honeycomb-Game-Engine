@@ -1,6 +1,6 @@
-#include "..\..\include\component\GameComponent.h"
+#include "../../include/component/GameComponent.h"
 
-#include "..\..\include\object\GameObject.h"
+#include "../../include/object/GameObject.h"
 
 using Honeycomb::Object::GameObject;
 using Honeycomb::Shader::ShaderProgram;

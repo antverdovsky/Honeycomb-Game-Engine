@@ -10,19 +10,19 @@ using namespace Honeycomb::File;
 using namespace Honeycomb::Debug;
 
 namespace Honeycomb::Shader {
-	SourceVariable::SourceVariable(const std::string &name, const std::string 
-			&type) {
+	SourceVariable::SourceVariable(const std::string &name, const std::string
+		&type) {
 		this->name = name;
 		this->type = type;
 	}
 
-	ShaderSourceProperties::ShaderSourceProperties() : 
-			ShaderSourceProperties(true, true, true, true) {
-		
+	ShaderSourceProperties::ShaderSourceProperties() :
+		ShaderSourceProperties(true, true, true, true) {
+
 	}
 
-	ShaderSourceProperties::ShaderSourceProperties(const bool &dC, 
-			const bool &dS, const bool &dU, const bool &iD) {
+	ShaderSourceProperties::ShaderSourceProperties(const bool &dC,
+		const bool &dS, const bool &dU, const bool &iD) {
 		this->deleteComments = dC;
 		this->detectStructs = dS;
 		this->detectUniforms = dU;
@@ -37,7 +37,7 @@ namespace Honeycomb::Shader {
 	}
 
 	ShaderSource* ShaderSource::getShaderSource(const std::string &file,
-			const ShaderSourceProperties &prop) {
+		const ShaderSourceProperties &prop) {
 		// Try to find the file in the already imported source files
 		std::unordered_map<std::string, ShaderSource*>::iterator it =
 			ShaderSource::shaderSources.find(file);
@@ -45,7 +45,7 @@ namespace Honeycomb::Shader {
 		// If the file has not yet been imported, import it and return the
 		// pointer to the newly imported shader source. Otherwise, return a
 		// pointer to the existing shader source.
-		if (it == ShaderSource::shaderSources.end()) 
+		if (it == ShaderSource::shaderSources.end())
 			return new ShaderSource(file, prop);
 		else
 			return it->second;
@@ -59,8 +59,8 @@ namespace Honeycomb::Shader {
 		return this->source;
 	}
 
-	ShaderSource::ShaderSource(const std::string &file, const 
-			ShaderSourceProperties &prop) {
+	ShaderSource::ShaderSource(const std::string &file, const
+		ShaderSourceProperties &prop) {
 		this->file = file;
 
 		// Import the original source, copy into this instance, and clean up
@@ -72,7 +72,7 @@ namespace Honeycomb::Shader {
 		if (prop.includeDependencies) this->includeDependencies();
 		if (prop.detectStructs) this->detectStructs();
 		if (prop.detectUniforms) this->detectUniforms();
-		
+
 		ShaderSource::shaderSources.insert({ file, this });
 	}
 
@@ -89,7 +89,7 @@ namespace Honeycomb::Shader {
 	void ShaderSource::includeDependencies() {
 		// Get the directory of this file, by trimming the file name off of the
 		// full import directory.
-		std::string thisDir = this->file.substr(0, file.find_last_of("\\"));
+		std::string thisDir = this->file.substr(0, file.find_last_of("/"));
 
 		// Regex for automatically detecting the file directory which is to be 
 		// included. The regex will identify any string containing the word
@@ -113,15 +113,15 @@ namespace Honeycomb::Shader {
 			// one directory back (by trimming the back trace symbol, and
 			// removing the last folder from the include directory), for each 
 			// back trace symbol.
-			while (rawDir.substr(0, 3) == "..\\") {
+			while (rawDir.substr(0, 3) == "../") {
 				rawDir = rawDir.substr(3);
 				includeDir = includeDir.substr(0,
-					includeDir.find_last_of("..\\"));
+					includeDir.find_last_of("../"));
 			}
 
 			// The full include file path is the directory where the file
 			// is located with the name of the file appended at the end.
-			std::string includeFile = includeDir + "\\" + rawDir;
+			std::string includeFile = includeDir + "/" + rawDir;
 
 			// Import the Shader Source code (process with the standard props)
 			ShaderSource* includeSrc = ShaderSource::getShaderSource(
@@ -161,7 +161,7 @@ namespace Honeycomb::Shader {
 		// word defining the name of the variable (2nd group).
 		std::regex varRegex = std::regex("(\\w+)\\s+(\\w+)");
 
-		std::sregex_iterator structDecl(this->source.cbegin(), 
+		std::sregex_iterator structDecl(this->source.cbegin(),
 			this->source.cend(), structRegex); // Iterator through all structs
 		std::sregex_iterator end; // Default End Iterator
 
@@ -172,7 +172,7 @@ namespace Honeycomb::Shader {
 			std::vector<SourceVariable> vars;
 
 			// If this struct has already been found -> Continue to next one
-			if (detStructs.count(sName)) 
+			if (detStructs.count(sName))
 				continue;
 
 			// Get the string iterator for the beginning and end of the struct
@@ -197,18 +197,17 @@ namespace Honeycomb::Shader {
 				if (this->detStructs.count(vType)) {
 					std::vector<SourceVariable> detectedStructVars =
 						this->detStructs[vType];
-					
+
 					// The variable's full name will be the name of the
 					// variable plus the structure's variable. The variable
 					// also takes on the type of the struct's variable.
-					for (const SourceVariable &structVar : detectedStructVars) 
+					for (const SourceVariable &structVar : detectedStructVars)
 					{
 						vars.push_back(SourceVariable(
 							vName + "." + structVar.name,
 							structVar.type));
 					}
-				}
-				else { // Otherwise, just add the variable
+				} else { // Otherwise, just add the variable
 					vars.push_back(SourceVariable(vName, vType));
 				}
 			}
@@ -228,11 +227,11 @@ namespace Honeycomb::Shader {
 		std::regex regexField = std::regex(
 			"uniform\\s+(\\w+)\\s+(\\w+)\\s*(?!.*\\[)");
 
-		std::sregex_iterator uniformFields(this->source.cbegin(), 
+		std::sregex_iterator uniformFields(this->source.cbegin(),
 			this->source.cend(), regexField); // Iterator through all uniforms
 		std::sregex_iterator end; // End defined by Default Constructor
 
-		// Go through all matched uniforms
+								  // Go through all matched uniforms
 		for (; uniformFields != end; uniformFields++) {
 			// The first group represents the uniform type; the second the
 			// uniform name (see regex description).
@@ -242,13 +241,13 @@ namespace Honeycomb::Shader {
 			// If the uniform type is a type of a user defined struct
 			if (this->detStructs.count(type)) {
 				// Get all of the variables of the struct
-				std::vector<SourceVariable> structVars = 
+				std::vector<SourceVariable> structVars =
 					this->detStructs[type];
 
 				for (const SourceVariable& structVar : structVars) {
 					// Add the full uniform name (uniform name + variable name)
 					// to detected uniforms.
-					this->detUniforms.push_back(SourceVariable(name + "." + 
+					this->detUniforms.push_back(SourceVariable(name + "." +
 						structVar.name, structVar.type));
 				}
 			} else { // If the uniform type is not a user defined struct
@@ -267,7 +266,7 @@ namespace Honeycomb::Shader {
 
 		std::sregex_iterator uniformArrays(this->source.cbegin(),
 			this->source.cend(), regexArray); // Iterator through all uniforms
-		
+
 		// Go through all matched uniforms
 		for (; uniformArrays != end; uniformArrays++) {
 			// The first group represents the uniform type; the second the
@@ -288,7 +287,7 @@ namespace Honeycomb::Shader {
 						// Add the full uniform name (uniform name + index + 
 						// variable name) to detected uniforms.
 						this->detUniforms.push_back(SourceVariable(name + "[" +
-							std::to_string(i) + "]" + "." + structVar.name, 
+							std::to_string(i) + "]" + "." + structVar.name,
 							structVar.type));
 					}
 				} else { // If the uniform type is not a user defined struct

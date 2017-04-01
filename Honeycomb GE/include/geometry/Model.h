@@ -5,10 +5,10 @@
 #include <vector>
 
 #include "Mesh.h"
-#include "..\object\GameObject.h"
-#include "..\component\render\MeshRenderer.h"
-#include "..\graphics\Material.h"
-#include "..\graphics\Texture2D.h"
+#include "../object/GameObject.h"
+#include "../component/render/MeshRenderer.h"
+#include "../graphics/Material.h"
+#include "../graphics/Texture2D.h"
 
 struct aiMaterial;
 struct aiMesh;

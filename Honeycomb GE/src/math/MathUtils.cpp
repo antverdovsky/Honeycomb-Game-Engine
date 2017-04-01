@@ -1,4 +1,4 @@
-#include "..\..\include\math\MathUtils.h"
+#include "../../include/math/MathUtils.h"
 
 namespace Honeycomb::Math::Utils {
 	float clamp(const float &min, const float &max, const float &val) {

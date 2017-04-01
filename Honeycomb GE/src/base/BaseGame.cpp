@@ -1,4 +1,4 @@
-#include "..\..\include\base\BaseGame.h"
+#include "../../include/base/BaseGame.h"
 
 namespace Honeycomb::Base {
 	void BaseGame::input() {

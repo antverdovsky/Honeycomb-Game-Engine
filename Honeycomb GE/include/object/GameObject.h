@@ -5,8 +5,8 @@
 #include <vector>
 #include <string>
 
-#include "..\component\GameComponent.h"
-#include "..\debug\Logger.h"
+#include "../component/GameComponent.h"
+#include "../debug/Logger.h"
 
 namespace Honeycomb::Component { class GameComponent; }
 namespace Honeycomb::Scene { class GameScene; }

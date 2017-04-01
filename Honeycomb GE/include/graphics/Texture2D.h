@@ -4,7 +4,7 @@
 
 #include <string>
 
-#include "..\base\GLItem.h"
+#include "../base/GLItem.h"
 
 namespace Honeycomb::Graphics {
 	class Texture2D : public Honeycomb::Base::GLItem {

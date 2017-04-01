@@ -1,4 +1,4 @@
-#include "..\..\include\scene\GameScene.h"
+#include "../../include/scene/GameScene.h"
 
 using Honeycomb::Component::GameComponent;
 using Honeycomb::Object::GameObject;

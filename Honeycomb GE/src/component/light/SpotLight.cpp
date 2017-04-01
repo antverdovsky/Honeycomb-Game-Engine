@@ -1,11 +1,11 @@
-#include "..\..\..\include\component\light\SpotLight.h"
+#include "../../../include/component/light/SpotLight.h"
 
 #include <algorithm>
 
-#include "..\..\..\include\component\physics\Transform.h"
-#include "..\..\..\include\math\MathUtils.h"
-#include "..\..\..\include\object\GameObject.h"
-#include "..\..\..\include\scene\GameScene.h"
+#include "../../../include/component/physics/Transform.h"
+#include "../../../include/math/MathUtils.h"
+#include "../../../include/object/GameObject.h"
+#include "../../../include/scene/GameScene.h"
 
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Utils::PI;
@@ -22,8 +22,8 @@ namespace Honeycomb::Component::Light {
 	const std::string SpotLight::RANGE_F = "range";
 	const std::string SpotLight::ANGLE_F = "angle";
 
-	const std::string SpotLight::structFile = "..\\Honeycomb GE\\res\\"
-			"shaders\\standard\\include\\light\\stdSpotLight.glsl";
+	const std::string SpotLight::structFile = "../Honeycomb GE/res/"
+			"shaders/standard/include/light/stdSpotLight.glsl";
 	const std::string SpotLight::structName = "SpotLight";
 
 	SpotLight::SpotLight() : SpotLight(1.0F, Vector3f(1.0F, 1.0F, 1.0F),

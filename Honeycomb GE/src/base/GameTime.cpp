@@ -1,4 +1,4 @@
-#include "..\..\include\base\GameTime.h"
+#include "../../include/base/GameTime.h"
 
 #include <ctime>
 

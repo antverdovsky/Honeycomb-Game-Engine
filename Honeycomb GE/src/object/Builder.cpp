@@ -1,15 +1,15 @@
-#include "..\..\include\object\Builder.h"
+#include "../../include/object/Builder.h"
 
 #include <string>
 
-#include "..\..\include\component\light\AmbientLight.h"
-#include "..\..\include\component\light\BaseLight.h"
-#include "..\..\include\component\light\DirectionalLight.h"
-#include "..\..\include\component\light\PointLight.h"
-#include "..\..\include\component\light\SpotLight.h"
-#include "..\..\include\component\physics\Transform.h"
-#include "..\..\include\component\render\CameraController.h"
-#include "..\..\include\math\Vector4f.h"
+#include "../../include/component/light/AmbientLight.h"
+#include "../../include/component/light/BaseLight.h"
+#include "../../include/component/light/DirectionalLight.h"
+#include "../../include/component/light/PointLight.h"
+#include "../../include/component/light/SpotLight.h"
+#include "../../include/component/physics/Transform.h"
+#include "../../include/component/render/CameraController.h"
+#include "../../include/math/Vector4f.h"
 
 using Honeycomb::Component::Light::AmbientLight;
 using Honeycomb::Component::Light::BaseLight;
@@ -26,17 +26,17 @@ namespace Honeycomb::Object {
 	Builder* Builder::instance = nullptr; // Nullptr before being initialized
 
 	const std::string Builder::CONE_LOCATION =
-		"..\\Honeycomb GE\\res\\models\\default\\cone.fbx";
+		"../Honeycomb GE/res/models/default/cone.fbx";
 	const std::string Builder::CUBE_LOCATION = 
-		"..\\Honeycomb GE\\res\\models\\default\\cube.fbx";
+		"../Honeycomb GE/res/models/default/cube.fbx";
 	const std::string Builder::ICOSPHERE_LOCATION =
-		"..\\Honeycomb GE\\res\\models\\default\\icosphere.fbx";
+		"../Honeycomb GE/res/models/default/icosphere.fbx";
 	const std::string Builder::PLANE_LOCATION =
-		"..\\Honeycomb GE\\res\\models\\default\\plane.fbx";
+		"../Honeycomb GE/res/models/default/plane.fbx";
 	const std::string Builder::SPHERE_LOCATION =
-		"..\\Honeycomb GE\\res\\models\\default\\sphere.fbx";
+		"../Honeycomb GE/res/models/default/sphere.fbx";
 	const std::string Builder::SUZANNE_LOCATION =
-		"..\\Honeycomb GE\\res\\models\\default\\suzanne.fbx";
+		"../Honeycomb GE/res/models/default/suzanne.fbx";
 
 	Builder::~Builder() {
 

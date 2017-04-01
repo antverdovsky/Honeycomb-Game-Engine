@@ -1,21 +1,21 @@
-#include "..\..\include\geometry\Model.h"
+#include "../../include/geometry/Model.h"
 
 #include <iostream>
 
-#include "assimp\Importer.hpp"
-#include "assimp\scene.h"
-#include "assimp\postprocess.h"
+#include "assimp/Importer.hpp"
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
 
-#include "..\..\include\component\physics\Transform.h"
-#include "..\..\include\component\render\MeshRenderer.h"
-#include "..\..\include\debug\Logger.h"
-#include "..\..\include\geometry\Vertex.h"
-#include "..\..\include\graphics\Material.h"
-#include "..\..\include\graphics\Texture2D.h"
-#include "..\..\include\math\Vector2f.h"
-#include "..\..\include\math\Vector3f.h"
-#include "..\..\include\math\Vector4f.h"
-#include "..\..\include\math\Quaternion.h"
+#include "../../include/component/physics/Transform.h"
+#include "../../include/component/render/MeshRenderer.h"
+#include "../../include/debug/Logger.h"
+#include "../../include/geometry/Vertex.h"
+#include "../../include/graphics/Material.h"
+#include "../../include/graphics/Texture2D.h"
+#include "../../include/math/Vector2f.h"
+#include "../../include/math/Vector3f.h"
+#include "../../include/math/Vector4f.h"
+#include "../../include/math/Quaternion.h"
 
 using Assimp::Importer;
 

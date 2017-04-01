@@ -5,8 +5,8 @@
 #include <string>
 
 #include "Vertex.h"
-#include "..\base\GLItem.h"
-#include "..\shader\ShaderProgram.h"
+#include "../base/GLItem.h"
+#include "../shader/ShaderProgram.h"
 
 namespace Honeycomb::Geometry {
 	class Mesh : public Honeycomb::Base::GLItem {

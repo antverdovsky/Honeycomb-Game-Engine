@@ -285,6 +285,7 @@ __pycache__/
 *.pyc
 
 # Resource Files
+Honeycomb GE_res
 Honeycomb GE/res/models/
 Honeycomb GE/res/textures
 Test Game/res/models

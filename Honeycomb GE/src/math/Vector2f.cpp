@@ -1,8 +1,8 @@
 #include <math.h>
 
-#include "..\..\include\math\Vector2f.h"
+#include "../../include/math/Vector2f.h"
 
-#include "..\..\include\math\Matrix4f.h"
+#include "../../include/math/Matrix4f.h"
 
 namespace Honeycomb::Math {
 	Vector2f::Vector2f() : Vector2f(0.0F, 0.0F) { }

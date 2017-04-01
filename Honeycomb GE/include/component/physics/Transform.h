@@ -2,11 +2,11 @@
 #ifndef TRANSFORM_H
 #define TRANSFORM_H
 
-#include "..\GameComponent.h"
-#include "..\..\..\include\conjuncture\Event.h"
-#include "..\..\..\include\math\Vector3f.h"
-#include "..\..\..\include\math\Matrix4f.h"
-#include "..\..\..\include\math\Quaternion.h"
+#include "../GameComponent.h"
+#include "../../../include/conjuncture/Event.h"
+#include "../../../include/math/Vector3f.h"
+#include "../../../include/math/Matrix4f.h"
+#include "../../../include/math/Quaternion.h"
 
 namespace Honeycomb::Component::Physics {
 	enum Space {

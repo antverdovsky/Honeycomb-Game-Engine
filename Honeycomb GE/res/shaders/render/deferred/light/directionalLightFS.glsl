@@ -1,7 +1,7 @@
 #version 330 core
 
-#include <..\..\..\standard\include\stdMaterial.glsl>
-#include <..\..\..\standard\include\light\stdDirectionalLight.glsl>
+#include <../../../standard/include/stdMaterial.glsl>
+#include <../../../standard/include/light/stdDirectionalLight.glsl>
 
 in vec3 out_vs_pos; // Take in the world position outputted by VS
 

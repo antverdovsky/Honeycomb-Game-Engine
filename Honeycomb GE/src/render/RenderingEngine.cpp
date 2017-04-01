@@ -1,6 +1,6 @@
-#include "..\..\include\render\RenderingEngine.h"
+#include "../../include/render/RenderingEngine.h"
 
-#include "..\..\include\render\deferred\DeferredRenderer.h"
+#include "../../include/render/deferred/DeferredRenderer.h"
 
 using Honeycomb::Scene::GameScene;
 using Honeycomb::Render::Deferred::DeferredRenderer;

@@ -3,9 +3,9 @@
 #define DEFERRED_RENDERER_H
 
 #include "GBuffer.h"
-#include "..\Renderer.h"
+#include "../Renderer.h"
 
-#include "..\..\geometry\Mesh.h"
+#include "../../geometry/Mesh.h"
 
 namespace Honeycomb::Render::Deferred {
 	class DeferredRenderer : public Honeycomb::Render::Renderer {

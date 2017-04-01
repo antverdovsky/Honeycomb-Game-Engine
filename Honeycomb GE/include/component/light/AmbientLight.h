@@ -3,7 +3,7 @@
 #define AMBIENT_LIGHT_H
 
 #include "BaseLight.h"
-#include "..\GameComponent.h"
+#include "../GameComponent.h"
 
 namespace Honeycomb::Component::Light {
 	class AmbientLight : public BaseLight {

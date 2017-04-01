@@ -1,10 +1,10 @@
-#include <GL\glew.h>
-#include <GLFW\glfw3.h>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include <iostream>
 
-#include "..\..\Honeycomb GE\include\base\BaseMain.h"
-#include "..\include\HoneycombTest.h"
+#include "../../Honeycomb GE/include/base/BaseMain.h"
+#include "../include/HoneycombTest.h"
 
 using Honeycomb::Base::BaseGame;
 

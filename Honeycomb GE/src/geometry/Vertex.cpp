@@ -1,4 +1,4 @@
-#include "..\..\include\geometry\Vertex.h"
+#include "../../include/geometry/Vertex.h"
 
 #include <iostream>
 

@@ -1,9 +1,9 @@
-#include "..\..\include\debug\Logger.h"
+#include "../../include/debug/Logger.h"
 
 #include <iostream>
 #include <iomanip>
 
-#include "..\..\include\base\GameTime.h"
+#include "../../include/base/GameTime.h"
 
 using Honeycomb::Base::GameTime;
 

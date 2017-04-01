@@ -1,9 +1,9 @@
-#include "..\..\..\include\render\deferred\GBuffer.h"
+#include "../../../include/render/deferred/GBuffer.h"
 
 #include <GL/glew.h>
 
-#include "..\..\..\include\base\GameWindow.h"
-#include "..\..\..\include\debug\Logger.h"
+#include "../../../include/base/GameWindow.h"
+#include "../../../include/debug/Logger.h"
 
 using Honeycomb::Component::Light::LightType;
 using Honeycomb::Base::GameWindow;

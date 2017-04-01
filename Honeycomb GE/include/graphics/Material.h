@@ -3,10 +3,10 @@
 #define MATERIAL_H
 
 #include "Texture2D.h"
-#include "..\math\Vector3f.h"
-#include "..\math\Vector4f.h"
-#include "..\shader\GenericStruct.h"
-#include "..\shader\ShaderSource.h"
+#include "../math/Vector3f.h"
+#include "../math/Vector4f.h"
+#include "../shader/GenericStruct.h"
+#include "../shader/ShaderSource.h"
 
 namespace Honeycomb::Graphics {
 	class Material : public Honeycomb::Shader::GenericStruct {

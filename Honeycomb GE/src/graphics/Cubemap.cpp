@@ -1,9 +1,9 @@
-#include "..\..\include\graphics\Cubemap.h"
+#include "../../include/graphics/Cubemap.h"
 
-#include <GL\glew.h>
-#include <GLFW\glfw3.h>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
-#include "..\..\include\file\FileIO.h"
+#include "../../include/file/FileIO.h"
 
 using Honeycomb::File::readImageToUChar;
 

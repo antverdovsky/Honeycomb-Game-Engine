@@ -6,11 +6,11 @@
 /// multirendering passes instead, though that will probably be more difficult
 /// to understand.
 
-#include "..\GameComponent.h"
-#include "..\physics\Transform.h"
-#include "..\..\..\include\geometry\Mesh.h"
-#include "..\..\..\include\graphics\Material.h"
-#include "..\..\..\include\shader\ShaderProgram.h"
+#include "../GameComponent.h"
+#include "../physics/Transform.h"
+#include "../../../include/geometry/Mesh.h"
+#include "../../../include/graphics/Material.h"
+#include "../../../include/shader/ShaderProgram.h"
 
 namespace Honeycomb::Component::Render {
 	class MeshRenderer : public GameComponent {

@@ -1,4 +1,4 @@
-#include "..\..\include\file\FileIO.h"
+#include "../../include/file/FileIO.h"
 
 #include <SOIL.h>
 
@@ -6,7 +6,7 @@
 #include <fstream>
 #include <string>
 
-#include "..\..\include\debug\Logger.h"
+#include "../../include/debug/Logger.h"
 
 using Honeycomb::Debug::Logger;
 
@@ -31,7 +31,8 @@ namespace Honeycomb::File {
 		return readFileToStr(file, LineOperation());
 	}
 
-	std::string* readFileToStr(const std::string &file, LineOperation &lnOp) {
+	std::string* readFileToStr(const std::string &file, const LineOperation 
+            &lnOp) {
 		// Variable to store the content and a stream to read it in
 		std::string *content = new std::string();
 		std::ifstream ifs(file);

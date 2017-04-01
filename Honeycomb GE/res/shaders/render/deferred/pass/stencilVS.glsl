@@ -7,7 +7,7 @@
 
 #version 410 core
 
-#include <..\..\..\standard\include\stdCamera.glsl>
+#include <../../../standard/include/stdCamera.glsl>
 
 // Retrieves the position, texture coordinate, and normal of the Vertex from
 // the specified vertex attribute array pointers (see Mesh.cpp)

@@ -2,8 +2,8 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-#include "..\..\include\math\Vector2f.h"
-#include "..\..\include\math\Vector3f.h"
+#include "../../include/math/Vector2f.h"
+#include "../../include/math/Vector3f.h"
 
 namespace Honeycomb::Geometry {
 	class Vertex {

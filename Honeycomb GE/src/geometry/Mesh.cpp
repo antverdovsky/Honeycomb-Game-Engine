@@ -1,15 +1,15 @@
-#include "..\..\include\geometry\Mesh.h"
+#include "../../include/geometry/Mesh.h"
 
 #include <iostream>
 #include <sstream>
 #include <vector>
 
-#include <GL\glew.h>
-#include <GLFW\glfw3.h>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
-#include "..\..\include\file\FileIO.h"
-#include "..\..\include\math\Vector3f.h"
-#include "..\..\include\geometry\Vertex.h"
+#include "../../include/file/FileIO.h"
+#include "../../include/math/Vector3f.h"
+#include "../../include/geometry/Vertex.h"
 
 using Honeycomb::Geometry::Vertex;
 using Honeycomb::Math::Vector3f;

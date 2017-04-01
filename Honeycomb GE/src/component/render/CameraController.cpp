@@ -1,12 +1,12 @@
-#include "..\..\..\include\component\render\CameraController.h"
+#include "../../../include/component/render/CameraController.h"
 
 #include <math.h>
 #include <iostream>
 
-#include "..\..\..\include\base\GameWindow.h"
-#include "..\..\..\include\math\MathUtils.h"
-#include "..\..\..\include\shader\ShaderProgram.h"
-#include "..\..\..\include\shader\ShaderSource.h"
+#include "../../../include/base/GameWindow.h"
+#include "../../../include/math/MathUtils.h"
+#include "../../../include/shader/ShaderProgram.h"
+#include "../../../include/shader/ShaderSource.h"
 
 using Honeycomb::Base::GameWindow;
 using Honeycomb::Component::Physics::Transform;
@@ -27,8 +27,8 @@ namespace Honeycomb::Component::Render {
 	const std::string CameraController::WIDTH_F = "width";
 	const std::string CameraController::HEIGHT_F = "height";
 
-	const std::string CameraController::STRUCT_FILE = "..\\Honeycomb GE\\"
-		"res\\shaders\\standard\\include\\stdCamera.glsl";
+	const std::string CameraController::STRUCT_FILE = "../Honeycomb GE/"
+		"res/shaders/standard/include/stdCamera.glsl";
 	const std::string CameraController::STRUCT_NAME = "Camera";
 
 	CameraController::CameraController() : 

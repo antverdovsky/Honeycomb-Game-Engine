@@ -2,12 +2,12 @@
 #ifndef CAMERA_CONTROLLER_H
 #define CAMERA_CONTROLLER_H
 
-#include "..\GameComponent.h"
-#include "..\..\..\include\component\physics\Transform.h"
-#include "..\..\..\include\conjuncture\EventHandler.h"
-#include "..\..\..\include\math\Matrix4f.h"
-#include "..\..\..\include\object\GameObject.h"
-#include "..\..\shader\GenericStruct.h"
+#include "../GameComponent.h"
+#include "../../../include/component/physics/Transform.h"
+#include "../../../include/conjuncture/EventHandler.h"
+#include "../../../include/math/Matrix4f.h"
+#include "../../../include/object/GameObject.h"
+#include "../../shader/GenericStruct.h"
 
 namespace Honeycomb::Component::Render {
 	class CameraController : 

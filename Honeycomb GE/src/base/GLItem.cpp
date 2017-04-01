@@ -1,4 +1,4 @@
-#include "..\..\include\base\GLItem.h"
+#include "../../include/base/GLItem.h"
 
 namespace Honeycomb::Base {
 	const bool& GLItem::getIsInitialized() const {

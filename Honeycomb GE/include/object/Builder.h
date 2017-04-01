@@ -3,7 +3,7 @@
 #define BUILDER_H
 
 #include "GameObject.h"
-#include "..\geometry\Model.h"
+#include "../geometry/Model.h"
 
 namespace Honeycomb::Object {
 	class Builder {

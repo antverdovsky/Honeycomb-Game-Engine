@@ -14,7 +14,8 @@ namespace Honeycomb::File {
 		///						 in.
 		/// string &line : The line of the file which is to be modified by this
 		///				   line operation method.
-		virtual void lineOperation(const std::string &file, std::string &line);
+		virtual void lineOperation(const std::string &file, std::string &line) 
+            const;
 	};
 }
 

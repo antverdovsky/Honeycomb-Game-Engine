@@ -3,7 +3,7 @@
 #define RENDERING_ENGINE
 
 #include "Renderer.h"
-#include "..\scene\GameScene.h"
+#include "../scene/GameScene.h"
 
 namespace Honeycomb::Render {
 	enum RenderingType {

@@ -1,8 +1,8 @@
-#include "..\..\include\math\Quaternion.h"
+#include "../../include/math/Quaternion.h"
 
 #include <math.h>
 
-#include "..\..\include\math\Vector3f.h"
+#include "../../include/math/Vector3f.h"
 
 using Honeycomb::Math::Matrix4f;
 using Honeycomb::Math::Vector3f;

@@ -2,11 +2,11 @@
 #ifndef BASE_MAIN_H
 #define BASE_MAIN_H
 
-#include "..\..\include\base\GameInput.h"
-#include "..\..\include\base\GameTime.h"
-#include "..\..\include\base\GameWindow.h"
-#include "..\..\include\base\BaseGame.h"
-#include "..\..\include\render\RenderingEngine.h"
+#include "../../include/base/GameInput.h"
+#include "../../include/base/GameTime.h"
+#include "../../include/base/GameWindow.h"
+#include "../../include/base/BaseGame.h"
+#include "../../include/render/RenderingEngine.h"
 
 namespace Honeycomb::Base {
 	class BaseMain {

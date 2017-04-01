@@ -1,10 +1,10 @@
-#include "..\..\..\include\component\light\BaseLight.h"
+#include "../../../include/component/light/BaseLight.h"
 
 #include <algorithm>
 
-#include "..\..\..\include\debug\Logger.h"
-#include "..\..\..\include\object\GameObject.h"
-#include "..\..\..\include\scene\GameScene.h"
+#include "../../../include/debug/Logger.h"
+#include "../../../include/object/GameObject.h"
+#include "../../../include/scene/GameScene.h"
 
 using Honeycomb::Debug::Logger;
 using Honeycomb::Math::Vector3f;
@@ -67,8 +67,8 @@ namespace Honeycomb::Component::Light {
 			lights.end());
 	}
 
-	const std::string Attenuation::STRUCT_FILE = "..\\Honeycomb GE\\res\\"
-		"shaders\\standard\\include\\light\\stdBaseLight.glsl";
+	const std::string Attenuation::STRUCT_FILE = "../Honeycomb GE/res/"
+		"shaders/standard/include/light/stdBaseLight.glsl";
 	const std::string Attenuation::STRUCT_NAME = "Attenuation";
 
 	const std::string Attenuation::ATTENUATION_CONSTANT_F = 

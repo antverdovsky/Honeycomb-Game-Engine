@@ -1,4 +1,4 @@
-#include "..\..\include\shader\ShaderProgram.h"
+#include "../../include/shader/ShaderProgram.h"
 
 #include <algorithm>
 #include <cctype>
@@ -9,11 +9,11 @@
 #include <regex>
 #include <sstream>
 
-#include <GL\glew.h>
-#include <GLFW\glfw3.h>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
-#include "..\..\include\debug\Logger.h"
-#include "..\..\include\file\FileIO.h"
+#include "../../include/debug/Logger.h"
+#include "../../include/file/FileIO.h"
 
 using namespace Honeycomb::File;
 using Honeycomb::Math::Vector2f;

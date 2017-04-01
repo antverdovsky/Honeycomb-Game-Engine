@@ -1,11 +1,11 @@
-#include "..\..\..\include\component\physics\Transform.h"
+#include "../../../include/component/physics/Transform.h"
 
 #include <math.h>
 
-#include "..\..\..\include\math\Matrix4f.h"
-#include "..\..\..\include\math\Vector3f.h"
-#include "..\..\..\include\math\Quaternion.h"
-#include "..\..\..\include\math\MathUtils.h"
+#include "../../../include/math/Matrix4f.h"
+#include "../../../include/math/Vector3f.h"
+#include "../../../include/math/Quaternion.h"
+#include "../../../include/math/MathUtils.h"
 
 using Honeycomb::Conjuncture::Event;
 using Honeycomb::Math::Vector3f;

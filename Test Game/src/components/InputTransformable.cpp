@@ -1,8 +1,8 @@
-#include "..\..\include\components\InputTransformable.h"
+#include "../../include/components/InputTransformable.h"
 
-#include "..\..\..\Honeycomb GE\include\base\GameTime.h"
-#include "..\..\..\Honeycomb GE\include\base\GameInput.h"
-#include "..\..\..\Honeycomb GE\include\math\Vector3f.h"
+#include "../../../Honeycomb GE/include/base/GameTime.h"
+#include "../../../Honeycomb GE/include/base/GameInput.h"
+#include "../../../Honeycomb GE/include/math/Vector3f.h"
 
 using Honeycomb::Base::GameInput;
 using Honeycomb::Component::Physics::Space;

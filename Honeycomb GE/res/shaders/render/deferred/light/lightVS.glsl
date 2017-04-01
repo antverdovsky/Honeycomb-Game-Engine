@@ -1,6 +1,6 @@
 #version 410 core
 
-#include <..\..\..\standard\include\stdCamera.glsl>
+#include <../../../standard/include/stdCamera.glsl>
 
 layout (location = 0) in vec3 in_vs_pos;
 

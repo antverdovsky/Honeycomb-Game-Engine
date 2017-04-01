@@ -5,13 +5,13 @@
 #include <string>
 #include <vector>
 
-#include "..\component\GameComponent.h"
-#include "..\component\light\AmbientLight.h"
-#include "..\component\light\BaseLight.h"
-#include "..\component\light\DirectionalLight.h"
-#include "..\component\light\PointLight.h"
-#include "..\component\light\SpotLight.h"
-#include "..\object\GameObject.h"
+#include "../component/GameComponent.h"
+#include "../component/light/AmbientLight.h"
+#include "../component/light/BaseLight.h"
+#include "../component/light/DirectionalLight.h"
+#include "../component/light/PointLight.h"
+#include "../component/light/SpotLight.h"
+#include "../object/GameObject.h"
 
 namespace Honeycomb::Scene {
 	/// Wrapper class for the Game Object class. The Scene is a special object 

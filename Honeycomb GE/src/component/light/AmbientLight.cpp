@@ -1,4 +1,4 @@
-#include "..\..\..\include\component\light\AmbientLight.h"
+#include "../../../include/component/light/AmbientLight.h"
 
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Shader::ShaderProgram;
@@ -8,8 +8,8 @@ namespace Honeycomb::Component::Light {
 	const std::string AmbientLight::COLOR_VEC3 = "base.color";
 	const std::string AmbientLight::INTENSITY_F = "base.intensity";
 
-	const std::string AmbientLight::structFile = "..\\Honeycomb GE\\res\\"
-		"shaders\\standard\\include\\light\\stdAmbientLight.glsl";
+	const std::string AmbientLight::structFile = "../Honeycomb GE/res/"
+		"shaders/standard/include/light/stdAmbientLight.glsl";
 	const std::string AmbientLight::structName = "AmbientLight";
 
 	AmbientLight::AmbientLight() : 

@@ -2,11 +2,11 @@
 #ifndef INPUT_H
 #define INPUT_H
 
-#include <GLFW\glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include <vector>
 
-#include "..\math\Vector2f.h"
+#include "../math/Vector2f.h"
 
 struct GLFWWindow;
 

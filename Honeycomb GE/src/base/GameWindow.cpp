@@ -1,6 +1,6 @@
-#include <GL\glew.h>
+#include <GL/glew.h>
 
-#include "..\..\include\base\GameWindow.h"
+#include "../../include/base/GameWindow.h"
 
 using Honeycomb::Conjuncture::Event;
 

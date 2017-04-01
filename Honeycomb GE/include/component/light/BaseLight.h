@@ -2,10 +2,10 @@
 #ifndef BASE_LIGHT_H
 #define BASE_LIGHT_H
 
-#include "..\GameComponent.h"
-#include "..\..\math\Vector3f.h"
-#include "..\..\shader\ShaderProgram.h"
-#include "..\..\shader\GenericStruct.h"
+#include "../GameComponent.h"
+#include "../../math/Vector3f.h"
+#include "../../shader/ShaderProgram.h"
+#include "../../shader/GenericStruct.h"
 
 namespace Honeycomb::Component::Light {
 	enum LightType {

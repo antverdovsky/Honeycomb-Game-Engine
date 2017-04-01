@@ -2,10 +2,10 @@
 #ifndef G_BUFFER_H
 #define G_BUFFER_H
 
-#include "..\..\base\GLItem.h"
-#include "..\..\conjuncture\EventHandler.h"
-#include "..\..\graphics\Texture2D.h"
-#include "..\..\render\Renderer.h"
+#include "../../base/GLItem.h"
+#include "../../conjuncture/EventHandler.h"
+#include "../../graphics/Texture2D.h"
+#include "../../render/Renderer.h"
 
 namespace Honeycomb::Render::Deferred {
 	enum GBufferTextureType {

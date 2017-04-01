@@ -1,4 +1,4 @@
-#include "..\..\include\conjuncture\Event.h"
+#include "../../include/conjuncture/Event.h"
 
 #include <algorithm>
 

@@ -1,11 +1,11 @@
-#include "..\..\include\graphics\Texture2D.h"
+#include "../../include/graphics/Texture2D.h"
 
 #include <iostream>
 
-#include <GL\glew.h>
-#include <GLFW\glfw3.h>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
-#include "..\..\include\file\FileIO.h"
+#include "../../include/file/FileIO.h"
 
 using namespace Honeycomb::File;
 

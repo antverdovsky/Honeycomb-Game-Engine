@@ -1,18 +1,18 @@
-#include "..\..\..\include\render\deferred\DeferredRenderer.h"
+#include "../../../include/render/deferred/DeferredRenderer.h"
 
 #include <GL/glew.h>
 
-#include "..\..\..\include\component\light\AmbientLight.h"
-#include "..\..\..\include\component\light\BaseLight.h"
-#include "..\..\..\include\component\light\DirectionalLight.h"
-#include "..\..\..\include\component\light\PointLight.h"
-#include "..\..\..\include\component\light\SpotLight.h"
-#include "..\..\..\include\component\physics\Transform.h"
-#include "..\..\..\include\component\render\CameraController.h"
-#include "..\..\..\include\component\render\MeshRenderer.h"
+#include "../../../include/component/light/AmbientLight.h"
+#include "../../../include/component/light/BaseLight.h"
+#include "../../../include/component/light/DirectionalLight.h"
+#include "../../../include/component/light/PointLight.h"
+#include "../../../include/component/light/SpotLight.h"
+#include "../../../include/component/physics/Transform.h"
+#include "../../../include/component/render/CameraController.h"
+#include "../../../include/component/render/MeshRenderer.h"
 
-#include "..\..\..\include\geometry\Vertex.h"
-#include "..\..\..\include\object\Builder.h"
+#include "../../../include/geometry/Vertex.h"
+#include "../../../include/object/Builder.h"
 
 using Honeycomb::Component::Light::BaseLight;
 using Honeycomb::Component::Light::AmbientLight;
@@ -36,9 +36,9 @@ namespace Honeycomb::Render::Deferred {
 	DeferredRenderer* DeferredRenderer::deferredRenderer = nullptr;
 
 	const std::string DeferredRenderer::POINT_LIGHT_VOLUME_MODEL =
-		"..\\Honeycomb GE\\res\\models\\light-volumes\\pointLight.fbx";
+		"../Honeycomb GE/res/models/light-volumes/pointLight.fbx";
 	const std::string DeferredRenderer::SPOT_LIGHT_VOLUME_MODEL =
-		"..\\Honeycomb GE\\res\\models\\light-volumes\\spotLight.fbx";
+		"../Honeycomb GE/res/models/light-volumes/spotLight.fbx";
 
 	DeferredRenderer* DeferredRenderer::getDeferredRenderer() {
 		if (DeferredRenderer::deferredRenderer == nullptr)
@@ -114,65 +114,65 @@ namespace Honeycomb::Render::Deferred {
 
 	void DeferredRenderer::initializeShaders() {
 		this->ambientShader.initialize();
-		this->ambientShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\render\\deferred\\pass\\simpleVS.glsl", 
+		this->ambientShader.addShader("../Honeycomb GE/res/shaders"
+			"/render/deferred/pass/simpleVS.glsl", 
 			ShaderType::VERTEX_SHADER);
-		this->ambientShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\render\\deferred\\light\\ambientLightFS.glsl",
+		this->ambientShader.addShader("../Honeycomb GE/res/shaders"
+			"/render/deferred/light/ambientLightFS.glsl",
 			ShaderType::FRAGMENT_SHADER);
 		this->ambientShader.finalizeShaderProgram();
 
 		this->directionalLightShader.initialize();
-		this->directionalLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\render\\deferred\\pass\\simpleVS.glsl", 
+		this->directionalLightShader.addShader("../Honeycomb GE/res/shaders"
+			"/render/deferred/pass/simpleVS.glsl", 
 			ShaderType::VERTEX_SHADER);
-		this->directionalLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\render\\deferred\\light\\directionalLightFS.glsl",
+		this->directionalLightShader.addShader("../Honeycomb GE/res/shaders"
+			"/render/deferred/light/directionalLightFS.glsl",
 			ShaderType::FRAGMENT_SHADER);
 		this->directionalLightShader.finalizeShaderProgram();
 
 		this->pointLightShader.initialize();
-		this->pointLightShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\light\\lightVS.glsl",
+		this->pointLightShader.addShader("../Honeycomb GE/res/shaders/"
+			"render/deferred/light/lightVS.glsl",
 			ShaderType::VERTEX_SHADER);
-		this->pointLightShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\light\\pointLightFS.glsl", 
+		this->pointLightShader.addShader("../Honeycomb GE/res/shaders/"
+			"render/deferred/light/pointLightFS.glsl", 
 			ShaderType::FRAGMENT_SHADER);
 		this->pointLightShader.finalizeShaderProgram();
 
 		this->spotLightShader.initialize();
-		this->spotLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\render\\deferred\\light\\lightVS.glsl", 
+		this->spotLightShader.addShader("../Honeycomb GE/res/shaders"
+			"/render/deferred/light/lightVS.glsl", 
 			ShaderType::VERTEX_SHADER);
-		this->spotLightShader.addShader("..\\Honeycomb GE\\res\\shaders"
-			"\\render\\deferred\\light\\spotLightFS.glsl", 
+		this->spotLightShader.addShader("../Honeycomb GE/res/shaders"
+			"/render/deferred/light/spotLightFS.glsl", 
 			ShaderType::FRAGMENT_SHADER);
 		this->spotLightShader.finalizeShaderProgram();
 		
 		this->geometryShader.initialize();
-		this->geometryShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\pass\\geometryVS.glsl", 
+		this->geometryShader.addShader("../Honeycomb GE/res/shaders/"
+			"render/deferred/pass/geometryVS.glsl", 
 			ShaderType::VERTEX_SHADER);
-		this->geometryShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\pass\\geometryFS.glsl", 
+		this->geometryShader.addShader("../Honeycomb GE/res/shaders/"
+			"render/deferred/pass/geometryFS.glsl", 
 			ShaderType::FRAGMENT_SHADER);
 		this->geometryShader.finalizeShaderProgram();
 
 		this->stencilShader.initialize();
-		this->stencilShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\pass\\stencilVS.glsl", 
+		this->stencilShader.addShader("../Honeycomb GE/res/shaders/"
+			"render/deferred/pass/stencilVS.glsl", 
 			ShaderType::VERTEX_SHADER);
-		this->stencilShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\pass\\stencilFS.glsl", 
+		this->stencilShader.addShader("../Honeycomb GE/res/shaders/"
+			"render/deferred/pass/stencilFS.glsl", 
 			ShaderType::FRAGMENT_SHADER);
 		this->stencilShader.finalizeShaderProgram();
 
 		this->quadShader.initialize();
-		this->quadShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\pass\\simpleVS.glsl", 
+		this->quadShader.addShader("../Honeycomb GE/res/shaders/"
+			"render/deferred/pass/simpleVS.glsl", 
 			ShaderType::VERTEX_SHADER);
-		this->quadShader.addShader("..\\Honeycomb GE\\res\\shaders\\"
-			"render\\deferred\\pass\\simpleFS.glsl", 
+		this->quadShader.addShader("../Honeycomb GE/res/shaders/"
+			"render/deferred/pass/simpleFS.glsl", 
 			ShaderType::FRAGMENT_SHADER);
 		this->quadShader.finalizeShaderProgram();
 	}

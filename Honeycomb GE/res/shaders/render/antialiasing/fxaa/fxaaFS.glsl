@@ -1,6 +1,6 @@
 #version 410 core
 
-#include <..\..\..\standard\include\stdCamera.glsl>
+#include <../../../standard/include/stdCamera.glsl>
 
 in vec2 out_vs_texCoord; // Texture Coordinates outputted from FXAA VS
 

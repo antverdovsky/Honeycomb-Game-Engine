@@ -4,7 +4,7 @@
 
 #include "BaseLight.h"
 
-#include "..\..\math\Vector3f.h"
+#include "../../math/Vector3f.h"
 
 namespace Honeycomb::Component::Light {
 	class SpotLight : public BaseLight {

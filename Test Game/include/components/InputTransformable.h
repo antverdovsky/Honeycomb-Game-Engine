@@ -2,9 +2,9 @@
 #ifndef INPUT_TRANSFORMABLE_H
 #define INPUT_TRANSFORMABLE_H
 
-#include "..\..\..\Honeycomb GE\include\object\GameObject.h"
-#include "..\..\..\Honeycomb GE\include\component\GameComponent.h"
-#include "..\..\..\Honeycomb GE\include\component\physics\Transform.h"
+#include "../../../Honeycomb GE/include/object/GameObject.h"
+#include "../../../Honeycomb GE/include/component/GameComponent.h"
+#include "../../../Honeycomb GE/include/component/physics/Transform.h"
 
 namespace HoneycombTest::Components {
 	class InputTransformable : public Honeycomb::Component::GameComponent {

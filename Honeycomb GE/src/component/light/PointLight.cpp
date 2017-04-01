@@ -1,10 +1,10 @@
-#include "..\..\..\include\component\light\PointLight.h"
+#include "../../../include/component/light/PointLight.h"
 
 #include <algorithm>
 
-#include "..\..\..\include\component\physics\Transform.h"
-#include "..\..\..\include\object\GameObject.h"
-#include "..\..\..\include\scene\GameScene.h"
+#include "../../../include/component/physics/Transform.h"
+#include "../../../include/object/GameObject.h"
+#include "../../../include/scene/GameScene.h"
 
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Vector3f;
@@ -18,8 +18,8 @@ namespace Honeycomb::Component::Light {
 	const std::string PointLight::POSITION_VEC3 = "position";
 	const std::string PointLight::RANGE_F = "range";
 
-	const std::string PointLight::structFile = "..\\Honeycomb GE\\res\\shaders"
-			"\\standard\\include\\light\\stdPointLight.glsl";
+	const std::string PointLight::structFile = "../Honeycomb GE/res/shaders"
+			"/standard/include/light/stdPointLight.glsl";
 	const std::string PointLight::structName = "PointLight";
 
 	PointLight::PointLight() : 

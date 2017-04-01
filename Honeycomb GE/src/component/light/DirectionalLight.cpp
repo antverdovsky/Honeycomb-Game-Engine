@@ -1,10 +1,10 @@
-#include "..\..\..\include\component\light\DirectionalLight.h"
+#include "../../../include/component/light/DirectionalLight.h"
 
 #include <algorithm>
 
-#include "..\..\..\include\component\physics\Transform.h"
-#include "..\..\..\include\object\GameObject.h"
-#include "..\..\..\include\scene\GameScene.h"
+#include "../../../include/component/physics/Transform.h"
+#include "../../../include/object/GameObject.h"
+#include "../../../include/scene/GameScene.h"
 
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Vector3f;
@@ -17,8 +17,8 @@ namespace Honeycomb::Component::Light {
 	const std::string DirectionalLight::INTENSITY_F = "base.intensity";
 	const std::string DirectionalLight::DIRECTION_VEC3 = "direction";
 
-	const std::string DirectionalLight::structFile = "..\\Honeycomb GE\\"
-			"res\\shaders\\standard\\include\\light\\stdDirectionalLight.glsl";
+	const std::string DirectionalLight::structFile = "../Honeycomb GE/"
+			"res/shaders/standard/include/light/stdDirectionalLight.glsl";
 	const std::string DirectionalLight::structName = "DirectionalLight";
 
 	DirectionalLight::DirectionalLight() : 

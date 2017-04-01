@@ -1,6 +1,6 @@
-#include "..\..\include\graphics\Material.h"
+#include "../../include/graphics/Material.h"
 
-#include "..\..\include\shader\ShaderProgram.h"
+#include "../../include/shader/ShaderProgram.h"
 
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
@@ -10,7 +10,7 @@ using Honeycomb::Shader::ShaderSource;
 
 namespace Honeycomb::Graphics {
 	const std::string Material::DEFAULT_FILE =
-		"..\\Honeycomb GE\\res\\shaders\\standard\\include\\stdMaterial.glsl";
+		"../Honeycomb GE/res/shaders/standard/include/stdMaterial.glsl";
 	const std::string Material::DEFAULT_STRUCT = "Material";
 
 	Material::Material() : Material(*ShaderSource::getShaderSource(

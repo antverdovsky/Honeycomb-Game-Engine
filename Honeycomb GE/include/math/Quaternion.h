@@ -2,8 +2,8 @@
 #ifndef QUATERNION_H
 #define QUATERNION_H
 
-#include "..\..\include\math\Matrix4f.h"
-#include "..\..\include\math\Vector3f.h"
+#include "../../include/math/Matrix4f.h"
+#include "../../include/math/Vector3f.h"
 
 namespace Honeycomb::Math {
 	class Quaternion {

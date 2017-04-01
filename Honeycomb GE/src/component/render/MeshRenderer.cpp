@@ -1,15 +1,15 @@
-#include "..\..\..\include\component\render\MeshRenderer.h"
+#include "../../../include/component/render/MeshRenderer.h"
 
-#include <GL\glew.h>
-#include <GLFW\glfw3.h>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include <iostream>
 
-#include "..\..\..\include\file\FileIO.h"
-#include "..\..\..\include\component\physics\Transform.h"
-#include "..\..\..\include\component\render\CameraController.h"
-#include "..\..\..\include\object\GameObject.h"
-#include "..\..\..\include\render\Renderer.h"
+#include "../../../include/file/FileIO.h"
+#include "../../../include/component/physics/Transform.h"
+#include "../../../include/component/render/CameraController.h"
+#include "../../../include/object/GameObject.h"
+#include "../../../include/render/Renderer.h"
 
 using Honeycomb::Component::Render::CameraController;
 using Honeycomb::Component::Physics::Transform;
