@@ -7,7 +7,7 @@
 
 #include "../../geometry/Mesh.h"
 
-namespace Honeycomb::Render::Deferred {
+namespace Honeycomb { namespace Render { namespace Deferred {
 	class DeferredRenderer : public Honeycomb::Render::Renderer {
 	public:
 		// Enum representing what the final texture rendered should be.
@@ -186,6 +186,6 @@ namespace Honeycomb::Render::Deferred {
 		void transformLightSpotVolume(const Honeycomb::Component::Light::
 				SpotLight &sL);
 	};
-}
+} } }
 
 #endif

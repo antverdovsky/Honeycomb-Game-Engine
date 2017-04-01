@@ -1,6 +1,6 @@
 #include "../../include/base/GLItem.h"
 
-namespace Honeycomb::Base {
+namespace Honeycomb { namespace Base {
 	const bool& GLItem::getIsInitialized() const {
 		return this->isInitialized;
 	}
@@ -20,4 +20,4 @@ namespace Honeycomb::Base {
 	GLItem::~GLItem() {
 
 	}
-}
+} }

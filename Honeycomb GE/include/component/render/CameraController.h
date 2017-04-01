@@ -9,7 +9,7 @@
 #include "../../../include/object/GameObject.h"
 #include "../../shader/GenericStruct.h"
 
-namespace Honeycomb::Component::Render {
+namespace Honeycomb { namespace Component { namespace Render {
 	class CameraController : 
 			public GameComponent,
 			public Honeycomb::Shader::GenericStruct {
@@ -199,6 +199,6 @@ namespace Honeycomb::Component::Render {
 		/// return : The constant reference to the view projection matrix.
 		const Honeycomb::Math::Matrix4f& calcProjectionView();
 	};
-}
+} } }
 
 #endif

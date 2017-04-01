@@ -4,7 +4,7 @@ using Honeycomb::Component::GameComponent;
 using Honeycomb::Object::GameObject;
 using Honeycomb::Component::Light::BaseLight;
 
-namespace Honeycomb::Scene {
+namespace Honeycomb { namespace Scene {
 	GameScene* GameScene::activeScene = nullptr;
 
 	GameScene::GameScene() : GameScene("GameScene") {
@@ -51,4 +51,4 @@ namespace Honeycomb::Scene {
 	void GameScene::setActiveScene(GameScene &scene) {
 		GameScene::activeScene = &scene;
 	}
-}
+} }

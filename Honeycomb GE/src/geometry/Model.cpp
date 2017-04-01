@@ -31,7 +31,7 @@ using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
 using Honeycomb::Math::Quaternion;
 
-namespace Honeycomb::Geometry {
+namespace Honeycomb { namespace Geometry {
 	std::vector<Model*> Model::imports = std::vector<Model*>();
 
 	unsigned int ModelSettings::toPFlags() const {
@@ -364,4 +364,4 @@ namespace Honeycomb::Geometry {
 
 		return object; // Return the instantiated object
 	}
-}
+} }

@@ -5,7 +5,7 @@
 #include "BaseLight.h"
 #include "../GameComponent.h"
 
-namespace Honeycomb::Component::Light {
+namespace Honeycomb { namespace Component { namespace Light {
 	class AmbientLight : public BaseLight {
 	public:
 		// Variables defining the color and intensity of the light.
@@ -34,6 +34,6 @@ namespace Honeycomb::Component::Light {
 		const static std::string structFile;
 		const static std::string structName;
 	};
-}
+} } }
 
 #endif

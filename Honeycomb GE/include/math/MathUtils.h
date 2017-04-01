@@ -2,7 +2,7 @@
 #ifndef MATH_UTILS_H
 #define MATH_UTILS_H
 
-namespace Honeycomb::Math::Utils {
+namespace Honeycomb { namespace Math { namespace Utils {
 	const double PId = 3.14159265358979323846; // Mathematical PI
 	const float PI = 3.14159265F;
 
@@ -22,6 +22,6 @@ namespace Honeycomb::Math::Utils {
 	/// const float &rad : The input angle (in radians).
 	/// return : The output angle (in degrees).
 	float radToDeg(const float &rad);
-}
+} } }
 
 #endif

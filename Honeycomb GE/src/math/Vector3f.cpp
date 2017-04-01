@@ -4,7 +4,7 @@
 
 #include "../../include/math/Quaternion.h"
 
-namespace Honeycomb::Math {
+namespace Honeycomb { namespace Math {
 	Vector3f Vector3f::forward = Vector3f(0, 0, -1);
 	Vector3f Vector3f::right = Vector3f(1, 0, 0);
 	Vector3f Vector3f::up = Vector3f(0, 1, 0);
@@ -259,4 +259,4 @@ namespace Honeycomb::Math {
 	Vector3f& Vector3f::operator-=(const Vector3f &v2) {
 		return this->addTo(-v2);
 	}
-}
+} }

@@ -8,7 +8,7 @@
 #include "../../include/base/BaseGame.h"
 #include "../../include/render/RenderingEngine.h"
 
-namespace Honeycomb::Base {
+namespace Honeycomb { namespace Base {
 	class BaseMain {
 	public:
 		/// Returns the singleton instance of the BaseMain structure.
@@ -54,6 +54,6 @@ namespace Honeycomb::Base {
 		/// called once per frame.
 		void update();
 	};
-}
+} }
 
 #endif

@@ -1,6 +1,6 @@
 #include "../../include/math/Matrix4f.h"
 
-namespace Honeycomb::Math {
+namespace Honeycomb { namespace Math {
 	float Matrix4f::M_IDENTITY[4][4] = {
 		{ 1, 0, 0, 0 },
 		{ 0, 1, 0, 0 },
@@ -384,4 +384,4 @@ namespace Honeycomb::Math {
 		};
 		this->inverse->setMatrix(invMatrix);
 	}
-}
+} }

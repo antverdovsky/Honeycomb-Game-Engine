@@ -7,7 +7,7 @@
 
 using Honeycomb::File::readImageToUChar;
 
-namespace Honeycomb::Graphics {
+namespace Honeycomb { namespace Graphics {
 	Cubemap::Cubemap() {
 		this->isInitialized = false;
 		this->textureID = -1;
@@ -80,4 +80,4 @@ namespace Honeycomb::Graphics {
 		for (int i = 0; i < 6; ++i)
 			this->setFace((TextureTarget)(TextureTarget::RIGHT + i), tex[i]);
 	}
-}
+} }

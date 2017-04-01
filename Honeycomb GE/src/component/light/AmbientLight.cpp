@@ -4,7 +4,7 @@ using Honeycomb::Math::Vector3f;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Shader::ShaderSource;
 
-namespace Honeycomb::Component::Light {
+namespace Honeycomb { namespace Component { namespace Light {
 	const std::string AmbientLight::COLOR_VEC3 = "base.color";
 	const std::string AmbientLight::INTENSITY_F = "base.intensity";
 
@@ -33,4 +33,4 @@ namespace Honeycomb::Component::Light {
 	void AmbientLight::start() {
 		BaseLight::start();
 	}
-}
+} } }

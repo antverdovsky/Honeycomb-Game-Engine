@@ -7,7 +7,7 @@
 #include "../../graphics/Texture2D.h"
 #include "../../render/Renderer.h"
 
-namespace Honeycomb::Render::Deferred {
+namespace Honeycomb { namespace Render { namespace Deferred {
 	enum GBufferTextureType {
 		POSITION,	// Position Buffer
 		DIFFUSE,	// Diffuse Buffer
@@ -142,6 +142,6 @@ namespace Honeycomb::Render::Deferred {
 		/// current window screen size.
 		void resizeTextures();
 	};
-}
+} } }
 
 #endif

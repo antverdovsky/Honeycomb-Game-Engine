@@ -5,7 +5,7 @@
 using Honeycomb::Object::GameObject;
 using Honeycomb::Shader::ShaderProgram;
 
-namespace Honeycomb::Component {
+namespace Honeycomb { namespace Component {
 	GameComponent::GameComponent() : GameComponent("GameComponent") {
 
 	}
@@ -71,4 +71,4 @@ namespace Honeycomb::Component {
 	void GameComponent::update() {
 
 	}
-}
+} }

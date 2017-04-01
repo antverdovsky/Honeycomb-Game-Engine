@@ -7,7 +7,7 @@
 using Honeycomb::Math::Matrix4f;
 using Honeycomb::Math::Vector3f;
 
-namespace Honeycomb::Math {
+namespace Honeycomb { namespace Math {
 	Quaternion::Quaternion() : Quaternion(0.0F, 0.0F, 0.0F, 1.0F) {
 
 	}
@@ -225,4 +225,4 @@ namespace Honeycomb::Math {
 	Quaternion& Quaternion::operator*=(const Vector3f &v) {
 		return this->multiplyTo(v);
 	}
-}
+} }

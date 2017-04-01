@@ -22,7 +22,7 @@ using Honeycomb::Math::Vector4f;
 using Honeycomb::Math::Matrix4f;
 using Honeycomb::Debug::Logger;
 
-namespace Honeycomb::Shader {
+namespace Honeycomb { namespace Shader {
 	ShaderProgram::ShaderProgram(const std::string &name) {
 		this->name = name;
 	}
@@ -219,4 +219,4 @@ namespace Honeycomb::Shader {
 	void ShaderProgram::unbindShaderProgram() {
 		glUseProgram(0);
 	}
-}
+} }

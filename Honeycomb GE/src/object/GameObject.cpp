@@ -12,7 +12,7 @@ using Honeycomb::Debug::Logger;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Scene::GameScene;
 
-namespace Honeycomb::Object {
+namespace Honeycomb { namespace Object {
 	GameObject::GameObject() : GameObject("GameObject") {
 
 	}
@@ -253,4 +253,4 @@ namespace Honeycomb::Object {
 		for (GameComponent *comp : this->components)
 			comp->update();
 	}
-}
+} }

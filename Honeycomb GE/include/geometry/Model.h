@@ -17,7 +17,7 @@ struct aiScene;
 
 enum aiTextureType;
 
-namespace Honeycomb::Geometry {
+namespace Honeycomb { namespace Geometry {
 	struct ModelSettings {
 		friend class Model;
 	public:
@@ -237,6 +237,6 @@ namespace Honeycomb::Geometry {
 		///			 Mesh.
 		Honeycomb::Geometry::Mesh* processAiMeshGeometry(aiMesh *aMesh);
 	};
-}
+} }
 
 #endif

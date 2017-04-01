@@ -5,7 +5,7 @@
 #include <vector>
 #include <functional>
 
-namespace Honeycomb::Conjuncture {
+namespace Honeycomb { namespace Conjuncture {
 	class EventHandler {
 		friend class Event;
 
@@ -40,6 +40,6 @@ namespace Honeycomb::Conjuncture {
 		/// Triggers the on event of this Event Handler.
 		void operator()() const;
 	};
-}
+} }
 
 #endif

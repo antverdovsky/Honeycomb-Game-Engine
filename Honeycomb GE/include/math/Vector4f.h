@@ -2,9 +2,9 @@
 #ifndef VECTOR_4F_H
 #define VECTOR_4F_H
 
-namespace Honeycomb::Math { class Matrix4f; }
+namespace Honeycomb { namespace Math { class Matrix4f; } }
 
-namespace Honeycomb::Math {
+namespace Honeycomb { namespace Math {
 	class Vector4f {
 	public:
 		/// Creates a new four dimensional vector with 0.0 as the x, y, z and w
@@ -223,6 +223,6 @@ namespace Honeycomb::Math {
 		float z; // The z component
 		float w; // The w component
 	};
-}
+} }
 
 #endif

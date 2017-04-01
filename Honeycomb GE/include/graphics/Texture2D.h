@@ -6,7 +6,7 @@
 
 #include "../base/GLItem.h"
 
-namespace Honeycomb::Graphics {
+namespace Honeycomb { namespace Graphics {
 	class Texture2D : public Honeycomb::Base::GLItem {
 	public:
 		/// Creates an empty Texture instance.
@@ -106,6 +106,6 @@ namespace Honeycomb::Graphics {
 		int textureID; // The texture "pointer"
 		std::string directory; // The file from which the texture was loaded
 	};
-}
+} }
 
 #endif

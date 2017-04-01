@@ -1,6 +1,6 @@
 #include "../../include/base/BaseGame.h"
 
-namespace Honeycomb::Base {
+namespace Honeycomb { namespace Base {
 	void BaseGame::input() {
 
 	}
@@ -20,4 +20,4 @@ namespace Honeycomb::Base {
 	void BaseGame::update() {
 
 	}
-}
+} }

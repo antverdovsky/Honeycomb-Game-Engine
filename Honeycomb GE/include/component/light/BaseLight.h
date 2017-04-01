@@ -7,7 +7,7 @@
 #include "../../shader/ShaderProgram.h"
 #include "../../shader/GenericStruct.h"
 
-namespace Honeycomb::Component::Light {
+namespace Honeycomb { namespace Component { namespace Light {
 	enum LightType {
 		LIGHT_TYPE_AMBIENT,
 		LIGHT_TYPE_DIRECTIONAL,
@@ -170,6 +170,6 @@ namespace Honeycomb::Component::Light {
 		/// const float &atQ : The new quadratic term of the attenuation.
 		void setQuadraticTerm(const float &atQ);
 	};
-}
+} } }
 
 #endif

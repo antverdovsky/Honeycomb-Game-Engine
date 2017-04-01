@@ -8,7 +8,7 @@ using Honeycomb::Shader::GenericStruct;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Shader::ShaderSource;
 
-namespace Honeycomb::Graphics {
+namespace Honeycomb { namespace Graphics {
 	const std::string Material::DEFAULT_FILE =
 		"../Honeycomb GE/res/shaders/standard/include/stdMaterial.glsl";
 	const std::string Material::DEFAULT_STRUCT = "Material";
@@ -26,4 +26,4 @@ namespace Honeycomb::Graphics {
 	const std::string& Material::getName() const {
 		return this->name;
 	}
-}
+} }

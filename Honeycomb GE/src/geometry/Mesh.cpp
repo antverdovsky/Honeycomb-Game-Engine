@@ -15,7 +15,7 @@ using Honeycomb::Geometry::Vertex;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Shader::ShaderProgram;
 
-namespace Honeycomb::Geometry {
+namespace Honeycomb { namespace Geometry {
 	bool Mesh::initialize() {
 		if (this->isInitialized) return false;
 
@@ -130,4 +130,4 @@ namespace Honeycomb::Geometry {
 
 		delete vertFloats; // Delete the dynamically allocated vertex floats
 	}
-}
+} }

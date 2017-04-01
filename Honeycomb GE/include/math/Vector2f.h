@@ -2,9 +2,9 @@
 #ifndef VECTOR_2F_H
 #define VECTOR_2F_H
 
-namespace Honeycomb::Math { class Matrix4f; }
+namespace Honeycomb { namespace Math { class Matrix4f; } }
 
-namespace Honeycomb::Math {
+namespace Honeycomb { namespace Math {
 	class Vector2f {
 	public:
 		/// Creates a new two dimensional vector with 0.0 for both the x and y
@@ -210,6 +210,6 @@ namespace Honeycomb::Math {
 		float x; // The x-component
 		float y; // The y-component
 	};
-}
+} }
 
 #endif

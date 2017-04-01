@@ -9,7 +9,7 @@
 
 using namespace Honeycomb::File;
 
-namespace Honeycomb::Graphics {
+namespace Honeycomb { namespace Graphics {
 	Texture2D::Texture2D() {
 		this->isInitialized = false;
 		this->directory = "";
@@ -114,4 +114,4 @@ namespace Honeycomb::Graphics {
 	void Texture2D::unbind() {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
-}
+} }

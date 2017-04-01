@@ -2,7 +2,7 @@
 #ifndef BASE_GAME_H
 #define BASE_GAME_H
 
-namespace Honeycomb::Base {
+namespace Honeycomb { namespace Base {
 	class BaseGame {
 	public:
 		/// Handles the input for the game every frame.
@@ -22,6 +22,6 @@ namespace Honeycomb::Base {
 		/// Handles the updating for the game every frame.
 		virtual void update();
 	};
-}
+} }
 
 #endif

@@ -5,7 +5,7 @@
 #include "BaseLight.h"
 #include "../GameComponent.h"
 
-namespace Honeycomb::Component::Light {
+namespace Honeycomb { namespace Component { namespace Light {
 	class DirectionalLight : public BaseLight {
 	public:
 		// Variables defining the color and intensity of the light.
@@ -50,6 +50,6 @@ namespace Honeycomb::Component::Light {
 
 		const Honeycomb::Math::Vector3f *direction; // Transform Direction
 	};
-}
+} } }
 
 #endif

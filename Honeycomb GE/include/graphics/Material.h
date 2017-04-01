@@ -8,7 +8,7 @@
 #include "../shader/GenericStruct.h"
 #include "../shader/ShaderSource.h"
 
-namespace Honeycomb::Graphics {
+namespace Honeycomb { namespace Graphics {
 	class Material : public Honeycomb::Shader::GenericStruct {
 	public:
 		/// Initiales a new Default Standard Material.
@@ -33,6 +33,6 @@ namespace Honeycomb::Graphics {
 
 		std::string name; // The name of this material.
 	};
-}
+} }
 
 #endif

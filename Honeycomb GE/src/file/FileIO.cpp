@@ -10,7 +10,7 @@
 
 using Honeycomb::Debug::Logger;
 
-namespace Honeycomb::File {
+namespace Honeycomb { namespace File {
 	unsigned char* readImageToUChar(const std::string &img, int &w, int &h, 
 			const bool &err) {
 		// Use the SOIL library to load in the image and return its data
@@ -54,4 +54,4 @@ namespace Honeycomb::File {
 		ifs.close();
 		return content;
 	}
-}
+} }

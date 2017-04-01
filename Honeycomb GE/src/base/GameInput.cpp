@@ -6,7 +6,7 @@
 
 using Honeycomb::Math::Vector2f;
 
-namespace Honeycomb::Base {
+namespace Honeycomb { namespace Base {
 	GameInput *GameInput::gameInput = nullptr;
 
 	bool GameInput::getButtonDown(const int &button) const {
@@ -118,4 +118,4 @@ namespace Honeycomb::Base {
 			break;
 		}
 	}
-}
+} }

@@ -11,7 +11,7 @@ using Honeycomb::Math::Vector3f;
 
 using namespace Honeycomb::Base;
 
-namespace HoneycombTest::Components {
+namespace HoneycombTest { namespace Components {
 	InputTransformable::InputTransformable() : InputTransformable(
 		GameInput::KEY_CODE_W, GameInput::KEY_CODE_S, // Move forward & back
 		GameInput::KEY_CODE_A, GameInput::KEY_CODE_D, // Move left & raight
@@ -133,4 +133,4 @@ namespace HoneycombTest::Components {
 		else if (input->getKeyDown(this->scaleDownF))
 			transform->setScale(scale - (forward * sS), this->space);
 	}
-}
+} }

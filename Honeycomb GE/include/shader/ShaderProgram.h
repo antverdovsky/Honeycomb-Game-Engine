@@ -13,7 +13,7 @@
 #include "../math/Vector4f.h"
 #include "../math/Matrix4f.h"
 
-namespace Honeycomb::Shader {
+namespace Honeycomb { namespace Shader {
 	enum ShaderType {
 		FRAGMENT_SHADER				= 0x8B30,	// from GL_FRAGMENT_SHADER
 		GEOMETRY_SHADER				= 0x8DD9,	// from GL_GEOMETRY_SHADER
@@ -112,6 +112,6 @@ namespace Honeycomb::Shader {
 		// HashMap of the Uniform's name to the Uniform's ID in OpenGL
 		std::unordered_map<std::string, int> uniforms;
 	};
-}
+} }
 
 #endif

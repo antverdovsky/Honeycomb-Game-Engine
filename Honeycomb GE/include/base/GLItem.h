@@ -2,7 +2,7 @@
 #ifndef GL_ITEM_H
 #define GL_ITEM_H
 
-namespace Honeycomb::Base {
+namespace Honeycomb { namespace Base {
 	class GLItem {
 	public:
 		/// Returns the boolean representation of the initialization of this
@@ -31,6 +31,6 @@ namespace Honeycomb::Base {
 		/// not by this destructor.
 		virtual ~GLItem();
 	};
-}
+} }
 
 #endif

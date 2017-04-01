@@ -8,7 +8,7 @@
 #include "Vector3f.h"
 #include "Vector4f.h"
 
-namespace Honeycomb::Math {
+namespace Honeycomb { namespace Math {
 	class Matrix4f {
 	public:
 		/// Returns an instance of the Matrix class which is initialized to a 
@@ -269,6 +269,6 @@ namespace Honeycomb::Math {
 		/// when the Matrix is updated.
 		void update();
 	};
-}
+} }
 
 #endif

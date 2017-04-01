@@ -8,7 +8,7 @@
 #include "../base/GLItem.h"
 #include "../shader/ShaderProgram.h"
 
-namespace Honeycomb::Geometry {
+namespace Honeycomb { namespace Geometry {
 	class Mesh : public Honeycomb::Base::GLItem {
 	public:
 		/// Initializes this Mesh by creating the appropriate Index and Vertex
@@ -44,6 +44,6 @@ namespace Honeycomb::Geometry {
 		int indexCount; // The count of the indices stored for this mesh
 		int indexSize; // The byte size of the indices stored for this mesh
 	};
-}
+} }
 
 #endif

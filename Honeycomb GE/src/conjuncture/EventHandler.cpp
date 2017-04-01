@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-namespace Honeycomb::Conjuncture {
+namespace Honeycomb { namespace Conjuncture {
 	EventHandler::EventHandler() {
 
 	}
@@ -35,4 +35,4 @@ namespace Honeycomb::Conjuncture {
 	void EventHandler::operator()() const {
 		this->onEvent();
 	}
-}
+} }

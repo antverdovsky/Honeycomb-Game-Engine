@@ -18,7 +18,7 @@ using Honeycomb::Shader::ShaderSource;
 
 using namespace Honeycomb::Math::Utils;
 
-namespace Honeycomb::Component::Render {
+namespace Honeycomb { namespace Component { namespace Render {
 	CameraController *CameraController::activeCamera = nullptr;
 
 	const std::string CameraController::PROJECTION_MAT4 = "projection";
@@ -284,4 +284,4 @@ namespace Honeycomb::Component::Render {
 
 		return this->projectionView;
 	}
-}
+} } }

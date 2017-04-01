@@ -4,7 +4,7 @@
 
 using Honeycomb::Conjuncture::Event;
 
-namespace Honeycomb::Base {
+namespace Honeycomb { namespace Base {
 	// Set the initial Game Window value to NULL, as it is not created until
 	// the getGameWindow() creates it.
 	GameWindow *GameWindow::gameWindow = nullptr;
@@ -92,4 +92,4 @@ namespace Honeycomb::Base {
 
 		this->resizeEvent.onEvent(); // Notify everyone that window has resized
 	}
-}
+} }

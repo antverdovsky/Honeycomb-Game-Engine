@@ -5,7 +5,7 @@
 #include "../../include/math/Matrix4f.h"
 #include "../../include/math/Vector3f.h"
 
-namespace Honeycomb::Math {
+namespace Honeycomb { namespace Math {
 	class Quaternion {
 	public:
 		/// Initializes a new Quaternion to 0.0 for x, y, and z and 1.0 for the
@@ -198,6 +198,6 @@ namespace Honeycomb::Math {
 		float z; // The z component
 		float w; // The w component
 	};
-}
+} }
 
 #endif

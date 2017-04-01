@@ -6,7 +6,7 @@
 
 #include "EventHandler.h"
 
-namespace Honeycomb::Conjuncture {
+namespace Honeycomb { namespace Conjuncture {
 	class Event {
 	public:
 		/// Instantiates a new event.
@@ -54,6 +54,6 @@ namespace Honeycomb::Conjuncture {
 	private:
 		std::vector<const EventHandler*> eHandlers; // All event handlers
 	};
-}
+} }
 
 #endif

@@ -8,7 +8,7 @@
 
 #include "../conjuncture/Event.h"
 
-namespace Honeycomb::Base {
+namespace Honeycomb { namespace Base {
 	class GameWindow {
 	public:
 		/// Clears the game window.
@@ -80,6 +80,6 @@ namespace Honeycomb::Base {
 		/// const int &h : The height of the window.
 		void setWindowSize(const int &w, const int &h);
 	};
-}
+} }
 
 #endif

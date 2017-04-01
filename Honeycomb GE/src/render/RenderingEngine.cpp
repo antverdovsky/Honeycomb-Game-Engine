@@ -5,7 +5,7 @@
 using Honeycomb::Scene::GameScene;
 using Honeycomb::Render::Deferred::DeferredRenderer;
 
-namespace Honeycomb::Render {
+namespace Honeycomb { namespace Render {
 	RenderingEngine *RenderingEngine::renderingEngine = nullptr;
 
 	RenderingEngine* RenderingEngine::getRenderingEngine() {
@@ -34,4 +34,4 @@ namespace Honeycomb::Render {
 	RenderingEngine::~RenderingEngine() {
 
 	}
-}
+} }

@@ -5,7 +5,7 @@
 #include "GameObject.h"
 #include "../geometry/Model.h"
 
-namespace Honeycomb::Object {
+namespace Honeycomb { namespace Object {
 	class Builder {
 	public:
 		/// Destructs this Builder instance.
@@ -139,6 +139,6 @@ namespace Honeycomb::Object {
 		/// Constructs a new Builder instance.
 		Builder();
 	};
-}
+} }
 
 #endif

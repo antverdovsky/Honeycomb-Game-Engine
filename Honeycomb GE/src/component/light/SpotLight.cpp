@@ -14,7 +14,7 @@ using Honeycomb::Math::Vector4f;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Shader::ShaderSource;
 
-namespace Honeycomb::Component::Light {
+namespace Honeycomb { namespace Component { namespace Light {
 	const std::string SpotLight::COLOR_VEC3 = "base.color";
 	const std::string SpotLight::INTENSITY_F = "base.intensity";
 	const std::string SpotLight::DIRECTION_VEC3 = "direction";
@@ -116,4 +116,4 @@ namespace Honeycomb::Component::Light {
 		this->glVector3fs.setValue(SpotLight::DIRECTION_VEC3, 
 			*this->direction);
 	}
-}
+} } }

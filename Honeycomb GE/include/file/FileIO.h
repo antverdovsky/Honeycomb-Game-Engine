@@ -7,7 +7,7 @@
 
 #include "LineOperation.h"
 
-namespace Honeycomb::File {
+namespace Honeycomb { namespace File {
 	/// Reads in the image from the specified file path into an unsigned char
 	/// array. If the file does not exist, NULL will be returned instead. The
 	/// data array will be dynamically allocated and should therefore be
@@ -41,6 +41,6 @@ namespace Honeycomb::File {
 	/// return : The pointer to the contents of the file.
 	std::string* readFileToStr(const std::string &file, const LineOperation 
         &lnOp);
-}
+} }
 
 #endif

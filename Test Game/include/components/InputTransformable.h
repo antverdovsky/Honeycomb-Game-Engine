@@ -6,7 +6,7 @@
 #include "../../../Honeycomb GE/include/component/GameComponent.h"
 #include "../../../Honeycomb GE/include/component/physics/Transform.h"
 
-namespace HoneycombTest::Components {
+namespace HoneycombTest { namespace Components {
 	class InputTransformable : public Honeycomb::Component::GameComponent {
 	public:
 		/// Creates a new instance of the input transf. component. The W and S
@@ -100,6 +100,6 @@ namespace HoneycombTest::Components {
 		// The space relative to which the translation is to occur
 		Honeycomb::Component::Physics::Space space;
 	};
-}
+} }
 
 #endif

@@ -6,7 +6,7 @@ using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
 
-namespace Honeycomb::Shader {
+namespace Honeycomb { namespace Shader {
 	void GenericStruct::toShader(ShaderProgram &shader, const std::string &uni)
 			const {
 		// Create a new string with the uniform name and a dot appended, so
@@ -59,4 +59,4 @@ namespace Honeycomb::Shader {
 				this->glSampler2Ds.map.insert({ var.name, Texture2D() });
 		}
 	}
-}
+} }

@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <regex>
 
-namespace Honeycomb::Shader {
+namespace Honeycomb { namespace Shader {
 	/// Represents any variable or uniform in the Shader Source.
 	struct SourceVariable {
 		std::string name; // The name of the variable
@@ -138,6 +138,6 @@ namespace Honeycomb::Shader {
 		/// directive with the included source code.
 		void includeDependencies();
 	};
-}
+} }
 
 #endif

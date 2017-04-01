@@ -32,7 +32,7 @@ using Honeycomb::Scene::GameScene;
 using Honeycomb::Shader::ShaderType;
 using Honeycomb::Shader::ShaderProgram;
 
-namespace Honeycomb::Render::Deferred {
+namespace Honeycomb { namespace Render { namespace Deferred {
 	DeferredRenderer* DeferredRenderer::deferredRenderer = nullptr;
 
 	const std::string DeferredRenderer::POINT_LIGHT_VOLUME_MODEL =
@@ -504,4 +504,4 @@ namespace Honeycomb::Render::Deferred {
 			3.1415926159F
 		);
 	}
-}
+} } }

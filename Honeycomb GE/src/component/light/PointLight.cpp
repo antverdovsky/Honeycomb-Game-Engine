@@ -12,7 +12,7 @@ using Honeycomb::Math::Vector4f;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Shader::ShaderSource;
 
-namespace Honeycomb::Component::Light {
+namespace Honeycomb { namespace Component { namespace Light {
 	const std::string PointLight::COLOR_VEC3 = "base.color";
 	const std::string PointLight::INTENSITY_F = "base.intensity";
 	const std::string PointLight::POSITION_VEC3 = "position";
@@ -97,4 +97,4 @@ namespace Honeycomb::Component::Light {
 	void PointLight::update() {
 		this->glVector3fs.setValue(PointLight::POSITION_VEC3, *this->position);
 	}
-}
+} } }

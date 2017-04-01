@@ -22,7 +22,7 @@ using Honeycomb::Geometry::Model;
 using Honeycomb::Geometry::ModelSettings;
 using Honeycomb::Math::Vector4f;
 
-namespace Honeycomb::Object {
+namespace Honeycomb { namespace Object {
 	Builder* Builder::instance = nullptr; // Nullptr before being initialized
 
 	const std::string Builder::CONE_LOCATION =
@@ -172,4 +172,4 @@ namespace Honeycomb::Object {
 		delete parent;
 		return child;
 	}
-}
+} }

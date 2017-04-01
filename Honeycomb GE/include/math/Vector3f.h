@@ -2,10 +2,10 @@
 #ifndef VECTOR_3F_H
 #define VECTOR_3F_H
 
-namespace Honeycomb::Math { class Matrix4f; }
-namespace Honeycomb::Math { class Quaternion; }
+namespace Honeycomb { namespace Math { class Matrix4f; } }
+namespace Honeycomb { namespace Math { class Quaternion; } }
 
-namespace Honeycomb::Math {
+namespace Honeycomb { namespace Math {
 	class Vector3f {
 	public:
 		/// Creates a new three dimensional vector with 0.0 as the x, y and z
@@ -306,6 +306,6 @@ namespace Honeycomb::Math {
 		static Vector3f right; // Global Right Vector { 1, 0, 0 }
 		static Vector3f up; // Global Up Vector { 0, 1, 0 }
 	};
-}
+} }
 
 #endif

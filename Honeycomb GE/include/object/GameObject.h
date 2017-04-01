@@ -8,10 +8,10 @@
 #include "../component/GameComponent.h"
 #include "../debug/Logger.h"
 
-namespace Honeycomb::Component { class GameComponent; }
-namespace Honeycomb::Scene { class GameScene; }
+namespace Honeycomb { namespace Component { class GameComponent; } }
+namespace Honeycomb { namespace Scene { class GameScene; } }
 
-namespace Honeycomb::Object {
+namespace Honeycomb { namespace Object {
 	class GameObject {
 		friend class Honeycomb::Scene::GameScene;
 		
@@ -236,6 +236,6 @@ namespace Honeycomb::Object {
 		std::vector<GameObject*> children;
 		std::vector<Honeycomb::Component::GameComponent*> components;
 	};
-}
+} }
 
 #endif

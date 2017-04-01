@@ -7,7 +7,7 @@
 #include "../base/GLItem.h"
 #include "Texture2D.h"
 
-namespace Honeycomb::Graphics {
+namespace Honeycomb { namespace Graphics {
 	class Cubemap : public Honeycomb::Base::GLItem {
 	public:
 		// Wrapper for the Texture Targets for each face of the Cubemap
@@ -73,6 +73,6 @@ namespace Honeycomb::Graphics {
 		int textureID;		   // The texture "pointer"
 		std::string faces[6];  // Stores the 6 fil directories for the sides
 	};
-}
+} }
 
 #endif

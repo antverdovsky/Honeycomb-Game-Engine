@@ -2,7 +2,7 @@
 
 #include <ctime>
 
-namespace Honeycomb::Base {
+namespace Honeycomb { namespace Base {
 	const float GameTime::SECOND = 1000.0F;
 	GameTime* GameTime::gameTime = nullptr;
 
@@ -39,4 +39,4 @@ namespace Honeycomb::Base {
 	GameTime::~GameTime() {
 
 	}
-}
+} }

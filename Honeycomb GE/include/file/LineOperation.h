@@ -4,7 +4,7 @@
 
 #include <string>
 
-namespace Honeycomb::File {
+namespace Honeycomb { namespace File {
 	class LineOperation {
 	public:
 		/// Function which should be overriden to perform some sort of
@@ -17,6 +17,6 @@ namespace Honeycomb::File {
 		virtual void lineOperation(const std::string &file, std::string &line) 
             const;
 	};
-}
+} }
 
 #endif

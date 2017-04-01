@@ -5,7 +5,7 @@
 #include "Renderer.h"
 #include "../scene/GameScene.h"
 
-namespace Honeycomb::Render {
+namespace Honeycomb { namespace Render {
 	enum RenderingType {
 		TYPE_DEFERRED_RENDERER
 	};
@@ -39,6 +39,6 @@ namespace Honeycomb::Render {
 		/// Deletes this instance of the Rendering Engine.
 		~RenderingEngine();
 	};
-}
+} }
 
 #endif

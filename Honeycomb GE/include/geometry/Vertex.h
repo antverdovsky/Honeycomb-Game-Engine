@@ -5,7 +5,7 @@
 #include "../../include/math/Vector2f.h"
 #include "../../include/math/Vector3f.h"
 
-namespace Honeycomb::Geometry {
+namespace Honeycomb { namespace Geometry {
 	class Vertex {
 	public:
 		/// Creates an empty vertex, with the position, texture coordinates,
@@ -72,6 +72,6 @@ namespace Honeycomb::Geometry {
 		Honeycomb::Math::Vector2f uv;			// Texture Coordinates
 		Honeycomb::Math::Vector3f tangent;		// Model Tangent Vector
 	};
-}
+} }
 
 #endif

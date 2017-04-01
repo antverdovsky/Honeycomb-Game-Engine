@@ -13,7 +13,7 @@
 #include "../component/light/SpotLight.h"
 #include "../object/GameObject.h"
 
-namespace Honeycomb::Scene {
+namespace Honeycomb { namespace Scene {
 	/// Wrapper class for the Game Object class. The Scene is a special object 
 	/// to which all game objects in the scene should be added to, in order for
 	/// them to be updated, rendered, etc.
@@ -67,6 +67,6 @@ namespace Honeycomb::Scene {
 		// List of all the active scene lights
 		std::vector<Honeycomb::Component::Light::BaseLight*> activeLights;
 	};
-}
+} }
 
 #endif

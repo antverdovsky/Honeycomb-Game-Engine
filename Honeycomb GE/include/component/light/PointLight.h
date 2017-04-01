@@ -6,7 +6,7 @@
 
 #include "../../math/Vector3f.h"
 
-namespace Honeycomb::Component::Light {
+namespace Honeycomb { namespace Component { namespace Light {
 	class PointLight : public BaseLight {
 	public:
 		// Variables defining the color and intensity of the light.
@@ -90,6 +90,6 @@ namespace Honeycomb::Component::Light {
 
 		const Honeycomb::Math::Vector3f *position; // Transform Position
 	};
-}
+} } }
 
 #endif

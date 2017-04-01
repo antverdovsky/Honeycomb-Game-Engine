@@ -11,7 +11,7 @@ using Honeycomb::Render::RenderingEngine;
 using Honeycomb::Render::RenderingType; // todo
 using Honeycomb::Scene::GameScene;
 
-namespace Honeycomb::Base {
+namespace Honeycomb { namespace Base {
 	BaseMain* BaseMain::baseMain = nullptr;
 
 	BaseMain& BaseMain::getBaseMain() {
@@ -138,4 +138,4 @@ namespace Honeycomb::Base {
 
 		GameInput::getGameInput()->clear(); // Clear input in between frames
 	}
-}
+} }

@@ -7,7 +7,7 @@
 
 using Honeycomb::Base::GameTime;
 
-namespace Honeycomb::Debug {
+namespace Honeycomb { namespace Debug {
 	Logger* Logger::logger = nullptr;
 
 	Logger& Logger::getLogger() {
@@ -51,4 +51,4 @@ namespace Honeycomb::Debug {
 		this->logCount++; // Another message has been logged
 #endif
 	}
-}
+} }

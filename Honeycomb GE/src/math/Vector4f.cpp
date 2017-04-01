@@ -4,7 +4,7 @@
 
 #include "../../include/math/Matrix4f.h"
 
-namespace Honeycomb::Math {
+namespace Honeycomb { namespace Math {
 	Vector4f::Vector4f() : Vector4f(0.0F, 0.0F, 0.0F, 0.0F) { }
 
 	Vector4f::Vector4f(const float &x, const float &y, const float &z, 
@@ -183,4 +183,4 @@ namespace Honeycomb::Math {
 	Vector4f& Vector4f::operator-=(const Vector4f &v2) {
 		return this->addTo(-v2);
 	}
-}
+} }

@@ -15,7 +15,7 @@ using Honeycomb::Scene::GameScene;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Shader::ShaderType;
 
-namespace Honeycomb::Render {
+namespace Honeycomb { namespace Render {
 	Renderer* Renderer::renderer = nullptr;
 
 	Renderer* Renderer::getRenderer() {
@@ -190,4 +190,4 @@ namespace Honeycomb::Render {
 	void Renderer::setGamma(const float &g) {
 		this->gammaShader.setUniform_f("gamma", g);
 	}
-}
+} }

@@ -12,7 +12,7 @@ using Honeycomb::Shader::GenericStruct;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Shader::ShaderSource;
 
-namespace Honeycomb::Component::Light {
+namespace Honeycomb { namespace Component { namespace Light {
 	const std::string BaseLight::COLOR_VEC3 = "base.color";
 	const std::string BaseLight::INTENSITY_F = "base.intensity";
 
@@ -146,4 +146,4 @@ namespace Honeycomb::Component::Light {
 	void Attenuation::setQuadraticTerm(const float &atQ) {
 		this->getQuadraticTerm() = atQ;
 	}
-}
+} } }

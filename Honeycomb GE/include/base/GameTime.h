@@ -2,7 +2,7 @@
 #ifndef GAME_TIME_H
 #define GAME_TIME_H
 
-namespace Honeycomb::Base {
+namespace Honeycomb { namespace Base {
 	class GameTime {
 		friend class BaseMain; // Only allow BaseMain to set the delta time
 
@@ -49,6 +49,6 @@ namespace Honeycomb::Base {
 		/// const float &ms : The delta time (in ms).
 		void setDeltaTimeMS(const float &ms);
 	};
-}
+} }
 
 #endif

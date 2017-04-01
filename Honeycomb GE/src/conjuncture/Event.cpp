@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-namespace Honeycomb::Conjuncture {
+namespace Honeycomb { namespace Conjuncture {
 	Event::Event() {
 
 	}
@@ -50,4 +50,4 @@ namespace Honeycomb::Conjuncture {
 	void Event::operator() () {
 		this->onEvent();
 	}
-}
+} }

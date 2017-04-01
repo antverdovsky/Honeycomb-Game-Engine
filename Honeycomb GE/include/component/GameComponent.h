@@ -6,9 +6,9 @@
 
 #include "../shader/ShaderProgram.h"
 
-namespace Honeycomb::Object { class GameObject; }
+namespace Honeycomb { namespace Object { class GameObject; } }
 
-namespace Honeycomb::Component {
+namespace Honeycomb { namespace Component {
 	class GameComponent {
 		friend class Honeycomb::Object::GameObject;
 
@@ -88,6 +88,6 @@ namespace Honeycomb::Component {
 		bool isActive; // Is this game component active?
 		std::string name; // The name of this component
 	};
-}
+} }
 
 #endif

@@ -10,7 +10,7 @@
 
 struct GLFWWindow;
 
-namespace Honeycomb::Base {
+namespace Honeycomb { namespace Base {
 	class GameInput {
 	public:
 		/// All of the GLFW keyboard keys which are supported
@@ -198,6 +198,6 @@ namespace Honeycomb::Base {
 		static void callbackMouseButton(GLFWWindow *window, int button,
 			int action, int mods);
 	};
-}
+} }
 
 #endif

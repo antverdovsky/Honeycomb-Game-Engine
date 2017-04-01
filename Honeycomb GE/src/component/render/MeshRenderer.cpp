@@ -20,7 +20,7 @@ using Honeycomb::Render::Renderer;
 
 using namespace Honeycomb::File;
 
-namespace Honeycomb::Component::Render {
+namespace Honeycomb { namespace Component { namespace Render {
 	MeshRenderer::MeshRenderer(const Material &mat, const Mesh &mes) : 
 			GameComponent("MeshRenderer"), material(&mat), mesh(&mes) {
 
@@ -81,4 +81,4 @@ namespace Honeycomb::Component::Render {
 	void MeshRenderer::start() {
 		this->transform = this->getAttached()->getComponent<Transform>();
 	}
-}
+} } }

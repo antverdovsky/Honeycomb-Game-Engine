@@ -13,7 +13,7 @@ using Honeycomb::Math::Matrix4f;
 using Honeycomb::Math::Quaternion;
 using namespace Honeycomb::Math::Utils;
 
-namespace Honeycomb::Component::Physics {
+namespace Honeycomb { namespace Component { namespace Physics {
 	Transform::Transform() : 
 			Transform(Vector3f(), Quaternion(), Vector3f(1, 1, 1)) {
 
@@ -387,4 +387,4 @@ namespace Honeycomb::Component::Physics {
 		// Transform is technically changed anytime its parent is changed
 		this->changedEvent.onEvent();
 	}
-}
+} } }

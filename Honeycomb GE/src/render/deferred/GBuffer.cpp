@@ -10,7 +10,7 @@ using Honeycomb::Base::GameWindow;
 using Honeycomb::Debug::Logger;
 using Honeycomb::Shader::ShaderProgram;
 
-namespace Honeycomb::Render::Deferred {
+namespace Honeycomb { namespace Render { namespace Deferred {
 	const std::string GBuffer::TEXTURE_SHADER_NAMES[] = {
 		"gBufferPosition",
 		"gBufferDiffuse",
@@ -253,4 +253,4 @@ namespace Honeycomb::Render::Deferred {
 				GL_RGB, this->textureWidth, this->textureHeight);
 		}
 	}
-}
+} } }

@@ -8,7 +8,7 @@
 #include "../../../include/math/Matrix4f.h"
 #include "../../../include/math/Quaternion.h"
 
-namespace Honeycomb::Component::Physics {
+namespace Honeycomb { namespace Component { namespace Physics {
 	enum Space {
 		LOCAL,		// Represents the Local Coordinate System of some Object
 		GLOBAL		// Represents the Global Coordinate System of all Objects
@@ -287,6 +287,6 @@ namespace Honeycomb::Component::Physics {
 		/// Transform *parent : The pointer to the new Transform (may be null).
 		void setParent(Transform *parent);
 	};
-}
+} } }
 
 #endif

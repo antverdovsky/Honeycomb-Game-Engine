@@ -9,7 +9,7 @@
 using namespace Honeycomb::File;
 using namespace Honeycomb::Debug;
 
-namespace Honeycomb::Shader {
+namespace Honeycomb { namespace Shader {
 	SourceVariable::SourceVariable(const std::string &name, const std::string
 		&type) {
 		this->name = name;
@@ -207,7 +207,8 @@ namespace Honeycomb::Shader {
 							vName + "." + structVar.name,
 							structVar.type));
 					}
-				} else { // Otherwise, just add the variable
+				}
+				else { // Otherwise, just add the variable
 					vars.push_back(SourceVariable(vName, vType));
 				}
 			}
@@ -231,7 +232,7 @@ namespace Honeycomb::Shader {
 			this->source.cend(), regexField); // Iterator through all uniforms
 		std::sregex_iterator end; // End defined by Default Constructor
 
-								  // Go through all matched uniforms
+		// Go through all matched uniforms
 		for (; uniformFields != end; uniformFields++) {
 			// The first group represents the uniform type; the second the
 			// uniform name (see regex description).
@@ -250,7 +251,8 @@ namespace Honeycomb::Shader {
 					this->detUniforms.push_back(SourceVariable(name + "." +
 						structVar.name, structVar.type));
 				}
-			} else { // If the uniform type is not a user defined struct
+			}
+			else { // If the uniform type is not a user defined struct
 				this->detUniforms.push_back(SourceVariable(name, type));
 			}
 		}
@@ -290,10 +292,11 @@ namespace Honeycomb::Shader {
 							std::to_string(i) + "]" + "." + structVar.name,
 							structVar.type));
 					}
-				} else { // If the uniform type is not a user defined struct
+				}
+				else { // If the uniform type is not a user defined struct
 					this->detUniforms.push_back(SourceVariable(name, type));
 				}
 			}
 		}
 	}
-}
+} }

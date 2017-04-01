@@ -12,7 +12,7 @@
 #include "../../../include/graphics/Material.h"
 #include "../../../include/shader/ShaderProgram.h"
 
-namespace Honeycomb::Component::Render {
+namespace Honeycomb { namespace Component { namespace Render {
 	class MeshRenderer : public GameComponent {
 	public:
 		/// Creates a Mesh Renderer component given the specified mesh and
@@ -69,6 +69,6 @@ namespace Honeycomb::Component::Render {
 		// Reference to the transform of the mesh
 		Honeycomb::Component::Physics::Transform *transform;
 	};
-}
+} } }
 
 #endif

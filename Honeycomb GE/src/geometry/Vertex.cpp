@@ -5,7 +5,7 @@
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
 
-namespace Honeycomb::Geometry {
+namespace Honeycomb { namespace Geometry {
 	Vertex::Vertex() {
 		this->normal = Vector3f();
 		this->position = Vector3f();
@@ -87,4 +87,4 @@ namespace Honeycomb::Geometry {
 
 		return floatBuffer; // Return the float buffer
 	}
-}
+} }

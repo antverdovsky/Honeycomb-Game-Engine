@@ -8,9 +8,11 @@
 #include "../scene/GameScene.h"
 #include "../shader/ShaderProgram.h"
 
-namespace Honeycomb::Component::Render { class MeshRenderer; };
+namespace Honeycomb { namespace Component { namespace Render { 
+    class MeshRenderer; 
+} } };
 
-namespace Honeycomb::Render {
+namespace Honeycomb { namespace Render {
 	class Renderer {
 		friend class Honeycomb::Component::Render::MeshRenderer;
 	public:
@@ -209,6 +211,6 @@ namespace Honeycomb::Render {
 		/// const float &g : The gamma value.
 		virtual void setGamma(const float &g);
 	};
-}
+} }
 
 #endif

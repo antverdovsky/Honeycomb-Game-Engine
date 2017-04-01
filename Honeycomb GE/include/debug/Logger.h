@@ -4,7 +4,7 @@
 
 #include <string>
 
-namespace Honeycomb::Debug {
+namespace Honeycomb { namespace Debug {
 	/// The possible types of log messages.
 	enum MessageType {
 		ENTRY,		// Regular Entry
@@ -82,6 +82,6 @@ namespace Honeycomb::Debug {
 		void log(const std::string &msgType, const std::string &calFunc,
 			const int &calLine, const std::string &msg);
 	};
-}
+} }
 
 #endif

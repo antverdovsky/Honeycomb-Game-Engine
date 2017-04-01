@@ -12,7 +12,7 @@
 #include "../math/Vector3f.h"
 #include "../math/Vector4f.h"
 
-namespace Honeycomb::Shader {
+namespace Honeycomb { namespace Shader {
 	template<typename VariableType>
 	class VariableMap {
 		friend class GenericStruct;
@@ -74,6 +74,6 @@ namespace Honeycomb::Shader {
 		const ShaderSource *SHADER_SOURCE;
 		std::string structName;
 	};
-}
+} }
 
 #endif
