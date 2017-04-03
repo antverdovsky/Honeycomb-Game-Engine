@@ -58,7 +58,7 @@ namespace Honeycomb { namespace Graphics {
 	void Texture2D::setImageData(const int &r, const int &g, const int &b) {
 		this->bind();
 
-		GLubyte color[] = { r, g, b };
+		GLubyte color[] = { (GLubyte)r, (GLubyte)g, (GLubyte)b };
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB,
 			GL_UNSIGNED_BYTE, color);
 	}

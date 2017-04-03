@@ -57,7 +57,7 @@ namespace Honeycomb { namespace Base {
 		glfwWindowHint(GLFW_SAMPLES, this->MSAA_SAMPLES);
 		glfwWindowHint(GLFW_RESIZABLE, this->RESIZABLE);
 		glfwWindowHint(GLFW_DECORATED, !this->FULL_SCREEN);
-		glfwWindowHint(GLFW_MAXIMIZED,  this->FULL_SCREEN);
+//		glfwWindowHint(GLFW_MAXIMIZED,  this->FULL_SCREEN);						TODO: deprecated?
 
 		if (this->FULL_SCREEN) {
 			this->width = videoMode->width;

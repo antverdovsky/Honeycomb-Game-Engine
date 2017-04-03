@@ -37,7 +37,7 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		/// prevent object slicing. The cloned transform is an independent
 		/// component and will lose any parent or children!
 		/// return : The pointer to the newly cloned Transform.
-		Transform* Transform::clone() const;
+		Transform* clone() const;
 
 		/// Gets the event which will be triggered once the transform is 
 		/// changed in any way (scaled, translated or rotated).

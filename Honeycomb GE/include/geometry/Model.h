@@ -15,8 +15,6 @@ struct aiMesh;
 struct aiNode;
 struct aiScene;
 
-enum aiTextureType;
-
 namespace Honeycomb { namespace Geometry {
 	struct ModelSettings {
 		friend class Model;
@@ -185,7 +183,7 @@ namespace Honeycomb { namespace Geometry {
 		/// Fetches the texture of the specified texture type from the 
 		///	specified ASSIMP material.
 		/// const aiMaterial &mat : The ASSIMP Material.
-		/// aiTextureType tT : The texture type.
+		/// const int &tT : The texture type we want to fetch.
 		/// const int &r : The red component of the texture to be set to
 		///				   the color of the texture IF the texture does
 		///				   cannot be imported. Bounded to [0, 255].
@@ -200,7 +198,7 @@ namespace Honeycomb { namespace Geometry {
 		///			 type, a 1x1 pixel set to the specified color (white by
 		///			 default) is returned instead.
 		Honeycomb::Graphics::Texture2D* fetchMaterialTexture(const aiMaterial
-			&mat, aiTextureType tT, const int &r = 255, const int &g = 255,
+			&mat, const int &tT, const int &r = 255, const int &g = 255,
 			const int &b = 255);
 
 		/// Loads the model object from the file path and using settings stored

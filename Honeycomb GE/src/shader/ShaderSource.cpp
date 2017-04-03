@@ -1,10 +1,10 @@
-#include "..\..\include\shader\ShaderSource.h"
+#include "../../include/shader/ShaderSource.h"
 
 #include <algorithm>
 #include <regex>
 
-#include "..\..\include\debug\Logger.h"
-#include "..\..\include\file\FileIO.h"
+#include "../../include/debug/Logger.h"
+#include "../../include/file/FileIO.h"
 
 using namespace Honeycomb::File;
 using namespace Honeycomb::Debug;

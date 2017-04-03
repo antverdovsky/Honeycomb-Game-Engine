@@ -54,6 +54,9 @@ namespace Honeycomb { namespace Shader {
 		VariableMap<Honeycomb::Math::Vector3f> glVector3fs;
 		VariableMap<Honeycomb::Math::Vector4f> glVector4fs;
 
+		/// Destroys this Generic Struct.
+		virtual ~GenericStruct();
+
 		/// Writes all of the properties of this Generic Struct to the
 		/// specified Shader Program.
 		/// ShaderProgram &shader : The shader to which this Generic Struct's

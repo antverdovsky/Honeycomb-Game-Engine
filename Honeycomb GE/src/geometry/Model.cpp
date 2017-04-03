@@ -160,15 +160,16 @@ namespace Honeycomb { namespace Geometry {
 	}
 
 	Texture2D* Model::fetchMaterialTexture(const aiMaterial &mat,
-		aiTextureType tT, const int &r, const int &g, const int &b) {
+		const int &tT, const int &r, const int &g, const int &b) {
 		// Create and initialize the texture
 		Texture2D *texture = new Texture2D();
 		texture->initialize();
 
-		if (mat.GetTextureCount(tT)) { // If material has the texture we want
+		aiTextureType aTT = (aiTextureType)(tT);
+		if (mat.GetTextureCount(aTT)) { // If material has the texture we want
 			// Get the texture directory
 			aiString dir;
-			mat.GetTexture(tT, 0, &dir);
+			mat.GetTexture(aTT, 0, &dir);
 
 			// Set the previously initialized texture to contain the data
 			texture->setImageData(dir.C_Str());

@@ -59,14 +59,14 @@ namespace Honeycomb { namespace Graphics {
 		/// BACK, FRONT }.
 		/// const Texture2D tex[6] : The array of the six textures for the six
 		///							 sides of the cube.
-		void Cubemap::setFaces(const Texture2D tex[6]);
+		void setFaces(const Texture2D tex[6]);
 
 		/// Sets the textures of all of the faces of the specified texture.
 		/// The textures must be in the order of { RIGHT, LEFT, TOP, BOTTOM, 
 		/// BACK, FRONT }.
 		/// const string tex[6] : The array of the six texture directories
 		///						  for the six sides of the cube.
-		void Cubemap::setFaces(const std::string tex[6]);
+		void setFaces(const std::string tex[6]);
 	private:
 		bool isInitialized;    // Has the cubemap been initialized?
 

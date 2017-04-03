@@ -25,7 +25,7 @@ namespace Honeycomb { namespace Object {
 		GameObject(const std::string &n);
 
 		/// Deletes this Game Object, its children and its components.
-		~GameObject();
+		virtual ~GameObject();
 
 		/// Clones this Game Object into a new, dynamically allocated, Game
 		/// Object.

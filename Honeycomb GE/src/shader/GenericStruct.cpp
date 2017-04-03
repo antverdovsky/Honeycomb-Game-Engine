@@ -7,6 +7,10 @@ using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
 
 namespace Honeycomb { namespace Shader {
+	GenericStruct::~GenericStruct() {
+
+	}
+
 	void GenericStruct::toShader(ShaderProgram &shader, const std::string &uni)
 			const {
 		// Create a new string with the uniform name and a dot appended, so
