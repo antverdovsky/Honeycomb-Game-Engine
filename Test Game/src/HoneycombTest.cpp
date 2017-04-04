@@ -57,12 +57,15 @@ namespace HoneycombTest {
 
 		Renderer::getRenderer()->getPostShaders().push_back(this->sharpShader);
 		Renderer::getRenderer()->setDoPostProcess(false);
+		DeferredRenderer::getDeferredRenderer()->setFinalTexture(DeferredRenderer::NORMAL);
 
 		// Import all of the mesh game objects and construct them
 		this->car = Builder::getBuilder()->
 			newModel("../Test Game/res/models/car.fbx");
 		this->cube = Builder::getBuilder()->
 			newModel("../Test Game/res/models/brick-cube/cube.fbx");
+		this->cube2 = Builder::getBuilder()->
+			newModel("../Test Game/res/models/brick-cube2/cube.fbx");
 		this->plane = Builder::getBuilder()->newPlane();
 		this->sphere = Builder::getBuilder()->newSphere();
 		this->suzanne = Builder::getBuilder()->newSuzanne();
@@ -83,6 +86,18 @@ namespace HoneycombTest {
 			Vector2f(10.0F, 10.0F));
 		this->plane->getComponent<MeshRenderer>()->
 			setMaterial(*colorMaterial);
+
+		// Add a displacement map to the second cube. (NOTE: Blender won't
+		// export the displacement map for some reason... possible bug?)
+		Material *cube2Material = new Material(
+			this->cube2->getChild("Cube")->getComponent<MeshRenderer>()->getMaterial());
+		Texture2D *displacementTexture = new Texture2D();
+		displacementTexture->initialize();
+		displacementTexture->setImageData("../Test Game/res/textures/"
+			"brick-cube2/parallax.bmp");
+		cube2Material->glSampler2Ds.setValue("displacementTexture.sampler", *displacementTexture);
+		this->cube2->getChild("Cube")->getComponent<MeshRenderer>()->setMaterial(
+			*cube2Material);
 
 		// Give the sphere and suzanne a special reflective material (skybox)
 		Material *reflectiveMaterial = new Material(
@@ -146,6 +161,8 @@ namespace HoneycombTest {
 			Vector3f(25.0F, 1.0F, 25.0F));
 		this->cube->getComponent<Transform>()->setTranslation(
 			Vector3f(-2.5F, 1.0F, -5.0F));
+		this->cube2->getComponent<Transform>()->setTranslation(
+			Vector3f(0.0F, 1.0F, -3.5F));
 		this->sphere->getComponent<Transform>()->setScale(
 			Vector3f(PI, PI, PI));
 		this->sphere->getComponent<Transform>()->setTranslation(
@@ -187,6 +204,7 @@ namespace HoneycombTest {
 		// Add all of the initialized objects to the Game Scene hierarchy
 		this->gameScene.addChild(*this->car);
 		this->gameScene.addChild(*this->cube);
+		this->gameScene.addChild(*this->cube2);
 		this->gameScene.addChild(*this->plane);
 		this->gameScene.addChild(*this->sphere);
 		this->gameScene.addChild(*this->earth);

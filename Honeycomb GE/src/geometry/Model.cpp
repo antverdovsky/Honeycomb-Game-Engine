@@ -212,15 +212,15 @@ namespace Honeycomb { namespace Geometry {
 		float refStrength = this->fetchMaterialProperty(*aMat,
 			AI_MATKEY_REFLECTIVITY, 0.0F);
 
-		// Retrieve the Textures from ASSIMP. For normals/bump mapping, if
-		// there is no bump map, set the texture to a black pixel, which will
-		// indicate to the shaders that it is to use the interpolated VS norms.
+		// Retrieve the Textures from ASSIMP.
 		Texture2D *diffuseTexture = this->fetchMaterialTexture(*aMat,
 			aiTextureType::aiTextureType_DIFFUSE, 255, 255, 255);
 		Texture2D *specularTexture = this->fetchMaterialTexture(*aMat,
 			aiTextureType::aiTextureType_SPECULAR, 255, 255, 255);
 		Texture2D *normalsTexture = this->fetchMaterialTexture(*aMat,
 			aiTextureType::aiTextureType_NORMALS, 0, 0, 0);
+		Texture2D *displacementTexture = this->fetchMaterialTexture(*aMat,
+			aiTextureType::aiTextureType_DISPLACEMENT, 0, 0, 0);
 
 		// Create the material.
 		Material *mat = new Material();
@@ -245,6 +245,12 @@ namespace Honeycomb { namespace Geometry {
 		mat->glVector2fs.setValue("normalsTexture.tiling",
 			Vector2f(1.0F, 1.0F));
 		mat->glVector2fs.setValue("normalsTexture.offset",
+			Vector2f(0.0F, 0.0F));
+		mat->glSampler2Ds.setValue("displacementTexture.sampler",
+			*displacementTexture);
+		mat->glVector2fs.setValue("displacementTexture.tiling",
+			Vector2f(1.0F, 1.0F));
+		mat->glVector2fs.setValue("displacementTexture.offset",
 			Vector2f(0.0F, 0.0F));
 
 		// Save the texture and material

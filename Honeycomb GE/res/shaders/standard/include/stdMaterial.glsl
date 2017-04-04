@@ -11,17 +11,18 @@ struct Texture2D {
 /// The Material structure.
 ///
 struct Material {
-    vec3 diffuseColor;			// Diffuse color of the Material
-	Texture2D diffuseTexture;	// Diffuse texture of the Material
+    vec3 diffuseColor;				// Diffuse color of the Material
+	Texture2D diffuseTexture;		// Diffuse texture of the Material
 
-    vec3 specularColor;			// Color of the specular reflection
-	Texture2D specularTexture;	// Specular texture of the Material
-	float shininess;			// The shininess of the specular reflection
+    vec3 specularColor;				// Color of the specular reflection
+	Texture2D specularTexture;		// Specular texture of the Material
+	float shininess;				// The shininess of the specular reflection
 
-	Texture2D normalsTexture;	// Normal/Bump Map
+	Texture2D normalsTexture;		// Normal/Bump Map
+	Texture2D displacementTexture;	// Displacement/Height Map
 
-	float refractiveIndex;		// Index of refraction
-	float reflectionStrength;	// The strength of the Reflection [0, 1]
+	float refractiveIndex;			// Index of refraction
+	float reflectionStrength;		// The strength of the Reflection [0, 1]
 };
 
 /// Applies the specified gamma to the specified RGB texture color.

@@ -28,6 +28,7 @@ namespace HoneycombTest {
 
 		Honeycomb::Object::GameObject *plane;		// The plane Game Object
 		Honeycomb::Object::GameObject *cube;		// The cube Game Object
+		Honeycomb::Object::GameObject *cube2;		// The 2nd cube Game Object
 		Honeycomb::Object::GameObject *sphere;		// The sphere Game Object
 		Honeycomb::Object::GameObject *car;			// The car Game Object
 		Honeycomb::Object::GameObject *suzanne;		// The suzanne Game Object
