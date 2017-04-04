@@ -5,8 +5,8 @@
 
 #version 410 core
 
-#include <..\..\..\standard\include\stdCamera.glsl>
-#include <..\..\..\standard\include\stdMaterial.glsl>
+#include <../../../standard/include/stdCamera.glsl>
+#include <../../../standard/include/stdMaterial.glsl>
 
 // The output of the Geometry Vertex Shader
 in vec2 out_vs_texCoord;

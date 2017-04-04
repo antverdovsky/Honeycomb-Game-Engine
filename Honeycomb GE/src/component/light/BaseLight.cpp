@@ -1,6 +1,7 @@
 #include "../../../include/component/light/BaseLight.h"
 
 #include <algorithm>
+#include <cmath>
 
 #include "../../../include/debug/Logger.h"
 #include "../../../include/object/GameObject.h"

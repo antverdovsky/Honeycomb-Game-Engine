@@ -4,6 +4,9 @@
 Honeycomb is a 3D Game Engine written from scratch in C++ using OpenGL. It is not a game engine which is designed to rival any current game engines, but is rather my own object oriented abstraction of the OpenGL functions. I have been writing this engine purely for practice and for fun, but it may still be possible to create a fully featured game in the future using this engine.
 
 ## Installation
+### Remark
+Due to the vast differences in graphics hardware and drivers, I cannot guarantee the engine will function correctly on your machine. For best compatibility, you should update your graphics drivers to their most recent versions, and ensure that you have the latest OpenGL and GLSL versions available.
+
 ### Fetch
 Either fork or clone this repository. For the purposes of this manual, the folder you acquired is referred to as the Honeycomb master directory. It contains the Honeycomb Library as well as a small Test Game executable.
 
