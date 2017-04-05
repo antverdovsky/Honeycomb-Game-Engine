@@ -35,14 +35,16 @@ void main() {
 	out_vs_texCoord = in_vs_texCoord;
 	
 	// Fetch the Normals & Tangents of the Vertex, use them to calculate the
-	// perpendicular bitangent.
+	// perpendicular bitangent. JIC, reorthagonize the tangent vector using the
+	// Gram-Schmidt process.
 	out_vs_norm = normalize(objTransform * vec4(in_vs_norm, 0.0F)).xyz;
 	out_vs_tangent = normalize(objTransform * vec4(in_vs_tangent, 0.0F)).xyz;
+	out_vs_tangent = normalize(out_vs_tangent - 
+		dot(out_vs_tangent, out_vs_norm) * out_vs_norm);
 	out_vs_bitangent = cross(out_vs_tangent, out_vs_norm);
 
 	// Construct the TBN Matrix
-	out_vs_tbnMatrix = transpose(
-		mat3(out_vs_tangent, out_vs_bitangent, out_vs_norm));
+	out_vs_tbnMatrix = mat3(out_vs_tangent, out_vs_bitangent, out_vs_norm);
     
 	// The position of each vertex equals to the transformation matrix
     // mutliplied with the vector representing the original position.
