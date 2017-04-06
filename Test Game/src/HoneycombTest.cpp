@@ -22,6 +22,9 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::start() {
+//		DeferredRenderer::getDeferredRenderer()->setFinalTexture(DeferredRenderer::NORMAL);
+//		DeferredRenderer::getDeferredRenderer()->setColorSpace(DeferredRenderer::LINEAR);
+
 		// Build the Skybox and send to the Renderer
 		std::string skyboxDir =
 			"../Honeycomb GE/res/textures/default/aurora_skybox/";
@@ -57,8 +60,7 @@ namespace HoneycombTest {
 
 		Renderer::getRenderer()->getPostShaders().push_back(this->sharpShader);
 		Renderer::getRenderer()->setDoPostProcess(false);
-		DeferredRenderer::getDeferredRenderer()->setFinalTexture(DeferredRenderer::NORMAL);
-
+		
 		// Import all of the mesh game objects and construct them
 		this->car = Builder::getBuilder()->
 			newModel("../Test Game/res/models/car.fbx");
@@ -93,11 +95,9 @@ namespace HoneycombTest {
 			this->cube2->getChild("Cube")->getComponent<MeshRenderer>()->getMaterial());
 		Texture2D *displacementTexture = new Texture2D();
 		displacementTexture->initialize();
-		displacementTexture->setImageData("../Test Game/res/textures/"
-			"brick-cube2/parallax.bmp");
+		displacementTexture->setImageData("../Test Game/res/textures/brick-cube2/displacement.bmp");
 		cube2Material->glSampler2Ds.setValue("displacementTexture.sampler", *displacementTexture);
-		this->cube2->getChild("Cube")->getComponent<MeshRenderer>()->setMaterial(
-			*cube2Material);
+		this->cube2->getChild("Cube")->getComponent<MeshRenderer>()->setMaterial(*cube2Material);
 
 		// Give the sphere and suzanne a special reflective material (skybox)
 		Material *reflectiveMaterial = new Material(
@@ -179,6 +179,9 @@ namespace HoneycombTest {
 			Vector3f(5.0F, 5.0F, 5.0F));
 		this->earth->getComponent<Transform>()->setTranslation(
 			Vector3f(7.5F, 5.0F, 5.0F));
+
+		this->cube->addComponent(*suzInputTranfs->clone());
+		this->cube2->addComponent(*suzInputTranfs->clone());
 
 		// Construct a left and right spotlight for the front of the car and
 		// add to the car (similar to headlights).

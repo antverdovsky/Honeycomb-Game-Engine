@@ -28,6 +28,30 @@ uniform samplerCube skybox; // Skybox for Reflection
 uniform Camera camera;      // Scene Camera
 uniform float gamma;		// Gamma value for reading in textures
 
+/// Transforms the specified texture coordinates according to the Material's
+/// parallax mapping texture.
+/// vec2 original : The original texture coordinates, which are to be
+///					transformed.
+/// return : The transformed texture coordinates.
+vec2 parallaxTransform(vec2 original) {
+	// Fetch the view (eye) vector
+	vec3 viewVec = -normalize(out_vs_pos - camera.translation);
+	vec3 viewTBN = normalize(viewVec * out_vs_tbnMatrix);
+	 
+	// Fetch the height from the displacement map (since displacement is 
+	// grayscale, grab the value from any channel, in this case R).
+	vec2 coord = out_vs_texCoord * material.displacementTexture.tiling +
+		material.displacementTexture.offset;
+	float height = texture2D(
+		material.displacementTexture.sampler, coord, gamma).r;
+
+	// Calculate the displacement value and the displaced vector.
+	vec2 delta = viewTBN.xy * (height * 0.1F);
+	vec2 new = original - delta;
+
+	return new;
+}
+
 /// Calculates the Diffuse Color of this object's fragment. NOTE: Diffuse MUST
 /// be calculated after the normal has been calculated since the diffuse method
 /// will use the OUT_FS_NORMAL, rather than OUT_VS_NORMAL (to allow for bump
@@ -50,10 +74,13 @@ vec3 calculateDiffuse() {
 	vec3 reflection = clamp(refStr + refTexture, 0.0F, 1.0F);
 
 	// Fetch material texture & diffuse
-	vec2 coord = out_vs_texCoord * material.diffuseTexture.tiling +
-		material.diffuseTexture.offset;
+	vec2 texCoord = parallaxTransform(
+		out_vs_texCoord * material.diffuseTexture.tiling + 
+		material.diffuseTexture.offset);
+	texCoord.x = clamp(texCoord.x, 0.0F, material.diffuseTexture.tiling.x);
+	texCoord.y = clamp(texCoord.y, 0.0F, material.diffuseTexture.tiling.y);
 	vec3 texture = texture2DSRGB(
-		material.diffuseTexture.sampler, coord, gamma).rgb;
+		material.diffuseTexture.sampler, texCoord, gamma).rgb;
 	vec3 diffuse = material.diffuseColor.xyz;
 
 	// Return Texture + Diffuse + Reflection
@@ -67,18 +94,21 @@ vec3 calculateNormal() {
 	vec3 vsNorm = normalize(out_vs_norm);
 
 	// Fetch texture value from the Normal Map of the Material
-	vec2 texCoord = out_vs_texCoord * material.normalsTexture.tiling +
-		material.normalsTexture.offset;
+	vec2 texCoord = parallaxTransform(
+		out_vs_texCoord * material.normalsTexture.tiling +
+		material.normalsTexture.offset);
+	texCoord.x = clamp(texCoord.x, 0.0F, material.normalsTexture.tiling.x);
+	texCoord.y = clamp(texCoord.y, 0.0F, material.normalsTexture.tiling.y);
 	vec3 tex = texture2D(material.normalsTexture.sampler, texCoord).xyz;
 	vec3 texNorm = tex;
 
 	// Convert the Normal Map texture from the range of [0, 1] to [-1, 1] since
 	// a normal can be negative or positive.
-	texNorm = (texNorm * 2.0F) - 1.0F;
+	texNorm = normalize((tex * 2.0F) - vec3(1.0F));
 
 	// Orient the normal map according to the Tangent-Bitangent-Normal Matrix
 	texNorm = normalize(out_vs_tbnMatrix * texNorm);
-	
+
 	// Multiply by the ceiling of the original texture value. If this object
 	// has a texture map, the ceiling of the texture will be a { 1, 1, 1 }
 	// white vector, and will therefore not modify the texture map. If this
