@@ -37,19 +37,45 @@ vec2 parallaxTransform(vec2 original) {
 	// Fetch the view (eye) vector
 	vec3 viewVec = -normalize(out_vs_pos - camera.translation);
 	vec3 viewTBN = normalize(viewVec * out_vs_tbnMatrix);
-	 
-	// Fetch the height from the displacement map (since displacement is 
-	// grayscale, grab the value from any channel, in this case R).
-	vec2 coord = out_vs_texCoord * material.displacementTexture.tiling +
+	
+	// Get the number of layers and the depth of each layer (equal to inverse
+	// the number of layers). Calculate the number of layers by lerping between
+	// the minum and maximum number of layers, with the "t" arugment being the
+	// steepness of the surface, where the less steep the surface, the less
+	// displacement layers we use, for performance considerations.
+	float steepness = abs(dot(vec3(0.0F, 0.0F, 1.0F), viewTBN));
+	float layerCount = mix(
+		MAX_DISPLACEMENT_LAYERS, MIN_DISPLACEMENT_LAYERS, steepness);
+	float eachLayerDepth = 1.0F / layerCount;
+	float currentLayerDepth = 0.0F;
+	
+	// Calculate the initial displacement value
+	vec2 parallaxValue = viewTBN.xy * (0.1F);		// TODO: Height Scale Uniform
+	vec2 deltaTexCoords = parallaxValue / layerCount;
+
+	// Calculate the initial height and texture coordinate values
+	vec2 currentTexCoords = original * material.displacementTexture.tiling +
 		material.displacementTexture.offset;
-	float height = texture2D(
-		material.displacementTexture.sampler, coord, gamma).r;
+	float currentTextureDepth = texture2D(material.displacementTexture.sampler, 
+		currentTexCoords).r;
 
-	// Calculate the displacement value and the displaced vector.
-	vec2 delta = viewTBN.xy * (height * 0.1F);
-	vec2 new = original - delta;
+	// Sample all of the layers until we hit the depth of the texture, and 
+	// adjust the texture coordinates and depth as necessary.
+	while (currentLayerDepth < currentTextureDepth) {
+		// Displace the texture coordinates according to the parallax vector
+		currentTexCoords -= deltaTexCoords;
 
-	return new;
+		// Get the new depth value from the displacement texture
+		currentTextureDepth = texture2D(material.displacementTexture.sampler,
+			currentTexCoords).r;
+
+		// Increment the layer depth counter
+		currentLayerDepth += eachLayerDepth;
+	}
+
+	// Once the loop is finished and all the samples are taken, the current
+	// texture coordinates are the Parallax displaced texture coordinates.
+	return currentTexCoords;
 }
 
 /// Calculates the Diffuse Color of this object's fragment. NOTE: Diffuse MUST
@@ -77,8 +103,6 @@ vec3 calculateDiffuse() {
 	vec2 texCoord = parallaxTransform(
 		out_vs_texCoord * material.diffuseTexture.tiling + 
 		material.diffuseTexture.offset);
-	texCoord.x = clamp(texCoord.x, 0.0F, material.diffuseTexture.tiling.x);
-	texCoord.y = clamp(texCoord.y, 0.0F, material.diffuseTexture.tiling.y);
 	vec3 texture = texture2DSRGB(
 		material.diffuseTexture.sampler, texCoord, gamma).rgb;
 	vec3 diffuse = material.diffuseColor.xyz;
@@ -97,8 +121,6 @@ vec3 calculateNormal() {
 	vec2 texCoord = parallaxTransform(
 		out_vs_texCoord * material.normalsTexture.tiling +
 		material.normalsTexture.offset);
-	texCoord.x = clamp(texCoord.x, 0.0F, material.normalsTexture.tiling.x);
-	texCoord.y = clamp(texCoord.y, 0.0F, material.normalsTexture.tiling.y);
 	vec3 tex = texture2D(material.normalsTexture.sampler, texCoord).xyz;
 	vec3 texNorm = tex;
 

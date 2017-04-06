@@ -25,6 +25,11 @@ struct Material {
 	float reflectionStrength;		// The strength of the Reflection [0, 1]
 };
 
+/// Constant values for the minimum and maximum number of layers when using
+/// Steep Parallax Mapping.
+const float MIN_DISPLACEMENT_LAYERS = 8.0F;
+const float MAX_DISPLACEMENT_LAYERS = 32.0F;
+
 /// Applies the specified gamma to the specified RGB texture color.
 /// vec4 inColor : The inputted RGB texture color, which is to be gamma 
 ///				   corrected into SRGB.
