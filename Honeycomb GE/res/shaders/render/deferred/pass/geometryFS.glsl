@@ -50,7 +50,7 @@ vec2 parallaxTransform(vec2 original) {
 	float currentLayerDepth = 0.0F;
 	
 	// Calculate the initial displacement value
-	vec2 parallaxValue = viewTBN.xy * (0.1F);		// TODO: Height Scale Uniform
+	vec2 parallaxValue = viewTBN.xy * (0.1);		// TODO: Height Scale Uniform
 	vec2 deltaTexCoords = parallaxValue / layerCount;
 
 	// Calculate the initial height and texture coordinate values
@@ -73,8 +73,21 @@ vec2 parallaxTransform(vec2 original) {
 		currentLayerDepth += eachLayerDepth;
 	}
 
-	// Once the loop is finished and all the samples are taken, the current
-	// texture coordinates are the Parallax displaced texture coordinates.
+	// Get the texture coordinates as they were before the last iteration of
+	// the loop.
+	vec2 previousTexCoords = currentTexCoords + deltaTexCoords;
+
+	// Calculate the depth at the current and previous texture coordinates
+	float afterDepth = currentTextureDepth - currentLayerDepth;
+	float beforeDepth = texture2D(material.displacementTexture.sampler,
+		previousTexCoords).r - currentLayerDepth + eachLayerDepth;
+
+	// Perform an interpolation to find the medium point between the before and
+	// after depths.
+	float interpolation = afterDepth / (afterDepth - beforeDepth);
+	currentTexCoords = previousTexCoords * interpolation +
+		currentTexCoords * (1.0F - interpolation);
+
 	return currentTexCoords;
 }
 
