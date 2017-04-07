@@ -22,9 +22,6 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::start() {
-//		DeferredRenderer::getDeferredRenderer()->setFinalTexture(DeferredRenderer::NORMAL);
-//		DeferredRenderer::getDeferredRenderer()->setColorSpace(DeferredRenderer::LINEAR);
-
 		// Build the Skybox and send to the Renderer
 		std::string skyboxDir =
 			"../Honeycomb GE/res/textures/default/aurora_skybox/";

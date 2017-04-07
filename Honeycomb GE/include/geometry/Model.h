@@ -144,46 +144,54 @@ namespace Honeycomb { namespace Geometry {
 		Model(const std::string &path, const ModelSettings &settings);
 
 		/// Fetches the specified float property from the given material and
-		/// returns it. For the three parameters "pKey", "type", "idx", it is
-		/// suggested that they are passed via AI_MATKEY_<PROPERTY>.
+		/// writes it to the material. For the three parameters "pKey", "type",
+		///	"idx", it is suggested that they are passed via 
+		/// AI_MATKEY_<PROPERTY>.
 		/// const aiMaterial &mat : The ASSIMP Material.
 		/// const char *pKey : The string containing the name of the material
 		///					   property.
 		/// unsigned int type : The property type.
 		/// unsigned int idx : The property index.
-		/// const float &def : If an error occurs, this will be the value
-		///					   returned.
+		/// Material &mat : The material to which the fetched property should
+		///					be written to.
+		/// const string &matUni : The name of the uniform in the Material.
+		/// const float &def : If an error occurs, this will be the written to
+		///					   the material.
 		/// bool err : Logs a warning to the Honeycomb Logger if an error
 		///			   occurs and this is true. No log otherwise.
-		/// return : The property retrieved from the material, OR the def
-		///			 parameter if an error occurs.
-		float fetchMaterialProperty(const aiMaterial &mat, const char *pKey,
-			unsigned int type, unsigned int idx, const float &def = 0.0F,
+		void fetchMaterialProperty(const aiMaterial &aMat, const char *pKey,
+			unsigned int type, unsigned int idx, Honeycomb::Graphics::Material 
+			&mat, const std::string &matUni, const float &def = 0.0F, 
 			bool err = true);
 
 		/// Fetches the specified Vector3 property from the given material and
-		/// returns it. For the three parameters "pKey", "type", "idx", it is
-		/// suggested that they are passed via AI_MATKEY_<PROPERTY>.
-		/// const aiMaterial &mat : The ASSIMP Material.
+		/// writes it to the specified material. For the three parameters 
+		/// "pKey", "type", "idx", it is suggested that they are passed via 
+		/// AI_MATKEY_<PROPERTY>.
+		/// const aiMaterial &aMat : The ASSIMP Material.
 		/// const char *pKey : The string containing the name of the material
 		///					   property.
 		/// unsigned int type : The property type.
 		/// unsigned int idx : The property index.
+		/// Material &mat : The material to write the texture to.
+		/// const string &matUni : The name of the texture uniform in the
+		///						   Material.
 		/// const Vector3f &def : If an error occurs, this will be the value
-		///						  returned.
+		///						  written.
 		/// bool err : Logs a warning to the Honeycomb Logger if an error
 		///			   occurs and this is true. No log otherwise.
-		/// return : The property retrieved from the material, OR the def
-		///			 parameter if an error occurs.
-		Honeycomb::Math::Vector3f fetchMaterialProperty(const aiMaterial &mat,
-			const char *pKey, unsigned int type, unsigned int idx,
-			const Honeycomb::Math::Vector3f &def =
-			Honeycomb::Math::Vector3f(), bool err = true);
+		void fetchMaterialProperty(const aiMaterial &aMat, const char *pKey, 
+			unsigned int type, unsigned int idx, Honeycomb::Graphics::Material
+			&mat, const std::string &matUni, const Honeycomb::Math::Vector3f 
+			&def = Honeycomb::Math::Vector3f(), bool err = true);
 
 		/// Fetches the texture of the specified texture type from the 
-		///	specified ASSIMP material.
+		///	specified ASSIMP material and writes it to the standard material.
 		/// const aiMaterial &mat : The ASSIMP Material.
 		/// const int &tT : The texture type we want to fetch.
+		/// Material &mat : The material to which to write the texture.
+		/// const string &matUni : The name of the texture uniform in the
+		///						   Material.
 		/// const int &r : The red component of the texture to be set to
 		///				   the color of the texture IF the texture does
 		///				   cannot be imported. Bounded to [0, 255].
@@ -193,13 +201,9 @@ namespace Honeycomb { namespace Geometry {
 		/// const int &b : The blue component of the texture to be set to
 		///				   the color of the texture IF the texture does
 		///				   cannot be imported. Bounded to [0, 255].
-		/// return : The initialized and ready to be used Texture. If the
-		///			 material does not contain the texture of the specified
-		///			 type, a 1x1 pixel set to the specified color (white by
-		///			 default) is returned instead.
-		Honeycomb::Graphics::Texture2D* fetchMaterialTexture(const aiMaterial
-			&mat, const int &tT, const int &r = 255, const int &g = 255,
-			const int &b = 255);
+		void fetchMaterialTexture(const aiMaterial &aMat, const int &tT, 
+			Honeycomb::Graphics::Material &mat, const std::string &matUni,
+			const int &r = 255, const int &g = 255, const int &b = 255);
 
 		/// Loads the model object from the file path and using settings stored
 		/// in this Model.

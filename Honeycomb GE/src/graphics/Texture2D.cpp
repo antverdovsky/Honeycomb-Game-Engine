@@ -76,6 +76,7 @@ namespace Honeycomb { namespace Graphics {
 
 		if (data != nullptr) {	// Data was read in -> Send to texture
 			this->setImageData(data, GL_UNSIGNED_BYTE, in, ex, w, h);
+			this->directory = file;
 		} else {				// Data was not read in -> Send RGB to texture
 			this->setImageData(r, g, b);
 

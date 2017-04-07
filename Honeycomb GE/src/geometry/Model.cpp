@@ -120,14 +120,15 @@ namespace Honeycomb { namespace Geometry {
 		this->imports.push_back(this);
 	}
 
-	float Model::fetchMaterialProperty(const aiMaterial &mat, const char *pKey,
-			unsigned int type, unsigned int idx, const float &def, bool err) {
+	void Model::fetchMaterialProperty(const aiMaterial &aMat, const char *pKey,
+			unsigned int type, unsigned int idx, Material &mat, 
+			const std::string &matUni, const float &def, bool err) {
 		// Fetch the property from the material
 		float prop;
-		aiReturn result = mat.Get(pKey, type, idx, prop);
+		aiReturn result = aMat.Get(pKey, type, idx, prop);
 
 		if (result == aiReturn::aiReturn_SUCCESS) {
-			return prop; // Return the property
+			mat.glFloats.setValue(matUni, prop);
 		} else {
 			if (err) { // Print a warning message if applicable
 				Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
@@ -135,19 +136,19 @@ namespace Honeycomb { namespace Geometry {
 					" from material for object " + this->path);
 			}
 
-			return def; // Return the default value
+			mat.glFloats.setValue(matUni, def);
 		}
 	}
 
-	Vector3f Model::fetchMaterialProperty(const aiMaterial &mat,
-		const char *pKey, unsigned int type, unsigned int idx, const
-		Vector3f &def, bool err) {
+	void Model::fetchMaterialProperty(const aiMaterial &aMat, const char *pKey,
+			unsigned int type, unsigned int idx, Material &mat, const 
+			std::string &matUni, const Vector3f &def, bool err) {
 		// Fetch the property from the material
 		aiColor3D vec3;
-		aiReturn result = mat.Get(pKey, type, idx, vec3);
+		aiReturn result = aMat.Get(pKey, type, idx, vec3);
 
 		if (result == aiReturn::aiReturn_SUCCESS) {
-			return Vector3f(vec3.r, vec3.g, vec3.b); // Return the property
+			mat.glVector3fs.setValue(matUni, Vector3f(vec3.r, vec3.g, vec3.b));
 		} else {
 			if (err) { // Print a warning message if applicable
 				Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
@@ -155,30 +156,38 @@ namespace Honeycomb { namespace Geometry {
 					" from material for object " + this->path);
 			}
 
-			return def; // Return the default value
+			mat.glVector3fs.setValue(matUni, def);
 		}
 	}
 
-	Texture2D* Model::fetchMaterialTexture(const aiMaterial &mat,
-		const int &tT, const int &r, const int &g, const int &b) {
+	void Model::fetchMaterialTexture(const aiMaterial &aMat, const int &tT, 
+			Material &mat, const std::string &matUni, const int &r, 
+			const int &g, const int &b) {
 		// Create and initialize the texture
 		Texture2D *texture = new Texture2D();
 		texture->initialize();
 
 		aiTextureType aTT = (aiTextureType)(tT);
-		if (mat.GetTextureCount(aTT)) { // If material has the texture we want
+		if (aMat.GetTextureCount(aTT)) { // If material has the texture we want
 			// Get the texture directory
 			aiString dir;
-			mat.GetTexture(aTT, 0, &dir);
+			aMat.GetTexture(aTT, 0, &dir);
 
 			// Set the previously initialized texture to contain the data
-			texture->setImageData(dir.C_Str());
+			texture->setImageData(dir.C_Str(), r, g, b);
 		} else {
-			// Set the previously initialized texture to empty texture
+			// Set the previously initialized texture to default value
 			texture->setImageData(r, g, b);
 		}
 
-		return texture; // Return the texture
+		mat.glSampler2Ds.setValue(matUni + ".sampler", *texture);
+		mat.glVector2fs.setValue(matUni + ".tiling", Vector2f(1.0F, 1.0F));
+		mat.glVector2fs.setValue(matUni + ".offset", Vector2f(0.0F, 0.0F));
+		mat.glVector3fs.setValue(matUni + ".color", 
+			Vector3f(1.0F, 1.0F, 1.0F));
+		mat.glFloats.setValue(matUni + ".intensity", 1.0F);
+
+		this->textures.push_back(texture);
 	}
 
 	void Model::loadFromPath() {
@@ -200,84 +209,41 @@ namespace Honeycomb { namespace Geometry {
 	}
 
 	Material* Model::processAiMeshMaterial(aiMaterial* aMat) {
+		Material *material = new Material();
+
 		// Retrieve all of the Material properties from ASSIMP
-		Vector3f diffuse = this->fetchMaterialProperty(*aMat,
-			AI_MATKEY_COLOR_DIFFUSE, Vector3f(1.0F, 1.0F, 1.0F));
-		Vector3f specular = this->fetchMaterialProperty(*aMat,
-			AI_MATKEY_COLOR_SPECULAR, Vector3f(1.0F, 1.0F, 1.0F));
-		float shininess = this->fetchMaterialProperty(*aMat,
-			AI_MATKEY_SHININESS, 0.0F);
-		float refIndex = this->fetchMaterialProperty(*aMat,
-			AI_MATKEY_REFRACTI, 1.0F);
-		float refStrength = this->fetchMaterialProperty(*aMat,
-			AI_MATKEY_REFLECTIVITY, 0.0F);
+		this->fetchMaterialProperty(*aMat, AI_MATKEY_COLOR_DIFFUSE, *material,
+			"diffuseColor", Vector3f(1.0F, 1.0F, 1.0F));
+		this->fetchMaterialProperty(*aMat, AI_MATKEY_COLOR_SPECULAR, *material,
+			"specularColor", Vector3f(1.0F, 1.0F, 1.0F));
+		this->fetchMaterialProperty(*aMat, AI_MATKEY_SHININESS, *material,
+			"shininess", 0.0F);
+		this->fetchMaterialProperty(*aMat, AI_MATKEY_REFRACTI, *material,
+			"refractiveIndex", 1.0F);
+		this->fetchMaterialProperty(*aMat, AI_MATKEY_REFLECTIVITY, *material,
+			"reflectionStrength", 0.0F);
 
 		// Retrieve the Textures from ASSIMP.
-		Texture2D *diffuseTexture = this->fetchMaterialTexture(*aMat,
-			aiTextureType::aiTextureType_DIFFUSE, 255, 255, 255);
-		Texture2D *specularTexture = this->fetchMaterialTexture(*aMat,
-			aiTextureType::aiTextureType_SPECULAR, 255, 255, 255);
-		Texture2D *normalsTexture = this->fetchMaterialTexture(*aMat,
-			aiTextureType::aiTextureType_NORMALS, 0, 0, 0);
-		Texture2D *displacementTexture = this->fetchMaterialTexture(*aMat,
-			aiTextureType::aiTextureType_DISPLACEMENT, 0, 0, 0);
+		this->fetchMaterialTexture(*aMat, 
+			aiTextureType::aiTextureType_DIFFUSE, *material, 
+			"diffuseTexture", 255, 255, 255);
+		this->fetchMaterialTexture(*aMat, 
+			aiTextureType::aiTextureType_SPECULAR, *material, 
+			"specularTexture", 255, 255, 255);
+		this->fetchMaterialTexture(*aMat, 
+			aiTextureType::aiTextureType_NORMALS, *material,
+			"normalsTexture", 0, 0, 0);
+		this->fetchMaterialTexture(*aMat,
+			aiTextureType::aiTextureType_DISPLACEMENT, *material,
+			"displacementTexture", 0, 0, 0);
 
-		// Create the material. TODO: this is out of control :-(
-		Material *mat = new Material();
-		mat->glVector3fs.setValue("diffuseColor", diffuse);
-		mat->glVector3fs.setValue("specularColor", specular);
-		mat->glFloats.setValue("shininess", shininess);
-		mat->glFloats.setValue("refractiveIndex", refIndex);
-		mat->glFloats.setValue("reflectionStrength", refStrength);
-		mat->glSampler2Ds.setValue("diffuseTexture.sampler", *diffuseTexture);
-		mat->glVector2fs.setValue("diffuseTexture.tiling",
-			Vector2f(1.0F, 1.0F));
-		mat->glVector2fs.setValue("diffuseTexture.offset",
-			Vector2f(0.0F, 0.0F));
-		mat->glVector3fs.setValue("diffuseTexture.color",
-			Vector3f(1.0F, 1.0F, 1.0F));
-		mat->glFloats.setValue("diffuseTexture.intensity",
-			1.0F);
-		mat->glSampler2Ds.setValue("specularTexture.sampler",
-			*specularTexture);
-		mat->glVector2fs.setValue("specularTexture.tiling",
-			Vector2f(1.0F, 1.0F));
-		mat->glVector2fs.setValue("specularTexture.offset",
-			Vector2f(0.0F, 0.0F));
-		mat->glVector3fs.setValue("specularTexture.color",
-			Vector3f(1.0F, 1.0F, 1.0F));
-		mat->glFloats.setValue("specularTexture.intensity",
-			1.0F);
-		mat->glSampler2Ds.setValue("normalsTexture.sampler",
-			*normalsTexture);
-		mat->glVector2fs.setValue("normalsTexture.tiling",
-			Vector2f(1.0F, 1.0F));
-		mat->glVector2fs.setValue("normalsTexture.offset",
-			Vector2f(0.0F, 0.0F));
-		mat->glVector3fs.setValue("normalsTexture.color",
-			Vector3f(1.0F, 1.0F, 1.0F));
-		mat->glFloats.setValue("normalsTexture.intensity",
-			1.0F);
-		mat->glSampler2Ds.setValue("displacementTexture.sampler",
-			*displacementTexture);
-		mat->glVector2fs.setValue("displacementTexture.tiling",
-			Vector2f(1.0F, 1.0F));
-		mat->glVector2fs.setValue("displacementTexture.offset",
-			Vector2f(0.0F, 0.0F));
-		mat->glVector3fs.setValue("displacementTexture.color",
-			Vector3f(1.0F, 1.0F, 1.0F));
-		mat->glFloats.setValue("displacementTexture.intensity",
-			0.15F);
-		mat->glVector2fs.setValue("globalTiling", Vector2f(1.0F, 1.0F));
-		mat->glVector2fs.setValue("globalOffset", Vector2f(0.0F, 0.0F));
+		material->glVector2fs.setValue("globalTiling", Vector2f(1.0F, 1.0F));
+		material->glVector2fs.setValue("globalOffset", Vector2f(0.0F, 0.0F));
 
-		// Save the texture and material
-		this->textures.push_back(diffuseTexture);
-		this->textures.push_back(specularTexture);
-		this->textures.push_back(normalsTexture);
-		this->materials.push_back(mat);
+		// Save the material
+		this->materials.push_back(material);
 
-		return mat;
+		return material;
 	}
 
 	Honeycomb::Geometry::Mesh* Model::processAiMeshGeometry(aiMesh *aMesh) {
