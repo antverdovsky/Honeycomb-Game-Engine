@@ -222,7 +222,7 @@ namespace Honeycomb { namespace Geometry {
 		Texture2D *displacementTexture = this->fetchMaterialTexture(*aMat,
 			aiTextureType::aiTextureType_DISPLACEMENT, 0, 0, 0);
 
-		// Create the material.
+		// Create the material. TODO: this is out of control :-(
 		Material *mat = new Material();
 		mat->glVector3fs.setValue("diffuseColor", diffuse);
 		mat->glVector3fs.setValue("specularColor", specular);
@@ -234,24 +234,40 @@ namespace Honeycomb { namespace Geometry {
 			Vector2f(1.0F, 1.0F));
 		mat->glVector2fs.setValue("diffuseTexture.offset",
 			Vector2f(0.0F, 0.0F));
+		mat->glVector3fs.setValue("diffuseTexture.color",
+			Vector3f(1.0F, 1.0F, 1.0F));
+		mat->glFloats.setValue("diffuseTexture.intensity",
+			1.0F);
 		mat->glSampler2Ds.setValue("specularTexture.sampler",
 			*specularTexture);
 		mat->glVector2fs.setValue("specularTexture.tiling",
 			Vector2f(1.0F, 1.0F));
 		mat->glVector2fs.setValue("specularTexture.offset",
 			Vector2f(0.0F, 0.0F));
+		mat->glVector3fs.setValue("specularTexture.color",
+			Vector3f(1.0F, 1.0F, 1.0F));
+		mat->glFloats.setValue("specularTexture.intensity",
+			1.0F);
 		mat->glSampler2Ds.setValue("normalsTexture.sampler",
 			*normalsTexture);
 		mat->glVector2fs.setValue("normalsTexture.tiling",
 			Vector2f(1.0F, 1.0F));
 		mat->glVector2fs.setValue("normalsTexture.offset",
 			Vector2f(0.0F, 0.0F));
+		mat->glVector3fs.setValue("normalsTexture.color",
+			Vector3f(1.0F, 1.0F, 1.0F));
+		mat->glFloats.setValue("normalsTexture.intensity",
+			1.0F);
 		mat->glSampler2Ds.setValue("displacementTexture.sampler",
 			*displacementTexture);
 		mat->glVector2fs.setValue("displacementTexture.tiling",
 			Vector2f(1.0F, 1.0F));
 		mat->glVector2fs.setValue("displacementTexture.offset",
 			Vector2f(0.0F, 0.0F));
+		mat->glVector3fs.setValue("displacementTexture.color",
+			Vector3f(1.0F, 1.0F, 1.0F));
+		mat->glFloats.setValue("displacementTexture.intensity",
+			0.15F);
 		mat->glVector2fs.setValue("globalTiling", Vector2f(1.0F, 1.0F));
 		mat->glVector2fs.setValue("globalOffset", Vector2f(0.0F, 0.0F));
 

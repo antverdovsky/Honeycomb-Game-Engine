@@ -3,8 +3,12 @@
 ///
 struct Texture2D {
 	sampler2D sampler;			// The sampler2D used to sample the texture
+	
 	vec2 tiling;				// The tiling of the texture on X, Y axes
 	vec2 offset;				// The offset of the texture on X, Y axes
+	
+	vec3 color;					// Modifies the color of the texture 
+	float intensity;			// Scales all of the colors of the texture
 };
 
 ///
@@ -107,7 +111,8 @@ vec4 parallaxSampleTexture2D(Material mat, Texture2D tex, Texture2D par,
 	vec2 adjCoord = coord * (mat.globalTiling * tex.tiling) + 
 		(mat.globalOffset + tex.offset);
 	vec2 parallaxCoord = parallaxTransform(par, adjCoord, eye, tbn);
-	vec4 texColor = texture2D(tex.sampler, parallaxCoord);
+	vec4 texColor = texture2D(tex.sampler, parallaxCoord) * 
+		vec4(tex.color, 1.0F) * vec4(vec3(tex.intensity), 1.0F);
 
 	return applyGammaSRGB(texColor, gamma);
 }
@@ -128,7 +133,7 @@ vec2 parallaxTransform(Texture2D par, vec2 original, vec3 eye, mat3 tbn) {
 	float currentLayerDepth = 0.0F;
 	
 	// Calculate the initial displacement value
-	vec2 parallaxValue = viewTBN.xy * (0.2F);		// TODO: Height Scale Uniform
+	vec2 parallaxValue = viewTBN.xy * par.intensity;
 	vec2 deltaTexCoords = parallaxValue / layerCount;
 
 	// Calculate the initial height and texture coordinate values
@@ -171,7 +176,8 @@ vec4 sampleTexture2D(Material mat, Texture2D tex, vec2 coord, float gamma) {
 	// Texture2D struct.
 	vec2 adjCoord = coord * (mat.globalTiling * tex.tiling) + 
 		(mat.globalOffset + tex.offset);
-	vec4 texColor = texture2D(tex.sampler, adjCoord);
+	vec4 texColor = texture2D(tex.sampler, adjCoord) * 
+		vec4(tex.color, 1.0F) * vec4(vec3(tex.intensity), 1.0F);
 
 	return applyGammaSRGB(texColor, gamma);
 }
