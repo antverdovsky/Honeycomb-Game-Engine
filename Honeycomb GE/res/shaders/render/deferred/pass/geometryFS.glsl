@@ -50,7 +50,7 @@ vec3 calculateDiffuse() {
 	vec3 reflection = clamp(refStr + refTexture, 0.0F, 1.0F);
 
 	// Fetch material texture & diffuse
-	vec3 tex = parallaxSampleTexture2D(material.diffuseTexture,
+	vec3 tex = parallaxSampleTexture2D(material, material.diffuseTexture,
 		material.displacementTexture, out_vs_texCoord, viewVec,
 		out_vs_tbnMatrix, gamma).rgb;
 	vec3 diffuse = material.diffuseColor.xyz;
@@ -67,7 +67,7 @@ vec3 calculateNormal() {
 
 	// Fetch texture value from the Normal Map of the Material
 	vec3 viewVec = normalize(out_vs_pos - camera.translation);
-	vec3 tex = parallaxSampleTexture2D(material.normalsTexture,
+	vec3 tex = parallaxSampleTexture2D(material, material.normalsTexture,
 		material.displacementTexture, out_vs_texCoord, viewVec,
 		out_vs_tbnMatrix, 1.0F).rgb;
 	vec3 texNorm = tex;
@@ -104,7 +104,7 @@ vec3 calculateNormal() {
 vec4 calculateSpecular() {
 	// Fetch Specular properties from the Materials
 	vec3 color = material.specularColor;
-	vec3 tex = sampleTexture2D(material.specularTexture,
+	vec3 tex = sampleTexture2D(material, material.specularTexture,
 		out_vs_texCoord, 1.0F).rgb;
 	float shine = material.shininess;
 

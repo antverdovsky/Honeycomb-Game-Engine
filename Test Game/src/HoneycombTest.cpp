@@ -67,7 +67,7 @@ namespace HoneycombTest {
 		this->cube = Builder::getBuilder()->
 			newModel("../Test Game/res/models/brick-cube/cube.fbx");
 		this->cube2 = Builder::getBuilder()->
-			newModel("../Test Game/res/models/brick-cube2/cube.fbx");
+			newModel("../Test Game/res/models/orange-stone-cube/cube.fbx");
 		this->plane = Builder::getBuilder()->newPlane();
 		this->sphere = Builder::getBuilder()->newSphere();
 		this->suzanne = Builder::getBuilder()->newSuzanne();
@@ -95,8 +95,9 @@ namespace HoneycombTest {
 			this->cube2->getChild("Cube")->getComponent<MeshRenderer>()->getMaterial());
 		Texture2D *displacementTexture = new Texture2D();
 		displacementTexture->initialize();
-		displacementTexture->setImageData("../Test Game/res/textures/brick-cube2/displacement.bmp");
+		displacementTexture->setImageData("../Test Game/res/textures/orange-stone-cube/displace.bmp");
 		cube2Material->glSampler2Ds.setValue("displacementTexture.sampler", *displacementTexture);
+		cube2Material->glVector2fs.setValue("globalTiling", Vector2f(2.0F, 2.0F));
 		this->cube2->getChild("Cube")->getComponent<MeshRenderer>()->setMaterial(*cube2Material);
 
 		// Give the sphere and suzanne a special reflective material (skybox)

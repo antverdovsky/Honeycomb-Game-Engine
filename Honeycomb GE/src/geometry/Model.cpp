@@ -252,6 +252,8 @@ namespace Honeycomb { namespace Geometry {
 			Vector2f(1.0F, 1.0F));
 		mat->glVector2fs.setValue("displacementTexture.offset",
 			Vector2f(0.0F, 0.0F));
+		mat->glVector2fs.setValue("globalTiling", Vector2f(1.0F, 1.0F));
+		mat->glVector2fs.setValue("globalOffset", Vector2f(0.0F, 0.0F));
 
 		// Save the texture and material
 		this->textures.push_back(diffuseTexture);

@@ -23,6 +23,9 @@ struct Material {
 
 	float refractiveIndex;			// Index of refraction
 	float reflectionStrength;		// The strength of the Reflection [0, 1]
+
+	vec2 globalTiling;				// Tiling for all textures
+	vec2 globalOffset;				// Offset for all textures
 };
 
 /// Constant values for the minimum and maximum number of layers when using
@@ -40,13 +43,14 @@ vec4 applyGammaSRGB(vec4 inColor, float gamma);
 /// Samples the specified 2D texture at the specified coordinates. The
 /// coordinates will be automatically adjusted according to the tiling and
 /// offsets of the Texture struct as well as according to the parallax map.
+/// Material mat : The material in which the textures are located.
 /// Texture2D tex : The texture which is to be sampled.
 /// Texture2D par : The displacement map to be used to adjust the coordinates.
 /// vec2 coord : The original texture coordinates.
 /// float gamma : The gamma to be used when sampling (1.0F for linear space).
 /// return : The RGBA value of the texture at the adjusted coordinates.
-vec4 parallaxSampleTexture2D(Texture2D tex, Texture2D par, vec2 coord, 
-		vec3 eye, mat3 tbn, float gamma);
+vec4 parallaxSampleTexture2D(Material mat, Texture2D tex, Texture2D par, 
+		vec2 coord, vec3 eye, mat3 tbn, float gamma);
 
 /// Transforms the specified texture coordinates according to the Material's
 /// parallax mapping texture.
@@ -60,11 +64,12 @@ vec2 parallaxTransform(Texture2D par, vec2 original, vec3 eye, mat3 tbn);
 /// Samples the specified 2D texture at the specified coordinates. The 
 /// coordinates will be automatically adjusted according to the tiling and
 /// offsets of the Texture structure.
+/// Material mat : The material in which the texture is located.
 /// Texture2D tex : The texture which is to be sampled.
 /// vec2 coord : The original texture coordinates.
 /// float gamma : The gamma to be used when sampling (1.0F for linear space).
 /// return : The RGBA value of the texture at the adjusted coordinates.
-vec4 sampleTexture2D(Texture2D tex, vec2 coord, float gamma);
+vec4 sampleTexture2D(Material mat, Texture2D tex, vec2 coord, float gamma);
 
 /// Fetches a fragment of the specified texture at the specified texture
 /// coordinates. The texture's fragment will be gamma corrected (or not)
@@ -95,11 +100,12 @@ vec4 applyGammaSRGB(vec4 inColor, float gamma) {
 	return vec4(outColor, inColor.a);
 }
 
-vec4 parallaxSampleTexture2D(Texture2D tex, Texture2D par, vec2 coord, 
-		vec3 eye, mat3 tbn, float gamma) {
+vec4 parallaxSampleTexture2D(Material mat, Texture2D tex, Texture2D par, 
+		vec2 coord, vec3 eye, mat3 tbn, float gamma) {
 	// Adjust the texture coordinates according to the tiling and offset of the
 	// Texture2D struct.
-	vec2 adjCoord = coord * tex.tiling + tex.offset;
+	vec2 adjCoord = coord * (mat.globalTiling * tex.tiling) + 
+		(mat.globalOffset + tex.offset);
 	vec2 parallaxCoord = parallaxTransform(par, adjCoord, eye, tbn);
 	vec4 texColor = texture2D(tex.sampler, parallaxCoord);
 
@@ -122,7 +128,7 @@ vec2 parallaxTransform(Texture2D par, vec2 original, vec3 eye, mat3 tbn) {
 	float currentLayerDepth = 0.0F;
 	
 	// Calculate the initial displacement value
-	vec2 parallaxValue = viewTBN.xy * (0.1F);		// TODO: Height Scale Uniform
+	vec2 parallaxValue = viewTBN.xy * (0.2F);		// TODO: Height Scale Uniform
 	vec2 deltaTexCoords = parallaxValue / layerCount;
 
 	// Calculate the initial height and texture coordinate values
@@ -160,10 +166,11 @@ vec2 parallaxTransform(Texture2D par, vec2 original, vec3 eye, mat3 tbn) {
 	return currentTexCoords;
 }
 
-vec4 sampleTexture2D(Texture2D tex, vec2 coord, float gamma) {
+vec4 sampleTexture2D(Material mat, Texture2D tex, vec2 coord, float gamma) {
 	// Adjust the texture coordinates according to the tiling and offset of the
 	// Texture2D struct.
-	vec2 adjCoord = coord * tex.tiling + tex.offset;
+	vec2 adjCoord = coord * (mat.globalTiling * tex.tiling) + 
+		(mat.globalOffset + tex.offset);
 	vec4 texColor = texture2D(tex.sampler, adjCoord);
 
 	return applyGammaSRGB(texColor, gamma);
