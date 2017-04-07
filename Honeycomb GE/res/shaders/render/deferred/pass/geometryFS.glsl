@@ -28,69 +28,6 @@ uniform samplerCube skybox; // Skybox for Reflection
 uniform Camera camera;      // Scene Camera
 uniform float gamma;		// Gamma value for reading in textures
 
-/// Transforms the specified texture coordinates according to the Material's
-/// parallax mapping texture.
-/// vec2 original : The original texture coordinates, which are to be
-///					transformed.
-/// return : The transformed texture coordinates.
-vec2 parallaxTransform(vec2 original) {
-	// Fetch the view (eye) vector
-	vec3 viewVec = -normalize(out_vs_pos - camera.translation);
-	vec3 viewTBN = normalize(viewVec * out_vs_tbnMatrix);
-	
-	// Get the number of layers and the depth of each layer (equal to inverse
-	// the number of layers). Calculate the number of layers by lerping between
-	// the minum and maximum number of layers, with the "t" arugment being the
-	// steepness of the surface, where the less steep the surface, the less
-	// displacement layers we use, for performance considerations.
-	float steepness = abs(dot(vec3(0.0F, 0.0F, 1.0F), viewTBN));
-	float layerCount = mix(
-		MAX_DISPLACEMENT_LAYERS, MIN_DISPLACEMENT_LAYERS, steepness);
-	float eachLayerDepth = 1.0F / layerCount;
-	float currentLayerDepth = 0.0F;
-	
-	// Calculate the initial displacement value
-	vec2 parallaxValue = viewTBN.xy * (0.1);		// TODO: Height Scale Uniform
-	vec2 deltaTexCoords = parallaxValue / layerCount;
-
-	// Calculate the initial height and texture coordinate values
-	vec2 currentTexCoords = original * material.displacementTexture.tiling +
-		material.displacementTexture.offset;
-	float currentTextureDepth = texture2D(material.displacementTexture.sampler, 
-		currentTexCoords).r;
-
-	// Sample all of the layers until we hit the depth of the texture, and 
-	// adjust the texture coordinates and depth as necessary.
-	while (currentLayerDepth < currentTextureDepth) {
-		// Displace the texture coordinates according to the parallax vector
-		currentTexCoords -= deltaTexCoords;
-
-		// Get the new depth value from the displacement texture
-		currentTextureDepth = texture2D(material.displacementTexture.sampler,
-			currentTexCoords).r;
-
-		// Increment the layer depth counter
-		currentLayerDepth += eachLayerDepth;
-	}
-
-	// Get the texture coordinates as they were before the last iteration of
-	// the loop.
-	vec2 previousTexCoords = currentTexCoords + deltaTexCoords;
-
-	// Calculate the depth at the current and previous texture coordinates
-	float afterDepth = currentTextureDepth - currentLayerDepth;
-	float beforeDepth = texture2D(material.displacementTexture.sampler,
-		previousTexCoords).r - currentLayerDepth + eachLayerDepth;
-
-	// Perform an interpolation to find the medium point between the before and
-	// after depths.
-	float interpolation = afterDepth / (afterDepth - beforeDepth);
-	currentTexCoords = previousTexCoords * interpolation +
-		currentTexCoords * (1.0F - interpolation);
-
-	return currentTexCoords;
-}
-
 /// Calculates the Diffuse Color of this object's fragment. NOTE: Diffuse MUST
 /// be calculated after the normal has been calculated since the diffuse method
 /// will use the OUT_FS_NORMAL, rather than OUT_VS_NORMAL (to allow for bump
@@ -104,8 +41,8 @@ vec3 calculateDiffuse() {
 	// strength, so that if the strength is one, it remains one (after being
 	// clamped) or if the strength is zero, it becomes equal to the reflected
 	// vector.
-	float matRefStr = clamp(material.reflectionStrength, 0.0F, 1.0F);
 	vec3 viewVec = normalize(out_vs_pos - camera.translation);
+	float matRefStr = clamp(material.reflectionStrength, 0.0F, 1.0F);
 	vec3 refVec = refract(viewVec, -normalize(out_fs_normal), 
 		1.0F / material.refractiveIndex);
 	vec3 refStr = vec3(1.0F) - vec3(matRefStr);
@@ -113,15 +50,13 @@ vec3 calculateDiffuse() {
 	vec3 reflection = clamp(refStr + refTexture, 0.0F, 1.0F);
 
 	// Fetch material texture & diffuse
-	vec2 texCoord = parallaxTransform(
-		out_vs_texCoord * material.diffuseTexture.tiling + 
-		material.diffuseTexture.offset);
-	vec3 texture = texture2DSRGB(
-		material.diffuseTexture.sampler, texCoord, gamma).rgb;
+	vec3 tex = parallaxSampleTexture2D(material.diffuseTexture,
+		material.displacementTexture, out_vs_texCoord, viewVec,
+		out_vs_tbnMatrix, gamma).rgb;
 	vec3 diffuse = material.diffuseColor.xyz;
 
 	// Return Texture + Diffuse + Reflection
-	return texture * diffuse * reflection;
+	return tex * diffuse * reflection;
 }
 
 /// Calculates the Normal/Bump map vector of this object's fragment.
@@ -131,10 +66,10 @@ vec3 calculateNormal() {
 	vec3 vsNorm = normalize(out_vs_norm);
 
 	// Fetch texture value from the Normal Map of the Material
-	vec2 texCoord = parallaxTransform(
-		out_vs_texCoord * material.normalsTexture.tiling +
-		material.normalsTexture.offset);
-	vec3 tex = texture2D(material.normalsTexture.sampler, texCoord).xyz;
+	vec3 viewVec = normalize(out_vs_pos - camera.translation);
+	vec3 tex = parallaxSampleTexture2D(material.normalsTexture,
+		material.displacementTexture, out_vs_texCoord, viewVec,
+		out_vs_tbnMatrix, 1.0F).rgb;
 	vec3 texNorm = tex;
 
 	// Convert the Normal Map texture from the range of [0, 1] to [-1, 1] since
@@ -169,9 +104,8 @@ vec3 calculateNormal() {
 vec4 calculateSpecular() {
 	// Fetch Specular properties from the Materials
 	vec3 color = material.specularColor;
-	vec2 texCoord = out_vs_texCoord * material.specularTexture.tiling +
-		material.specularTexture.offset;
-	vec3 tex = texture2D(material.specularTexture.sampler, texCoord).xyz;
+	vec3 tex = sampleTexture2D(material.specularTexture,
+		out_vs_texCoord, 1.0F).rgb;
 	float shine = material.shininess;
 
 	// Return Color + Texture, Shininess
