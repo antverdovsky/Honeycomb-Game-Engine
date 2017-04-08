@@ -10,9 +10,11 @@
 namespace Honeycomb { namespace Render { namespace Deferred {
 	enum GBufferTextureType {
 		POSITION,	// Position Buffer
-		DIFFUSE,	// Diffuse Buffer
 		NORMAL,		// Normals Buffer
+		DIFFUSE,	// Diffuse Buffer
+		
 		SPECULAR,   // Specular Buffer
+		
 		DEPTH,		// Depth Buffer (also equal to the number of color buffers)
 		
 		// When post processing, we cannot read from and write to the same

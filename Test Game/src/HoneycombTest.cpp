@@ -14,7 +14,30 @@ using Honeycomb::Render::Deferred::DeferredRenderer;
 
 namespace HoneycombTest {
 	void TestGame::input() {
-
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_1)) {
+			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
+				DeferredRenderer::FinalTexture::FINAL);
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_2)) {
+			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
+				DeferredRenderer::FinalTexture::DEPTH);
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_3)) {
+			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
+				DeferredRenderer::FinalTexture::DIFFUSE);
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_4)) {
+			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
+				DeferredRenderer::FinalTexture::NORMAL);
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_5)) {
+			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
+				DeferredRenderer::FinalTexture::POSITION);
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_6)) {
+			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
+				DeferredRenderer::FinalTexture::SPECULAR);
+		}
 	}
 
 	void TestGame::render() {

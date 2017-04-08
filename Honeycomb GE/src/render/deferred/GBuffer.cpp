@@ -13,10 +13,13 @@ using Honeycomb::Shader::ShaderProgram;
 namespace Honeycomb { namespace Render { namespace Deferred {
 	const std::string GBuffer::TEXTURE_SHADER_NAMES[] = {
 		"gBufferPosition",
-		"gBufferDiffuse",
 		"gBufferNormal",
+		"gBufferDiffuse",
+		
 		"gBufferSpecular",
+
 		"gBufferDepth",
+
 		"gBufferFinal",
 		"gBufferFinal"
 	};
@@ -43,8 +46,9 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// Set the drawing buffers
 		GLenum drawBuffers[] = {
 			GL_COLOR_ATTACHMENT0 + GBufferTextureType::POSITION, 
-			GL_COLOR_ATTACHMENT0 + GBufferTextureType::DIFFUSE, 
 			GL_COLOR_ATTACHMENT0 + GBufferTextureType::NORMAL,
+			GL_COLOR_ATTACHMENT0 + GBufferTextureType::DIFFUSE,
+
 			GL_COLOR_ATTACHMENT0 + GBufferTextureType::SPECULAR
 		};
 		glDrawBuffers(GBufferTextureType::DEPTH, drawBuffers);
@@ -93,8 +97,9 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 	void GBuffer::bindColorTextures(ShaderProgram &shader) {
 		this->bindTexture(GBufferTextureType::POSITION, shader);
-		this->bindTexture(GBufferTextureType::DIFFUSE, shader);
 		this->bindTexture(GBufferTextureType::NORMAL, shader);
+
+		this->bindTexture(GBufferTextureType::DIFFUSE, shader);
 		this->bindTexture(GBufferTextureType::SPECULAR, shader);
 	}
 

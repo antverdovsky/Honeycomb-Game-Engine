@@ -18,8 +18,9 @@ in mat3 out_vs_tbnMatrix;
 
 // Outputs correlating to the texture ID in the G-Buffer
 layout (location = 0) out vec3 out_fs_pos;
-layout (location = 1) out vec3 out_fs_diffuse;
-layout (location = 2) out vec3 out_fs_normal;
+layout (location = 1) out vec3 out_fs_normal;
+
+layout (location = 2) out vec3 out_fs_diffuse;
 layout (location = 3) out vec4 out_fs_specular;
 
 uniform Material material;  // Standard Material of the Object
