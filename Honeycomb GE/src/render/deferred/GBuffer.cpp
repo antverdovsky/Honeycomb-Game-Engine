@@ -15,7 +15,6 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		"gBufferPosition",
 		"gBufferDiffuse",
 		"gBufferNormal",
-		"gBufferTexture",
 		"gBufferSpecular",
 		"gBufferDepth",
 		"gBufferFinal",
@@ -46,10 +45,9 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			GL_COLOR_ATTACHMENT0 + GBufferTextureType::POSITION, 
 			GL_COLOR_ATTACHMENT0 + GBufferTextureType::DIFFUSE, 
 			GL_COLOR_ATTACHMENT0 + GBufferTextureType::NORMAL,
-			GL_COLOR_ATTACHMENT0 + GBufferTextureType::TEXTURE,
 			GL_COLOR_ATTACHMENT0 + GBufferTextureType::SPECULAR
 		};
-		glDrawBuffers(5, drawBuffers);
+		glDrawBuffers(GBufferTextureType::DEPTH, drawBuffers);
 	}
 
 	void GBuffer::bindDrawLight(ShaderProgram &shader) {

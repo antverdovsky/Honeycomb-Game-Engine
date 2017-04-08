@@ -133,7 +133,7 @@ vec2 parallaxTransform(Texture2D par, vec2 original, vec3 eye, mat3 tbn) {
 	float currentLayerDepth = 0.0F;
 	
 	// Calculate the initial displacement value
-	vec2 parallaxValue = viewTBN.xy * par.intensity;
+	vec2 parallaxValue = viewTBN.xy * (par.intensity / 10.0F);
 	vec2 deltaTexCoords = parallaxValue / layerCount;
 
 	// Calculate the initial height and texture coordinate values

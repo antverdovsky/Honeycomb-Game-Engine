@@ -20,8 +20,7 @@ in mat3 out_vs_tbnMatrix;
 layout (location = 0) out vec3 out_fs_pos;
 layout (location = 1) out vec3 out_fs_diffuse;
 layout (location = 2) out vec3 out_fs_normal;
-layout (location = 3) out vec3 out_fs_texCoord;
-layout (location = 4) out vec4 out_fs_specular;
+layout (location = 3) out vec4 out_fs_specular;
 
 uniform Material material;  // Standard Material of the Object
 uniform samplerCube skybox; // Skybox for Reflection
@@ -118,5 +117,4 @@ void main() {
     out_fs_diffuse = calculateDiffuse();
     
 	out_fs_pos = out_vs_pos;
-    out_fs_texCoord = vec3(out_vs_texCoord, 0.0F);
 }

@@ -13,11 +13,10 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// Enum representing what the final texture rendered should be.
 		enum FinalTexture {
 			POSITION				= GBufferTextureType::POSITION,
-			DEPTH					= GBufferTextureType::DEPTH,
 			DIFFUSE					= GBufferTextureType::DIFFUSE,
 			NORMAL					= GBufferTextureType::NORMAL,
-			TEXTURE					= GBufferTextureType::TEXTURE,
 			SPECULAR				= GBufferTextureType::SPECULAR,
+			DEPTH					= GBufferTextureType::DEPTH,
 
 			FINAL					= GBufferTextureType::FINAL_1
 		};

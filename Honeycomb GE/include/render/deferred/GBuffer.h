@@ -12,7 +12,6 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		POSITION,	// Position Buffer
 		DIFFUSE,	// Diffuse Buffer
 		NORMAL,		// Normals Buffer
-		TEXTURE,	// Texture Coordinates Buffer
 		SPECULAR,   // Specular Buffer
 		DEPTH,		// Depth Buffer (also equal to the number of color buffers)
 		
