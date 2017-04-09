@@ -333,5 +333,6 @@
     <None Include="res\shaders\render\antialiasing\fxaa\fxaaFS.glsl" />
     <None Include="res\shaders\render\gamma\gammaFS.glsl" />
     <None Include="res\shaders\render\gamma\gammaVS.glsl" />
+    <None Include="res\shaders\render\deferred\util\packing.glsl" />
   </ItemGroup>
 </Project>

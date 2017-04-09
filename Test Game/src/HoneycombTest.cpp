@@ -24,7 +24,7 @@ namespace HoneycombTest {
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_3)) {
 			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
-				DeferredRenderer::FinalTexture::DIFFUSE);
+				DeferredRenderer::FinalTexture::ALBEDO_AMBIENT_DIFFUSE);
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_4)) {
 			DeferredRenderer::getDeferredRenderer()->setFinalTexture(

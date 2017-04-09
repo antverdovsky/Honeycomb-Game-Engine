@@ -5,6 +5,7 @@
 
 #version 410 core
 
+#include <../util/packing.glsl>
 #include <../../../standard/include/stdCamera.glsl>
 #include <../../../standard/include/stdMaterial.glsl>
 
@@ -20,7 +21,7 @@ in mat3 out_vs_tbnMatrix;
 layout (location = 0) out vec3 out_fs_pos;
 layout (location = 1) out vec3 out_fs_normal;
 
-layout (location = 2) out vec3 out_fs_diffuse;
+layout (location = 2) out vec3 out_fs_albedoAmbientDiffuse;
 layout (location = 3) out vec4 out_fs_specular;
 
 uniform Material material;  // Standard Material of the Object
@@ -112,10 +113,22 @@ vec4 calculateSpecular() {
 	return vec4(tex * color, shine);
 }
 
+vec3 calculateAlbedoAmbientDiffuse() {
+	vec3 albedoVec = vec3(0); // todo
+	vec3 ambientVec = vec3(0); // todo
+	vec3 diffuseVec = calculateDiffuse();
+
+	float albF = packColor(albedoVec);
+	float ambF = packColor(ambientVec);
+	float difF = packColor(diffuseVec);
+
+	return vec3(albF, ambF, difF);
+}
+
 void main() {
     out_fs_normal = calculateNormal();
 	out_fs_specular = calculateSpecular();
-    out_fs_diffuse = calculateDiffuse();
+    out_fs_albedoAmbientDiffuse = calculateAlbedoAmbientDiffuse();
     
 	out_fs_pos = out_vs_pos;
 }

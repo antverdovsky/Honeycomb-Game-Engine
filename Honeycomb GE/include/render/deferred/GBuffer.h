@@ -9,21 +9,21 @@
 
 namespace Honeycomb { namespace Render { namespace Deferred {
 	enum GBufferTextureType {
-		POSITION,	// Position Buffer
-		NORMAL,		// Normals Buffer
-		DIFFUSE,	// Diffuse Buffer
+		POSITION,					// Position
+		NORMAL,						// Normals
+		ALBEDO_AMBIENT_DIFFUSE,		// Albedo (x) Ambient (y) & Diffuse (z)
 		
-		SPECULAR,   // Specular Buffer
+		SPECULAR,					// Specular Color (xyz) & Shininess (w)
 		
-		DEPTH,		// Depth Buffer (also equal to the number of color buffers)
+		DEPTH,						// Depth Buffer (== to # of color buffers)
 		
 		// When post processing, we cannot read from and write to the same
 		// buffer, so we must read from one and write to the other, so we
 		// require two final buffers.
-		FINAL_1,	// Final Buffer 1
-		FINAL_2,	// Final Buffer 2
+		FINAL_1,					// Final Buffer 1
+		FINAL_2,					// Final Buffer 2
 
-		COUNT		// The total number of buffers
+		COUNT						// The total number of buffers
 	};
 
 	class GBuffer : public Honeycomb::Base::GLItem {

@@ -14,8 +14,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	const std::string GBuffer::TEXTURE_SHADER_NAMES[] = {
 		"gBufferPosition",
 		"gBufferNormal",
-		"gBufferDiffuse",
-		
+
+		"gBufferAlbedoAmbientDiffuse",
 		"gBufferSpecular",
 
 		"gBufferDepth",
@@ -47,7 +47,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		GLenum drawBuffers[] = {
 			GL_COLOR_ATTACHMENT0 + GBufferTextureType::POSITION, 
 			GL_COLOR_ATTACHMENT0 + GBufferTextureType::NORMAL,
-			GL_COLOR_ATTACHMENT0 + GBufferTextureType::DIFFUSE,
+			GL_COLOR_ATTACHMENT0 + GBufferTextureType::ALBEDO_AMBIENT_DIFFUSE,
 
 			GL_COLOR_ATTACHMENT0 + GBufferTextureType::SPECULAR
 		};
@@ -62,10 +62,11 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 	void GBuffer::bindDrawLight(ShaderProgram &shader, const LightType &type) {
 		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL_1);
-
+		
 		switch (type) {
 		case LightType::LIGHT_TYPE_AMBIENT:
-			this->bindTexture(GBufferTextureType::DIFFUSE, shader);
+			this->bindTexture(GBufferTextureType::ALBEDO_AMBIENT_DIFFUSE, 
+				shader);
 			return;
 		case LightType::LIGHT_TYPE_DIRECTIONAL:
 		case LightType::LIGHT_TYPE_POINT:
@@ -99,7 +100,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		this->bindTexture(GBufferTextureType::POSITION, shader);
 		this->bindTexture(GBufferTextureType::NORMAL, shader);
 
-		this->bindTexture(GBufferTextureType::DIFFUSE, shader);
+		this->bindTexture(GBufferTextureType::ALBEDO_AMBIENT_DIFFUSE, shader);
 		this->bindTexture(GBufferTextureType::SPECULAR, shader);
 	}
 
@@ -154,7 +155,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			// values in the texture outside of the standard [0, 1] clamp.
 			this->bufferTextures[i].initialize();
 			this->bufferTextures[i].bind();
-			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGB16F, 
+			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGB32F, 
 				GL_RGB, this->textureWidth, this->textureHeight);
 
 			// Bind the texture to the Frame Buffer Object
@@ -234,7 +235,9 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		this->textureHeight = GameWindow::getGameWindow()->getWindowHeight();
 		this->textureWidth = GameWindow::getGameWindow()->getWindowWidth();
 		
-		// Resize RGB16 textures (all color buffers except for specular)
+		// Resize RGB32 textures (all color buffers except for specular)
+		// Note: The Ambient-Albedo-Diffuse requires 32 bits since we are
+		// encoding very large floats into it!
 		for (int i = 0; i < GBufferTextureType::SPECULAR; i++) {
 			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGB16F,
 				GL_RGB, this->textureWidth, this->textureHeight);

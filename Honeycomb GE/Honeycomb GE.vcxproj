@@ -321,6 +321,7 @@
     <None Include="res\shaders\post-processing\sharpFS.glsl" />
     <None Include="res\shaders\render\antialiasing\fxaa\fxaaFS.glsl" />
     <None Include="res\shaders\render\antialiasing\fxaa\fxaaVS.glsl" />
+    <None Include="res\shaders\render\deferred\util\packing.glsl" />
     <None Include="res\shaders\render\deferred\light\ambientLightFS.glsl" />
     <None Include="res\shaders\render\deferred\light\directionalLightFS.glsl" />
     <None Include="res\shaders\render\deferred\light\spotLightFS.glsl" />
