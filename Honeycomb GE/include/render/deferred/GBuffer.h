@@ -9,17 +9,23 @@
 
 namespace Honeycomb { namespace Render { namespace Deferred {
 	enum GBufferTextureType {
+		// Uses GL_RGB16F
 		POSITION,					// Position
 		NORMAL,						// Normals
+
+		// Uses GL_RGB32F
 		ALBEDO_AMBIENT_DIFFUSE,		// Albedo (x) Ambient (y) & Diffuse (z)
 		
+		// Uses GL_RGBA
 		SPECULAR,					// Specular Color (xyz) & Shininess (w)
 		
+		// Uses GL_DEPTH32F_STENCIL8
 		DEPTH,						// Depth Buffer (== to # of color buffers)
 		
 		// When post processing, we cannot read from and write to the same
 		// buffer, so we must read from one and write to the other, so we
 		// require two final buffers.
+		// Uses GL_RGB
 		FINAL_1,					// Final Buffer 1
 		FINAL_2,					// Final Buffer 2
 
