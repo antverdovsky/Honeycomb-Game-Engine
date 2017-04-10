@@ -93,6 +93,22 @@ namespace HoneycombTest {
 		this->suzanne = Builder::getBuilder()->newSuzanne();
 		this->earth = Builder::getBuilder()->newModel(
 			"../Test Game/res/models/planet-earth/earth.fbx");
+		this->emeraldSph = Builder::getBuilder()->newSphere();
+
+		// Create the Emerald Material for the Sphere (not really emerald...)
+		Material *emeraldMaterial = new Material(this->emeraldSph->
+			getComponent<MeshRenderer>()->getMaterial());
+		emeraldMaterial->glVector3fs.setValue("ambientColor",
+			Vector3f(0.9215F, 0.1745F, 0.0215F));
+		emeraldMaterial->glVector3fs.setValue("albedoColor",
+			Vector3f(1.0F, 1.0F, 1.0F));
+		emeraldMaterial->glVector3fs.setValue("diffuseColor",
+			Vector3f(0.07568F, 0.61424F, 0.07568F));
+		emeraldMaterial->glVector3fs.setValue("specularColor",
+			Vector3f(0.633F, 0.727811F, 0.633F));
+		emeraldMaterial->glFloats.setValue("shininess", 76.8F);
+		this->emeraldSph->getComponent<MeshRenderer>()->setMaterial(
+			*emeraldMaterial);
 
 		// Give the plane a textured material
 		Material *colorMaterial = new Material(
@@ -201,6 +217,8 @@ namespace HoneycombTest {
 			Vector3f(5.0F, 5.0F, 5.0F));
 		this->earth->getComponent<Transform>()->setTranslation(
 			Vector3f(7.5F, 5.0F, 5.0F));
+		this->emeraldSph->getComponent<Transform>()->setTranslation(
+			Vector3f(-5.0F, 1.0F, -5.0F));
 
 		this->cube->addComponent(*suzInputTranfs->clone());
 		this->cube2->addComponent(*suzInputTranfs->clone());
@@ -232,6 +250,7 @@ namespace HoneycombTest {
 		this->gameScene.addChild(*this->cube2);
 		this->gameScene.addChild(*this->plane);
 		this->gameScene.addChild(*this->sphere);
+		this->gameScene.addChild(*this->emeraldSph);
 		this->gameScene.addChild(*this->earth);
 		this->gameScene.addChild(*this->suzanne);
 		this->gameScene.addChild(*this->ambient);

@@ -18,6 +18,9 @@ struct Material {
 	vec3 albedoColor;				// Albedo color of the Material
 	Texture2D albedoTexture;		// Albedo texture of the Material
 
+	vec3 ambientColor;				// Color under ambient light
+	Texture2D ambientTexture;		// Texture under ambient light
+
     vec3 diffuseColor;				// Color under diffuse light
 	Texture2D diffuseTexture;		// Texture under diffuse light
 

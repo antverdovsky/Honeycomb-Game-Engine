@@ -214,6 +214,8 @@ namespace Honeycomb { namespace Geometry {
 		// Retrieve all of the Material properties from ASSIMP
 		this->fetchMaterialProperty(*aMat, AI_MATKEY_COLOR_DIFFUSE, *material,
 			"albedoColor", Vector3f(1.0F, 1.0F, 1.0F));
+		this->fetchMaterialProperty(*aMat, AI_MATKEY_COLOR_AMBIENT, *material,
+			"ambientColor", Vector3f(1.0F, 1.0F, 1.0F));
 		this->fetchMaterialProperty(*aMat, AI_MATKEY_COLOR_SPECULAR, *material,
 			"specularColor", Vector3f(1.0F, 1.0F, 1.0F));
 		this->fetchMaterialProperty(*aMat, AI_MATKEY_SHININESS, *material,
@@ -227,6 +229,9 @@ namespace Honeycomb { namespace Geometry {
 		this->fetchMaterialTexture(*aMat, 
 			aiTextureType::aiTextureType_DIFFUSE, *material, 
 			"albedoTexture", 255, 255, 255);
+		this->fetchMaterialTexture(*aMat,
+			aiTextureType::aiTextureType_AMBIENT, *material,
+			"ambientTexture", 255, 255, 255);
 		this->fetchMaterialTexture(*aMat, 
 			aiTextureType::aiTextureType_SPECULAR, *material, 
 			"specularTexture", 255, 255, 255);

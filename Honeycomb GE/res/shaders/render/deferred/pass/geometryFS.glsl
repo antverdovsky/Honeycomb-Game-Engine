@@ -51,6 +51,20 @@ vec3 calculateReflection() {
 	return reflection;
 }
 
+/// Calculates the Ambient Color of this object's fragment.
+/// return : The ambient color.
+vec3 calculateAmbient() {
+	// Fetch material texture & ambient
+	vec3 viewVec = normalize(out_vs_pos - camera.translation);
+	vec3 tex = parallaxSampleTexture2D(material, material.ambientTexture,
+		material.displacementTexture, out_vs_texCoord, viewVec,
+		out_vs_tbnMatrix, gamma).rgb;
+	vec3 ambient = material.ambientColor.xyz;
+
+	// Return Texture + Ambient
+	return tex * ambient;
+}
+
 /// Calculates the Albedo Color of this object's fragment.
 /// return : The albedo color.
 vec3 calculateAlbedo() {
@@ -61,7 +75,7 @@ vec3 calculateAlbedo() {
 		out_vs_tbnMatrix, gamma).rgb;
 	vec3 albedo = material.albedoColor.xyz;
 
-	// Return Texture + Diffuse
+	// Return Texture + Albedo
 	return tex * albedo;
 }
 
@@ -136,7 +150,7 @@ vec3 calculateAlbedoAmbientDiffuse() {
 	vec3 reflectionVec = calculateReflection();
 
 	vec3 albedoVec = calculateAlbedo() * reflectionVec;
-	vec3 ambientVec = vec3(0); // todo
+	vec3 ambientVec = calculateAmbient() * albedoVec;
 	vec3 diffuseVec = calculateDiffuse() * albedoVec;
 
 	float albF = packColor(albedoVec);
