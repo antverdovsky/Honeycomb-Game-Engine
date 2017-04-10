@@ -29,19 +29,17 @@ uniform samplerCube skybox; // Skybox for Reflection
 uniform Camera camera;      // Scene Camera
 uniform float gamma;		// Gamma value for reading in textures
 
-/// Calculates the Diffuse Color of this object's fragment. NOTE: Diffuse MUST
-/// be calculated after the normal has been calculated since the diffuse method
-/// will use the OUT_FS_NORMAL, rather than OUT_VS_NORMAL (to allow for bump
-/// mapping).
-/// return : The diffuse color.
-vec3 calculateDiffuse() {
+/// Calculates the Reflection color of this object's fragment.
+/// return : The reflection color.
+vec3 calculateReflection() {
 	// Calculate the Reflection Color. To avoid an if statement, calculate the
 	// reflection strength as one minus the material's reflection strength.
 	// This strength will be one if the material reflection is zero, or zero
 	// if the material reflection is one. Then, add the reflected vector to the
 	// strength, so that if the strength is one, it remains one (after being
 	// clamped) or if the strength is zero, it becomes equal to the reflected
-	// vector.
+	// vector. (
+	// Note on Normals: out_fs_normal should be computed prior to this!)
 	vec3 viewVec = normalize(out_vs_pos - camera.translation);
 	float matRefStr = clamp(material.reflectionStrength, 0.0F, 1.0F);
 	vec3 refVec = refract(viewVec, -normalize(out_fs_normal), 
@@ -50,14 +48,35 @@ vec3 calculateDiffuse() {
 	vec3 refTexture = textureCubeSRGB(skybox, refVec, gamma).rgb;
 	vec3 reflection = clamp(refStr + refTexture, 0.0F, 1.0F);
 
+	return reflection;
+}
+
+/// Calculates the Albedo Color of this object's fragment.
+/// return : The albedo color.
+vec3 calculateAlbedo() {
+	// Fetch material texture & albedo
+	vec3 viewVec = normalize(out_vs_pos - camera.translation);
+	vec3 tex = parallaxSampleTexture2D(material, material.albedoTexture,
+		material.displacementTexture, out_vs_texCoord, viewVec,
+		out_vs_tbnMatrix, gamma).rgb;
+	vec3 albedo = material.albedoColor.xyz;
+
+	// Return Texture + Diffuse
+	return tex * albedo;
+}
+
+/// Calculates the Diffuse Color of this object's fragment.
+/// return : The diffuse color.
+vec3 calculateDiffuse() {
 	// Fetch material texture & diffuse
+	vec3 viewVec = normalize(out_vs_pos - camera.translation);
 	vec3 tex = parallaxSampleTexture2D(material, material.diffuseTexture,
 		material.displacementTexture, out_vs_texCoord, viewVec,
 		out_vs_tbnMatrix, gamma).rgb;
 	vec3 diffuse = material.diffuseColor.xyz;
 
-	// Return Texture + Diffuse + Reflection
-	return tex * diffuse * reflection;
+	// Return Texture + Diffuse
+	return tex * diffuse;
 }
 
 /// Calculates the Normal/Bump map vector of this object's fragment.
@@ -114,9 +133,11 @@ vec4 calculateSpecular() {
 }
 
 vec3 calculateAlbedoAmbientDiffuse() {
-	vec3 albedoVec = vec3(0); // todo
+	vec3 reflectionVec = calculateReflection();
+
+	vec3 albedoVec = calculateAlbedo() * reflectionVec;
 	vec3 ambientVec = vec3(0); // todo
-	vec3 diffuseVec = calculateDiffuse();
+	vec3 diffuseVec = calculateDiffuse() * albedoVec;
 
 	float albF = packColor(albedoVec);
 	float ambF = packColor(ambientVec);

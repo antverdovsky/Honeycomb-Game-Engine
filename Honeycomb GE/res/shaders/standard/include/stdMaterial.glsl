@@ -15,8 +15,11 @@ struct Texture2D {
 /// The Material structure.
 ///
 struct Material {
-    vec3 diffuseColor;				// Diffuse color of the Material
-	Texture2D diffuseTexture;		// Diffuse texture of the Material
+	vec3 albedoColor;				// Albedo color of the Material
+	Texture2D albedoTexture;		// Albedo texture of the Material
+
+    vec3 diffuseColor;				// Color under diffuse light
+	Texture2D diffuseTexture;		// Texture under diffuse light
 
     vec3 specularColor;				// Color of the specular reflection
 	Texture2D specularTexture;		// Specular texture of the Material

@@ -213,7 +213,7 @@ namespace Honeycomb { namespace Geometry {
 
 		// Retrieve all of the Material properties from ASSIMP
 		this->fetchMaterialProperty(*aMat, AI_MATKEY_COLOR_DIFFUSE, *material,
-			"diffuseColor", Vector3f(1.0F, 1.0F, 1.0F));
+			"albedoColor", Vector3f(1.0F, 1.0F, 1.0F));
 		this->fetchMaterialProperty(*aMat, AI_MATKEY_COLOR_SPECULAR, *material,
 			"specularColor", Vector3f(1.0F, 1.0F, 1.0F));
 		this->fetchMaterialProperty(*aMat, AI_MATKEY_SHININESS, *material,
@@ -226,7 +226,7 @@ namespace Honeycomb { namespace Geometry {
 		// Retrieve the Textures from ASSIMP.
 		this->fetchMaterialTexture(*aMat, 
 			aiTextureType::aiTextureType_DIFFUSE, *material, 
-			"diffuseTexture", 255, 255, 255);
+			"albedoTexture", 255, 255, 255);
 		this->fetchMaterialTexture(*aMat, 
 			aiTextureType::aiTextureType_SPECULAR, *material, 
 			"specularTexture", 255, 255, 255);
@@ -237,6 +237,22 @@ namespace Honeycomb { namespace Geometry {
 			aiTextureType::aiTextureType_DISPLACEMENT, *material,
 			"displacementTexture", 0, 0, 0);
 
+		// Special default value for diffuse map (TODO: Method for this?)
+		Texture2D *diffuse = new Texture2D();
+		diffuse->initialize();
+		diffuse->setImageData(255, 255, 255);
+		material->glSampler2Ds.setValue("diffuseTexture.sampler", *diffuse);
+		material->glVector2fs.setValue("diffuseTexture.tiling", 
+			Vector2f(1.0F, 1.0F));
+		material->glVector2fs.setValue("diffuseTexture.offset",
+			Vector2f(0.0F, 0.0F));
+		material->glVector3fs.setValue("diffuseTexture.color",
+			Vector3f(1.0F, 1.0F, 1.0F));
+		material->glFloats.setValue("diffuseTexture.intensity", 1.0F);
+		material->glVector3fs.setValue("diffuseColor",
+			Vector3f(1.0F, 1.0F, 1.0F));
+
+		// Set global tiling and offset for all Material Textures
 		material->glVector2fs.setValue("globalTiling", Vector2f(1.0F, 1.0F));
 		material->glVector2fs.setValue("globalOffset", Vector2f(0.0F, 0.0F));
 

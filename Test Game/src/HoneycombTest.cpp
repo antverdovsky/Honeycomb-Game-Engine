@@ -101,11 +101,12 @@ namespace HoneycombTest {
 		colorTexture->initialize();
 		colorTexture->
 			setImageData("../Test Game/res/textures/colors.bmp");
-		colorMaterial->glSampler2Ds.setValue("diffuseTexture.sampler", 
+		colorMaterial->glSampler2Ds.setValue("albedoTexture.sampler", 
 			*colorTexture);
 		colorMaterial->glFloats.setValue("shininess", 128.0F);
-		colorMaterial->glVector2fs.setValue("diffuseTexture.tiling",
+		colorMaterial->glVector2fs.setValue("globalTiling",
 			Vector2f(10.0F, 10.0F));
+		colorMaterial->glVector3fs.setValue("diffuseColor", Vector3f(1, 1, 0));
 		this->plane->getComponent<MeshRenderer>()->
 			setMaterial(*colorMaterial);
 
@@ -158,7 +159,7 @@ namespace HoneycombTest {
 		suzSpLight->getComponent<SpotLight>()->getRange() = 30.0F;
 		suzSpLight->getComponent<SpotLight>()->getAngle() = PI / 2.0F;
 		suzPtLight->getComponent<PointLight>()->setColor(
-			Vector3f(1.0F, 0.0F, 0.0F));
+			Vector3f(1.0F, 1.0F, 1.0F));
 		suzPtLight->getComponent<PointLight>()->setIntensity(2.5F);
 		suzPtLight->getComponent<PointLight>()->setRange(10.0F);
 		suzanne->addChild(*suzSpLight);
