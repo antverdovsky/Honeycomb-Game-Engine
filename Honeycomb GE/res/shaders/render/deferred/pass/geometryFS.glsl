@@ -140,7 +140,7 @@ vec4 calculateSpecular() {
 	vec3 color = material.specularColor;
 	vec3 tex = sampleTexture2D(material, material.specularTexture,
 		out_vs_texCoord, 1.0F).rgb;
-	float shine = material.shininess;
+	float shine = material.shininess / 128.0F;
 
 	// Return Color + Texture, Shininess
 	return vec4(tex * color, shine);

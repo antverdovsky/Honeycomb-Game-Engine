@@ -23,7 +23,7 @@ void main() {
     vec3 pos = texture2D(gBufferPosition, screenCoord).xyz;
     vec3 norm = normalize(texture2D(gBufferNormal, screenCoord).xyz);
 	vec3 spec = texture2D(gBufferSpecular, screenCoord).xyz;
-	float shine = texture2D(gBufferSpecular, screenCoord).w;
+	float shine = texture2D(gBufferSpecular, screenCoord).w * 128.0F;
 
 	vec3 aad = texture2D(gBufferAlbedoAmbientDiffuse, screenCoord).xyz;
 	vec3 diffuse = unpackColor(aad.b);

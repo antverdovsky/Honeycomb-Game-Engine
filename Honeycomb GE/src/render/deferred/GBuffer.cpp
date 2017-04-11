@@ -187,7 +187,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			// values in the texture outside of the standard [0, 1] clamp.
 			this->bufferTextures[i].initialize();
 			this->bufferTextures[i].bind();
-			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGBA16F,
+			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGBA,
 				GL_RGB, this->textureWidth, this->textureHeight);
 
 			// Bind the texture to the Frame Buffer Object
