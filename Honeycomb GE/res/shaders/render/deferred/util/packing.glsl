@@ -1,42 +1,28 @@
-// Based on Algorithms found @: http://stackoverflow.com/questions/6893302/
-
 /// Packs the specified Vector3 color into a floating point value.
 /// vec3 color : The color to be packed.
 /// return : The packed floating point value.
-float packColor(vec3 color) {
-	vec3 col = clamp(round(color * 255.0F), 0.0F, 255.0F);
+float packRGB(vec3 color) {
+	vec3 col = clamp(color * 255.0F, 0.0F, 255.0F);
 
-	return col.r + col.g * 256.0F + col.b * 256.0F * 256.0F;
+	uint r = uint(col.r) << 24;
+	uint g = uint(col.g) << 16;
+	uint b = uint(col.b) << 8;
+
+	uint rgb = r + g + b;
+	float ieeeRGB = uintBitsToFloat(rgb);
+
+	return ieeeRGB;
 }
 
 /// Unpacks the specified float into a Vector3 color.
 /// float pack : The float to be unpacked.
 /// return : The unpacked Vector3 color.
-vec3 unpackColor(float pack) {
-	vec3 color;
+vec3 unpackRGB(float pack) {
+	uint rgb = floatBitsToUint(pack);
 
-	color.b = floor(pack / (256.0F * 256.0F));
-	color.g = floor((pack - color.b * 256.0F * 256.0F) / 256.0F);
-	color.r = floor(pack - color.b * 256.0F * 256.0F - color.g * 256.0F);
-	
-	return color / 255.0F;
+	float r = float((rgb & 0xFF000000U) >> 24) / 255.0F;
+	float g = float((rgb & 0x00FF0000U) >> 16) / 255.0F;
+	float b = float((rgb & 0x0000FF00U) >> 8) / 255.0F;
+
+	return vec3(r, g, b);
 }
-
-/*
-float packColor(vec4 col) {
-    vec4 col2 = clamp(col, 0.0F, 1.0F);
-
-	return dot(col2, vec4(
-		1.0F, 1.0F / 255.0F, 1.0F / 65025.0F, 1.0F / 16581375.0F));
-}
-
-vec4 unpackColor(float f) {
-	vec4 color = vec4(1.0F, 255.0F, 65025.0F, 16581375.0F) * f;
-
-	color = fract(color);
-	color -= color.yzww * vec4(
-		1.0F / 255.0F, 1.0F / 255.0F, 1.0F / 255.0F, 0.0F);
-
-	return clamp(color, 0,1);
-}
-*/

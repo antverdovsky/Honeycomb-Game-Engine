@@ -26,7 +26,7 @@ void main() {
 	float shine = texture2D(gBufferSpecular, screenCoord).w * 128.0F;
 
 	vec3 aad = texture2D(gBufferAlbedoAmbientDiffuse, screenCoord).xyz;
-	vec3 diffuse = unpackColor(aad.b);
+	vec3 diffuse = unpackRGB(aad.b);
 
 	fragColor = vec4(calculateSpotLight(spotLight, camera, pos, norm, shine, 
 		spec, diffuse), 1.0F);
