@@ -171,8 +171,9 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			// into large floating point numbers.
 			this->bufferTextures[i].initialize();
 			this->bufferTextures[i].bind();
-			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGB32F,
-				GL_RGB, this->textureWidth, this->textureHeight);
+			this->bufferTextures[i].setImageData(
+				NULL, GL_UNSIGNED_INT, GL_RGB32UI, GL_RGB_INTEGER, 
+				this->textureWidth, this->textureHeight);
 
 			// Bind the texture to the Frame Buffer Object
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i,

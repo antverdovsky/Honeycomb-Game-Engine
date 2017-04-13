@@ -18,7 +18,7 @@ void main() {
 							gl_FragCoord.y / camera.height);
 
 	vec3 aad = texture2D(gBufferAlbedoAmbientDiffuse, screenCoord).xyz;
-	vec3 ambient = unpackRGB(aad.g);
+	vec3 ambient = unpackRGB(uint(aad.g));
 
 	fragColor = vec4(calculateAmbientLight(ambientLight) * ambient, 1.0F);
 }

@@ -153,9 +153,9 @@ vec3 calculateAlbedoAmbientDiffuse() {
 	vec3 ambientVec = calculateAmbient() * albedoVec;
 	vec3 diffuseVec = calculateDiffuse() * albedoVec;
 
-	float albF = packRGB(albedoVec);
-	float ambF = packRGB(ambientVec);
-	float difF = packRGB(diffuseVec);
+	uint albF = packRGB(albedoVec);
+	uint ambF = packRGB(ambientVec);
+	uint difF = packRGB(diffuseVec);
 
 	return vec3(albF, ambF, difF);
 }
