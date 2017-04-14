@@ -15,10 +15,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			POSITION				= GBufferTextureType::POSITION,
 			NORMAL					= GBufferTextureType::NORMAL,
 
-			ALBEDO_AMBIENT_DIFFUSE	= 
-				GBufferTextureType::ALBEDO_AMBIENT_DIFFUSE,
-			SPECULAR				= GBufferTextureType::SPECULAR,
-			
+			MATERIAL				= GBufferTextureType::MATERIAL,
+
 			DEPTH					= GBufferTextureType::DEPTH,
 
 			FINAL					= GBufferTextureType::FINAL_1

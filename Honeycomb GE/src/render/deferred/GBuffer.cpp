@@ -15,8 +15,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		"gBufferPosition",
 		"gBufferNormal",
 
-		"gBufferAlbedoAmbientDiffuse",
-		"gBufferSpecular",
+		"gBufferMaterial",
 
 		"gBufferDepth",
 
@@ -47,9 +46,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		GLenum drawBuffers[] = {
 			GL_COLOR_ATTACHMENT0 + GBufferTextureType::POSITION, 
 			GL_COLOR_ATTACHMENT0 + GBufferTextureType::NORMAL,
-			GL_COLOR_ATTACHMENT0 + GBufferTextureType::ALBEDO_AMBIENT_DIFFUSE,
-
-			GL_COLOR_ATTACHMENT0 + GBufferTextureType::SPECULAR
+			GL_COLOR_ATTACHMENT0 + GBufferTextureType::MATERIAL
 		};
 		glDrawBuffers(GBufferTextureType::DEPTH, drawBuffers);
 	}
@@ -65,7 +62,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		
 		switch (type) {
 		case LightType::LIGHT_TYPE_AMBIENT:
-			this->bindTexture(GBufferTextureType::ALBEDO_AMBIENT_DIFFUSE, 
+			this->bindTexture(GBufferTextureType::MATERIAL, 
 				shader);
 			return;
 		case LightType::LIGHT_TYPE_DIRECTIONAL:
@@ -99,9 +96,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	void GBuffer::bindColorTextures(ShaderProgram &shader) {
 		this->bindTexture(GBufferTextureType::POSITION, shader);
 		this->bindTexture(GBufferTextureType::NORMAL, shader);
-
-		this->bindTexture(GBufferTextureType::ALBEDO_AMBIENT_DIFFUSE, shader);
-		this->bindTexture(GBufferTextureType::SPECULAR, shader);
+		this->bindTexture(GBufferTextureType::MATERIAL, shader);
 	}
 
 	void GBuffer::bindStencil() {
@@ -150,7 +145,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		// Generate RGB16F textures for the POSITION and NORMAL
 		int i = 0;
-		for (; i < GBufferTextureType::ALBEDO_AMBIENT_DIFFUSE; i++) {
+		for (; i < GBufferTextureType::MATERIAL; i++) {
 			// Create an empty texture. Use RGB16F, to allow us to store
 			// values in the texture outside of the standard [0, 1] clamp.
 			this->bufferTextures[i].initialize();
@@ -165,31 +160,15 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			colorBuffers[i] = GL_COLOR_ATTACHMENT0 + i; // Add to Color Buffers
 		}
 
-		// Generate RGB32F textures for the ALBEDO_AMBIENT_DIFFUSE
-		for (; i < GBufferTextureType::SPECULAR; i++) {
+		// Generate RGB32F textures for the MATERIAL
+		for (; i < GBufferTextureType::DEPTH; i++) {
 			// Same as above but 32F required since we are encoding the colors
 			// into large floating point numbers.
 			this->bufferTextures[i].initialize();
 			this->bufferTextures[i].bind();
 			this->bufferTextures[i].setImageData(
-				NULL, GL_UNSIGNED_INT, GL_RGB32UI, GL_RGB_INTEGER, 
+				NULL, GL_UNSIGNED_INT, GL_RGBA32UI, GL_RGBA_INTEGER, 
 				this->textureWidth, this->textureHeight);
-
-			// Bind the texture to the Frame Buffer Object
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i,
-				GL_TEXTURE_2D, this->bufferTextures[i].getTextureID(), 0);
-
-			colorBuffers[i] = GL_COLOR_ATTACHMENT0 + i; // Add to Color Buffers
-		}
-
-		// Generate RGBA texture for the Specular Buffer
-		for (; i < GBufferTextureType::DEPTH; i++) {
-			// Create an empty texture. Use RGBA16F, to allow us to store
-			// values in the texture outside of the standard [0, 1] clamp.
-			this->bufferTextures[i].initialize();
-			this->bufferTextures[i].bind();
-			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGBA,
-				GL_RGB, this->textureWidth, this->textureHeight);
 
 			// Bind the texture to the Frame Buffer Object
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i,
@@ -255,21 +234,16 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		int i = 0;
 
 		// Resize RGB16F textures (POSITION and NORMAL)
-		for (; i < GBufferTextureType::ALBEDO_AMBIENT_DIFFUSE; i++) {
+		for (; i < GBufferTextureType::MATERIAL; i++) {
 			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGB16F,
 				GL_RGB, this->textureWidth, this->textureHeight);
 		}
 		
-		// Resize RGBA32F textures (ALBEDO_AMBIENT_DIFFUSE)
-		for (; i < GBufferTextureType::SPECULAR; i++) {
-			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGB32F,
-				GL_RGB, this->textureWidth, this->textureHeight);
-		}
-
-		// Resize RGBA textures (SPECULAR)
+		// Resize RGBA32F textures (MATERIAL)
 		for (; i < GBufferTextureType::DEPTH; i++) {
-			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGBA, 
-				GL_RGB, this->textureWidth, this->textureHeight);
+			this->bufferTextures[i].setImageData(
+				NULL, GL_UNSIGNED_INT, GL_RGBA32UI, GL_RGBA_INTEGER,
+				this->textureWidth, this->textureHeight);
 		}
 
 		// Resize DEPTH32F_STENCIL8 texture (DEPTH)

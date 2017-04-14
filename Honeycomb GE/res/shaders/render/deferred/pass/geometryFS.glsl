@@ -20,9 +20,7 @@ in mat3 out_vs_tbnMatrix;
 // Outputs correlating to the texture ID in the G-Buffer
 layout (location = 0) out vec3 out_fs_pos;
 layout (location = 1) out vec3 out_fs_normal;
-
-layout (location = 2) out vec3 out_fs_albedoAmbientDiffuse;
-layout (location = 3) out vec4 out_fs_specular;
+layout (location = 2) out vec4 out_fs_material;
 
 uniform Material material;  // Standard Material of the Object
 uniform samplerCube skybox; // Skybox for Reflection
@@ -140,30 +138,31 @@ vec4 calculateSpecular() {
 	vec3 color = material.specularColor;
 	vec3 tex = sampleTexture2D(material, material.specularTexture,
 		out_vs_texCoord, 1.0F).rgb;
-	float shine = material.shininess / 128.0F;
+	float shine = clamp(material.shininess / 255.0F, 0.0F, 1.0F);
 
 	// Return Color + Texture, Shininess
 	return vec4(tex * color, shine);
 }
 
-vec3 calculateAlbedoAmbientDiffuse() {
+vec4 calculateMaterial() {
 	vec3 reflectionVec = calculateReflection();
 
 	vec3 albedoVec = calculateAlbedo() * reflectionVec;
 	vec3 ambientVec = calculateAmbient() * albedoVec;
 	vec3 diffuseVec = calculateDiffuse() * albedoVec;
+	vec4 specularVec = calculateSpecular();
 
-	uint albF = packRGB(albedoVec);
-	uint ambF = packRGB(ambientVec);
-	uint difF = packRGB(diffuseVec);
+	float albF = packRGB(albedoVec);
+	float ambF = packRGB(ambientVec);
+	float difF = packRGB(diffuseVec);
+	float specF = packRGBA(specularVec);
 
-	return vec3(albF, ambF, difF);
+	return vec4(albF, ambF, difF, specF);
 }
 
 void main() {
     out_fs_normal = calculateNormal();
-	out_fs_specular = calculateSpecular();
-    out_fs_albedoAmbientDiffuse = calculateAlbedoAmbientDiffuse();
+    out_fs_material = calculateMaterial();
     
 	out_fs_pos = out_vs_pos;
 }

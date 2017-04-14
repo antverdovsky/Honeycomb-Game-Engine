@@ -10,9 +10,8 @@ uniform SpotLight spotLight; // The point light
 uniform Camera camera;
 
 uniform sampler2D gBufferPosition;
-uniform sampler2D gBufferAlbedoAmbientDiffuse;
+uniform sampler2D gBufferMaterial;
 uniform sampler2D gBufferNormal;
-uniform sampler2D gBufferSpecular;
 
 out vec4 fragColor;
 
@@ -22,11 +21,13 @@ void main() {
     
     vec3 pos = texture2D(gBufferPosition, screenCoord).xyz;
     vec3 norm = normalize(texture2D(gBufferNormal, screenCoord).xyz);
-	vec3 spec = texture2D(gBufferSpecular, screenCoord).xyz;
-	float shine = texture2D(gBufferSpecular, screenCoord).w * 128.0F;
-
-	vec3 aad = texture2D(gBufferAlbedoAmbientDiffuse, screenCoord).xyz;
-	vec3 diffuse = unpackRGB(uint(aad.b));
+	
+	vec4 mat = texture2D(gBufferMaterial, screenCoord);
+	vec4 specShine = unpackRGBA(mat.a);
+	
+	vec3 diffuse = unpackRGB(mat.b);
+	vec3 spec = specShine.rgb;
+	float shine = specShine.a * 255.0F;
 
 	fragColor = vec4(calculateSpotLight(spotLight, camera, pos, norm, shine, 
 		spec, diffuse), 1.0F);

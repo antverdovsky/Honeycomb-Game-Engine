@@ -24,7 +24,7 @@ namespace HoneycombTest {
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_3)) {
 			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
-				DeferredRenderer::FinalTexture::ALBEDO_AMBIENT_DIFFUSE);
+				DeferredRenderer::FinalTexture::MATERIAL);
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_4)) {
 			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
@@ -33,10 +33,6 @@ namespace HoneycombTest {
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_5)) {
 			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
 				DeferredRenderer::FinalTexture::POSITION);
-		}
-		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_6)) {
-			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
-				DeferredRenderer::FinalTexture::SPECULAR);
 		}
 	}
 
@@ -106,7 +102,7 @@ namespace HoneycombTest {
 			Vector3f(0.07568F, 0.61424F, 0.07568F));
 		emeraldMaterial->glVector3fs.setValue("specularColor",
 			Vector3f(0.633F, 0.727811F, 0.633F));
-		emeraldMaterial->glFloats.setValue("shininess", 76.8F);
+		emeraldMaterial->glFloats.setValue("shininess", 32.0F);
 		this->emeraldSph->getComponent<MeshRenderer>()->setMaterial(
 			*emeraldMaterial);
 

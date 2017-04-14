@@ -6,7 +6,7 @@
 
 in vec3 out_vs_pos; // Take in the world position outputted by VS
 
-uniform sampler2D gBufferAlbedoAmbientDiffuse;
+uniform sampler2D gBufferMaterial;
 
 uniform AmbientLight ambientLight; // The Ambient Light
 uniform Camera camera;
@@ -17,8 +17,8 @@ void main() {
 	vec2 screenCoord = vec2(gl_FragCoord.x / camera.width,
 							gl_FragCoord.y / camera.height);
 
-	vec3 aad = texture2D(gBufferAlbedoAmbientDiffuse, screenCoord).xyz;
-	vec3 ambient = unpackRGB(uint(aad.g));
+	vec4 mat = texture2D(gBufferMaterial, screenCoord);
+	vec3 ambient = unpackRGB(mat.g);
 
-	fragColor = vec4(calculateAmbientLight(ambientLight) * ambient, 1.0F);
+    fragColor = vec4(calculateAmbientLight(ambientLight) * ambient, 1.0F);
 }
