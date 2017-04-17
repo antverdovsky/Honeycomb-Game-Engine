@@ -3,12 +3,7 @@
 ///
 struct Texture2D {
 	sampler2D sampler;			// The sampler2D used to sample the texture
-	
-	vec2 tiling;				// The tiling of the texture on X, Y axes
-	vec2 offset;				// The offset of the texture on X, Y axes
-	
-	vec3 color;					// Modifies the color of the texture 
-	float intensity;			// Scales all of the colors of the texture
+	float intensity;			// Scales the RGB colors of the texture
 };
 
 ///
@@ -26,7 +21,7 @@ struct Material {
 
     vec3 specularColor;				// Color of the specular reflection
 	Texture2D specularTexture;		// Specular texture of the Material
-	float shininess;				// The shininess of the specular reflection
+	float shininess;				// Shininess of the specular reflection
 
 	Texture2D normalsTexture;		// Normal/Bump Map
 	Texture2D displacementTexture;	// Displacement/Height Map
@@ -112,13 +107,12 @@ vec4 applyGammaSRGB(vec4 inColor, float gamma) {
 
 vec4 parallaxSampleTexture2D(Material mat, Texture2D tex, Texture2D par, 
 		vec2 coord, vec3 eye, mat3 tbn, float gamma) {
-	// Adjust the texture coordinates according to the tiling and offset of the
-	// Texture2D struct.
-	vec2 adjCoord = coord * (mat.globalTiling * tex.tiling) + 
-		(mat.globalOffset + tex.offset);
+	// Adjust the texture coordinates according to the tiling and offset of 
+	// the Texture2D struct.
+	vec2 adjCoord = coord * mat.globalTiling + mat.globalOffset;
 	vec2 parallaxCoord = parallaxTransform(par, adjCoord, eye, tbn);
 	vec4 texColor = texture2D(tex.sampler, parallaxCoord) * 
-		vec4(tex.color, 1.0F) * vec4(vec3(tex.intensity), 1.0F);
+		vec4(vec3(tex.intensity), 1.0F);
 
 	return applyGammaSRGB(texColor, gamma);
 }
@@ -128,10 +122,10 @@ vec2 parallaxTransform(Texture2D par, vec2 original, vec3 eye, mat3 tbn) {
 	vec3 viewTBN = normalize(-eye * tbn);
 	
 	// Get the number of layers and the depth of each layer (equal to inverse
-	// the number of layers). Calculate the number of layers by lerping between
-	// the minum and maximum number of layers, with the "t" arugment being the
-	// steepness of the surface, where the less steep the surface, the less
-	// displacement layers we use, for performance considerations.
+	// the number of layers). Calculate the number of layers by lerping 
+	// between the minimum and maximum number of layers, with the "t" arugment
+	// being the steepness of the surface, where the less steep the surface, 
+	// the less displacement layers we use, for performance considerations.
 	float steepness = abs(dot(vec3(0.0F, 0.0F, 1.0F), viewTBN));
 	float layerCount = mix(
 		MAX_DISPLACEMENT_LAYERS, MIN_DISPLACEMENT_LAYERS, steepness);
@@ -168,8 +162,8 @@ vec2 parallaxTransform(Texture2D par, vec2 original, vec3 eye, mat3 tbn) {
 	float beforeDepth = texture2D(par.sampler, previousTexCoords).r - 
 		currentLayerDepth + eachLayerDepth;
 
-	// Perform an interpolation to find the medium point between the before and
-	// after depths.
+	// Perform an interpolation to find the medium point between the before 
+	// and after depths.
 	float interpolation = afterDepth / (afterDepth - beforeDepth);
 	currentTexCoords = previousTexCoords * interpolation +
 		currentTexCoords * (1.0F - interpolation);
@@ -178,12 +172,11 @@ vec2 parallaxTransform(Texture2D par, vec2 original, vec3 eye, mat3 tbn) {
 }
 
 vec4 sampleTexture2D(Material mat, Texture2D tex, vec2 coord, float gamma) {
-	// Adjust the texture coordinates according to the tiling and offset of the
-	// Texture2D struct.
-	vec2 adjCoord = coord * (mat.globalTiling * tex.tiling) + 
-		(mat.globalOffset + tex.offset);
-	vec4 texColor = texture2D(tex.sampler, adjCoord) * 
-		vec4(tex.color, 1.0F) * vec4(vec3(tex.intensity), 1.0F);
+	// Adjust the texture coordinates according to the tiling and offset of 
+	// the Texture2D struct.
+	vec2 adjCoord = coord * mat.globalTiling + mat.globalOffset;
+	vec4 texColor = texture2D(tex.sampler, adjCoord) *
+		vec4(vec3(tex.intensity), 1.0F);
 
 	return applyGammaSRGB(texColor, gamma);
 }

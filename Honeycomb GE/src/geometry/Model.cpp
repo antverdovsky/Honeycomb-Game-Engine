@@ -181,10 +181,6 @@ namespace Honeycomb { namespace Geometry {
 		}
 
 		mat.glSampler2Ds.setValue(matUni + ".sampler", *texture);
-		mat.glVector2fs.setValue(matUni + ".tiling", Vector2f(1.0F, 1.0F));
-		mat.glVector2fs.setValue(matUni + ".offset", Vector2f(0.0F, 0.0F));
-		mat.glVector3fs.setValue(matUni + ".color", 
-			Vector3f(1.0F, 1.0F, 1.0F));
 		mat.glFloats.setValue(matUni + ".intensity", 1.0F);
 
 		this->textures.push_back(texture);
@@ -247,12 +243,6 @@ namespace Honeycomb { namespace Geometry {
 		diffuse->initialize();
 		diffuse->setImageData(255, 255, 255);
 		material->glSampler2Ds.setValue("diffuseTexture.sampler", *diffuse);
-		material->glVector2fs.setValue("diffuseTexture.tiling", 
-			Vector2f(1.0F, 1.0F));
-		material->glVector2fs.setValue("diffuseTexture.offset",
-			Vector2f(0.0F, 0.0F));
-		material->glVector3fs.setValue("diffuseTexture.color",
-			Vector3f(1.0F, 1.0F, 1.0F));
 		material->glFloats.setValue("diffuseTexture.intensity", 1.0F);
 		material->glVector3fs.setValue("diffuseColor",
 			Vector3f(1.0F, 1.0F, 1.0F));
