@@ -57,9 +57,9 @@ namespace Honeycomb { namespace Geometry {
 
 		// Enable attribute arrays for the vertices
 		glEnableVertexAttribArray(0); // The position
-		glEnableVertexAttribArray(1); // The texture coordinates
-		glEnableVertexAttribArray(2); // The normals
-		glEnableVertexAttribArray(3); // The tangents
+		glEnableVertexAttribArray(1); // The normals
+		glEnableVertexAttribArray(2); // The tangents
+		glEnableVertexAttribArray(3); // The texture coordinates
 
 		// Bind the buffer to the VBO.
 		glBindBuffer(GL_ARRAY_BUFFER, this->vertexBufferObj);
@@ -68,9 +68,9 @@ namespace Honeycomb { namespace Geometry {
 		// floats per face, normalization is not needed, size is taken from the
 		// variable stored for this mesh, and the data starts at 0.
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 44, (void*)0);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 44, (void*)12);
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 44, (void*)20);
-		glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 44, (void*)32);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 44, (void*)12);
+		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 44, (void*)24);
+		glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 44, (void*)36);
 
 		// Bind the buffer to the IBO.
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBufferObj);
@@ -112,7 +112,7 @@ namespace Honeycomb { namespace Geometry {
 		glBufferData(GL_ARRAY_BUFFER, this->vertSize, nullptr, GL_STATIC_DRAW);
 
 		// Convert the verticies into a float buffer which OpenGL understands
-		GLfloat *vertFloats = Vertex::toFloatBuffer(vert, vC);
+		std::vector<float> vertFloats = Vertex::toFloatBuffer(vert, vC);
 
 		// Set the count and size variables. The count represents the length of
 		// the vertex array, where as size represents the raw size, in bytes,
@@ -127,7 +127,5 @@ namespace Honeycomb { namespace Geometry {
 		// data is constant).
 		glBufferData(GL_ARRAY_BUFFER, this->vertSize, &vertFloats[0], 
 			GL_STATIC_DRAW);
-
-		delete vertFloats; // Delete the dynamically allocated vertex floats
 	}
 } }

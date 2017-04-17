@@ -13,9 +13,9 @@
 // Retrieves the position, texture coordinate, and normal of the Vertex from
 // the specified vertex attribute array pointers (see Mesh.cpp)
 layout (location = 0) in vec3 in_vs_pos;
-layout (location = 1) in vec2 in_vs_texCoord;
-layout (location = 2) in vec3 in_vs_norm;
-layout (location = 3) in vec3 in_vs_tangent;
+layout (location = 1) in vec3 in_vs_norm;
+layout (location = 2) in vec3 in_vs_tangent;
+layout (location = 3) in vec2 in_vs_texCoord;
 
 uniform mat4 objTransform;		// Transform Matrix (pos, rot, scl)
 

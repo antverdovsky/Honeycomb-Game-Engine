@@ -278,10 +278,10 @@ namespace Honeycomb { namespace Geometry {
 
 			// Generate a Vertex using the fetched Vertex information
 			Vertex vertex = Vertex(
-				Vector3f(vertNorms.x, vertNorms.y, vertNorms.z),
 				Vector3f(vertPos.x, vertPos.y, vertPos.z),
-				Vector2f(vertUV.x, vertUV.y),
-				Vector3f(vertTan.x, vertTan.y, vertTan.z)
+				Vector3f(vertNorms.x, vertNorms.y, vertNorms.z),
+				Vector3f(vertTan.x, vertTan.y, vertTan.z),
+				Vector2f(vertUV.x, vertUV.y)
 			);
 
 			vertices.push_back(vertex); // Add the vertex to Mesh data
