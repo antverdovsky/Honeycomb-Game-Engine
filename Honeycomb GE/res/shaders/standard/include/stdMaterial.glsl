@@ -45,6 +45,13 @@ const float MAX_DISPLACEMENT_LAYERS = 32.0F;
 /// return : The gamma corrected SRGB texture color.
 vec4 applyGammaSRGB(vec4 inColor, float gamma);
 
+/// Converts the specified coordinates to texture coordinates for the
+/// specified material.
+/// Material mat : The material for which the coordinates are to be computed.
+/// vec2 coords : The coordinates which are to be transformed.
+/// return : The transformed coordinates.
+vec2 getTextureCoordinates(Material mat, vec2 coords);
+
 /// Samples the specified 2D texture at the specified coordinates. The
 /// coordinates will be automatically adjusted according to the tiling and
 /// offsets of the Texture struct as well as according to the parallax map.
@@ -105,11 +112,15 @@ vec4 applyGammaSRGB(vec4 inColor, float gamma) {
 	return vec4(outColor, inColor.a);
 }
 
+vec2 getTextureCoordinates(Material mat, vec2 coords) {
+	return coords * mat.globalTiling + mat.globalOffset;
+}
+
 vec4 parallaxSampleTexture2D(Material mat, Texture2D tex, Texture2D par, 
 		vec2 coord, vec3 eye, mat3 tbn, float gamma) {
 	// Adjust the texture coordinates according to the tiling and offset of 
 	// the Texture2D struct.
-	vec2 adjCoord = coord * mat.globalTiling + mat.globalOffset;
+	vec2 adjCoord = getTextureCoordinates(mat, coord);
 	vec2 parallaxCoord = parallaxTransform(par, adjCoord, eye, tbn);
 	vec4 texColor = texture2D(tex.sampler, parallaxCoord) * 
 		vec4(vec3(tex.intensity), 1.0F);
@@ -174,7 +185,7 @@ vec2 parallaxTransform(Texture2D par, vec2 original, vec3 eye, mat3 tbn) {
 vec4 sampleTexture2D(Material mat, Texture2D tex, vec2 coord, float gamma) {
 	// Adjust the texture coordinates according to the tiling and offset of 
 	// the Texture2D struct.
-	vec2 adjCoord = coord * mat.globalTiling + mat.globalOffset;
+	vec2 adjCoord = getTextureCoordinates(mat, coord);
 	vec4 texColor = texture2D(tex.sampler, adjCoord) *
 		vec4(vec3(tex.intensity), 1.0F);
 

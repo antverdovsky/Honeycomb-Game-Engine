@@ -27,6 +27,8 @@ uniform samplerCube skybox; // Skybox for Reflection
 uniform Camera camera;      // Scene Camera
 uniform float gamma;		// Gamma value for reading in textures
 
+vec2 displacedTexCoords;	// Parallax Displaced Tex Coords for this Fragment
+
 /// Calculates the Reflection color of this object's fragment.
 /// return : The reflection color.
 vec3 calculateReflection() {
@@ -54,9 +56,8 @@ vec3 calculateReflection() {
 vec3 calculateAmbient() {
 	// Fetch material texture & ambient
 	vec3 viewVec = normalize(out_vs_pos - camera.translation);
-	vec3 tex = parallaxSampleTexture2D(material, material.ambientTexture,
-		material.displacementTexture, out_vs_texCoord, viewVec,
-		out_vs_tbnMatrix, gamma).rgb;
+	vec3 tex = texture2DSRGB(material.ambientTexture.sampler, 
+		displacedTexCoords, gamma).rgb;
 	vec3 ambient = material.ambientColor.xyz;
 
 	// Return Texture + Ambient
@@ -68,9 +69,8 @@ vec3 calculateAmbient() {
 vec3 calculateAlbedo() {
 	// Fetch material texture & albedo
 	vec3 viewVec = normalize(out_vs_pos - camera.translation);
-	vec3 tex = parallaxSampleTexture2D(material, material.albedoTexture,
-		material.displacementTexture, out_vs_texCoord, viewVec,
-		out_vs_tbnMatrix, gamma).rgb;
+	vec3 tex = texture2DSRGB(material.albedoTexture.sampler, 
+		displacedTexCoords, gamma).rgb;
 	vec3 albedo = material.albedoColor.xyz;
 
 	// Return Texture + Albedo
@@ -82,9 +82,8 @@ vec3 calculateAlbedo() {
 vec3 calculateDiffuse() {
 	// Fetch material texture & diffuse
 	vec3 viewVec = normalize(out_vs_pos - camera.translation);
-	vec3 tex = parallaxSampleTexture2D(material, material.diffuseTexture,
-		material.displacementTexture, out_vs_texCoord, viewVec,
-		out_vs_tbnMatrix, gamma).rgb;
+	vec3 tex = texture2DSRGB(material.diffuseTexture.sampler, 
+		displacedTexCoords, gamma).rgb;
 	vec3 diffuse = material.diffuseColor.xyz;
 
 	// Return Texture + Diffuse
@@ -99,9 +98,8 @@ vec3 calculateNormal() {
 
 	// Fetch texture value from the Normal Map of the Material
 	vec3 viewVec = normalize(out_vs_pos - camera.translation);
-	vec3 tex = parallaxSampleTexture2D(material, material.normalsTexture,
-		material.displacementTexture, out_vs_texCoord, viewVec,
-		out_vs_tbnMatrix, 1.0F).rgb;
+	vec3 tex = texture2DSRGB(material.normalsTexture.sampler, 
+		displacedTexCoords, 1.0F).rgb;
 	vec3 texNorm = tex;
 
 	// Convert the Normal Map texture from the range of [0, 1] to [-1, 1] since
@@ -136,7 +134,7 @@ vec3 calculateNormal() {
 vec4 calculateSpecular() {
 	// Fetch Specular properties from the Materials
 	vec3 color = material.specularColor;
-	vec3 tex = sampleTexture2D(material, material.specularTexture,
+	vec3 tex = texture2DSRGB(material.specularTexture.sampler, 
 		out_vs_texCoord, 1.0F).rgb;
 	float shine = clamp(material.shininess / 255.0F, 0.0F, 1.0F);
 
@@ -161,6 +159,12 @@ vec4 calculateMaterial() {
 }
 
 void main() {
+	// Calculate Parallax Displaced Texture Coordinates once
+	vec3 viewVec = normalize(out_vs_pos - camera.translation);
+	displacedTexCoords = getTextureCoordinates(material, out_vs_texCoord);
+	displacedTexCoords = parallaxTransform(material.displacementTexture,
+		displacedTexCoords, viewVec, out_vs_tbnMatrix);
+
     out_fs_normal = calculateNormal();
     out_fs_material = calculateMaterial();
     
