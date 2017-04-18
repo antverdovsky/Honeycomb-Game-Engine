@@ -10,6 +10,17 @@
 namespace Honeycomb { namespace Geometry {
 	class Vertex {
 	public:
+		const static int ELEMENTS_PER_ATTRIBUTE_COUNT = 4;
+		const static int ATTRIBUTES_PER_VERTEX_COUNT  = 4;
+		const static int ELEMENTS_PER_VERTEX_COUNT    = 
+			ELEMENTS_PER_ATTRIBUTE_COUNT * ATTRIBUTES_PER_VERTEX_COUNT;
+
+		const static int ELEMENT_SIZE				  = sizeof(float);
+		const static int ELEMENTS_PER_ATTRIBUTE_SIZE  = 
+			ELEMENT_SIZE * ELEMENTS_PER_ATTRIBUTE_COUNT;
+		const static int ELEMENTS_PER_VERTEX_SIZE	  =
+			ELEMENT_SIZE * ELEMENTS_PER_VERTEX_COUNT;
+
 		/// Creates an empty vertex, with the position, texture coordinates,
 		/// normals and tangent being set to their default Vector values.
 		Vertex();
@@ -57,11 +68,10 @@ namespace Honeycomb { namespace Geometry {
 		/// const Vector2f &uv : The texture coordinates 0 vector.
 		void setTexCoords0(const Honeycomb::Math::Vector2f &uv);
 
-		/// Converts the array of vertices to a float buffer. Foreach vertex,
-		/// the following are added to the buffer:
-		/// { P.x, P.y, P.z, N.x, N.y, N.z, T.x, T.y, T.z, TC0.x, TC0.y },
-		/// where P is the position vector, N is the normals vector, T is the
-		/// tangent vector and TC0 is the texture coordinates 0 vector.s
+		/// Converts the array of vertices to a float buffer. For each vertex,
+		/// the attributes of the vertex are padded to four elements and then
+		/// added to the buffer in the order of position, normal, tangent,
+		/// texture coordinates.
 		/// Vertex verts[] : The array of vertices to be converted to a float
 		///					 buffer.
 		/// int count : The number of vertices passed in (length of the verts
@@ -70,11 +80,12 @@ namespace Honeycomb { namespace Geometry {
 		static std::vector<float> toFloatBuffer(Vertex verts[], 
 				const int &count);
 	private:
-		Honeycomb::Math::Vector3f position;		// Model Position
-		Honeycomb::Math::Vector3f normal;		// Model Normal
-		Honeycomb::Math::Vector3f tangent;		// Model Tangent
+												// ATTRIBUTE  (LAYOUT LOCATION)
+		Honeycomb::Math::Vector3f position;		// Model Position			(0)
+		Honeycomb::Math::Vector3f normal;		// Model Normal				(1)
+		Honeycomb::Math::Vector3f tangent;		// Model Tangent			(2)
 
-		Honeycomb::Math::Vector2f texCoords0;	// Texture Coordinates 0
+		Honeycomb::Math::Vector2f texCoords0;	// Texture Coordinates 0	(3)
 	};
 } }
 

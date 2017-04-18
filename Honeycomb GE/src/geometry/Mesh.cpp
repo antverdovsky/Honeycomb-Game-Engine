@@ -55,22 +55,21 @@ namespace Honeycomb { namespace Geometry {
 	void Mesh::draw(ShaderProgram &shader) const {
 		shader.bindShaderProgram();
 
-		// Enable attribute arrays for the vertices
-		glEnableVertexAttribArray(0); // The position
-		glEnableVertexAttribArray(1); // The normals
-		glEnableVertexAttribArray(2); // The tangents
-		glEnableVertexAttribArray(3); // The texture coordinates
+		// Enable attribute arrays for each attribute of the vertex
+		for (int i = 0; i < Vertex::ATTRIBUTES_PER_VERTEX_COUNT; ++i)
+			glEnableVertexAttribArray(i);
 
 		// Bind the buffer to the VBO.
 		glBindBuffer(GL_ARRAY_BUFFER, this->vertexBufferObj);
 
-		// The positions are to be stored at 0, with each one containing 3 
-		// floats per face, normalization is not needed, size is taken from the
-		// variable stored for this mesh, and the data starts at 0.
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 44, (void*)0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 44, (void*)12);
-		glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 44, (void*)24);
-		glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 44, (void*)36);
+		// Set the attribute pointer for each attribute of the vertex. Since
+		// all attributes are uniform in the number of elements, the same
+		// count and size variables may be used for all attributes. The offset
+		// will always be ELEMENTS_PER_ATTRIBUTE_SIZE from the previous attrib.
+		for (int i = 0; i < Vertex::ATTRIBUTES_PER_VERTEX_COUNT; ++i)
+			glVertexAttribPointer(i, Vertex::ELEMENTS_PER_ATTRIBUTE_COUNT, 
+				GL_FLOAT, GL_FALSE, Vertex::ELEMENTS_PER_VERTEX_SIZE,
+				(void*)(Vertex::ELEMENTS_PER_ATTRIBUTE_SIZE * i));
 
 		// Bind the buffer to the IBO.
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBufferObj);
@@ -80,11 +79,9 @@ namespace Honeycomb { namespace Geometry {
 		glDrawElements(GL_TRIANGLES, this->indexCount, GL_UNSIGNED_INT, 
 			(void*)0);
 
-		// Disable the position vertex attribute array
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glDisableVertexAttribArray(2);
-		glDisableVertexAttribArray(3);
+		// Disable attribute arrays for each attribute of the vertex
+		for (int i = 0; i < Vertex::ATTRIBUTES_PER_VERTEX_COUNT; ++i)
+			glDisableVertexAttribArray(i);
 	}
 
 	void Mesh::setIndexData(int indices[], const int &iC) {
@@ -114,14 +111,9 @@ namespace Honeycomb { namespace Geometry {
 		// Convert the verticies into a float buffer which OpenGL understands
 		std::vector<float> vertFloats = Vertex::toFloatBuffer(vert, vC);
 
-		// Set the count and size variables. The count represents the length of
-		// the vertex array, where as size represents the raw size, in bytes,
-		// of the vertex array. The total size of the array is equal to the
-		// size of one float multiplied by the the number of floats per vertex
-		// (8 due to 3 position floats, 2 texture coordianate floats, and 3
-		// normals floats) multiplied by the number of vertices in the array.
+		// Set the count and size variables.
 		this->vertCount = vC;
-		this->vertSize = 11 * sizeof(GLfloat) * this->vertCount;
+		this->vertSize = Vertex::ELEMENTS_PER_VERTEX_SIZE * this->vertCount;
 
 		// Send the vertex data to the buffer (Static Draw indicates that the
 		// data is constant).

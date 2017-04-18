@@ -12,10 +12,10 @@
 
 // Retrieves the position, texture coordinate, and normal of the Vertex from
 // the specified vertex attribute array pointers (see Mesh.cpp)
-layout (location = 0) in vec3 in_vs_pos;
-layout (location = 1) in vec3 in_vs_norm;
-layout (location = 2) in vec3 in_vs_tangent;
-layout (location = 3) in vec2 in_vs_texCoord;
+layout (location = 0) in vec4 in_vs_pos;
+layout (location = 1) in vec4 in_vs_norm;
+layout (location = 2) in vec4 in_vs_tangent;
+layout (location = 3) in vec4 in_vs_texCoord;
 
 uniform mat4 objTransform;		// Transform Matrix (pos, rot, scl)
 
@@ -31,14 +31,14 @@ out mat3 out_vs_tbnMatrix;		// Tangent-Bitangent-Normal Matrix
 
 void main() {
 	// Fetch position and texture coordinates
-    out_vs_pos = (objTransform * vec4(in_vs_pos, 1.0F)).xyz;
-	out_vs_texCoord = in_vs_texCoord;
+    out_vs_pos = (objTransform * in_vs_pos).xyz;
+	out_vs_texCoord = in_vs_texCoord.xy;
 	
 	// Fetch the Normals & Tangents of the Vertex, use them to calculate the
 	// perpendicular bitangent. JIC, reorthagonize the tangent vector using the
 	// Gram-Schmidt process.
-	out_vs_norm = normalize(objTransform * vec4(in_vs_norm, 0.0F)).xyz;
-	out_vs_tangent = normalize(objTransform * vec4(in_vs_tangent, 0.0F)).xyz;
+	out_vs_norm = normalize(objTransform * in_vs_norm).xyz;
+	out_vs_tangent = normalize(objTransform * in_vs_tangent).xyz;
 	out_vs_tangent = normalize(out_vs_tangent - 
 		dot(out_vs_tangent, out_vs_norm) * out_vs_norm);
 	out_vs_bitangent = cross(out_vs_tangent, out_vs_norm);
@@ -48,5 +48,5 @@ void main() {
     
 	// The position of each vertex equals to the transformation matrix
     // mutliplied with the vector representing the original position.
-    gl_Position = camera.projection * objTransform * vec4(in_vs_pos, 1.0);
+    gl_Position = camera.projection * objTransform * in_vs_pos;
 }
