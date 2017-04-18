@@ -9,44 +9,32 @@
 #version 410 core
 
 #include <../../../standard/include/stdCamera.glsl>
-
-// Retrieves the position, texture coordinate, and normal of the Vertex from
-// the specified vertex attribute array pointers (see Mesh.cpp)
-layout (location = 0) in vec4 in_vs_pos;
-layout (location = 1) in vec4 in_vs_norm;
-layout (location = 2) in vec4 in_vs_tangent;
-layout (location = 3) in vec4 in_vs_texCoord;
+#include <../../../standard/include/vertex/stdVertexAttrib.glsl>
+#include <../../../standard/include/vertex/stdVertexOut.glsl>
 
 uniform mat4 objTransform;		// Transform Matrix (pos, rot, scl)
-
 uniform Camera camera;			// Camera Structure
-
-out vec2 out_vs_texCoord;		// Texture Coordinates Output
-out vec3 out_vs_norm;			// The normalized normal vector of the vertex
-out vec3 out_vs_pos;			// The position of the vertex in the world
-out vec3 out_vs_tangent;		// The tangent vector of the vertex
-out vec3 out_vs_bitangent;		// The bitangent vector of the vertex
-
-out mat3 out_vs_tbnMatrix;		// Tangent-Bitangent-Normal Matrix
 
 void main() {
 	// Fetch position and texture coordinates
-    out_vs_pos = (objTransform * in_vs_pos).xyz;
-	out_vs_texCoord = in_vs_texCoord.xy;
+    vertexOut.position = (objTransform * in_vs_position).xyz;
+	vertexOut.texCoords0 = in_vs_texCoords0.xy;
 	
 	// Fetch the Normals & Tangents of the Vertex, use them to calculate the
 	// perpendicular bitangent. JIC, reorthagonize the tangent vector using the
 	// Gram-Schmidt process.
-	out_vs_norm = normalize(objTransform * in_vs_norm).xyz;
-	out_vs_tangent = normalize(objTransform * in_vs_tangent).xyz;
-	out_vs_tangent = normalize(out_vs_tangent - 
-		dot(out_vs_tangent, out_vs_norm) * out_vs_norm);
-	out_vs_bitangent = cross(out_vs_tangent, out_vs_norm);
+	vertexOut.normal = normalize(objTransform * in_vs_normal).xyz;
+	vertexOut.tangent = normalize(objTransform * in_vs_tangent).xyz;
+	vertexOut.tangent = normalize(vertexOut.tangent - 
+		dot(vertexOut.tangent, vertexOut.normal) * vertexOut.normal);
+	vertexOut.bitangent = cross(vertexOut.tangent, vertexOut.normal);
 
 	// Construct the TBN Matrix
-	out_vs_tbnMatrix = mat3(out_vs_tangent, out_vs_bitangent, out_vs_norm);
+	vertexOut.tbnMatrix = mat3(vertexOut.tangent, 
+		vertexOut.bitangent, 
+		vertexOut.normal);
     
 	// The position of each vertex equals to the transformation matrix
     // mutliplied with the vector representing the original position.
-    gl_Position = camera.projection * objTransform * in_vs_pos;
+    gl_Position = camera.projection * objTransform * in_vs_position;
 }

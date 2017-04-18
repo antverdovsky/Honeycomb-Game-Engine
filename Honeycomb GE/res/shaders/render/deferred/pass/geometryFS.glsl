@@ -8,14 +8,7 @@
 #include <../util/packing.glsl>
 #include <../../../standard/include/stdCamera.glsl>
 #include <../../../standard/include/stdMaterial.glsl>
-
-// The output of the Geometry Vertex Shader
-in vec2 out_vs_texCoord;
-in vec3 out_vs_norm;
-in vec3 out_vs_pos;
-in vec3 out_vs_tangent;
-in vec3 out_vs_bitangent;
-in mat3 out_vs_tbnMatrix;
+#include <../../../standard/include/vertex/stdVertexIn.glsl>
 
 // Outputs correlating to the texture ID in the G-Buffer
 layout (location = 0) out vec3 out_fs_pos;
@@ -23,8 +16,8 @@ layout (location = 1) out vec3 out_fs_normal;
 layout (location = 2) out vec4 out_fs_material;
 
 uniform Material material;  // Standard Material of the Object
-uniform samplerCube skybox; // Skybox for Reflection
 uniform Camera camera;      // Scene Camera
+uniform samplerCube skybox; // Skybox for Reflection
 uniform float gamma;		// Gamma value for reading in textures
 
 vec2 displacedTexCoords;	// Parallax Displaced Tex Coords for this Fragment
@@ -40,9 +33,9 @@ vec3 calculateReflection() {
 	// clamped) or if the strength is zero, it becomes equal to the reflected
 	// vector. (
 	// Note on Normals: out_fs_normal should be computed prior to this!)
-	vec3 viewVec = normalize(out_vs_pos - camera.translation);
+	vec3 viewVec = normalize(vertexIn.position - camera.translation);
 	float matRefStr = clamp(material.reflectionStrength, 0.0F, 1.0F);
-	vec3 refVec = refract(viewVec, -normalize(out_fs_normal), 
+	vec3 refVec = refract(viewVec, -normalize(vertexIn.normal), 
 		1.0F / material.refractiveIndex);
 	vec3 refStr = vec3(1.0F) - vec3(matRefStr);
 	vec3 refTexture = textureCubeSRGB(skybox, refVec, gamma).rgb;
@@ -55,7 +48,6 @@ vec3 calculateReflection() {
 /// return : The ambient color.
 vec3 calculateAmbient() {
 	// Fetch material texture & ambient
-	vec3 viewVec = normalize(out_vs_pos - camera.translation);
 	vec3 tex = texture2DSRGB(material.ambientTexture.sampler, 
 		displacedTexCoords, gamma).rgb;
 	vec3 ambient = material.ambientColor.xyz;
@@ -68,7 +60,6 @@ vec3 calculateAmbient() {
 /// return : The albedo color.
 vec3 calculateAlbedo() {
 	// Fetch material texture & albedo
-	vec3 viewVec = normalize(out_vs_pos - camera.translation);
 	vec3 tex = texture2DSRGB(material.albedoTexture.sampler, 
 		displacedTexCoords, gamma).rgb;
 	vec3 albedo = material.albedoColor.xyz;
@@ -81,7 +72,6 @@ vec3 calculateAlbedo() {
 /// return : The diffuse color.
 vec3 calculateDiffuse() {
 	// Fetch material texture & diffuse
-	vec3 viewVec = normalize(out_vs_pos - camera.translation);
 	vec3 tex = texture2DSRGB(material.diffuseTexture.sampler, 
 		displacedTexCoords, gamma).rgb;
 	vec3 diffuse = material.diffuseColor.xyz;
@@ -94,10 +84,9 @@ vec3 calculateDiffuse() {
 /// return : The normal vector.
 vec3 calculateNormal() {
 	// Fetch the standard interpolated vertex shader normal
-	vec3 vsNorm = normalize(out_vs_norm);
+	vec3 vsNorm = normalize(vertexIn.normal);
 
 	// Fetch texture value from the Normal Map of the Material
-	vec3 viewVec = normalize(out_vs_pos - camera.translation);
 	vec3 tex = texture2DSRGB(material.normalsTexture.sampler, 
 		displacedTexCoords, 1.0F).rgb;
 	vec3 texNorm = tex;
@@ -107,7 +96,7 @@ vec3 calculateNormal() {
 	texNorm = normalize((tex * 2.0F) - vec3(1.0F));
 
 	// Orient the normal map according to the Tangent-Bitangent-Normal Matrix
-	texNorm = normalize(out_vs_tbnMatrix * texNorm);
+	texNorm = normalize(vertexIn.tbnMatrix * texNorm);
 
 	// Multiply by the ceiling of the original texture value. If this object
 	// has a texture map, the ceiling of the texture will be a { 1, 1, 1 }
@@ -135,7 +124,7 @@ vec4 calculateSpecular() {
 	// Fetch Specular properties from the Materials
 	vec3 color = material.specularColor;
 	vec3 tex = texture2DSRGB(material.specularTexture.sampler, 
-		out_vs_texCoord, 1.0F).rgb;
+		vertexIn.texCoords0, 1.0F).rgb;
 	float shine = clamp(material.shininess / 255.0F, 0.0F, 1.0F);
 
 	// Return Color + Texture, Shininess
@@ -160,13 +149,13 @@ vec4 calculateMaterial() {
 
 void main() {
 	// Calculate Parallax Displaced Texture Coordinates once
-	vec3 viewVec = normalize(out_vs_pos - camera.translation);
-	displacedTexCoords = getTextureCoordinates(material, out_vs_texCoord);
+	vec3 viewVec = normalize(vertexIn.position - camera.translation);
+	displacedTexCoords = getTextureCoordinates(material, vertexIn.texCoords0);
 	displacedTexCoords = parallaxTransform(material.displacementTexture,
-		displacedTexCoords, viewVec, out_vs_tbnMatrix);
+		displacedTexCoords, viewVec, vertexIn.tbnMatrix);
 
     out_fs_normal = calculateNormal();
     out_fs_material = calculateMaterial();
     
-	out_fs_pos = out_vs_pos;
+	out_fs_pos = vertexIn.position;
 }

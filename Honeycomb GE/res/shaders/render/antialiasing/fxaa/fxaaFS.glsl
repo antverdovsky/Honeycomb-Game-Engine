@@ -1,8 +1,7 @@
 #version 410 core
 
 #include <../../../standard/include/stdCamera.glsl>
-
-in vec2 out_vs_texCoord; // Texture Coordinates outputted from FXAA VS
+#include <../../../standard/include/vertex/stdVertexIn.glsl>
 
 uniform sampler2D gBufferFinal; // The final texture to be FXAA processed
 uniform Camera camera; // The scene Camera
@@ -23,7 +22,7 @@ void main() {
 
 	// Positions for the Middle pixel (this) and the surrounding Bottom Left,
 	// Bottom Right, Top Left and Top Right pixels.
-	vec2 texM  = out_vs_texCoord;
+	vec2 texM  = vertexIn.texCoords0;
 	vec2 texBL = texM + (vec2(-1.0F, -1.0F) * pixelOffset);
 	vec2 texBR = texM + (vec2( 1.0F, -1.0F) * pixelOffset);
 	vec2 texTL = texM + (vec2(-1.0F,  1.0F) * pixelOffset);

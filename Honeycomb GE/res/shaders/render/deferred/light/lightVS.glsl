@@ -1,16 +1,14 @@
 #version 410 core
 
 #include <../../../standard/include/stdCamera.glsl>
-
-layout (location = 0) in vec4 in_vs_pos;
+#include <../../../standard/include/vertex/stdVertexAttrib.glsl>
+#include <../../../standard/include/vertex/stdVertexOut.glsl>
 
 uniform Camera camera;
 uniform mat4 objTransform;
 
-out vec3 out_vs_pos;
-
 void main() {
-    gl_Position = camera.projection * objTransform * in_vs_pos;
+    gl_Position = camera.projection * objTransform * in_vs_position;
     
-    out_vs_pos = (objTransform * in_vs_pos).xyz;
+    vertexOut.position = (objTransform * in_vs_position).xyz;
 }

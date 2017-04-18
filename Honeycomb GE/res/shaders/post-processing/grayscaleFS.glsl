@@ -7,10 +7,7 @@
 
 #include <../standard/include/stdCamera.glsl>
 #include <../standard/include/stdMaterial.glsl>
-
-in vec2 out_vs_texCoord; // Take in texture coordinate outputted by VS
-in vec3 out_vs_norm; // Take in the normal outputted by VS
-in vec3 out_vs_pos; // Take in the world position outputted by VS
+#include <../standard/include/vertex/stdVertexIn.glsl>
 
 uniform sampler2D gBufferFinal;
 
@@ -18,7 +15,7 @@ out vec4 fragColor;
 
 void main() {
     // Grayscale the Color
-    fragColor = texture2D(gBufferFinal, out_vs_texCoord);
+    fragColor = texture2D(gBufferFinal, vertexIn.texCoords0);
     float avg = 
         0.2126F * fragColor.x + 
         0.7152F * fragColor.y + 

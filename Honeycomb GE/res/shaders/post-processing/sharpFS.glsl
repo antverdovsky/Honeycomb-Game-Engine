@@ -7,10 +7,7 @@
 
 #include <../standard/include/stdCamera.glsl>
 #include <../standard/include/stdMaterial.glsl>
-
-in vec2 out_vs_texCoord; // Take in texture coordinate outputted by VS
-in vec3 out_vs_norm; // Take in the normal outputted by VS
-in vec3 out_vs_pos; // Take in the world position outputted by VS
+#include <../standard/include/vertex/stdVertexIn.glsl>
 
 uniform sampler2D gBufferFinal;
 
@@ -43,7 +40,7 @@ void main() {
     // Sample all of the surrounding fragments
     vec4 sampledPixels[9];
     for (int i = 0; i < 9; ++i) {
-        vec2 offsetCoord = out_vs_texCoord + offsets[i];
+        vec2 offsetCoord = vertexIn.texCoords0 + offsets[i];
         sampledPixels[i] = texture2D(gBufferFinal, offsetCoord);
     }
     

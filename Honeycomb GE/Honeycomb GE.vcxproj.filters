@@ -295,7 +295,6 @@
     <None Include="res\shaders\standard\source\vertex\stdVertex.glc" />
     <None Include="res\shaders\standard\include\stdLight.glh" />
     <None Include="res\shaders\standard\include\stdMaterial.glh" />
-    <None Include="res\shaders\standard\source\vertex\stdVertex.glsl" />
     <None Include="res\shaders\standard\include\stdLight.glsl" />
     <None Include="res\shaders\standard\include\stdMaterial.glsl" />
     <None Include="res\shaders\standard\source\light\stdAmbientLight.glsl" />
@@ -334,5 +333,8 @@
     <None Include="res\shaders\render\gamma\gammaFS.glsl" />
     <None Include="res\shaders\render\gamma\gammaVS.glsl" />
     <None Include="res\shaders\render\deferred\util\packing.glsl" />
+    <None Include="res\shaders\standard\include\vertex\stdVertexIn.glsl" />
+    <None Include="res\shaders\standard\include\vertex\stdVertexOut.glsl" />
+    <None Include="res\shaders\standard\include\vertex\stdVertexAttrib.glsl" />
   </ItemGroup>
 </Project>
