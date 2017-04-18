@@ -28,7 +28,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 	const std::string CameraController::HEIGHT_F = "height";
 
 	const std::string CameraController::STRUCT_FILE = "../Honeycomb GE/"
-		"res/shaders/standard/include/stdCamera.glsl";
+		"res/shaders/standard/structs/stdCamera.glsl";
 	const std::string CameraController::STRUCT_NAME = "Camera";
 
 	CameraController::CameraController() : 

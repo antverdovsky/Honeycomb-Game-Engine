@@ -1,8 +1,8 @@
 #version 330 core
 
 #include <../util/packing.glsl>
-#include <../../../standard/include/stdMaterial.glsl>
-#include <../../../standard/include/light/stdPointLight.glsl>
+#include <../../../standard/structs/stdMaterial.glsl>
+#include <../../../standard/light/stdPointLight.glsl>
 
 in vec3 out_vs_pos; // Take in the world position outputted by VS
 

@@ -6,9 +6,9 @@
 #version 410 core
 
 #include <../util/packing.glsl>
-#include <../../../standard/include/stdCamera.glsl>
-#include <../../../standard/include/stdMaterial.glsl>
-#include <../../../standard/include/vertex/stdVertexIn.glsl>
+#include <../../../standard/structs/stdCamera.glsl>
+#include <../../../standard/structs/stdMaterial.glsl>
+#include <../../../standard/vertex/stdVertexFS.glsl>
 
 // Outputs correlating to the texture ID in the G-Buffer
 layout (location = 0) out vec3 out_fs_pos;

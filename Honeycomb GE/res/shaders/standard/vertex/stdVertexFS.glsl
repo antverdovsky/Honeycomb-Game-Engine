@@ -1,6 +1,6 @@
 ///
-/// Standard Structure for the input of a Fragment Shader from a Vertex 
-/// Shader.
+/// Standard Structure defining the vertex structure which is used as input 
+/// inside all standard Fragment Shaders.
 ///
 
 in STD_VERTEX_OUT {

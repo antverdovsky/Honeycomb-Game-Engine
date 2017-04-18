@@ -1,4 +1,4 @@
-#include <../stdCamera.glsl>
+#include <../structs/stdCamera.glsl>
 
 ///
 /// The basic structure for all lights.

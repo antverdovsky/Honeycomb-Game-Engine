@@ -10,7 +10,7 @@ using Honeycomb::Shader::ShaderSource;
 
 namespace Honeycomb { namespace Graphics {
 	const std::string Material::DEFAULT_FILE =
-		"../Honeycomb GE/res/shaders/standard/include/stdMaterial.glsl";
+		"../Honeycomb GE/res/shaders/standard/structs/stdMaterial.glsl";
 	const std::string Material::DEFAULT_STRUCT = "Material";
 
 	Material::Material() : Material(*ShaderSource::getShaderSource(

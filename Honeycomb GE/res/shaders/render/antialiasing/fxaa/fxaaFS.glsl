@@ -1,7 +1,7 @@
 #version 410 core
 
-#include <../../../standard/include/stdCamera.glsl>
-#include <../../../standard/include/vertex/stdVertexIn.glsl>
+#include <../../../standard/structs/stdCamera.glsl>
+#include <../../../standard/vertex/stdVertexFS.glsl>
 
 uniform sampler2D gBufferFinal; // The final texture to be FXAA processed
 uniform Camera camera; // The scene Camera

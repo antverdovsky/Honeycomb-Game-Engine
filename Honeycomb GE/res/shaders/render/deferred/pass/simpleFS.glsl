@@ -5,7 +5,7 @@
 
 #version 410 core
 
-#include <../../../standard/include/vertex/stdVertexIn.glsl>
+#include <../../../standard/vertex/stdVertexFS.glsl>
 
 uniform sampler2D fsTexture; // Texture to be used
 

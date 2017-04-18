@@ -1,6 +1,6 @@
 #version 410 core
 
-#include <../standard/include/stdMaterial.glsl>
+#include <../standard/structs/stdMaterial.glsl>
 
 in vec3 out_vs_texCoord; // Texture Coordinates Output
 in vec3 out_vs_norm; // The normalized normal vector of the vertex

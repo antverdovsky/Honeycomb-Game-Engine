@@ -1,6 +1,6 @@
 #version 410 core
 
-#include <../../standard/include/vertex/stdVertexIn.glsl>
+#include <../../standard/vertex/stdVertexFS.glsl>
 
 uniform sampler2D gBufferFinal; // The final texture to be gamma corrected
 uniform float gamma; // The gamma value

@@ -1,7 +1,7 @@
 #version 410 core
 
-#include <../standard/include/stdCamera.glsl>
-#include <../standard/include/vertex/stdVertexAttrib.glsl>
+#include <../standard/structs/stdCamera.glsl>
+#include <../standard/vertex/stdVertexVS.glsl>
 
 uniform Camera camera;
 

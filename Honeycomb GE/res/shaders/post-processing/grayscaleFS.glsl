@@ -5,9 +5,7 @@
 
 #version 410 core
 
-#include <../standard/include/stdCamera.glsl>
-#include <../standard/include/stdMaterial.glsl>
-#include <../standard/include/vertex/stdVertexIn.glsl>
+#include <../standard/vertex/stdVertexFS.glsl>
 
 uniform sampler2D gBufferFinal;
 
