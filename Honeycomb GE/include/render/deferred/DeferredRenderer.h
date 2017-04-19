@@ -50,18 +50,20 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		GBuffer gBuffer; // The G Buffer of the Renderer
 		FinalTexture final; // The texture which will be rendered to screen
 
+		// Geometry, Full Screen Quad and Stencil Shaders
 		Honeycomb::Shader::ShaderProgram geometryShader;
 		Honeycomb::Shader::ShaderProgram quadShader;
 		Honeycomb::Shader::ShaderProgram stencilShader;
 		
+		// Shaders used by all of the lights
 		Honeycomb::Shader::ShaderProgram ambientShader;
 		Honeycomb::Shader::ShaderProgram pointLightShader;
 		Honeycomb::Shader::ShaderProgram directionalLightShader;
 		Honeycomb::Shader::ShaderProgram spotLightShader;
 
-		// The Point Light Volume (Icosphere) and the Spot Light Volume (Cone)
-		Honeycomb::Object::GameObject *lightVolumePoint;
-		Honeycomb::Object::GameObject *lightVolumeSpot;
+		// Meshes of the Light Volumes
+		Honeycomb::Geometry::Mesh lightVolumePoint;
+		Honeycomb::Geometry::Mesh lightVolumeSpot;
 
 		/// Initializes a new Deferred Renderer.
 		DeferredRenderer();
@@ -131,13 +133,13 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		/// Renders the specified Base Light using a full screen quad.
 		/// const BaseLight &bL : The base light to be rendered.
-		/// GameObject &volume : The game object representing the volume
-		///						 of the light to be rendered.
+		/// Mesh &volume : The game object representing the volume of the light
+		///				   to be rendered.
 		/// const ShaderProgram &shader : The shader program to be used when
 		///								  rendering the light quad.
 		/// const string &name : The name of the light uniform in the Shader.
 		void renderLightVolume(const Honeycomb::Component::Light::BaseLight
-			&bL, Honeycomb::Object::GameObject &volume,
+			&bL, Honeycomb::Geometry::Mesh &volume,
 			Honeycomb::Shader::ShaderProgram &shader, const std::string
 			&name);
 
@@ -166,24 +168,22 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		/// Performs the stencil pass on the light with the specified light
 		///	volume.
-		/// GameObject &volume : The object representing the light volume of 
-		///						 the light.
-		void stencilLightVolume(Honeycomb::Object::GameObject &volume);
+		/// Mesh &volume : The object representing the light volume of the 
+		///				   light.
+		void stencilLightVolume(Honeycomb::Geometry::Mesh &volume);
 
-		/// Scales and translates the Point Light's Sphere Volume based on the 
-		/// attenuation, color, intensity and position of the specified point 
-		/// light.
+		/// Writes the transform of the point light to the stencil and point
+		/// light shader.
 		/// const PointLight &pL : The Point Light for which the light volume
 		///					       is to be transformed.
-		void transformLightPointVolume(const Honeycomb::Component::Light::
+		void writePointLightTransform(const Honeycomb::Component::Light::
 				PointLight &pL);
 
-		/// Scales and translates the Spot Light's Sphere Volume based on the 
-		/// attenuation, color, intensity and position of the specified point 
-		/// light.
+		/// Writes the transform of the point light to the stencil and spot
+		/// light shader.
 		/// const SpotLight &sL : The Spot Light for which the light volume is
 		///						  to be transformed.
-		void transformLightSpotVolume(const Honeycomb::Component::Light::
+		void writeSpotLightTransform(const Honeycomb::Component::Light::
 				SpotLight &sL);
 	};
 } } }

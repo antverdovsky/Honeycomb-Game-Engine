@@ -23,7 +23,9 @@ using Honeycomb::Component::Light::LightType;
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Component::Render::CameraController;
 using Honeycomb::Component::Render::MeshRenderer;
+using Honeycomb::Geometry::Mesh;
 using Honeycomb::Geometry::Vertex;
+using Honeycomb::Math::Matrix4f;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Object::Builder;
@@ -82,8 +84,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	}
 
 	DeferredRenderer::~DeferredRenderer() {
-		delete this->lightVolumePoint;
-		delete this->lightVolumeSpot;
+		
 	}
 
 	void DeferredRenderer::initializeLightVolumes() {
@@ -93,23 +94,15 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		GameObject *sLModel = Builder::getBuilder()->newModel(
 			SPOT_LIGHT_VOLUME_MODEL);
 
-		// Extract the actual light volumes from the Model
-		this->lightVolumePoint = pLModel->getChild("Icosphere")->clone();
-		this->lightVolumeSpot = sLModel->getChild("Cube")->clone();
+		// Extract the actual light volume meshes from the Model
+		this->lightVolumePoint = pLModel->getChild("Icosphere")->
+			getComponent<MeshRenderer>()->getMesh();
+		this->lightVolumeSpot = sLModel->getChild("Cube")->
+			getComponent<MeshRenderer>()->getMesh();
 
 		// Delete the Light Volume Models
 		delete pLModel;
 		delete sLModel;
-
-		// Set a null material for the Light Volume Game Objects
-		this->lightVolumePoint->getComponent<MeshRenderer>()->setMaterial(
-			nullptr);
-		this->lightVolumeSpot->getComponent<MeshRenderer>()->setMaterial(
-			nullptr);
-
-		// Start the Light Volume Game Objects so that they may be rendered
-		this->lightVolumePoint->start();
-		this->lightVolumeSpot->start();
 	}
 
 	void DeferredRenderer::initializeShaders() {
@@ -273,20 +266,20 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	}
 
 	void DeferredRenderer::renderLightPoint(const PointLight &pL) {
-		glEnable(GL_STENCIL_TEST);
-
-		this->transformLightPointVolume(pL);
-		this->stencilLightVolume(*(this->lightVolumePoint));
-		this->renderLightVolume(pL, *(this->lightVolumePoint),
+		glEnable(GL_STENCIL_TEST); // Enable Stencil Testing for P.L.s
+		
+		this->writePointLightTransform(pL);
+		this->stencilLightVolume(this->lightVolumePoint);
+		this->renderLightVolume(pL, this->lightVolumePoint,
 			this->pointLightShader, "pointLight");
 	}
 
 	void DeferredRenderer::renderLightSpot(const SpotLight &sL) {
 		glEnable(GL_STENCIL_TEST); // Enable Stencil Testing for S.L.s
 
-		this->transformLightSpotVolume(sL);
-		this->stencilLightVolume(*(this->lightVolumeSpot));
-		this->renderLightVolume(sL, *(this->lightVolumeSpot),
+		this->writeSpotLightTransform(sL);
+		this->stencilLightVolume(this->lightVolumeSpot);
+		this->renderLightVolume(sL, this->lightVolumeSpot,
 			this->spotLightShader, "spotLight");
 	}
 
@@ -309,7 +302,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	}
 
 	void DeferredRenderer::renderLightVolume(const BaseLight &bL,
-		GameObject &obj, ShaderProgram &shader, const std::string &name) {
+			Mesh &volume, ShaderProgram &shader, const std::string &name) {
 		// Write the Camera Projection & Light to the Point Light Shader
 		CameraController::getActiveCamera()->toShader(shader, "camera");
 		bL.toShader(shader, name);
@@ -329,7 +322,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		glCullFace(GL_FRONT);
 
 		// Render the point light sphere with the given shader
-		obj.render(shader);
+		volume.draw(shader);
 
 		// Enable the culling of the back facing faces
 		glCullFace(GL_BACK);
@@ -459,7 +452,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		this->skyboxShader.setUniform_f("gamma", g);
 	}
 
-	void DeferredRenderer::stencilLightVolume(GameObject &volume) {
+	void DeferredRenderer::stencilLightVolume(Mesh &volume) {
 		CameraController::getActiveCamera()->toShader(this->stencilShader,
 			"camera");
 		this->gBuffer.bindStencil(); // Bind buffer for Stencil information
@@ -480,28 +473,30 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
 
 		// Render the Cone with the basic stencil shader
-		volume.render(this->stencilShader);
+		volume.draw(this->stencilShader);
 	}
 
-	void DeferredRenderer::transformLightPointVolume(const PointLight &pL) {
-		// Transform the Light Volume Sphere by scaling and translating it
-		this->lightVolumePoint->getComponent<Transform>()->setScale(Vector3f(
-			pL.getRange(), pL.getRange(), pL.getRange()));
-		this->lightVolumePoint->getComponent<Transform>()->setTranslation(
-			pL.glVector3fs.getValue(PointLight::POSITION_VEC3));
+	void DeferredRenderer::writePointLightTransform(const PointLight &pL) {
+		Transform pLT = *(pL.getAttached()->getComponent<Transform>());
+		Matrix4f transformM = pLT.getTransformationMatrix();
+		float pLRange = pL.getRange();
+
+		this->pointLightShader.setUniform_mat4("objTransform", transformM);
+		this->pointLightShader.setUniform_f("lvRange", pLRange);
+
+		this->stencilShader.setUniform_mat4("objTransform", transformM);
+		this->stencilShader.setUniform_f("lvRange", pLRange);
 	}
 
-	void DeferredRenderer::transformLightSpotVolume(const SpotLight &sL) {
-		// Transform the Light Volume Sphere by scaling and translating it
-		this->lightVolumeSpot->getComponent<Transform>()->setScale(Vector3f(
-			sL.getRange(), sL.getRange(), sL.getRange()));
-		this->lightVolumeSpot->getComponent<Transform>()->setTranslation(
-			sL.glVector3fs.getValue(SpotLight::POSITION_VEC3));
-		this->lightVolumeSpot->getComponent<Transform>()->setRotation(
-			sL.getAttached()->getComponent<Transform>()->getLocalRotation());		    // TODO make so it uses sL.direction
-		this->lightVolumeSpot->getComponent<Transform>()->rotate(					// todo temporary
-			this->lightVolumeSpot->getComponent<Transform>()->getLocalRight(),
-			3.1415926159F
-		);
+	void DeferredRenderer::writeSpotLightTransform(const SpotLight &sL) {
+		Transform sLT = *(sL.getAttached()->getComponent<Transform>());
+		Matrix4f transformM = sLT.getTransformationMatrix();
+		float sLRange = sL.getRange();
+
+		this->spotLightShader.setUniform_mat4("objTransform", transformM);
+		this->spotLightShader.setUniform_f("lvRange", sLRange);
+
+		this->stencilShader.setUniform_mat4("objTransform", transformM);
+		this->stencilShader.setUniform_f("lvRange", sLRange);
 	}
 } } }
