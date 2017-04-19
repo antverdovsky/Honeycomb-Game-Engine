@@ -295,5 +295,8 @@ Test Game/res/textures/
 # Builds Folder
 build/
 
+# Profiling Folder
+profiling/
+
 # DNA.txt
 TestGame/dna.txt
