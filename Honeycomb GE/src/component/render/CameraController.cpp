@@ -32,7 +32,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 	const std::string CameraController::STRUCT_NAME = "Camera";
 
 	CameraController::CameraController() : 
-			CameraController(CameraType::PERSPECTIVE, 75.0F, 1000.0F, 0.30F,
+			CameraController(CameraType::PERSPECTIVE, 1.31F, 1000.0F, 0.30F,
 			(float)GameWindow::getGameWindow()->getWindowHeight(),
 			(float)GameWindow::getGameWindow()->getWindowWidth()) {
 
@@ -199,10 +199,6 @@ namespace Honeycomb { namespace Component { namespace Render {
 	}
 
 	const Matrix4f& CameraController::calcProjectionViewOrthographic() {
-		// Mathematics Explanation From:
-		// www.scratchapixel.com/lessons/3d-basic-rendering/
-		// perspective-and-orthographic-projection-matrix
-
 		// Calculate the "top" and "right" sections of the projection. Since 
 		// the viewport is divided into positive and negative sides, the top 
 		// and right must be halfed. Additionally, left and bottom are not
@@ -210,51 +206,16 @@ namespace Honeycomb { namespace Component { namespace Render {
 		float top = projectionHeight / projectionWidth * typeParameter;
 		float right = projectionWidth / projectionHeight * typeParameter;
 
-		// Variables which will go inside of the Camera Projection Matrix.
-		float pmA = 1 / right;
-		float pmB = 1 / top;
-		float pmC = -2 / (clipFar - clipNear);
-		float pmD = -(clipFar + clipNear) / (clipFar - clipNear);
-
-		// Construct the Projection Matrix:
-		this->projectionView = Matrix4f::identity();
-		this->projectionView.setAt(0, 0, pmA);		// [ A  0  0  0 ]
-		this->projectionView.setAt(1, 1, pmB);		// [ 0  B  0  0 ]
-		this->projectionView.setAt(2, 2, pmC);		// [ 0  0  C  D ]
-		this->projectionView.setAt(2, 3, pmD);		// [ 0  0  0  1 ]
-
+		this->projectionView = Matrix4f::orthographic(right, top,
+				this->clipNear, this->clipFar);
 		return this->projectionView;
 	}
 
 	const Matrix4f& CameraController::calcProjectionViewPerspective() {
-		// Mathematics Explanation From:
-		// www.scratchapixel.com/lessons/3d-basic-rendering/
-		// perspective-and-orthographic-projection-matrix
+		float aR = this->projectionWidth / this->projectionHeight;
 
-		float aR = projectionWidth / projectionHeight; // Aspect Ratio
-		float tanHalfFOV = // Tangent of the Field of View Halved
-			tan(degToRad(typeParameter / 2));
-
-		// Calculate the "top" section of the projection. Since the projection
-		// is symmetric (top == -bot), there is no need for the other sections 
-		// of the projection.
-		float top = tanHalfFOV * clipNear;
-
-		// Variables which will go inside of the Camera Projection Matrix.
-		float pmA = clipNear / (top * aR);
-		float pmB = clipNear / top;
-		float pmC = -(clipFar + clipNear) / (clipFar - clipNear);
-		float pmD = -2 * clipNear * clipFar / (clipFar - clipNear);
-
-		// Construct the Projection Matrix:
-		this->projectionView = Matrix4f::identity();
-		this->projectionView.setAt(0, 0, pmA);		// [ A  0  0  0 ]
-		this->projectionView.setAt(1, 1, pmB);		// [ 0  B  0  0 ]
-		this->projectionView.setAt(2, 2, pmC);		// [ 0  0  C  D ]
-		this->projectionView.setAt(2, 3, pmD);		// [ 0  0 -1  0 ]
-		this->projectionView.setAt(3, 2, -1.0F);
-		this->projectionView.setAt(3, 3, 0.0F);
-
+		this->projectionView = Matrix4f::perspective(this->typeParameter,
+				aR, this->clipNear, this->clipFar);
 		return this->projectionView;
 	}
 

@@ -15,6 +15,47 @@ namespace Honeycomb { namespace Math {
 		/// 4x4 identity matrix.
 		/// return : The 4x4 identity matrix.
 		static const Matrix4f& identity();
+		
+		/// Calculates a look at matrix using the specified variables.
+		/// const Vector3f &eye : The world position of the object currently.
+		/// const Vector3f &center : The world position at which the eye
+		///							 object is to look at.
+		/// const Vector3f &gblUp : The world up vector (global up by default).
+		/// return : The look at matrix.
+		static Matrix4f lookAt(const Vector3f &eye, const Vector3f &center,
+				const Vector3f &gblUp = Vector3f::getGlobalUp());
+
+		/// Calculates the orthographic matrix using the specified variables.
+		/// For this method, it is assumed that left = -right and that 
+		/// bottom = -top!
+		/// const float &right : The right view.
+		/// const float &top : The top view.
+		/// const float &zNear : The Z-Near clipping plane.
+		/// const float &zFar : The Z-Far clipping plane.
+		/// return : The orthographic matrix.
+		static Matrix4f orthographic(const float &right, const float &top,
+				const float &zNear, const float &zFar);
+
+		/// Calculates an orthographic matrix using the specified variables.
+		/// const float &left : The left view.
+		/// const float &right : The right view.
+		/// const float &bottom : The bottom view.
+		/// const float &top : The top view.
+		/// const float &zNear : The Z-Near clipping plane.
+		/// const float &zFar : The Z-Far clipping plane.
+		/// return : The orthographic matrix.
+		static Matrix4f orthographic(const float &left, const float &right,
+				const float &bottom, const float &top, const float &zNear,
+				const float &zFar);
+
+		/// Calculates a perspective matrix using the specified variables.
+		/// const float &fov : The field of view (in radians).
+		/// const float &aspect : The aspect ratio.
+		/// const float &zNear : The Z-Near clipping plane.
+		/// const float &zFar : The Z-Far clipping plane.
+		/// return : The perspective matrix.
+		static Matrix4f perspective(const float &fov, const float &aspect,
+				const float &zNear, const float &zFar);
 
 		/// Returns an instance of the Matrix class which is initialized to a
 		/// 4x4 zero matrix.
@@ -143,6 +184,16 @@ namespace Honeycomb { namespace Math {
 		/// Sets the entire matrix to the specified 2D 4x4 array.
 		/// float f[4][4] : The 4x4 array to override this matrix.
 		void setMatrix(const float f[4][4]);
+
+		/// Sets the column of the Matrix to the specified 4 component Vector.
+		/// const int &c : The column of the Matrix to be modified.
+		/// const Vector4f &col : The new col of the matrix.
+		void setColAt(const int &c, const Vector4f &col);
+
+		/// Sets the row of the Matrix to the specified 4 component Vector.
+		/// const int &r : The row of the Matrix to be modified.
+		/// const Vector4f &row : The new row of the matrix.
+		void setRowAt(const int &r, const Vector4f &row);
 
 		/// Writes the specified Matrix into this Matrix. The Inverse Matrix
 		/// will also be copied into this Matrix.

@@ -26,6 +26,98 @@ namespace Honeycomb { namespace Math {
 		return Matrix4f::ZERO;
 	}
 
+	Matrix4f Matrix4f::lookAt(const Vector3f &eye, const Vector3f &center,
+			const Vector3f &gblUp) {
+		// Calculate the forward, right and global up vectors
+		Vector3f f = (center - eye).normalized();
+		Vector3f u = u.normalized();
+		Vector3f s = f.cross(u).normalized();
+
+		// Calculate the true up (not global up)
+		u = s.cross(f).normalized();
+
+		// Create the Look At Matrix
+		Matrix4f mat = Matrix4f::identity();
+		mat.setColAt(0, Vector4f( s.getX(),  s.getY(),  s.getZ(), 0.0F));
+		mat.setColAt(1, Vector4f( u.getX(),  u.getY(),  u.getZ(), 0.0F));
+		mat.setColAt(2, Vector4f(-f.getX(), -f.getY(), -f.getZ(), 0.0F));
+		mat.matrix[3][0] = -s.dot(eye);
+		mat.matrix[3][1] = -u.dot(eye);
+		mat.matrix[3][2] =  f.dot(eye);
+
+		return mat;
+	}
+
+	Matrix4f Matrix4f::orthographic(const float &right, const float &top, 
+			const float &zNear, const float &zFar) {
+		// Variables which will go inside of the Camera Projection Matrix.
+		float pmA = 1 / right;
+		float pmB = 1 / top;
+		float pmC = -2 / (zFar - zNear);
+		float pmD = -(zFar + zNear) / (zFar - zNear);
+
+		// Construct the Projection Matrix:
+		Matrix4f mat = Matrix4f::identity();
+		mat.matrix[0][0] = pmA;		// [ A  0  0  0 ]
+		mat.matrix[1][1] = pmB;		// [ 0  B  0  0 ]
+		mat.matrix[2][2] = pmC;		// [ 0  0  C  D ]
+		mat.matrix[2][3] = pmD;		// [ 0  0  0  1 ]
+		mat.update();
+
+		return mat;
+	}
+
+	Matrix4f Matrix4f::orthographic(const float &left, const float &right,
+			const float &bottom, const float &top, const float &zNear,
+			const float &zFar) {
+		// Variables which will go inside of the Camera Projection Matrix.
+		float pmA = 2 / (right - left);
+		float pmB = 2 / (top - bottom);
+		float pmC = -2 / (zFar - zNear);
+		float pmD = -(zFar + zNear) / (zFar - zNear);
+		float pmE = -(right + left) / (right - left);
+		float pmF = -(top + bottom) / (top - bottom);
+
+		// Construct the Projection Matrix:
+		Matrix4f mat = Matrix4f::identity();
+		mat.matrix[0][0] = pmA;		// [ A  0  0  E ]
+		mat.matrix[1][1] = pmB;		// [ 0  B  0  F ]
+		mat.matrix[2][2] = pmC;		// [ 0  0  C  D ]
+		mat.matrix[2][3] = pmD;		// [ 0  0  0  1 ]
+		mat.matrix[0][3] = pmE;
+		mat.matrix[1][3] = pmF;
+		mat.update();
+
+		return mat;
+	}
+
+	Matrix4f Matrix4f::perspective(const float &fov, const float &aspect,
+			const float &zNear, const float &zFar) {
+		float tanHalfFOV = tan(fov / 2); // Tangent of the Field of View Halved
+
+		// Calculate the "top" section of the projection. Since the projection
+		// is symmetric (top == -bot), there is no need for the other sections 
+		// of the projection.
+		float top = tanHalfFOV * zNear;
+
+		// Variables which will go inside of the Camera Projection Matrix.
+		float pmA = zNear / (top * aspect);
+		float pmB = zNear / top;
+		float pmC = -(zFar + zNear) / (zFar - zNear);
+		float pmD = -2 * zNear * zFar / (zFar - zNear);
+
+		// Construct the Projection Matrix:
+		Matrix4f mat = Matrix4f::zero();
+		mat.matrix[0][0] = pmA;		// [ A  0  0  0 ]
+		mat.matrix[1][1] = pmB;		// [ 0  B  0  0 ]
+		mat.matrix[2][2] = pmC;		// [ 0  0  C  D ]
+		mat.matrix[2][3] = pmD;		// [ 0  0 -1  0 ]
+		mat.matrix[3][2] = -1.0F;
+		mat.update();
+
+		return mat;
+	}
+
 	Matrix4f::Matrix4f() : Matrix4f(M_ZERO) {
 
 	}
@@ -216,6 +308,24 @@ namespace Honeycomb { namespace Math {
 				this->matrix[r][c] = f[r][c];
 			}
 		}
+
+		this->update();
+	}
+
+	void Matrix4f::setColAt(const int &c, const Vector4f &col) {
+		this->matrix[0][c] = col.getX();
+		this->matrix[1][c] = col.getY();
+		this->matrix[2][c] = col.getZ();
+		this->matrix[3][c] = col.getW();
+
+		this->update();
+	}
+
+	void Matrix4f::setRowAt(const int &r, const Vector4f &row) {
+		this->matrix[r][0] = row.getX();
+		this->matrix[r][1] = row.getY();
+		this->matrix[r][2] = row.getZ();
+		this->matrix[r][3] = row.getW();
 
 		this->update();
 	}

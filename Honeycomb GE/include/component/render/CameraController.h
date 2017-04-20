@@ -25,8 +25,8 @@ namespace Honeycomb { namespace Component { namespace Render {
 			PERSPECTIVE
 		};
 
-		/// Initializes a new Perspective camera, with 100.0F and 0.03F for the
-		/// far and near clipping planes, respectively; 75.0F degrees FOV;
+		/// Initializes a new Perspective camera, with 1000.0F and 0.03F for 
+		/// the far and near clipping planes, respectively; 1.31F radians FOV,
 		/// and the window size for the projection width and height.
 		CameraController();
 
@@ -135,12 +135,12 @@ namespace Honeycomb { namespace Component { namespace Render {
 		const static std::string STRUCT_FILE;
 		const static std::string STRUCT_NAME;
 
-		CameraType type = PERSPECTIVE; // The type of Camera (Persp / Ortho)
-		float clipFar = 1000.0F; // The far clipping plane
-		float clipNear = 0.1F; // The near clipping plane
-		float typeParameter = 75.0F; // The Camera Type parameter (FOV / Ortho)
-		float projectionHeight = 1.0F; // The projection height
-		float projectionWidth = 1.0F; // The projection width
+		CameraType type;			// The type of Camera (Persp / Ortho)
+		float clipFar;				// The far clipping plane
+		float clipNear;				// The near clipping plane
+		float typeParameter;		// The Camera Type parameter (FOV / Ortho)
+		float projectionHeight;		// The projection height
+		float projectionWidth;		// The projection width
 
 		Honeycomb::Conjuncture::EventHandler 
 			windowResizeHandler; // Handles the window resize event
