@@ -335,5 +335,7 @@
     <None Include="res\shaders\standard\light\stdSpotLight.glsl" />
     <None Include="res\shaders\standard\structs\stdCamera.glsl" />
     <None Include="res\shaders\standard\structs\stdMaterial.glsl" />
+    <None Include="res\shaders\render\shadow\shadowMapRenderFS.glsl" />
+    <None Include="res\shaders\render\shadow\shadowMapRenderVS.glsl" />
   </ItemGroup>
 </Project>

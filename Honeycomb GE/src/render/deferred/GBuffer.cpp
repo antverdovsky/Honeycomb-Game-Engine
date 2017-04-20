@@ -52,12 +52,14 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	}
 
 	void GBuffer::bindDrawLight(ShaderProgram &shader) {
+		this->bindDraw();
 		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL_1);
 		
 		this->bindColorTextures(shader);
 	}
 
 	void GBuffer::bindDrawLight(ShaderProgram &shader, const LightType &type) {
+		this->bindDraw();
 		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL_1);
 		
 		switch (type) {

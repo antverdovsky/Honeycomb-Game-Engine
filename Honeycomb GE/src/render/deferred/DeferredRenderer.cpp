@@ -52,16 +52,16 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	void DeferredRenderer::render(Honeycomb::Scene::GameScene &scene) {
 		GBufferTextureType target; // Target containing the final image
 
-		CameraController::getActiveCamera()->toShader(this->geometryShader,
-			"camera");
-		this->gBuffer.frameBegin(); 
+//		CameraController::getActiveCamera()->toShader(this->geometryShader,
+//			"camera");
+///		this->gBuffer.frameBegin(); 
 
-		this->renderPassGeometry(scene);	// Render Geometry
+//		this->renderPassGeometry(scene);	// Render Geometry
 		this->renderPassLight(scene);		// Render Lights
-		this->renderBackground();			// Render Background Cubebox
+//		this->renderBackground();			// Render Background Cubebox
 		
-		target = this->renderPostProcess(); // Post Process the Final Image
-		this->renderTexture(target);		// Render the final image
+//		target = this->renderPostProcess(); // Post Process the Final Image
+//		this->renderTexture(target);		// Render the final image
 	}
 
 	void DeferredRenderer::setFinalTexture(const FinalTexture &fin) {
@@ -258,11 +258,13 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		this->renderLightQuad(aL, this->ambientShader, "ambientLight");
 	}
 
-	void DeferredRenderer::renderLightDirectional(const DirectionalLight &dL) {
-		glDisable(GL_STENCIL_TEST);
-
-		this->renderLightQuad(dL, this->directionalLightShader,
-			"directionalLight");
+	void DeferredRenderer::renderLightDirectional(const DirectionalLight &dL,
+			GameScene &scene) {
+		this->renderShadowMap(dL, scene);
+		
+//		glDisable(GL_STENCIL_TEST);
+//		this->renderLightQuad(dL, this->directionalLightShader,
+//			"directionalLight");
 	}
 
 	void DeferredRenderer::renderLightPoint(const PointLight &pL) {
@@ -370,17 +372,17 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		for (BaseLight *bL : scene.getActiveLights()) {
 			switch (bL->getType()) {
 			case LightType::LIGHT_TYPE_AMBIENT:
-				this->renderLightAmbient(*(bL->downcast<AmbientLight>()));
+//				this->renderLightAmbient(*(bL->downcast<AmbientLight>()));
 				break;
 			case LightType::LIGHT_TYPE_DIRECTIONAL:
 				this->renderLightDirectional(*(
-					bL->downcast<DirectionalLight>()));
+					bL->downcast<DirectionalLight>()), scene);
 				break;
 			case LightType::LIGHT_TYPE_POINT:
-				this->renderLightPoint(*(bL->downcast<PointLight>()));
+//				this->renderLightPoint(*(bL->downcast<PointLight>()));
 				break;
 			case LightType::LIGHT_TYPE_SPOT:
-				this->renderLightSpot(*(bL->downcast<SpotLight>()));
+//				this->renderLightSpot(*(bL->downcast<SpotLight>()));
 				break;
 			}
 		}
@@ -434,6 +436,32 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// swapped the buffers, the image to which we wrote last is now the
 		// read buffer).
 		return readBuffer;
+	}
+
+	void DeferredRenderer::renderShadowMap(const BaseLight &bL, 
+			GameScene &scene) {
+		// Bind the Shadow Map Buffer & Clear it for Rendering to a clean slate
+		glBindFramebuffer(GL_FRAMEBUFFER, this->shadowMapBuffer);
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		// Generate the light projection matrix by creating an orthographic
+		// camera and a look at matrix using the light direction.
+		Matrix4f lP = Matrix4f::orthographic(10, 10, 1.0F, 10.0F);
+		Matrix4f lV = Matrix4f::lookAt(
+			-bL.getAttached()->getComponent<Transform>()->getLocalForward(),
+			Vector3f(0.0F, 0.0F, 0.0F));
+		Matrix4f lPlV = lP * lV;
+		this->shadowMapShader.setUniform_mat4("lightProjection", lPlV);
+
+		// Render the scene from the perspective of the camera capturing the
+		// depth.
+		scene.render(this->shadowMapShader);
+
+		// todo: just testing...
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		this->shadowMapTexture.bind();
+		quad.draw(this->quadShader);
 	}
 
 	void DeferredRenderer::renderTexture(const GBufferTextureType &tex) {

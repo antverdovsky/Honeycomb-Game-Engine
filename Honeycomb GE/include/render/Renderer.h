@@ -164,6 +164,11 @@ namespace Honeycomb { namespace Render {
 		Honeycomb::Graphics::Cubemap skybox;
 		Honeycomb::Shader::ShaderProgram skyboxShader;
 		
+		// Shadow Map Variables
+		int shadowMapBuffer;
+		Honeycomb::Graphics::Texture2D shadowMapTexture;
+		Honeycomb::Shader::ShaderProgram shadowMapShader;
+		
 		// Shaders for post processing the Final Image
 		std::vector<Honeycomb::Shader::ShaderProgram> postShaders;
 		bool doPostProcess;
@@ -198,6 +203,9 @@ namespace Honeycomb { namespace Render {
 		/// Initializes the Shader used by the Fast Approximate Anti Aliasing
 		/// (FXAA).
 		void initializeFXAAShader();
+
+		/// Initializes the dependencies of the Shadow Map.
+		void initializeShadowMapDependencies();
 
 		/// Calls the OpenGL "glEnable" function for the specified cap if val 
 		/// is true. Otherwise, calls the OpenGL "glDisable" function

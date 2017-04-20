@@ -181,9 +181,9 @@ namespace HoneycombTest {
 		// intensity of the lights so they don't overwhelm the scene
 		this->ambient = Builder::getBuilder()->newAmbientLight();
 		this->directional = Builder::getBuilder()->newDirectionalLight();
-		this->ambient->getComponent<AmbientLight>()->setIntensity(0.10F);
+		this->ambient->getComponent<AmbientLight>()->setIntensity(0.1F);
 		this->directional->getComponent<DirectionalLight>()->
-			setIntensity(0.10F);
+			setIntensity(1.0F);
 
 		// Construct a default Camera and give it a default Input Transformable
 		this->camera = Builder::getBuilder()->newCamera();

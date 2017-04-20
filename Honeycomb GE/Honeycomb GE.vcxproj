@@ -335,6 +335,8 @@
     <None Include="res\shaders\render\deferred\pass\stencilVS.glsl" />
     <None Include="res\shaders\render\gamma\gammaFS.glsl" />
     <None Include="res\shaders\render\gamma\gammaVS.glsl" />
+    <None Include="res\shaders\render\shadow\shadowMapRenderFS.glsl" />
+    <None Include="res\shaders\render\shadow\shadowMapRenderVS.glsl" />
     <None Include="res\shaders\simple\fragShader.glsl" />
     <None Include="res\shaders\simple\vertexShader.glsl" />
     <None Include="res\shaders\standard\light\stdAmbientLight.glsl" />

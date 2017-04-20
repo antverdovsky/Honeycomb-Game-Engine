@@ -118,6 +118,8 @@ namespace Honeycomb { namespace Render {
 		this->setSkybox(Cubemap());
 		this->setSolidColor(Vector4f(0.0F, 0.0F, 0.0F, 0.0F));
 
+		this->initializeShadowMapDependencies();
+
 		this->setDoPostProcess(true);
 
 		this->setFrontFace(WindingOrder::COUNTER_CLOCKWISE);
@@ -180,6 +182,34 @@ namespace Honeycomb { namespace Render {
 		this->gammaShader.finalizeShaderProgram();
 
 		this->gammaShader.setUniform_f("gamma", 2.2F);
+	}
+
+	void Renderer::initializeShadowMapDependencies() {
+		// Initialize the Shadow Map Texture
+		this->shadowMapTexture.initialize();
+		this->shadowMapTexture.setImageData(nullptr, GL_FLOAT, 
+			GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, 1024, 768);
+		this->shadowMapTexture.setTextureFiltering(GL_NEAREST, GL_NEAREST);
+		this->shadowMapTexture.setTextureWrap(GL_REPEAT, GL_REPEAT);
+
+		// Initialize the Shadow Map Buffer
+		GLuint sBF;
+		glGenFramebuffers(1, &sBF);
+		this->shadowMapBuffer = sBF;
+		glBindFramebuffer(GL_FRAMEBUFFER, this->shadowMapBuffer);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+			GL_TEXTURE_2D, this->shadowMapTexture.getTextureID(), 0);
+		glDrawBuffer(GL_NONE);
+		glReadBuffer(GL_NONE);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		// Initialize the Shadow Map Shader
+		this->shadowMapShader.initialize();
+		this->shadowMapShader.addShader("../Honeycomb GE/res/shaders/render/"
+			"shadow/shadowMapRenderVS.glsl", ShaderType::VERTEX_SHADER);
+		this->shadowMapShader.addShader("../Honeycomb GE/res/shaders/render/"
+			"shadow/shadowMapRenderFS.glsl", ShaderType::FRAGMENT_SHADER);
+		this->shadowMapShader.finalizeShaderProgram();
 	}
 
 	void Renderer::setBoolSettingGL(const int &cap, const bool &val) {

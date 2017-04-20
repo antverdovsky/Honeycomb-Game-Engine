@@ -30,7 +30,7 @@ namespace Honeycomb { namespace Math {
 			const Vector3f &gblUp) {
 		// Calculate the forward, right and global up vectors
 		Vector3f f = (center - eye).normalized();
-		Vector3f u = u.normalized();
+		Vector3f u = gblUp.normalized();
 		Vector3f s = f.cross(u).normalized();
 
 		// Calculate the true up (not global up)
@@ -38,12 +38,10 @@ namespace Honeycomb { namespace Math {
 
 		// Create the Look At Matrix
 		Matrix4f mat = Matrix4f::identity();
-		mat.setColAt(0, Vector4f( s.getX(),  s.getY(),  s.getZ(), 0.0F));
-		mat.setColAt(1, Vector4f( u.getX(),  u.getY(),  u.getZ(), 0.0F));
-		mat.setColAt(2, Vector4f(-f.getX(), -f.getY(), -f.getZ(), 0.0F));
-		mat.matrix[3][0] = -s.dot(eye);
-		mat.matrix[3][1] = -u.dot(eye);
-		mat.matrix[3][2] =  f.dot(eye);
+		mat.setRowAt(0, Vector4f( s.getX(),  s.getY(),  s.getZ(), 0.0F));
+		mat.setRowAt(1, Vector4f( u.getX(),  u.getY(),  u.getZ(), 0.0F));
+		mat.setRowAt(2, Vector4f(-f.getX(), -f.getY(), -f.getZ(), 0.0F));
+		mat.setColAt(3, Vector4f(-s.dot(eye), -u.dot(eye), f.dot(eye), 1.0F));
 
 		return mat;
 	}

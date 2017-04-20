@@ -111,7 +111,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		/// Renders the specified Directional Light using Deferred Rendering.
 		/// const DirectionalLight &dL : The directional light to be rendered.
 		void renderLightDirectional(const Honeycomb::Component::Light::
-			DirectionalLight &dL);
+				DirectionalLight &dL, Honeycomb::Scene::GameScene &scene);
 
 		/// Renders the specified Point Light using Deferred Rendering.
 		/// const PointLight &pL : The point light to be rendered.
@@ -156,6 +156,9 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		/// texture which contains the final "final" texture (post processed).
 		/// return : The texture type containing the post processed image.
 		GBufferTextureType renderPostProcess();
+
+		void renderShadowMap(const Honeycomb::Component::Light::BaseLight &bL,
+				Honeycomb::Scene::GameScene &scene);
 
 		/// Renders the specified texture to the screen.
 		/// const GBufferTextureType &tex : The texture which is to be rendered
