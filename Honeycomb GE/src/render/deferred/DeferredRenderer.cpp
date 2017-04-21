@@ -52,16 +52,16 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	void DeferredRenderer::render(Honeycomb::Scene::GameScene &scene) {
 		GBufferTextureType target; // Target containing the final image
 
-//		CameraController::getActiveCamera()->toShader(this->geometryShader,
-//			"camera");
-///		this->gBuffer.frameBegin(); 
+		CameraController::getActiveCamera()->toShader(this->geometryShader,
+			"camera");
+		this->gBuffer.frameBegin(); 
 
-//		this->renderPassGeometry(scene);	// Render Geometry
+		this->renderPassGeometry(scene);	// Render Geometry
 		this->renderPassLight(scene);		// Render Lights
-//		this->renderBackground();			// Render Background Cubebox
+		this->renderBackground();			// Render Background Cubebox
 		
-//		target = this->renderPostProcess(); // Post Process the Final Image
-//		this->renderTexture(target);		// Render the final image
+		target = this->renderPostProcess(); // Post Process the Final Image
+		this->renderTexture(target);		// Render the final image
 	}
 
 	void DeferredRenderer::setFinalTexture(const FinalTexture &fin) {
@@ -225,10 +225,11 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			break;
 		}
 
-		// Undo the Depth Mask and Depth Test changes
-		glDepthMask(GL_TRUE);
-		glDisable(GL_DEPTH_TEST);
+		// Undo the changes to OpenGL rendering
 		glEnable(GL_CULL_FACE);
+		glDepthFunc(GL_LESS);
+		glDisable(GL_DEPTH_TEST);
+		glDepthMask(GL_TRUE);
 	}
 
 	void DeferredRenderer::renderFXAA(const GBufferTextureType &r,
@@ -254,35 +255,38 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 	void DeferredRenderer::renderLightAmbient(const AmbientLight &aL) {
 		glDisable(GL_STENCIL_TEST);
-
 		this->renderLightQuad(aL, this->ambientShader, "ambientLight");
+		glEnable(GL_STENCIL_TEST);
 	}
 
 	void DeferredRenderer::renderLightDirectional(const DirectionalLight &dL,
 			GameScene &scene) {
-		this->renderShadowMap(dL, scene);
+//		this->renderShadowMap(dL, scene);
 		
-//		glDisable(GL_STENCIL_TEST);
-//		this->renderLightQuad(dL, this->directionalLightShader,
-//			"directionalLight");
+		glDisable(GL_STENCIL_TEST);
+		this->renderLightQuad(dL, this->directionalLightShader,
+			"directionalLight");
+		glEnable(GL_STENCIL_TEST);
 	}
 
 	void DeferredRenderer::renderLightPoint(const PointLight &pL) {
-		glEnable(GL_STENCIL_TEST); // Enable Stencil Testing for P.L.s
-		
 		this->writePointLightTransform(pL);
+		
+		glEnable(GL_STENCIL_TEST);
 		this->stencilLightVolume(this->lightVolumePoint);
 		this->renderLightVolume(pL, this->lightVolumePoint,
 			this->pointLightShader, "pointLight");
+		glDisable(GL_STENCIL_TEST);
 	}
 
 	void DeferredRenderer::renderLightSpot(const SpotLight &sL) {
-		glEnable(GL_STENCIL_TEST); // Enable Stencil Testing for S.L.s
-
 		this->writeSpotLightTransform(sL);
+		
+		glEnable(GL_STENCIL_TEST);
 		this->stencilLightVolume(this->lightVolumeSpot);
 		this->renderLightVolume(sL, this->lightVolumeSpot,
 			this->spotLightShader, "spotLight");
+		glDisable(GL_STENCIL_TEST);
 	}
 
 	void DeferredRenderer::renderLightQuad(const BaseLight &bL,
@@ -294,13 +298,15 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		glEnable(GL_BLEND); // Each light's contribution is blended together
 		glBlendEquation(GL_FUNC_ADD); // Lights are added together with an
 		glBlendFunc(GL_ONE, GL_ONE);  // equal contribution from each source
-
 		glEnable(GL_CULL_FACE);
 
 		this->gBuffer.bindDrawLight(shader, bL.getType());
 		quad.draw(shader);
 
+		// Undo the Changes
+		glDisable(GL_CULL_FACE);
 		glDisable(GL_BLEND);
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	void DeferredRenderer::renderLightVolume(const BaseLight &bL,
@@ -318,17 +324,17 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		glEnable(GL_BLEND); // Each light's contribution is blended together
 		glBlendEquation(GL_FUNC_ADD); // Lights are added together with an
 		glBlendFunc(GL_ONE, GL_ONE);  // equal contribution from each source
-
-		// Enable the culling of the front facing faces 
-		glEnable(GL_CULL_FACE);
-		glCullFace(GL_FRONT);
+		glEnable(GL_CULL_FACE); // Enable the culling of
+		glCullFace(GL_FRONT);	// front faces.
 
 		// Render the point light sphere with the given shader
 		volume.draw(shader);
 
-		// Enable the culling of the back facing faces
+		// Undo the Changes
 		glCullFace(GL_BACK);
+		glDisable(GL_CULL_FACE);
 		glDisable(GL_BLEND);
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	void DeferredRenderer::renderPassGeometry(GameScene &scene) {
@@ -372,20 +378,24 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		for (BaseLight *bL : scene.getActiveLights()) {
 			switch (bL->getType()) {
 			case LightType::LIGHT_TYPE_AMBIENT:
-//				this->renderLightAmbient(*(bL->downcast<AmbientLight>()));
+				this->renderLightAmbient(*(bL->downcast<AmbientLight>()));
 				break;
 			case LightType::LIGHT_TYPE_DIRECTIONAL:
 				this->renderLightDirectional(*(
 					bL->downcast<DirectionalLight>()), scene);
 				break;
 			case LightType::LIGHT_TYPE_POINT:
-//				this->renderLightPoint(*(bL->downcast<PointLight>()));
+				this->renderLightPoint(*(bL->downcast<PointLight>()));
 				break;
 			case LightType::LIGHT_TYPE_SPOT:
-//				this->renderLightSpot(*(bL->downcast<SpotLight>()));
+				this->renderLightSpot(*(bL->downcast<SpotLight>()));
 				break;
 			}
 		}
+
+		// Once all lights are rendered, we do not need to worry about any
+		// stencil tests.
+		glDisable(GL_STENCIL_TEST);
 	}
 
 	GBufferTextureType DeferredRenderer::renderPostProcess() {
@@ -441,8 +451,11 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	void DeferredRenderer::renderShadowMap(const BaseLight &bL, 
 			GameScene &scene) {
 		// Bind the Shadow Map Buffer & Clear it for Rendering to a clean slate
+		this->gBuffer.unbind();
 		glBindFramebuffer(GL_FRAMEBUFFER, this->shadowMapBuffer);
 		glClear(GL_DEPTH_BUFFER_BIT);
+
+		glDepthMask(GL_TRUE); // Depth Rendering required for Shadow Map
 
 		// Generate the light projection matrix by creating an orthographic
 		// camera and a look at matrix using the light direction.
@@ -457,18 +470,14 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// depth.
 		scene.render(this->shadowMapShader);
 
-		// todo: just testing...
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		this->shadowMapTexture.bind();
-		quad.draw(this->quadShader);
+		// Rebind the GBuffer so that Deferred Renderer pipeline may continue
+		glDepthMask(GL_FALSE);
+		this->gBuffer.bind();
 	}
 
 	void DeferredRenderer::renderTexture(const GBufferTextureType &tex) {
 		this->gBuffer.unbind();
 		this->gBuffer.bindTexture(tex);
-
-		glDisable(GL_DEPTH_TEST);
 
 		quad.draw(this->quadShader);
 	}
@@ -502,6 +511,11 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		// Render the Cone with the basic stencil shader
 		volume.draw(this->stencilShader);
+
+		// Clean up
+		glDisable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+		this->gBuffer.bindDraw();
 	}
 
 	void DeferredRenderer::writePointLightTransform(const PointLight &pL) {
