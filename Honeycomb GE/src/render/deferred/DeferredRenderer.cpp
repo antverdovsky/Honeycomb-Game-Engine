@@ -25,6 +25,7 @@ using Honeycomb::Component::Render::CameraController;
 using Honeycomb::Component::Render::MeshRenderer;
 using Honeycomb::Geometry::Mesh;
 using Honeycomb::Geometry::Vertex;
+using Honeycomb::Graphics::Texture2D;
 using Honeycomb::Math::Matrix4f;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector2f;
@@ -51,7 +52,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	}
 
 	void DeferredRenderer::render(Honeycomb::Scene::GameScene &scene) {
-		GBufferTextureType target; // Target containing the final image
+		Texture2D target; // Target containing the final image
 
 		CameraController::getActiveCamera()->toShader(this->geometryShader,
 			"camera");
@@ -194,6 +195,10 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	}
 
 	void DeferredRenderer::renderBackground() {
+		// Skip Rendering if this is a Depth Map or a Shadow Map.
+		if (this->final == FinalTexture::DEPTH ||
+			this->final == FinalTexture::SHADOW_MAP) return;
+
 		// Skybox will be drawn to the final image
 		glDrawBuffer(GL_COLOR_ATTACHMENT0 + this->final);
 		
@@ -229,7 +234,6 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// Undo the changes to OpenGL rendering
 		glEnable(GL_CULL_FACE);
 		glDepthFunc(GL_LESS);
-		glDisable(GL_DEPTH_TEST);
 		glDepthMask(GL_TRUE);
 	}
 
@@ -264,10 +268,14 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			GameScene &scene) {
 		this->renderShadowMap(dL, scene);
 		
-		glDisable(GL_STENCIL_TEST);
-		this->renderLightQuad(dL, this->directionalLightShader,
-			"directionalLight");
-		glEnable(GL_STENCIL_TEST);
+		// Do not render the light itself if we are only looking for a shadow
+		// map
+		if (this->final != FinalTexture::SHADOW_MAP) {
+			glDisable(GL_STENCIL_TEST);
+			this->renderLightQuad(dL, this->directionalLightShader,
+				"directionalLight");
+			glEnable(GL_STENCIL_TEST);
+		}
 	}
 
 	void DeferredRenderer::renderLightPoint(const PointLight &pL) {
@@ -343,6 +351,9 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	}
 
 	void DeferredRenderer::renderPassGeometry(GameScene &scene) {
+		// Skip if we're only rendering a Shadow Map
+		if (this->final == FinalTexture::SHADOW_MAP) return;
+
 		// Bind the G Buffer for Drawing Geometry
 		this->gBuffer.bindDrawGeometry();
 
@@ -374,7 +385,9 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 	void DeferredRenderer::renderPassLight(GameScene &scene) {
 		// Don't render any lights if we are not using the final render target
-		if (this->final != FinalTexture::FINAL) return;
+		// or we are not rendering a shadow map
+		if (this->final != FinalTexture::FINAL &&
+			this->final != FinalTexture::SHADOW_MAP) return;
 
 		// Since the polygon mode only applies to geometry, change to FILL
 		// mode when drawing lights.
@@ -403,7 +416,10 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		glDisable(GL_STENCIL_TEST);
 	}
 
-	GBufferTextureType DeferredRenderer::renderPostProcess() {
+	Texture2D DeferredRenderer::renderPostProcess() {
+		if (this->final == FinalTexture::SHADOW_MAP) 
+			return this->shadowMapTexture;
+
 		// Since we are going to read from one buffer and write to another,
 		// establish now which buffer will be read from and which one we will
 		// write to.
@@ -450,7 +466,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// Image to which we wrote last is the FINAL final (note that since we
 		// swapped the buffers, the image to which we wrote last is now the
 		// read buffer).
-		return readBuffer;
+		return this->gBuffer.bufferTextures[readBuffer];
 	}
 
 	void DeferredRenderer::renderShadowMap(const BaseLight &bL, 
@@ -481,10 +497,11 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		this->gBuffer.bind();
 	}
 
-	void DeferredRenderer::renderTexture(const GBufferTextureType &tex) {
+	void DeferredRenderer::renderTexture(const Texture2D &tex) {
 		this->gBuffer.unbind();
-		this->gBuffer.bindTexture(tex);
 
+		tex.bind(0);
+		this->quadShader.setUniform_i("fsTexture", 0);
 		quad.draw(this->quadShader);
 	}
 

@@ -19,7 +19,9 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 			DEPTH					= GBufferTextureType::DEPTH,
 
-			FINAL					= GBufferTextureType::FINAL_1
+			FINAL					= GBufferTextureType::FINAL_1,
+
+			SHADOW_MAP
 		};
 
 		/// Returns the Deferred Renderer singleton instance.
@@ -85,7 +87,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		void initializeQuad();
 
 		/// Renders the background (solid color or skybox, depending on the
-		/// settings of the Renderer) of the scene.
+		/// settings of the Renderer) of the scene. The background is only
+		/// rendered if the final texture target is NOT a depth or shadow map.
 		void renderBackground();
 		
 		/// Postprocesses the image using the FXAA antialiasing correction
@@ -145,27 +148,32 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			Honeycomb::Shader::ShaderProgram &shader, const std::string
 			&name);
 
-		/// Renders the geometry of the specified scene.
+		/// Renders the geometry of the specified scene. Geometry is not
+		/// rendered if the final target is a shadow map.
 		/// GameScene &scene : The scene whose geometry is to be rendered.
 		void renderPassGeometry(Honeycomb::Scene::GameScene &scene);
 
 		/// Renders the lights of the specified scene, if the final target of
-		/// this Renderer is set to FINAL.
+		/// this Renderer is set to FINAL. If the final target is set to
+		/// shadow map, only the shadow map is rendered from the perspective of
+		/// the light.
 		/// GameScene &scene : The scene whose lights are to be rendered.
 		void renderPassLight(Honeycomb::Scene::GameScene &scene);
 
 		/// Post processes the specified target texture and returns the
 		/// texture which contains the final "final" texture (post processed).
-		/// return : The texture type containing the post processed image.
-		GBufferTextureType renderPostProcess();
+		/// Post processing is not supported for non GBuffer textures (i.e.
+		/// the shadow map).
+		/// return : The texture containing the post processed image.
+		Honeycomb::Graphics::Texture2D renderPostProcess();
 
 		void renderShadowMap(const Honeycomb::Component::Light::BaseLight &bL,
 				Honeycomb::Scene::GameScene &scene);
 
 		/// Renders the specified texture to the screen.
-		/// const GBufferTextureType &tex : The texture which is to be rendered
-		///									as a full screen quad.
-		void renderTexture(const GBufferTextureType &tex);
+		/// const Texture2D &tex : The texture which is to be rendered as a 
+		///						   full screen quad.
+		void renderTexture(const Honeycomb::Graphics::Texture2D &tex);
 
 		/// Sets the value of the gamma to be used for non-linear color space.
 		/// const float &g : The gamma value.

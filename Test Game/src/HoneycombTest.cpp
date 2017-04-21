@@ -34,6 +34,10 @@ namespace HoneycombTest {
 			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
 				DeferredRenderer::FinalTexture::POSITION);
 		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_6)) {
+			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
+				DeferredRenderer::FinalTexture::SHADOW_MAP);
+		}
 	}
 
 	void TestGame::render() {
