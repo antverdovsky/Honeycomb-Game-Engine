@@ -190,7 +190,8 @@ namespace Honeycomb { namespace Render {
 		this->shadowMapTexture.setImageData(nullptr, GL_FLOAT, 
 			GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, 1024, 768);
 		this->shadowMapTexture.setTextureFiltering(GL_NEAREST, GL_NEAREST);
-		this->shadowMapTexture.setTextureWrap(GL_REPEAT, GL_REPEAT);
+		this->shadowMapTexture.setTextureWrap(GL_CLAMP_TO_EDGE, 
+			GL_CLAMP_TO_EDGE);
 
 		// Initialize the Shadow Map Buffer
 		GLuint sBF;

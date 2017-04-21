@@ -40,6 +40,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	private:
 		static DeferredRenderer *deferredRenderer; // Singleton instance
 
+		const static int SHADOW_MAP_INDEX; // Index of Shadow Map Sampler2D
+
 		// The directories of the Point and Spot Lights Volume models
 		const static std::string POINT_LIGHT_VOLUME_MODEL;
 		const static std::string SPOT_LIGHT_VOLUME_MODEL;

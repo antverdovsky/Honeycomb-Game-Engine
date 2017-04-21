@@ -13,6 +13,9 @@ uniform sampler2D gBufferPosition;
 uniform sampler2D gBufferMaterial;
 uniform sampler2D gBufferNormal;
 
+uniform mat4 lightProjection;
+uniform sampler2D shadowMap;
+
 out vec4 fragColor;
 
 void main() {
@@ -29,6 +32,8 @@ void main() {
 	vec3 spec = specShine.rgb;
 	float shine = specShine.a * 255.0F;
 
+	vec4 shadowCoords = lightProjection * vec4(pos, 1.0F);
+
 	fragColor = vec4(calculateDirectionalLight(directionalLight, camera, pos, 
-		norm, shine, spec, diffuse), 1.0F);
+		norm, shine, spec, diffuse, shadowMap, shadowCoords), 1.0F);
 }

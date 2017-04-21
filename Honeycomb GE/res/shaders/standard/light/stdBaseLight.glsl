@@ -63,3 +63,24 @@ vec3 calculateSpecularReflection(BaseLight bL, Camera cam, vec3 wP,
     // Calculate the specular light
 	return clamp(spec * bL.intensity * bL.color * color, 0.0F, 1.0F);
 }
+
+/// Checks if the fragment is in shadow.
+/// sampler2D map : The shadow map rendered from the perspective of the light.
+/// vec4 coords : The light projection transformed coordinates which correspond
+///				  to the shadow map texture.
+/// return : 1.0F if the fragment is in shadow; 0.0F otherwise.
+float isInShadow(sampler2D map, vec4 coords) {
+	vec3 texCoords = coords.xyz / coords.w;		// to [-1, 1]
+	texCoords = texCoords * 0.5F + 0.5;			// to [0, 1]
+
+	// Get the depth value of the fragment from the shadow map
+	float shadowDepth = texture2D(map, texCoords.xy).r;
+
+	// Get the current depth value of the fragment in relation to the light
+	float currentDepth = texCoords.z;
+
+	// If the current depth is greater than the shadow depth then the fragment
+	// is currently farther away from the light than according to the shadow.
+	// This implies the fragment is in shadow.
+	return (currentDepth > shadowDepth) ? 1.0F : 0.0F;
+}

@@ -41,6 +41,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		"../Honeycomb GE/res/models/light-volumes/pointLight.fbx";
 	const std::string DeferredRenderer::SPOT_LIGHT_VOLUME_MODEL =
 		"../Honeycomb GE/res/models/light-volumes/spotLight.fbx";
+	const int DeferredRenderer::SHADOW_MAP_INDEX = GBufferTextureType::COUNT;
 
 	DeferredRenderer* DeferredRenderer::getDeferredRenderer() {
 		if (DeferredRenderer::deferredRenderer == nullptr)
@@ -261,7 +262,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 	void DeferredRenderer::renderLightDirectional(const DirectionalLight &dL,
 			GameScene &scene) {
-//		this->renderShadowMap(dL, scene);
+		this->renderShadowMap(dL, scene);
 		
 		glDisable(GL_STENCIL_TEST);
 		this->renderLightQuad(dL, this->directionalLightShader,
@@ -301,6 +302,10 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		glEnable(GL_CULL_FACE);
 
 		this->gBuffer.bindDrawLight(shader, bL.getType());
+
+		shader.setUniform_i("shadowMap", DeferredRenderer::SHADOW_MAP_INDEX);
+		this->shadowMapTexture.bind(DeferredRenderer::SHADOW_MAP_INDEX);
+		
 		quad.draw(shader);
 
 		// Undo the Changes
@@ -378,17 +383,17 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		for (BaseLight *bL : scene.getActiveLights()) {
 			switch (bL->getType()) {
 			case LightType::LIGHT_TYPE_AMBIENT:
-				this->renderLightAmbient(*(bL->downcast<AmbientLight>()));
+//				this->renderLightAmbient(*(bL->downcast<AmbientLight>()));
 				break;
 			case LightType::LIGHT_TYPE_DIRECTIONAL:
 				this->renderLightDirectional(*(
 					bL->downcast<DirectionalLight>()), scene);
 				break;
 			case LightType::LIGHT_TYPE_POINT:
-				this->renderLightPoint(*(bL->downcast<PointLight>()));
+//				this->renderLightPoint(*(bL->downcast<PointLight>()));
 				break;
 			case LightType::LIGHT_TYPE_SPOT:
-				this->renderLightSpot(*(bL->downcast<SpotLight>()));
+//				this->renderLightSpot(*(bL->downcast<SpotLight>()));
 				break;
 			}
 		}
@@ -452,19 +457,20 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			GameScene &scene) {
 		// Bind the Shadow Map Buffer & Clear it for Rendering to a clean slate
 		this->gBuffer.unbind();
-		glBindFramebuffer(GL_FRAMEBUFFER, this->shadowMapBuffer);
-		glClear(GL_DEPTH_BUFFER_BIT);
-
 		glDepthMask(GL_TRUE); // Depth Rendering required for Shadow Map
+		glBindFramebuffer(GL_FRAMEBUFFER, this->shadowMapBuffer);
+
+		glClear(GL_DEPTH_BUFFER_BIT);
 
 		// Generate the light projection matrix by creating an orthographic
 		// camera and a look at matrix using the light direction.
-		Matrix4f lP = Matrix4f::orthographic(10, 10, 1.0F, 10.0F);
+		Matrix4f lP = Matrix4f::orthographic(10, 10, 0.1F, 50.0F);
 		Matrix4f lV = Matrix4f::lookAt(
 			-bL.getAttached()->getComponent<Transform>()->getLocalForward(),
 			Vector3f(0.0F, 0.0F, 0.0F));
-		Matrix4f lPlV = lP * lV;
+		Matrix4f lPlV = lP * lV;												// this is too expensive per frame :-(
 		this->shadowMapShader.setUniform_mat4("lightProjection", lPlV);
+		this->directionalLightShader.setUniform_mat4("lightProjection", lPlV);
 
 		// Render the scene from the perspective of the camera capturing the
 		// depth.

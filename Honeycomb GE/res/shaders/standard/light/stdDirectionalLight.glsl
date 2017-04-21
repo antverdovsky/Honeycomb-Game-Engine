@@ -21,15 +21,21 @@ struct DirectionalLight {
 /// vec3 specColor : The color of the reflection (for specular reflection).
 /// vec3 dif : The diffuse material color of this fragment before applying the
 ///			   lighting.
+/// sampler2D shadowMap : The shadow map texture.
+/// vec4 shadowCoords : The light projection transformed coordinates for
+///						reading from the shadow map.
 /// return : The directional light color.
 vec3 calculateDirectionalLight(DirectionalLight dL, Camera cam, vec3 wP, 
-        vec3 norm, float shine, vec3 specColor, vec3 dif) {
+        vec3 norm, float shine, vec3 specColor, vec3 dif, sampler2D shadowMap,
+		vec4 shadowCoords) {
     // Calculate the Diffuse and Specular Light components of the Directional
     // Light.
     vec3 diffuse = calculateDiffuseLight(dL.base, dL.direction, norm);
     vec3 specular = calculateSpecularReflection(dL.base, cam, wP, 
 		dL.direction, norm, shine, specColor);
+
+	float inShadow = isInShadow(shadowMap, shadowCoords);
     
     // Return the blend of the Diffuse and Specular lighting
-    return (dif * diffuse) + specular;
+    return (1.0F - inShadow) * ((dif * diffuse) + specular);
 }

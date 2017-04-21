@@ -263,6 +263,8 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::update() {
-
+		// Sun Rotation
+		this->directional->getComponent<Transform>()->rotate(
+			Vector3f::getGlobalRight(), 0.005F);
 	}
 }
