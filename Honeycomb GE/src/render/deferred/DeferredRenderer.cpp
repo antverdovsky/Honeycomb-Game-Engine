@@ -27,8 +27,9 @@ using Honeycomb::Geometry::Mesh;
 using Honeycomb::Geometry::Vertex;
 using Honeycomb::Graphics::Texture2D;
 using Honeycomb::Math::Matrix4f;
-using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector2f;
+using Honeycomb::Math::Vector3f;
+using Honeycomb::Math::Vector4f;
 using Honeycomb::Object::Builder;
 using Honeycomb::Object::GameObject;
 using Honeycomb::Scene::GameScene;
@@ -469,22 +470,25 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		return this->gBuffer.bufferTextures[readBuffer];
 	}
 
-	void DeferredRenderer::renderShadowMap(const BaseLight &bL, 
+	void DeferredRenderer::renderShadowMap(const DirectionalLight &bL, 
 			GameScene &scene) {
 		// Bind the Shadow Map Buffer & Clear it for Rendering to a clean slate
 		this->gBuffer.unbind();
 		glDepthMask(GL_TRUE); // Depth Rendering required for Shadow Map
+		glDisable(GL_CULL_FACE); // Allows items like 2D planes to be seen
 		glBindFramebuffer(GL_FRAMEBUFFER, this->shadowMapBuffer);
 
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		// Generate the light projection matrix by creating an orthographic
-		// camera and a look at matrix using the light direction.
-		Matrix4f lP = Matrix4f::orthographic(10, 10, 0.1F, 50.0F);
-		Matrix4f lV = Matrix4f::lookAt(
-			-bL.getAttached()->getComponent<Transform>()->getLocalForward(),
-			Vector3f(0.0F, 0.0F, 0.0F));
-		Matrix4f lPlV = lP * lV;												// this is too expensive per frame :-(
+		auto transf = bL.getAttached()->getComponent<Transform>();
+		auto orienMatrix = transf->getOrientationMatrix();
+		orienMatrix.setAt(2, 0, -orienMatrix.getAt(2, 0));
+		orienMatrix.setAt(2, 1, -orienMatrix.getAt(2, 1));
+		orienMatrix.setAt(2, 2, -orienMatrix.getAt(2, 2));
+		Matrix4f lP = Matrix4f::orthographic(30, 30, -100.0F, 100.0F);			// :-( CSM?
+		Matrix4f lV = orienMatrix;
+		Matrix4f lPlV = lP * lV;												// calculation too expensive per frame
+
 		this->shadowMapShader.setUniform_mat4("lightProjection", lPlV);
 		this->directionalLightShader.setUniform_mat4("lightProjection", lPlV);
 
@@ -494,6 +498,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		// Rebind the GBuffer so that Deferred Renderer pipeline may continue
 		glDepthMask(GL_FALSE);
+		glEnable(GL_CULL_FACE);
 		this->gBuffer.bind();
 	}
 

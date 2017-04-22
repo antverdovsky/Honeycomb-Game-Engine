@@ -167,7 +167,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		/// return : The texture containing the post processed image.
 		Honeycomb::Graphics::Texture2D renderPostProcess();
 
-		void renderShadowMap(const Honeycomb::Component::Light::BaseLight &bL,
+		void renderShadowMap(const Honeycomb::Component::Light::DirectionalLight &bL,
 				Honeycomb::Scene::GameScene &scene);
 
 		/// Renders the specified texture to the screen.
