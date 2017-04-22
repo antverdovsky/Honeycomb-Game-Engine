@@ -397,7 +397,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		for (BaseLight *bL : scene.getActiveLights()) {
 			switch (bL->getType()) {
 			case LightType::LIGHT_TYPE_AMBIENT:
-//				this->renderLightAmbient(*(bL->downcast<AmbientLight>()));
+				this->renderLightAmbient(*(bL->downcast<AmbientLight>()));
 				break;
 			case LightType::LIGHT_TYPE_DIRECTIONAL:
 				this->renderLightDirectional(*(
@@ -485,7 +485,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		orienMatrix.setAt(2, 0, -orienMatrix.getAt(2, 0));
 		orienMatrix.setAt(2, 1, -orienMatrix.getAt(2, 1));
 		orienMatrix.setAt(2, 2, -orienMatrix.getAt(2, 2));
-		Matrix4f lP = Matrix4f::orthographic(30, 30, -100.0F, 100.0F);			// :-( CSM?
+		Matrix4f lP = Matrix4f::orthographic(30, 30, -25.0F, 25.0F);			// :-( CSM?
 		Matrix4f lV = orienMatrix;
 		Matrix4f lPlV = lP * lV;												// calculation too expensive per frame
 

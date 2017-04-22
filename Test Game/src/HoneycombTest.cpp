@@ -188,6 +188,7 @@ namespace HoneycombTest {
 		this->ambient->getComponent<AmbientLight>()->setIntensity(0.1F);
 		this->directional->getComponent<DirectionalLight>()->
 			setIntensity(1.0F);
+		this->directional->addComponent(*suzInputTranfs->clone());
 
 		// Construct a default Camera and give it a default Input Transformable
 		this->camera = Builder::getBuilder()->newCamera();
@@ -268,7 +269,7 @@ namespace HoneycombTest {
 
 	void TestGame::update() {
 		// Sun Rotation
-		this->directional->getComponent<Transform>()->rotate(
-			Vector3f::getGlobalRight(), 0.005F);
+//		this->directional->getComponent<Transform>()->rotate(
+//			Vector3f::getGlobalRight(), 0.0015F);
 	}
 }

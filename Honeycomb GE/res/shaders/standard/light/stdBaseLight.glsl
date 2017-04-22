@@ -68,16 +68,25 @@ vec3 calculateSpecularReflection(BaseLight bL, Camera cam, vec3 wP,
 /// sampler2D map : The shadow map rendered from the perspective of the light.
 /// vec4 coords : The light projection transformed coordinates which correspond
 ///				  to the shadow map texture.
+/// vec3 dir : The direction of the light ray.
+/// vec3 norm : The normal of the surface of the fragment.
 /// return : 1.0F if the fragment is in shadow; 0.0F otherwise.
-float isInShadow(sampler2D map, vec4 coords) {
-	vec3 texCoords = coords.xyz / coords.w;		// to [-1, 1]
-	texCoords = texCoords * 0.5F + 0.5;			// to [0, 1]
+float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm) {
+	// Calculate the bias using the diffuse component to reduce shadow acne
+	const float MAX_SHADOW_BIAS = 0.025F;
+	const float MIN_SHADOW_BIAS = 0.005F;
+	float diffuse = 1.0F - max(dot(-dir, norm), 0.0F);
+	float bias = max(MAX_SHADOW_BIAS * diffuse, MIN_SHADOW_BIAS);
+
+	vec3 texCoords = coords.xyz / coords.w;		// to [-1,  1]
+	texCoords = texCoords * 0.5F + 0.5;			// to [ 0,  1]
 
 	// Get the depth value of the fragment from the shadow map
 	float shadowDepth = texture2D(map, texCoords.xy).r;
 
-	// Get the current depth value of the fragment in relation to the light
-	float currentDepth = texCoords.z;
+	// Get the current depth value of the fragment in relation to the light.
+	// Subtract the bias from the depth to reduce shadow acne.
+	float currentDepth = texCoords.z - bias;
 
 	// If the current depth is greater than the shadow depth then the fragment
 	// is currently farther away from the light than according to the shadow.
