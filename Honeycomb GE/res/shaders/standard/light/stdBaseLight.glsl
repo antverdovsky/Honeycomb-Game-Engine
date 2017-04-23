@@ -17,6 +17,16 @@ struct Attenuation {
 	float quadratic; // The quadratic coefficient in the attenuation equation
 };
 
+/// Samples the specified shadow map at the specified coordinates using
+/// percentage-closer filtering (PCF).
+/// sampler2D map : The shadow map rendered from the perspective of the light.
+/// vec2 coords : The coordnates at which to sample the shadow map.
+/// float bias : The shadow bias value.
+/// float curDepth : The current depth from the projection coordinates.
+/// return : The shadow value.
+float sampleShadowMapPCF(sampler2D map, vec2 coords, float bias, 
+		float curDepth);
+
 /// Calculates the attenuation of the specified attenuation component at the
 /// specified distance.
 /// Attenuation atten : The attenuation component.
@@ -81,15 +91,39 @@ float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm) {
 	vec3 texCoords = coords.xyz / coords.w;		// to [-1,  1]
 	texCoords = texCoords * 0.5F + 0.5;			// to [ 0,  1]
 
-	// Get the depth value of the fragment from the shadow map
-	float shadowDepth = texture2D(map, texCoords.xy).r;
-
 	// Get the current depth value of the fragment in relation to the light.
-	// Subtract the bias from the depth to reduce shadow acne.
-	float currentDepth = texCoords.z - bias;
+	float currentDepth = texCoords.z;
 
-	// If the current depth is greater than the shadow depth then the fragment
-	// is currently farther away from the light than according to the shadow.
-	// This implies the fragment is in shadow.
-	return (currentDepth > shadowDepth) ? 1.0F : 0.0F;
+	// Sample the shadow map using PCF and return the shadow value
+	return sampleShadowMapPCF(map, texCoords.xy, bias, currentDepth);
+}
+
+float sampleShadowMapPCF(sampler2D map, vec2 coords, float bias, 
+		float curDepth) {
+	// Get the texel size (inverse of the pixel size of the shadow map)
+	vec2 offset = 1.0F / textureSize(map, 0);
+	
+	// Stores the final shadow map depth value
+	float shadow = 0.0F;
+
+	// Loop through all of the surrounding pixels and the current pixel
+	for (int i = 0; i < 9; ++i) {
+		// Get the x and y offsets from the current pixel ([-1, 1])
+		int x = i / 3 - 1;
+		int y = i % 3 - 1;
+
+		// Fetch the depth from the shadow texture map at the current pixel
+		vec2 offsetCoord = coords + vec2(x, y) * offset;
+		float textureDepth = texture2D(map, offsetCoord).r;
+
+		// If the current depth is greater than the shadow depth then the 
+		// fragment is currently farther away from the light than according to 
+		// the shadow map. This implies the fragment is in shadow, therefore,
+		// increment the shadow value.
+		shadow += curDepth - bias > textureDepth ? 1.0F : 0.0F;
+	}
+
+	// Since we sampled 9 pixels in total (8 surrounding + 1 center), we divide
+	// the shadow value by 9 to get the average shadow value.
+	return shadow / 9.0F;
 }
