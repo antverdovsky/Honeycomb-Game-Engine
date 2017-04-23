@@ -267,7 +267,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 	void DeferredRenderer::renderLightDirectional(const DirectionalLight &dL,
 			GameScene &scene) {
-		this->renderShadowMap(dL, scene);
+		this->renderDirectionalShadowMap(dL, scene);
 		
 		// Do not render the light itself if we are only looking for a shadow
 		// map
@@ -470,27 +470,22 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		return this->gBuffer.bufferTextures[readBuffer];
 	}
 
-	void DeferredRenderer::renderShadowMap(const DirectionalLight &bL, 
-			GameScene &scene) {
+	void DeferredRenderer::renderDirectionalShadowMap(
+			const DirectionalLight &dL, GameScene &scene) {
 		// Bind the Shadow Map Buffer & Clear it for Rendering to a clean slate
 		this->gBuffer.unbind();
 		glDepthMask(GL_TRUE); // Depth Rendering required for Shadow Map
 		glDisable(GL_CULL_FACE); // Allows items like 2D planes to be seen
+		
+		// Bind the Shadow Map frame buffer so that we may write to the shadow
+		// map texture. Clear the depth texture for each light.
 		glBindFramebuffer(GL_FRAMEBUFFER, this->shadowMapBuffer);
-
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		auto transf = bL.getAttached()->getComponent<Transform>();
-		auto orienMatrix = transf->getOrientationMatrix();
-		orienMatrix.setAt(2, 0, -orienMatrix.getAt(2, 0));
-		orienMatrix.setAt(2, 1, -orienMatrix.getAt(2, 1));
-		orienMatrix.setAt(2, 2, -orienMatrix.getAt(2, 2));
-		Matrix4f lP = Matrix4f::orthographic(30, 30, -25.0F, 25.0F);			// :-( CSM?
-		Matrix4f lV = orienMatrix;
-		Matrix4f lPlV = lP * lV;												// calculation too expensive per frame
-
-		this->shadowMapShader.setUniform_mat4("lightProjection", lPlV);
-		this->directionalLightShader.setUniform_mat4("lightProjection", lPlV);
+		// Fetch the Light Projection matrix and write it to the light shaders
+		Matrix4f lP = dL.getLightProjection();
+		this->shadowMapShader.setUniform_mat4("lightProjection", lP);
+		this->directionalLightShader.setUniform_mat4("lightProjection", lP);
 
 		// Render the scene from the perspective of the camera capturing the
 		// depth.

@@ -4,6 +4,8 @@
 
 #include "BaseLight.h"
 #include "../GameComponent.h"
+#include "../physics/Transform.h"
+#include "../../conjuncture/EventHandler.h"
 
 namespace Honeycomb { namespace Component { namespace Light {
 	class DirectionalLight : public BaseLight {
@@ -35,20 +37,33 @@ namespace Honeycomb { namespace Component { namespace Light {
 		DirectionalLight* clone() const;
 
 		/// Returns the direction of this Directional Light.
-		/// return : The constant reference to the Directional Light.
+		/// return : The constant reference to the direction vector.
 		const Honeycomb::Math::Vector3f& getDirection() const;
+
+		/// Returns the light projection matrix of this Directional Light.
+		/// return : The constant reference to the light projection matrix.
+		const Honeycomb::Math::Matrix4f& getLightProjection() const;
 
 		/// Starts this Directional Light.
 		void start();
-
-		/// Updates this Directional Light.
-		void update();
 	private:
 		// The struct definition for the Directional Light.
 		const static std::string structFile;
 		const static std::string structName;
 
-		const Honeycomb::Math::Vector3f *direction; // Transform Direction
+		Honeycomb::Conjuncture::EventHandler
+			transformChangeHandler; // Handles the transform change event
+
+		Honeycomb::Component::Physics::Transform *transform;
+		Honeycomb::Math::Matrix4f lightProjection;
+
+		/// Calculates the light projection for the shadow map.
+		Honeycomb::Math::Matrix4f calculateLightProjection();
+
+		/// Event which is called when the transform of the Directional Light
+		/// changes. Writes the direction data to the Generic Struct and 
+		/// recalculates and writes the shadow matrix.
+		void onTransformChange();
 	};
 } } }
 
