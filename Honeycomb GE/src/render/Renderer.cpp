@@ -18,6 +18,9 @@ using Honeycomb::Shader::ShaderType;
 namespace Honeycomb { namespace Render {
 	Renderer* Renderer::renderer = nullptr;
 
+	const int Renderer::SHADOW_MAP_WIDTH = 1024;
+	const int Renderer::SHADOW_MAP_HEIGHT = 1024;
+
 	Renderer* Renderer::getRenderer() {
 		// Since the RenderingEngine is the component which determines which
 		// Renderer is to be used, it makes more sense to fetch the Renderer
@@ -187,11 +190,11 @@ namespace Honeycomb { namespace Render {
 	void Renderer::initializeShadowMapDependencies() {
 		// Initialize the Shadow Map Texture
 		this->shadowMapTexture.initialize();
-		this->shadowMapTexture.setImageData(nullptr, GL_FLOAT, 
-			GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, 1024, 768);
+		this->shadowMapTexture.setImageData(
+			nullptr, GL_FLOAT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, 
+			Renderer::SHADOW_MAP_WIDTH, Renderer::SHADOW_MAP_HEIGHT);
 		this->shadowMapTexture.setTextureFiltering(GL_NEAREST, GL_NEAREST);
-		this->shadowMapTexture.setTextureWrap(GL_CLAMP_TO_EDGE, 
-			GL_CLAMP_TO_EDGE);
+		this->shadowMapTexture.setTextureWrap(GL_REPEAT, GL_REPEAT);
 
 		// Initialize the Shadow Map Buffer
 		GLuint sBF;

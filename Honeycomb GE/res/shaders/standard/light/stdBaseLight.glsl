@@ -73,7 +73,7 @@ vec3 calculateSpecularReflection(BaseLight bL, Camera cam, vec3 wP,
 /// return : 1.0F if the fragment is in shadow; 0.0F otherwise.
 float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm) {
 	// Calculate the bias using the diffuse component to reduce shadow acne
-	const float MAX_SHADOW_BIAS = 0.025F;
+	const float MAX_SHADOW_BIAS = 0.075F;
 	const float MIN_SHADOW_BIAS = 0.005F;
 	float diffuse = 1.0F - max(dot(-dir, norm), 0.0F);
 	float bias = max(MAX_SHADOW_BIAS * diffuse, MIN_SHADOW_BIAS);

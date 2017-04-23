@@ -166,6 +166,8 @@ namespace Honeycomb { namespace Render {
 		
 		// Shadow Map Variables
 		int shadowMapBuffer;
+		const static int SHADOW_MAP_WIDTH;
+		const static int SHADOW_MAP_HEIGHT;
 		Honeycomb::Graphics::Texture2D shadowMapTexture;
 		Honeycomb::Shader::ShaderProgram shadowMapShader;
 		

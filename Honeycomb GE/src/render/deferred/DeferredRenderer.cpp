@@ -2,6 +2,8 @@
 
 #include <GL/glew.h>
 
+#include "../../../include/base/GameWindow.h"
+
 #include "../../../include/component/light/AmbientLight.h"
 #include "../../../include/component/light/BaseLight.h"
 #include "../../../include/component/light/DirectionalLight.h"
@@ -14,6 +16,7 @@
 #include "../../../include/geometry/Vertex.h"
 #include "../../../include/object/Builder.h"
 
+using Honeycomb::Base::GameWindow;
 using Honeycomb::Component::Light::BaseLight;
 using Honeycomb::Component::Light::AmbientLight;
 using Honeycomb::Component::Light::DirectionalLight;
@@ -472,15 +475,20 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 	void DeferredRenderer::renderDirectionalShadowMap(
 			const DirectionalLight &dL, GameScene &scene) {
-		// Bind the Shadow Map Buffer & Clear it for Rendering to a clean slate
+		// Bind the Shadow Map Buffer
 		this->gBuffer.unbind();
-		glDepthMask(GL_TRUE); // Depth Rendering required for Shadow Map
-		glDisable(GL_CULL_FACE); // Allows items like 2D planes to be seen
-		
-		// Bind the Shadow Map frame buffer so that we may write to the shadow
-		// map texture. Clear the depth texture for each light.
 		glBindFramebuffer(GL_FRAMEBUFFER, this->shadowMapBuffer);
+		
+		// Clear the depth texture for each light
+		glDepthMask(GL_TRUE); // Depth Rendering required for Shadow Map
 		glClear(GL_DEPTH_BUFFER_BIT);
+
+		// Enable Culling of Back Faces
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_BACK);
+		
+		// Set the window render viewport size to the Shadow Map Size
+		glViewport(0, 0, this->SHADOW_MAP_WIDTH, this->SHADOW_MAP_HEIGHT);
 
 		// Fetch the Light Projection matrix and write it to the light shaders
 		Matrix4f lP = dL.getLightProjection();
@@ -491,9 +499,16 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// depth.
 		scene.render(this->shadowMapShader);
 
-		// Rebind the GBuffer so that Deferred Renderer pipeline may continue
+		// Set the window render viewport size back to the Window Size
+		glViewport(0, 0,
+			GameWindow::getGameWindow()->getWindowWidth(),
+			GameWindow::getGameWindow()->getWindowHeight());
+
+		// Undo Culling & Depth Mask Changes
+		glDisable(GL_CULL_FACE);
 		glDepthMask(GL_FALSE);
-		glEnable(GL_CULL_FACE);
+
+		// Rebind the GBuffer
 		this->gBuffer.bind();
 	}
 
