@@ -69,7 +69,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 	}
 
 	const std::string Attenuation::STRUCT_FILE = "../Honeycomb GE/res/"
-		"shaders/standard/light/stdBaseLight.glsl";
+		"shaders/standard/light/blinn-phong/stdBaseLight.glsl";
 	const std::string Attenuation::STRUCT_NAME = "Attenuation";
 
 	const std::string Attenuation::ATTENUATION_CONSTANT_F = 

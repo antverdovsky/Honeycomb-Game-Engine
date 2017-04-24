@@ -5,7 +5,7 @@
 
 #version 410 core
 
-#include <../util/packing.glsl>
+#include <../../../util/packing.glsl>
 #include <../../../standard/structs/stdCamera.glsl>
 #include <../../../standard/structs/stdMaterial.glsl>
 #include <../../../standard/vertex/stdVertexFS.glsl>

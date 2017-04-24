@@ -1,7 +1,7 @@
 #version 410 core
 
-#include <../../../standard/structs/stdCamera.glsl>
-#include <../../../standard/vertex/stdVertexVS.glsl>
+#include <../../../../standard/structs/stdCamera.glsl>
+#include <../../../../standard/vertex/stdVertexVS.glsl>
 
 uniform mat4 objTransform; // Transform Matrix (pos, rot, scl)
 uniform Camera camera; // Camera Structure

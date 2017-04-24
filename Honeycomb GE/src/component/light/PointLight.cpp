@@ -19,7 +19,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 	const std::string PointLight::RANGE_F = "range";
 
 	const std::string PointLight::structFile = "../Honeycomb GE/res/shaders"
-			"/standard/light/stdPointLight.glsl";
+			"/standard/light/blinn-phong/stdPointLight.glsl";
 	const std::string PointLight::structName = "PointLight";
 
 	PointLight::PointLight() : 
