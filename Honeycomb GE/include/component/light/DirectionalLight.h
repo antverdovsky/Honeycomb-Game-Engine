@@ -13,6 +13,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		// Variables defining the color and intensity of the light.
 		const static std::string COLOR_VEC3;
 		const static std::string INTENSITY_F;
+		const static std::string SHADOW_TYPE_I;
 		const static std::string DIRECTION_VEC3;
 
 		/// Creates a new directional light with a white { 1.0F, 1.0F, 1.0F }
@@ -27,8 +28,9 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// over.
 		/// const float &inten : The intensity of this light.
 		/// const Vector3f &col : The color of this light.
+		/// const ShadowType &shdw : The shadow type.
 		DirectionalLight(const float &inten, const Honeycomb::Math::Vector3f 
-				&col);
+				&col, const ShadowType &shdw);
 
 		/// Clones this Directional Light into a new, dynamically allocated,
 		/// Directional Light. This function should be used instead of the copy 

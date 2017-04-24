@@ -16,6 +16,7 @@ using Honeycomb::Shader::ShaderSource;
 namespace Honeycomb { namespace Component { namespace Light {
 	const std::string BaseLight::COLOR_VEC3 = "base.color";
 	const std::string BaseLight::INTENSITY_F = "base.intensity";
+	const std::string BaseLight::SHADOW_TYPE_I = "base.shadowType";
 
 	BaseLight::BaseLight(const Honeycomb::Shader::ShaderSource &src, const
 			std::string &name, const LightType &type) : 
@@ -44,6 +45,10 @@ namespace Honeycomb { namespace Component { namespace Light {
 		return this->glFloats.getValue(BaseLight::INTENSITY_F);
 	}
 
+	ShadowType BaseLight::getShadowType() const {
+		return (ShadowType)(this->glInts.getValue(BaseLight::SHADOW_TYPE_I));
+	}
+
 	const LightType& BaseLight::getType() const {
 		return this->type;
 	}
@@ -54,6 +59,10 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 	void BaseLight::setIntensity(const float &inten) {
 		this->getIntensity() = inten;
+	}
+
+	void BaseLight::setShadowType(const ShadowType &shdw) {
+		this->glInts.setValue(BaseLight::SHADOW_TYPE_I, (int)(shdw));
 	}
 
 	void BaseLight::start() {

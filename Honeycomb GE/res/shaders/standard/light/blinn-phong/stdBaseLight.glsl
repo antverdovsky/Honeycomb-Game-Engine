@@ -1,11 +1,18 @@
 #include <../../structs/stdCamera.glsl>
 
+// Shadow Type "enumeration"
+const int SHADOW_TYPE_NONE						= 0;
+const int SHADOW_TYPE_CLASSIC					= 1;
+const int SHADOW_TYPE_PCF						= 2;
+
 ///
 /// The basic structure for all lights.
 /// 
 struct BaseLight {
     vec3 color;		 // The color of the light
     float intensity; // The intensity of the light
+
+	int shadowType;	 // Shadow Type (refers to above Shadow Type "enum")
 };
 
 ///
@@ -80,8 +87,12 @@ vec3 calculateSpecularReflection(BaseLight bL, Camera cam, vec3 wP,
 ///				  to the shadow map texture.
 /// vec3 dir : The direction of the light ray.
 /// vec3 norm : The normal of the surface of the fragment.
+/// int shdw : The shadow type of the light.
 /// return : 1.0F if the fragment is in shadow; 0.0F otherwise.
-float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm) {
+float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm, int shdw) {
+if (shdw == SHADOW_TYPE_NONE) {
+	return 0.0F;
+} else if (shdw == SHADOW_TYPE_PCF || shdw == SHADOW_TYPE_CLASSIC) {				// temp
 	// Calculate the bias using the diffuse component to reduce shadow acne
 	const float MAX_SHADOW_BIAS = 0.075F;
 	const float MIN_SHADOW_BIAS = 0.005F;
@@ -101,6 +112,9 @@ float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm) {
 	// the shadow map did not contain data for this fragment.
 	return sampleShadowMapPCF(map, texCoords.xy, bias, currentDepth) *
 		float(currentDepth <= 1.0F);
+}
+
+	return 0.0F;
 }
 
 float sampleShadowMapPCF(sampler2D map, vec2 coords, float bias, 

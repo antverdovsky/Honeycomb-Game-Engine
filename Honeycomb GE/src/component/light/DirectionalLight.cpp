@@ -17,28 +17,32 @@ namespace Honeycomb { namespace Component { namespace Light {
 	const std::string DirectionalLight::COLOR_VEC3 = "base.color";
 	const std::string DirectionalLight::INTENSITY_F = "base.intensity";
 	const std::string DirectionalLight::DIRECTION_VEC3 = "direction";
+	const std::string DirectionalLight::SHADOW_TYPE_I = "base.shadowType";
 
 	const std::string DirectionalLight::structFile = "../Honeycomb GE/"
 			"res/shaders/standard/light/blinn-phong/stdDirectionalLight.glsl";
 	const std::string DirectionalLight::structName = "DirectionalLight";
 
 	DirectionalLight::DirectionalLight() : 
-			DirectionalLight(1.0F, Vector3f(1.0F, 1.0F, 1.0F)) {
+			DirectionalLight(1.0F, Vector3f(1.0F, 1.0F, 1.0F), 
+			ShadowType::SHADOW_PCF) {
 
 	}
 
 	DirectionalLight::DirectionalLight(const float &inten, const
-			Honeycomb::Math::Vector3f &col) : 
+			Honeycomb::Math::Vector3f &col, const ShadowType &shdw) : 
 			BaseLight(*ShaderSource::getShaderSource(structFile), structName,
 				LightType::LIGHT_TYPE_DIRECTIONAL) {
 		this->glFloats.setValue(DirectionalLight::INTENSITY_F, inten);
 		this->glVector3fs.setValue(DirectionalLight::COLOR_VEC3, col);
+		this->glInts.setValue(DirectionalLight::SHADOW_TYPE_I, shdw);
 	}
 
 	DirectionalLight* DirectionalLight::clone() const {
 		return new DirectionalLight(
 			this->glFloats.getValue(DirectionalLight::INTENSITY_F),
-			this->glVector3fs.getValue(DirectionalLight::COLOR_VEC3)
+			this->glVector3fs.getValue(DirectionalLight::COLOR_VEC3),
+			(ShadowType)this->glInts.getValue(DirectionalLight::SHADOW_TYPE_I)
 		);
 	}
 

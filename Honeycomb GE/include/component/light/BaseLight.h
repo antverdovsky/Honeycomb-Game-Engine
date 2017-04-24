@@ -9,19 +9,26 @@
 
 namespace Honeycomb { namespace Component { namespace Light {
 	enum LightType {
-		LIGHT_TYPE_AMBIENT,
-		LIGHT_TYPE_DIRECTIONAL,
-		LIGHT_TYPE_POINT,
-		LIGHT_TYPE_SPOT
+		LIGHT_TYPE_AMBIENT,		// Ambient Light
+		LIGHT_TYPE_DIRECTIONAL,	// Directional Light
+		LIGHT_TYPE_POINT,		// Point Light
+		LIGHT_TYPE_SPOT			// Spot Light
+	};
+
+	enum ShadowType {
+		SHADOW_NONE,			// Light uses no shadows
+		SHADOW_CLASSIC,			// Light uses classic shadows with no aliasing
+		SHADOW_PCF,				// Light uses PCF Soft Shadows
 	};
 
 	class BaseLight : 
 			public Honeycomb::Shader::GenericStruct,
 			public Honeycomb::Component::GameComponent {
 	public:
-		// Uniforms containing the color and intensity of the light
+		// Uniforms containing the color, intensity and shadow of the light
 		static const std::string COLOR_VEC3;
 		static const std::string INTENSITY_F;
+		static const std::string SHADOW_TYPE_I;
 
 		/// Initializes a new base light with the specified Shader Source and
 		/// structure definition.
@@ -76,6 +83,10 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// return : The constant intensity reference.
 		const float& getIntensity() const;
 
+		/// Returns the shadow type of this Base Light.
+		/// return : The shadow type.
+		ShadowType getShadowType() const;
+
 		/// Returns a constant reference to the type of this Light.
 		/// return : The type of this light.
 		const LightType& getType() const;
@@ -87,6 +98,10 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// Sets the intensity of this Base Light.
 		/// const float &inten : The new intensity of this Base Light.
 		void setIntensity(const float &inten);
+
+		/// Sets the shadow type of this Base Light.
+		/// return : The shadow type of this light.
+		void setShadowType(const ShadowType &shdw);
 
 		/// Starts this base light.
 		virtual void start();
