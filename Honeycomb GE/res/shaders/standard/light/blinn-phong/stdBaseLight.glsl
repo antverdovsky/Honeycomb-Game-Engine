@@ -11,8 +11,6 @@ const int SHADOW_TYPE_PCF						= 2;
 struct BaseLight {
     vec3 color;		 // The color of the light
     float intensity; // The intensity of the light
-
-	int shadowType;	 // Shadow Type (refers to above Shadow Type "enum")
 };
 
 ///
@@ -22,6 +20,14 @@ struct Attenuation {
 	float constant;  // The constant coefficient in the attenuation equation
 	float linear;	 // The linear coefficient in the attenuation equation
 	float quadratic; // The quadratic coefficient in the attenuation equation
+};
+
+///
+/// The structure for a shadow.
+/// 
+struct Shadow {
+	int shadowType;	 // The type of shadow cast by this Light
+	mat4 projection; // The projection of the Shadow
 };
 
 /// Samples the specified shadow map at the specified coordinates using

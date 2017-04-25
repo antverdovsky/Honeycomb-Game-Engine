@@ -5,6 +5,7 @@
 ///
 struct DirectionalLight {
     BaseLight base; // The base component of the light
+	Shadow shadow;	// The shadow component of the light
     
     vec3 direction; // The direction of the light
 };
@@ -35,7 +36,7 @@ vec3 calculateDirectionalLight(DirectionalLight dL, Camera cam, vec3 wP,
 		dL.direction, norm, shine, specColor);
 
 	float inShadow = isInShadow(shadowMap, shadowCoords, dL.direction, norm,
-		dL.base.shadowType);
+		dL.shadow.shadowType);
 
     // Return the blend of the Diffuse and Specular lighting
     return (1.0F - inShadow) * ((dif * diffuse) + specular);

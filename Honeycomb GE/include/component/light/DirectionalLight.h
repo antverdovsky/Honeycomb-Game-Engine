@@ -13,7 +13,6 @@ namespace Honeycomb { namespace Component { namespace Light {
 		// Variables defining the color and intensity of the light.
 		const static std::string COLOR_VEC3;
 		const static std::string INTENSITY_F;
-		const static std::string SHADOW_TYPE_I;
 		const static std::string DIRECTION_VEC3;
 
 		/// Creates a new directional light with a white { 1.0F, 1.0F, 1.0F }
@@ -42,12 +41,24 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// return : The constant reference to the direction vector.
 		const Honeycomb::Math::Vector3f& getDirection() const;
 
-		/// Returns the light projection matrix of this Directional Light.
-		/// return : The constant reference to the light projection matrix.
-		const Honeycomb::Math::Matrix4f& getLightProjection() const;
+		/// Returns the shadow data of this Directional Light.
+		/// return : The reference to the shadow.
+		Shadow& getShadow();
+
+		/// Returns the shadow data of this Directional Light.
+		/// return : The constant reference to the shadow.
+		const Shadow& getShadow() const;
 
 		/// Starts this Directional Light.
 		void start();
+
+		/// Writes the light and shadow values of this Directional Light to the
+		/// specified Shader.
+		/// ShaderProgram &shader : The shader to which to write the values of
+		///							this light.
+		///	const string &uni : The uniform name of this Light in the Shader.
+		void toShader(Honeycomb::Shader::ShaderProgram &shader,
+			const std::string &uni) const;
 	private:
 		// The struct definition for the Directional Light.
 		const static std::string structFile;
@@ -56,8 +67,8 @@ namespace Honeycomb { namespace Component { namespace Light {
 		Honeycomb::Conjuncture::EventHandler
 			transformChangeHandler; // Handles the transform change event
 
+		Shadow shadow;
 		Honeycomb::Component::Physics::Transform *transform;
-		Honeycomb::Math::Matrix4f lightProjection;
 
 		/// Calculates the light projection for the shadow map.
 		Honeycomb::Math::Matrix4f calculateLightProjection();

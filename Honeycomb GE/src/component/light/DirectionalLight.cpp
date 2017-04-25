@@ -17,7 +17,6 @@ namespace Honeycomb { namespace Component { namespace Light {
 	const std::string DirectionalLight::COLOR_VEC3 = "base.color";
 	const std::string DirectionalLight::INTENSITY_F = "base.intensity";
 	const std::string DirectionalLight::DIRECTION_VEC3 = "direction";
-	const std::string DirectionalLight::SHADOW_TYPE_I = "base.shadowType";
 
 	const std::string DirectionalLight::structFile = "../Honeycomb GE/"
 			"res/shaders/standard/light/blinn-phong/stdDirectionalLight.glsl";
@@ -35,14 +34,14 @@ namespace Honeycomb { namespace Component { namespace Light {
 				LightType::LIGHT_TYPE_DIRECTIONAL) {
 		this->glFloats.setValue(DirectionalLight::INTENSITY_F, inten);
 		this->glVector3fs.setValue(DirectionalLight::COLOR_VEC3, col);
-		this->glInts.setValue(DirectionalLight::SHADOW_TYPE_I, shdw);
+		this->shadow.setShadowType(shdw);
 	}
 
 	DirectionalLight* DirectionalLight::clone() const {
 		return new DirectionalLight(
 			this->glFloats.getValue(DirectionalLight::INTENSITY_F),
 			this->glVector3fs.getValue(DirectionalLight::COLOR_VEC3),
-			(ShadowType)this->glInts.getValue(DirectionalLight::SHADOW_TYPE_I)
+			this->shadow.getShadowType()
 		);
 	}
 
@@ -50,8 +49,12 @@ namespace Honeycomb { namespace Component { namespace Light {
 		return this->transform->getLocalForward();
 	}
 
-	const Matrix4f& DirectionalLight::getLightProjection() const {
-		return this->lightProjection;
+	Shadow& DirectionalLight::getShadow() {
+		return this->shadow;
+	}
+
+	const Shadow& DirectionalLight::getShadow() const {
+		return this->shadow;
 	}
 
 	void DirectionalLight::start() {
@@ -79,13 +82,22 @@ namespace Honeycomb { namespace Component { namespace Light {
 		orientationMat.setAt(2, 2, -orientationMat.getAt(2, 2));
 
 		// Calculate the Light Projection Matrix for Shadow Mapping
-		this->lightProjection = PROJECTION * orientationMat;
-		return this->lightProjection;
+		Matrix4f lightMatrix = PROJECTION * orientationMat;
+		this->shadow.setProjection(lightMatrix);
+		
+		return lightMatrix;
 	}
 
 	void DirectionalLight::onTransformChange() {
 		this->calculateLightProjection();
 		this->glVector3fs.setValue(DirectionalLight::DIRECTION_VEC3,
 			this->transform->getLocalForward());
+	}
+
+	void DirectionalLight::toShader(
+			ShaderProgram &shader, const std::string &uni) const {
+		GenericStruct::toShader(shader, uni);
+
+		this->shadow.toShader(shader, uni + ".shadow");
 	}
 } } }

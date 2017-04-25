@@ -8,6 +8,7 @@
 #include "../../../include/scene/GameScene.h"
 
 using Honeycomb::Debug::Logger;
+using Honeycomb::Math::Matrix4f;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Shader::GenericStruct;
 using Honeycomb::Shader::ShaderProgram;
@@ -16,7 +17,6 @@ using Honeycomb::Shader::ShaderSource;
 namespace Honeycomb { namespace Component { namespace Light {
 	const std::string BaseLight::COLOR_VEC3 = "base.color";
 	const std::string BaseLight::INTENSITY_F = "base.intensity";
-	const std::string BaseLight::SHADOW_TYPE_I = "base.shadowType";
 
 	BaseLight::BaseLight(const Honeycomb::Shader::ShaderSource &src, const
 			std::string &name, const LightType &type) : 
@@ -45,10 +45,6 @@ namespace Honeycomb { namespace Component { namespace Light {
 		return this->glFloats.getValue(BaseLight::INTENSITY_F);
 	}
 
-	ShadowType BaseLight::getShadowType() const {
-		return (ShadowType)(this->glInts.getValue(BaseLight::SHADOW_TYPE_I));
-	}
-
 	const LightType& BaseLight::getType() const {
 		return this->type;
 	}
@@ -59,10 +55,6 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 	void BaseLight::setIntensity(const float &inten) {
 		this->getIntensity() = inten;
-	}
-
-	void BaseLight::setShadowType(const ShadowType &shdw) {
-		this->glInts.setValue(BaseLight::SHADOW_TYPE_I, (int)(shdw));
 	}
 
 	void BaseLight::start() {
@@ -81,12 +73,9 @@ namespace Honeycomb { namespace Component { namespace Light {
 		"shaders/standard/light/blinn-phong/stdBaseLight.glsl";
 	const std::string Attenuation::STRUCT_NAME = "Attenuation";
 
-	const std::string Attenuation::ATTENUATION_CONSTANT_F = 
-		"constant";
-	const std::string Attenuation::ATTENUATION_LINEAR_F =
-		"linear";
-	const std::string Attenuation::ATTENUATION_QUADRATIC_F =
-		"quadratic";
+	const std::string Attenuation::ATTENUATION_CONSTANT_F = "constant";
+	const std::string Attenuation::ATTENUATION_LINEAR_F = "linear";
+	const std::string Attenuation::ATTENUATION_QUADRATIC_F = "quadratic";
 
 	Attenuation::Attenuation() : Attenuation(1.0F, 0.22F, 0.20F) {
 
@@ -155,5 +144,39 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 	void Attenuation::setQuadraticTerm(const float &atQ) {
 		this->getQuadraticTerm() = atQ;
+	}
+
+	const std::string Shadow::STRUCT_FILE = "../Honeycomb GE/res/"
+		"shaders/standard/light/blinn-phong/stdBaseLight.glsl";
+	const std::string Shadow::STRUCT_NAME = "Shadow";
+
+	const std::string Shadow::PROJECTION_MAT4 = "projection";
+	const std::string Shadow::SHADOW_TYPE_I = "shadowType";
+
+	Shadow::Shadow() : Shadow(ShadowType::SHADOW_PCF) {
+
+	}
+
+	Shadow::Shadow(const ShadowType &shdw) :
+			GenericStruct(*ShaderSource::getShaderSource(STRUCT_FILE),
+			STRUCT_NAME) {
+		this->setShadowType(shdw);
+		this->setProjection(Matrix4f::identity());
+	}
+
+	const Matrix4f& Shadow::getProjection() const {
+		return this->glMatrix4fs.getValue(Shadow::PROJECTION_MAT4);
+	}
+
+	ShadowType Shadow::getShadowType() const {
+		return (ShadowType)(this->glInts.getValue(Shadow::SHADOW_TYPE_I));
+	}
+
+	void Shadow::setProjection(const Matrix4f &proj) {
+		this->glMatrix4fs.setValue(Shadow::PROJECTION_MAT4, proj);
+	}
+
+	void Shadow::setShadowType(const ShadowType &shdw) {
+		this->glInts.setValue(Shadow::SHADOW_TYPE_I, (int)(shdw));
 	}
 } } }

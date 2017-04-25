@@ -25,10 +25,9 @@ namespace Honeycomb { namespace Component { namespace Light {
 			public Honeycomb::Shader::GenericStruct,
 			public Honeycomb::Component::GameComponent {
 	public:
-		// Uniforms containing the color, intensity and shadow of the light
+		// Uniforms containing the color, intensity of the light
 		static const std::string COLOR_VEC3;
 		static const std::string INTENSITY_F;
-		static const std::string SHADOW_TYPE_I;
 
 		/// Initializes a new base light with the specified Shader Source and
 		/// structure definition.
@@ -83,10 +82,6 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// return : The constant intensity reference.
 		const float& getIntensity() const;
 
-		/// Returns the shadow type of this Base Light.
-		/// return : The shadow type.
-		ShadowType getShadowType() const;
-
 		/// Returns a constant reference to the type of this Light.
 		/// return : The type of this light.
 		const LightType& getType() const;
@@ -98,10 +93,6 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// Sets the intensity of this Base Light.
 		/// const float &inten : The new intensity of this Base Light.
 		void setIntensity(const float &inten);
-
-		/// Sets the shadow type of this Base Light.
-		/// return : The shadow type of this light.
-		void setShadowType(const ShadowType &shdw);
 
 		/// Starts this base light.
 		virtual void start();
@@ -184,6 +175,41 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// Sets the quadratic term of the attenuation.
 		/// const float &atQ : The new quadratic term of the attenuation.
 		void setQuadraticTerm(const float &atQ);
+	};
+
+	class Shadow :
+			public Honeycomb::Shader::GenericStruct {
+	public:
+		// Struct File and Struct Name of the Shadow Declaration
+		static const std::string STRUCT_FILE;
+		static const std::string STRUCT_NAME;
+
+		// Uniforms containing the Shadow Information values
+		static const std::string SHADOW_TYPE_I;
+		static const std::string PROJECTION_MAT4;
+
+		/// Initializes a default Shadow with a shadow type of PCF.
+		Shadow();
+
+		/// Initializes a Shadow with the specified shadow type.
+		/// const ShadowType &shdw : The shadow type.
+		Shadow(const ShadowType &shdw);
+
+		/// Returns the light projection of this Shadow.
+		/// return : A constant reference to the projection.
+		const Honeycomb::Math::Matrix4f& getProjection() const;
+
+		/// Returns the shadow type of this Shadow.
+		/// return : The shadow type enumeration.
+		ShadowType getShadowType() const;
+
+		/// Sets the projection of this Shadow.
+		/// const Matrix4f &proj : The projection.
+		void setProjection(const Honeycomb::Math::Matrix4f &proj);
+
+		/// Sets the shadow type of this Shadow.
+		/// const ShadowType &shdw : The shadow type.
+		void setShadowType(const ShadowType &shdw);
 	};
 } } }
 

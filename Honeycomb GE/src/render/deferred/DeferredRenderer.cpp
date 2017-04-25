@@ -478,7 +478,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			const DirectionalLight &dL, GameScene &scene) {
 		// Do not bother rendering the shadow map if the light is not going to
 		// use it!
-		if (dL.getShadowType() == ShadowType::SHADOW_NONE) return;
+		if (dL.getShadow().getShadowType() == ShadowType::SHADOW_NONE) return;
 
 		// Bind the Shadow Map Buffer
 		this->gBuffer.unbind();
@@ -496,9 +496,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		glViewport(0, 0, this->SHADOW_MAP_WIDTH, this->SHADOW_MAP_HEIGHT);
 
 		// Fetch the Light Projection matrix and write it to the light shaders
-		Matrix4f lP = dL.getLightProjection();
+		Matrix4f lP = dL.getShadow().getProjection();
 		this->shadowMapShader.setUniform_mat4("lightProjection", lP);
-		this->directionalLightShader.setUniform_mat4("lightProjection", lP);
 
 		// Render the scene from the perspective of the camera capturing the
 		// depth.

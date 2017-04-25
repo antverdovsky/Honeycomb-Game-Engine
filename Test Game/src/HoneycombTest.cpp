@@ -40,16 +40,16 @@ namespace HoneycombTest {
 		}
 
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_8)) {
-			this->directional->getComponent<DirectionalLight>()->setShadowType(
-				ShadowType::SHADOW_NONE);
+			this->directional->getComponent<DirectionalLight>()->getShadow().
+				setShadowType(ShadowType::SHADOW_NONE);
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_9)) {
-			this->directional->getComponent<DirectionalLight>()->setShadowType(
-				ShadowType::SHADOW_CLASSIC);
+			this->directional->getComponent<DirectionalLight>()->getShadow().
+				setShadowType(ShadowType::SHADOW_CLASSIC);
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_0)) {
-			this->directional->getComponent<DirectionalLight>()->setShadowType(
-				ShadowType::SHADOW_PCF);
+			this->directional->getComponent<DirectionalLight>()->getShadow().
+				setShadowType(ShadowType::SHADOW_PCF);
 		}
 	}
 
