@@ -185,25 +185,30 @@ namespace Honeycomb { namespace Component { namespace Light {
 		static const std::string STRUCT_NAME;
 
 		// Uniforms containing the Shadow Information values
-		static const std::string SHADOW_TYPE_I;
-		static const std::string PROJECTION_MAT4;
+		static const std::string INTENSITY_F;
 		static const std::string MIN_BIAS_F;
 		static const std::string MAX_BIAS_F;
+		static const std::string PROJECTION_MAT4;
+		static const std::string SHADOW_TYPE_I;
 
 		/// Initializes a default Shadow with a shadow type of PCF, 0.005F 
-		/// minimum bias and 0.050F maximum bias.
+		/// minimum bias, 0.050F maximum bias and a 0.75F intensity.
 		Shadow();
 
 		/// Initializes a Shadow with the specified shadow type.
 		/// const ShadowType &shdw : The shadow type.
 		Shadow(const ShadowType &shdw);
 
+		/// Returns the intensity of this Shadow.
+		/// return : The intensity value.
+		const float& getIntensity() const;
+
 		/// Returns the maximum bias of this Shadow.
-		/// const float &bias : The bias value.
+		/// return : The bias value.
 		const float& getMaximumBias() const;
 
 		/// Returns the minimum bias of this Shadow.
-		/// const float &bias : The bias value.
+		/// return : The bias value.
 		const float& getMinimumBias() const;
 
 		/// Returns the light projection of this Shadow.
@@ -213,6 +218,10 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// Returns the shadow type of this Shadow.
 		/// return : The shadow type enumeration.
 		ShadowType getShadowType() const;
+
+		/// Sets the intensity of this Shadow.
+		/// const float &i : The intensity value.
+		void setIntensity(const float &i);
 
 		/// Sets the maximum bias of the Shadow (used when light is 
 		/// perpendicular to the surface).

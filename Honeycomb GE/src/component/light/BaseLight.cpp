@@ -150,10 +150,11 @@ namespace Honeycomb { namespace Component { namespace Light {
 		"shaders/standard/light/blinn-phong/stdBaseLight.glsl";
 	const std::string Shadow::STRUCT_NAME = "Shadow";
 
-	const std::string Shadow::PROJECTION_MAT4 = "projection";
-	const std::string Shadow::SHADOW_TYPE_I = "shadowType";
+	const std::string Shadow::INTENSITY_F = "intensity";
 	const std::string Shadow::MAX_BIAS_F = "maxBias";
 	const std::string Shadow::MIN_BIAS_F = "minBias";
+	const std::string Shadow::PROJECTION_MAT4 = "projection";
+	const std::string Shadow::SHADOW_TYPE_I = "shadowType";
 
 	Shadow::Shadow() : Shadow(ShadowType::SHADOW_PCF) {
 
@@ -166,6 +167,11 @@ namespace Honeycomb { namespace Component { namespace Light {
 		this->setProjection(Matrix4f::identity());
 		this->setMinimumBias(0.005F);
 		this->setMaximumBias(0.050F);
+		this->setIntensity(0.75F);
+	}
+
+	const float& Shadow::getIntensity() const {
+		return this->glFloats.getValue(Shadow::INTENSITY_F);
 	}
 
 	const float& Shadow::getMaximumBias() const {
@@ -182,6 +188,10 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 	ShadowType Shadow::getShadowType() const {
 		return (ShadowType)(this->glInts.getValue(Shadow::SHADOW_TYPE_I));
+	}
+
+	void Shadow::setIntensity(const float &i) {
+		this->glFloats.setValue(Shadow::INTENSITY_F, i);
 	}
 
 	void Shadow::setMaximumBias(const float &bias) {
