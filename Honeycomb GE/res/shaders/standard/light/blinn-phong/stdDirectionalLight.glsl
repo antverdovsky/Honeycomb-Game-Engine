@@ -36,7 +36,7 @@ vec3 calculateDirectionalLight(DirectionalLight dL, Camera cam, vec3 wP,
 		dL.direction, norm, shine, specColor);
 
 	float inShadow = isInShadow(shadowMap, shadowCoords, dL.direction, norm,
-		dL.shadow.shadowType);
+		dL.shadow);
 
     // Return the blend of the Diffuse and Specular lighting
     return (1.0F - inShadow) * ((dif * diffuse) + specular);

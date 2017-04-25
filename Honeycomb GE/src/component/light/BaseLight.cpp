@@ -152,6 +152,8 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 	const std::string Shadow::PROJECTION_MAT4 = "projection";
 	const std::string Shadow::SHADOW_TYPE_I = "shadowType";
+	const std::string Shadow::MAX_BIAS_F = "maxBias";
+	const std::string Shadow::MIN_BIAS_F = "minBias";
 
 	Shadow::Shadow() : Shadow(ShadowType::SHADOW_PCF) {
 
@@ -162,6 +164,16 @@ namespace Honeycomb { namespace Component { namespace Light {
 			STRUCT_NAME) {
 		this->setShadowType(shdw);
 		this->setProjection(Matrix4f::identity());
+		this->setMinimumBias(0.005F);
+		this->setMaximumBias(0.050F);
+	}
+
+	const float& Shadow::getMaximumBias() const {
+		return this->glFloats.getValue(Shadow::MAX_BIAS_F);
+	}
+
+	const float& Shadow::getMinimumBias() const {
+		return this->glFloats.getValue(Shadow::MIN_BIAS_F);
 	}
 
 	const Matrix4f& Shadow::getProjection() const {
@@ -170,6 +182,14 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 	ShadowType Shadow::getShadowType() const {
 		return (ShadowType)(this->glInts.getValue(Shadow::SHADOW_TYPE_I));
+	}
+
+	void Shadow::setMaximumBias(const float &bias) {
+		this->glFloats.setValue(Shadow::MAX_BIAS_F, bias);
+	}
+
+	void Shadow::setMinimumBias(const float &bias) {
+		this->glFloats.setValue(Shadow::MIN_BIAS_F, bias);
 	}
 
 	void Shadow::setProjection(const Matrix4f &proj) {

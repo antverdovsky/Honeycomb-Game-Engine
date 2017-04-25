@@ -187,13 +187,24 @@ namespace Honeycomb { namespace Component { namespace Light {
 		// Uniforms containing the Shadow Information values
 		static const std::string SHADOW_TYPE_I;
 		static const std::string PROJECTION_MAT4;
+		static const std::string MIN_BIAS_F;
+		static const std::string MAX_BIAS_F;
 
-		/// Initializes a default Shadow with a shadow type of PCF.
+		/// Initializes a default Shadow with a shadow type of PCF, 0.005F 
+		/// minimum bias and 0.050F maximum bias.
 		Shadow();
 
 		/// Initializes a Shadow with the specified shadow type.
 		/// const ShadowType &shdw : The shadow type.
 		Shadow(const ShadowType &shdw);
+
+		/// Returns the maximum bias of this Shadow.
+		/// const float &bias : The bias value.
+		const float& getMaximumBias() const;
+
+		/// Returns the minimum bias of this Shadow.
+		/// const float &bias : The bias value.
+		const float& getMinimumBias() const;
 
 		/// Returns the light projection of this Shadow.
 		/// return : A constant reference to the projection.
@@ -202,6 +213,16 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// Returns the shadow type of this Shadow.
 		/// return : The shadow type enumeration.
 		ShadowType getShadowType() const;
+
+		/// Sets the maximum bias of the Shadow (used when light is 
+		/// perpendicular to the surface).
+		/// const float &bias : The bias value.
+		void setMaximumBias(const float &bias);
+
+		/// Sets the minimum bias of the Shadow (used when light is parallel to
+		/// the surface).
+		/// const float &bias : The bias value.
+		void setMinimumBias(const float &bias);
 
 		/// Sets the projection of this Shadow.
 		/// const Matrix4f &proj : The projection.

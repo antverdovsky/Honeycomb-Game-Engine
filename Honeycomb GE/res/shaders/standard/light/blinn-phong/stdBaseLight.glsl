@@ -28,6 +28,11 @@ struct Attenuation {
 struct Shadow {
 	int shadowType;	 // The type of shadow cast by this Light
 	mat4 projection; // The projection of the Shadow
+
+	float intensity; // The intensity of the Shadow
+
+	float minBias;	 // Minimum Bias (if light is parallel to surface)
+	float maxBias;	 // Maximum Bias (if light is perpendicular to surface)
 };
 
 /// Samples the specified shadow map at the specified coordinates using
@@ -103,20 +108,19 @@ vec3 calculateSpecularReflection(BaseLight bL, Camera cam, vec3 wP,
 ///				  to the shadow map texture.
 /// vec3 dir : The direction of the light ray.
 /// vec3 norm : The normal of the surface of the fragment.
-/// int shdw : The shadow type of the light.
+/// Shadow shdw : The shadow of the light.
 /// return : 1.0F if the fragment is in shadow; 0.0F otherwise.
-float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm, int shdw) {
+float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm, 
+		Shadow shdw) {
 	// If the light uses no shadows, all fragments are outside of the shadow so
 	// always return 0.0F.
-	if (shdw == SHADOW_TYPE_NONE) {
+	if (shdw.shadowType == SHADOW_TYPE_NONE) {
 		return 0.0F;
 	} 
 	
 	// Calculate the bias using the diffuse component to reduce shadow acne
-	const float MAX_SHADOW_BIAS = 0.075F;
-	const float MIN_SHADOW_BIAS = 0.005F;
 	float diffuse = 1.0F - max(dot(-dir, norm), 0.0F);
-	float bias = max(MAX_SHADOW_BIAS * diffuse, MIN_SHADOW_BIAS);
+	float bias = max(shdw.maxBias * diffuse, shdw.minBias);
 
 	// Convert the coordinates from light coordinates to texture coordinates.
 	vec3 texCoords = coords.xyz / coords.w;		// to [-1,  1]
@@ -132,9 +136,9 @@ float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm, int shdw) {
 
 	float shadow = 0.0F; // Stores the Shadow Value
 	
-	if (shdw == SHADOW_TYPE_CLASSIC) {						// Classic Shadows
+	if (shdw.shadowType == SHADOW_TYPE_CLASSIC) {			// Classic Shadows
 		shadow = sampleShadowMapClassic(map, texCoords.xy, bias, currentDepth);
-	} else if (shdw == SHADOW_TYPE_PCF) {					// PCF Shadows	
+	} else if (shdw.shadowType == SHADOW_TYPE_PCF) {		// PCF Shadows	
 		shadow = sampleShadowMapPCF(map, texCoords.xy, bias, currentDepth);
 	}
 
