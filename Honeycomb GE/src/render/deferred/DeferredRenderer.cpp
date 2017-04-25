@@ -23,6 +23,7 @@ using Honeycomb::Component::Light::DirectionalLight;
 using Honeycomb::Component::Light::PointLight;
 using Honeycomb::Component::Light::SpotLight;
 using Honeycomb::Component::Light::LightType;
+using Honeycomb::Component::Light::ShadowType;
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Component::Render::CameraController;
 using Honeycomb::Component::Render::MeshRenderer;
@@ -475,6 +476,10 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 	void DeferredRenderer::renderDirectionalShadowMap(
 			const DirectionalLight &dL, GameScene &scene) {
+		// Do not bother rendering the shadow map if the light is not going to
+		// use it!
+		if (dL.getShadowType() == ShadowType::SHADOW_NONE) return;
+
 		// Bind the Shadow Map Buffer
 		this->gBuffer.unbind();
 		glBindFramebuffer(GL_FRAMEBUFFER, this->shadowMapBuffer);

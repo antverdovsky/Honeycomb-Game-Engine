@@ -34,6 +34,16 @@ struct Attenuation {
 float sampleShadowMapPCF(sampler2D map, vec2 coords, float bias, 
 		float curDepth);
 
+/// Samples the specified shadow map at the specified coordinates with no
+/// antialiasing or special filtering.
+/// sampler2D map : The shadow map rendered from the perspective of the light.
+/// vec2 coords : The coordnates at which to sample the shadow map.
+/// float bias : The shadow bias value.
+/// float curDepth : The current depth from the projection coordinates.
+/// return : The shadow value.
+float sampleShadowMapClassic(sampler2D map, vec2 coords, float bias,
+		float curDepth);
+
 /// Calculates the attenuation of the specified attenuation component at the
 /// specified distance.
 /// Attenuation atten : The attenuation component.
@@ -90,31 +100,51 @@ vec3 calculateSpecularReflection(BaseLight bL, Camera cam, vec3 wP,
 /// int shdw : The shadow type of the light.
 /// return : 1.0F if the fragment is in shadow; 0.0F otherwise.
 float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm, int shdw) {
-if (shdw == SHADOW_TYPE_NONE) {
-	return 0.0F;
-} else if (shdw == SHADOW_TYPE_PCF || shdw == SHADOW_TYPE_CLASSIC) {				// temp
+	// If the light uses no shadows, all fragments are outside of the shadow so
+	// always return 0.0F.
+	if (shdw == SHADOW_TYPE_NONE) {
+		return 0.0F;
+	} 
+	
 	// Calculate the bias using the diffuse component to reduce shadow acne
 	const float MAX_SHADOW_BIAS = 0.075F;
 	const float MIN_SHADOW_BIAS = 0.005F;
 	float diffuse = 1.0F - max(dot(-dir, norm), 0.0F);
 	float bias = max(MAX_SHADOW_BIAS * diffuse, MIN_SHADOW_BIAS);
 
+	// Convert the coordinates from light coordinates to texture coordinates.
 	vec3 texCoords = coords.xyz / coords.w;		// to [-1,  1]
 	texCoords = texCoords * 0.5F + 0.5;			// to [ 0,  1]
 
 	// Get the current depth value of the fragment in relation to the light.
 	float currentDepth = texCoords.z;
 
-	// Sample the shadow map using PCF and return the shadow value. Multiply
-	// the resulting value by 1 (no change) if the current depth is inside of
-	// the shadow map (this means we correctly calculated the shadow for this
-	// fragment); otherwise multiply the result by 0 (remove the shadow) since
-	// the shadow map did not contain data for this fragment.
-	return sampleShadowMapPCF(map, texCoords.xy, bias, currentDepth) *
-		float(currentDepth <= 1.0F);
+	// Information fetched from the texture is only valid if the Z component of
+	// the the texture coordinates is in range [0, 1]. Otherwise, this fragment
+	// is not in the texture map so any shadow calculation is unreliable.
+	float isValidShadow = float(currentDepth >= 0.0F && currentDepth <= 1.0F);
+
+	float shadow = 0.0F; // Stores the Shadow Value
+	
+	if (shdw == SHADOW_TYPE_CLASSIC) {						// Classic Shadows
+		shadow = sampleShadowMapClassic(map, texCoords.xy, bias, currentDepth);
+	} else if (shdw == SHADOW_TYPE_PCF) {					// PCF Shadows	
+		shadow = sampleShadowMapPCF(map, texCoords.xy, bias, currentDepth);
+	}
+
+	// Return the Shadow Value multiplied by the validity factor
+	return shadow * isValidShadow;
 }
 
-	return 0.0F;
+float sampleShadowMapClassic(sampler2D map, vec2 coords, float bias,
+		float curDepth) {
+	// Get the depth value of the fragment from the shadow map
+	float shadowDepth = texture2D(map, coords.xy).r;
+
+	// If the current depth is greater than the shadow depth then the fragment
+	// is currently farther away from the light than according to the shadow.
+	// This implies the fragment is in shadow.
+	return (curDepth - bias > shadowDepth) ? 1.0F : 0.0F;
 }
 
 float sampleShadowMapPCF(sampler2D map, vec2 coords, float bias, 

@@ -38,6 +38,19 @@ namespace HoneycombTest {
 			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
 				DeferredRenderer::FinalTexture::SHADOW_MAP);
 		}
+
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_8)) {
+			this->directional->getComponent<DirectionalLight>()->setShadowType(
+				ShadowType::SHADOW_NONE);
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_9)) {
+			this->directional->getComponent<DirectionalLight>()->setShadowType(
+				ShadowType::SHADOW_CLASSIC);
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_0)) {
+			this->directional->getComponent<DirectionalLight>()->setShadowType(
+				ShadowType::SHADOW_PCF);
+		}
 	}
 
 	void TestGame::render() {
