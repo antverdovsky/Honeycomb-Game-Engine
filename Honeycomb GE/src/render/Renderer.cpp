@@ -224,13 +224,16 @@ namespace Honeycomb { namespace Render {
 		this->vShadowMapTexture.setTextureFiltering(GL_NEAREST, GL_NEAREST);
 		this->vShadowMapTexture.setTextureWrap(GL_REPEAT, GL_REPEAT);
 
-		// Initialize the Variance Shadow Map Buffer
+		// Initialize the Variance Shadow Map Buffer (for the depth component,
+		// we borrow the depth buffer from the Classic Shadow Map Buffer).
 		GLuint vBF;
 		glGenFramebuffers(1, &vBF);
 		this->vShadowMapBuffer = vBF;
 		glBindFramebuffer(GL_FRAMEBUFFER, this->vShadowMapBuffer);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 			GL_TEXTURE_2D, this->vShadowMapTexture.getTextureID(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
+			GL_TEXTURE_2D, this->cShadowMapTexture.getTextureID(), 0);
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);
 		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);

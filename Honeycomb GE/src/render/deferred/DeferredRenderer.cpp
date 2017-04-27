@@ -279,6 +279,21 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		if (this->final != FinalTexture::CLASSIC_SHADOW_MAP &&
 			this->final != FinalTexture::VARIANCE_SHADOW_MAP) {
 			glDisable(GL_STENCIL_TEST);
+
+			this->directionalLightShader.setUniform_i("shadowMap", 
+				DeferredRenderer::SHADOW_MAP_INDEX);
+			
+			// Bind the shadow map texture to the 
+			if (dL.getShadow().getShadowType() == ShadowType::SHADOW_CLASSIC ||
+					dL.getShadow().getShadowType() == ShadowType::SHADOW_PCF) {
+				this->cShadowMapTexture.bind(
+					DeferredRenderer::SHADOW_MAP_INDEX);
+			} else if (dL.getShadow().getShadowType() == 
+					ShadowType::SHADOW_VARIANCE) {
+				this->vShadowMapTexture.bind(
+					DeferredRenderer::SHADOW_MAP_INDEX);
+			}
+
 			this->renderLightQuad(dL, this->directionalLightShader,
 				"directionalLight");
 			glEnable(GL_STENCIL_TEST);
@@ -306,7 +321,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	}
 
 	void DeferredRenderer::renderLightQuad(const BaseLight &bL,
-		ShaderProgram &shader, const std::string &name) {
+			ShaderProgram &shader, const std::string &name) {
 		CameraController::getActiveCamera()->toShader(shader, "camera");
 		bL.toShader(shader, name);
 
@@ -317,9 +332,6 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		glEnable(GL_CULL_FACE);
 
 		this->gBuffer.bindDrawLight(shader, bL.getType());
-
-		shader.setUniform_i("shadowMap", DeferredRenderer::SHADOW_MAP_INDEX);
-		this->cShadowMapTexture.bind(DeferredRenderer::SHADOW_MAP_INDEX);
 		
 		quad.draw(shader);
 
@@ -428,10 +440,11 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	Texture2D DeferredRenderer::renderPostProcess() {
 		// If this is a shadow map, return the shadow map texture (note,
 		// post processing is not supported for non GBuffer textures).
-		if (this->final == FinalTexture::CLASSIC_SHADOW_MAP)
+		if (this->final == FinalTexture::CLASSIC_SHADOW_MAP) {
 			return this->cShadowMapTexture;
-		else if (this->final == FinalTexture::VARIANCE_SHADOW_MAP)
+		} else if (this->final == FinalTexture::VARIANCE_SHADOW_MAP) {
 			return this->vShadowMapTexture;
+		}
 
 		// Since we are going to read from one buffer and write to another,
 		// establish now which buffer will be read from and which one we will
@@ -489,12 +502,21 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		if (dL.getShadow().getShadowType() == ShadowType::SHADOW_NONE) return;
 
 		// Bind the Shadow Map Buffer
+		glDepthMask(GL_TRUE);
 		this->gBuffer.unbind();
-		glBindFramebuffer(GL_FRAMEBUFFER, this->cShadowMapBuffer);
-		
-		// Clear the depth texture for each light
-		glDepthMask(GL_TRUE); // Depth Rendering required for Shadow Map
-		glClear(GL_DEPTH_BUFFER_BIT);
+		if (dL.getShadow().getShadowType() == ShadowType::SHADOW_CLASSIC ||
+				dL.getShadow().getShadowType() == ShadowType::SHADOW_PCF) {
+			glBindFramebuffer(GL_FRAMEBUFFER, this->cShadowMapBuffer);
+
+			// Clear the depth texture for each light
+			glClear(GL_DEPTH_BUFFER_BIT);
+		} else if (dL.getShadow().getShadowType() == 
+				ShadowType::SHADOW_VARIANCE) {
+			glBindFramebuffer(GL_FRAMEBUFFER, this->vShadowMapBuffer);
+
+			// Clear the color texture for each light
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		}
 
 		// Enable Culling of Back Faces
 		glEnable(GL_CULL_FACE);
@@ -503,13 +525,19 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// Set the window render viewport size to the Shadow Map Size
 		glViewport(0, 0, this->SHADOW_MAP_WIDTH, this->SHADOW_MAP_HEIGHT);
 
-		// Fetch the Light Projection matrix and write it to the light shaders
+		// Fetch the Light Projection matrix and write it to the light shaders,
+		// and render the scene from the perspective of the camera using the
+		// shadow shader.
 		Matrix4f lP = dL.getShadow().getProjection();
-		this->cShadowMapShader.setUniform_mat4("lightProjection", lP);
-
-		// Render the scene from the perspective of the camera capturing the
-		// depth.
-		scene.render(this->cShadowMapShader);
+		if (dL.getShadow().getShadowType() == ShadowType::SHADOW_CLASSIC ||
+				dL.getShadow().getShadowType() == ShadowType::SHADOW_PCF) {
+			this->cShadowMapShader.setUniform_mat4("lightProjection", lP);
+			scene.render(this->cShadowMapShader);
+		} else if (dL.getShadow().getShadowType() == 
+				ShadowType::SHADOW_VARIANCE) {
+			this->vShadowMapShader.setUniform_mat4("lightProjection", lP);
+			scene.render(this->vShadowMapShader);
+		}
 
 		// Set the window render viewport size back to the Window Size
 		glViewport(0, 0,
