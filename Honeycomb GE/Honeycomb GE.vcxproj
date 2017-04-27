@@ -321,6 +321,10 @@
     <None Include="res\shaders\post-processing\sharpFS.glsl" />
     <None Include="res\shaders\render\antialiasing\fxaa\fxaaFS.glsl" />
     <None Include="res\shaders\render\antialiasing\fxaa\fxaaVS.glsl" />
+    <None Include="res\shaders\render\shadow\classic\cShadowMapFS.glsl" />
+    <None Include="res\shaders\render\shadow\classic\cShadowMapVS.glsl" />
+    <None Include="res\shaders\render\shadow\variance\vShadowMapFS.glsl" />
+    <None Include="res\shaders\render\shadow\variance\vShadowMapVS.glsl" />
     <None Include="res\shaders\util\packing.glsl" />
     <None Include="res\shaders\render\deferred\light\blinn-phong\ambientLightFS.glsl" />
     <None Include="res\shaders\render\deferred\light\blinn-phong\directionalLightFS.glsl" />
@@ -335,8 +339,6 @@
     <None Include="res\shaders\render\deferred\geometry\stencilVS.glsl" />
     <None Include="res\shaders\render\gamma\gammaFS.glsl" />
     <None Include="res\shaders\render\gamma\gammaVS.glsl" />
-    <None Include="res\shaders\render\shadow\shadowMapRenderFS.glsl" />
-    <None Include="res\shaders\render\shadow\shadowMapRenderVS.glsl" />
     <None Include="res\shaders\simple\fragShader.glsl" />
     <None Include="res\shaders\simple\vertexShader.glsl" />
     <None Include="res\shaders\standard\light\blinn-phong\stdAmbientLight.glsl" />

@@ -188,32 +188,60 @@ namespace Honeycomb { namespace Render {
 	}
 
 	void Renderer::initializeShadowMapDependencies() {
-		// Initialize the Shadow Map Texture
-		this->shadowMapTexture.initialize();
-		this->shadowMapTexture.setImageData(
+		// Initialize the Classic Shadow Map Texture (simple depth texture)
+		this->cShadowMapTexture.initialize();
+		this->cShadowMapTexture.setImageData(
 			nullptr, GL_FLOAT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, 
 			Renderer::SHADOW_MAP_WIDTH, Renderer::SHADOW_MAP_HEIGHT);
-		this->shadowMapTexture.setTextureFiltering(GL_NEAREST, GL_NEAREST);
-		this->shadowMapTexture.setTextureWrap(GL_REPEAT, GL_REPEAT);
+		this->cShadowMapTexture.setTextureFiltering(GL_NEAREST, GL_NEAREST);
+		this->cShadowMapTexture.setTextureWrap(GL_REPEAT, GL_REPEAT);
 
-		// Initialize the Shadow Map Buffer
-		GLuint sBF;
-		glGenFramebuffers(1, &sBF);
-		this->shadowMapBuffer = sBF;
-		glBindFramebuffer(GL_FRAMEBUFFER, this->shadowMapBuffer);
+		// Initialize the Classic Shadow Map Buffer
+		GLuint cBF;
+		glGenFramebuffers(1, &cBF);
+		this->cShadowMapBuffer = cBF;
+		glBindFramebuffer(GL_FRAMEBUFFER, this->cShadowMapBuffer);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-			GL_TEXTURE_2D, this->shadowMapTexture.getTextureID(), 0);
+			GL_TEXTURE_2D, this->cShadowMapTexture.getTextureID(), 0);
 		glDrawBuffer(GL_NONE);
 		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		// Initialize the Shadow Map Shader
-		this->shadowMapShader.initialize();
-		this->shadowMapShader.addShader("../Honeycomb GE/res/shaders/render/"
-			"shadow/shadowMapRenderVS.glsl", ShaderType::VERTEX_SHADER);
-		this->shadowMapShader.addShader("../Honeycomb GE/res/shaders/render/"
-			"shadow/shadowMapRenderFS.glsl", ShaderType::FRAGMENT_SHADER);
-		this->shadowMapShader.finalizeShaderProgram();
+		// Initialize the Classic Shadow Map Shader
+		this->cShadowMapShader.initialize();
+		this->cShadowMapShader.addShader("../Honeycomb GE/res/shaders/render/"
+			"shadow/classic/cShadowMapVS.glsl", ShaderType::VERTEX_SHADER);
+		this->cShadowMapShader.addShader("../Honeycomb GE/res/shaders/render/"
+			"shadow/classic/cShadowMapFS.glsl", ShaderType::FRAGMENT_SHADER);
+		this->cShadowMapShader.finalizeShaderProgram();
+
+		// Initialize the Variance Shadow Map Texture (32 bit Red & Green
+		// channels texture).
+		this->vShadowMapTexture.initialize();
+		this->vShadowMapTexture.setImageData(
+			nullptr, GL_FLOAT, GL_RG32F, GL_RGBA,
+			Renderer::SHADOW_MAP_WIDTH, Renderer::SHADOW_MAP_HEIGHT);
+		this->vShadowMapTexture.setTextureFiltering(GL_NEAREST, GL_NEAREST);
+		this->vShadowMapTexture.setTextureWrap(GL_REPEAT, GL_REPEAT);
+
+		// Initialize the Variance Shadow Map Buffer
+		GLuint vBF;
+		glGenFramebuffers(1, &vBF);
+		this->vShadowMapBuffer = vBF;
+		glBindFramebuffer(GL_FRAMEBUFFER, this->vShadowMapBuffer);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+			GL_TEXTURE_2D, this->vShadowMapTexture.getTextureID(), 0);
+		glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		glReadBuffer(GL_NONE);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		// Initialize the Variance Shadow Map Shader
+		this->vShadowMapShader.initialize();
+		this->vShadowMapShader.addShader("../Honeycomb GE/res/shaders/render/"
+			"shadow/variance/vShadowMapVS.glsl", ShaderType::VERTEX_SHADER);
+		this->vShadowMapShader.addShader("../Honeycomb GE/res/shaders/render/"
+			"shadow/variance/vShadowMapFS.glsl", ShaderType::FRAGMENT_SHADER);
+		this->vShadowMapShader.finalizeShaderProgram();
 	}
 
 	void Renderer::setBoolSettingGL(const int &cap, const bool &val) {

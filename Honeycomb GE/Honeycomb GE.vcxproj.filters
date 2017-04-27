@@ -318,8 +318,6 @@
     <None Include="res\shaders\standard\vertex\stdVertexVS.glsl" />
     <None Include="res\shaders\standard\structs\stdCamera.glsl" />
     <None Include="res\shaders\standard\structs\stdMaterial.glsl" />
-    <None Include="res\shaders\render\shadow\shadowMapRenderFS.glsl" />
-    <None Include="res\shaders\render\shadow\shadowMapRenderVS.glsl" />
     <None Include="res\shaders\standard\light\blinn-phong\stdAmbientLight.glsl" />
     <None Include="res\shaders\standard\light\blinn-phong\stdBaseLight.glsl" />
     <None Include="res\shaders\standard\light\blinn-phong\stdDirectionalLight.glsl" />
@@ -337,5 +335,9 @@
     <None Include="res\shaders\render\deferred\geometry\stencilFS.glsl" />
     <None Include="res\shaders\render\deferred\geometry\stencilVS.glsl" />
     <None Include="res\shaders\util\packing.glsl" />
+    <None Include="res\shaders\render\shadow\classic\cShadowMapFS.glsl" />
+    <None Include="res\shaders\render\shadow\classic\cShadowMapVS.glsl" />
+    <None Include="res\shaders\render\shadow\variance\vShadowMapFS.glsl" />
+    <None Include="res\shaders\render\shadow\variance\vShadowMapVS.glsl" />
   </ItemGroup>
 </Project>

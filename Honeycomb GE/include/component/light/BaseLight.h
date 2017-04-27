@@ -19,6 +19,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		SHADOW_NONE,			// Light uses no shadows
 		SHADOW_CLASSIC,			// Light uses classic shadows with no aliasing
 		SHADOW_PCF,				// Light uses PCF Soft Shadows
+		SHADOW_VARIANCE,		// Light uses Variance Shadow Mapping
 	};
 
 	class BaseLight : 

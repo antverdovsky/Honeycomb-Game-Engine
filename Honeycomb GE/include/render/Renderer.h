@@ -165,11 +165,16 @@ namespace Honeycomb { namespace Render {
 		Honeycomb::Shader::ShaderProgram skyboxShader;
 		
 		// Shadow Map Variables
-		int shadowMapBuffer;
 		const static int SHADOW_MAP_WIDTH;
 		const static int SHADOW_MAP_HEIGHT;
-		Honeycomb::Graphics::Texture2D shadowMapTexture;
-		Honeycomb::Shader::ShaderProgram shadowMapShader;
+		// Classic/PCF Shadow Map Buffer, Texture and Shader
+		int cShadowMapBuffer;
+		Honeycomb::Graphics::Texture2D cShadowMapTexture;
+		Honeycomb::Shader::ShaderProgram cShadowMapShader;
+		// Variance Shadow Map Buffer, Texture and Shader
+		int vShadowMapBuffer;
+		Honeycomb::Graphics::Texture2D vShadowMapTexture;
+		Honeycomb::Shader::ShaderProgram vShadowMapShader;
 		
 		// Shaders for post processing the Final Image
 		std::vector<Honeycomb::Shader::ShaderProgram> postShaders;

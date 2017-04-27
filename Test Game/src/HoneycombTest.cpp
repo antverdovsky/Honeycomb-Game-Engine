@@ -18,38 +18,31 @@ namespace HoneycombTest {
 			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
 				DeferredRenderer::FinalTexture::FINAL);
 		}
+
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_2)) {
 			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
-				DeferredRenderer::FinalTexture::DEPTH);
+				DeferredRenderer::FinalTexture::CLASSIC_SHADOW_MAP);
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_3)) {
 			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
-				DeferredRenderer::FinalTexture::MATERIAL);
-		}
-		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_4)) {
-			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
-				DeferredRenderer::FinalTexture::NORMAL);
-		}
-		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_5)) {
-			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
-				DeferredRenderer::FinalTexture::POSITION);
-		}
-		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_6)) {
-			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
-				DeferredRenderer::FinalTexture::SHADOW_MAP);
+				DeferredRenderer::FinalTexture::VARIANCE_SHADOW_MAP);
 		}
 
-		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_8)) {
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_4)) {
 			this->directional->getComponent<DirectionalLight>()->getShadow().
 				setShadowType(ShadowType::SHADOW_NONE);
 		}
-		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_9)) {
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_5)) {
 			this->directional->getComponent<DirectionalLight>()->getShadow().
 				setShadowType(ShadowType::SHADOW_CLASSIC);
 		}
-		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_0)) {
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_6)) {
 			this->directional->getComponent<DirectionalLight>()->getShadow().
 				setShadowType(ShadowType::SHADOW_PCF);
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_7)) {
+			this->directional->getComponent<DirectionalLight>()->getShadow().
+				setShadowType(ShadowType::SHADOW_VARIANCE);
 		}
 	}
 

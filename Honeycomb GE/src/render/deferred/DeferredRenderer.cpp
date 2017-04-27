@@ -202,7 +202,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	void DeferredRenderer::renderBackground() {
 		// Skip Rendering if this is a Depth Map or a Shadow Map.
 		if (this->final == FinalTexture::DEPTH ||
-			this->final == FinalTexture::SHADOW_MAP) return;
+			this->final == FinalTexture::CLASSIC_SHADOW_MAP ||
+			this->final == FinalTexture::VARIANCE_SHADOW_MAP) return;
 
 		// Skybox will be drawn to the final image
 		glDrawBuffer(GL_COLOR_ATTACHMENT0 + this->final);
@@ -275,7 +276,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		
 		// Do not render the light itself if we are only looking for a shadow
 		// map
-		if (this->final != FinalTexture::SHADOW_MAP) {
+		if (this->final != FinalTexture::CLASSIC_SHADOW_MAP &&
+			this->final != FinalTexture::VARIANCE_SHADOW_MAP) {
 			glDisable(GL_STENCIL_TEST);
 			this->renderLightQuad(dL, this->directionalLightShader,
 				"directionalLight");
@@ -317,7 +319,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		this->gBuffer.bindDrawLight(shader, bL.getType());
 
 		shader.setUniform_i("shadowMap", DeferredRenderer::SHADOW_MAP_INDEX);
-		this->shadowMapTexture.bind(DeferredRenderer::SHADOW_MAP_INDEX);
+		this->cShadowMapTexture.bind(DeferredRenderer::SHADOW_MAP_INDEX);
 		
 		quad.draw(shader);
 
@@ -357,7 +359,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 	void DeferredRenderer::renderPassGeometry(GameScene &scene) {
 		// Skip if we're only rendering a Shadow Map
-		if (this->final == FinalTexture::SHADOW_MAP) return;
+		if (this->final == FinalTexture::CLASSIC_SHADOW_MAP ||
+			this->final == FinalTexture::VARIANCE_SHADOW_MAP) return;
 
 		// Bind the G Buffer for Drawing Geometry
 		this->gBuffer.bindDrawGeometry();
@@ -392,7 +395,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// Don't render any lights if we are not using the final render target
 		// or we are not rendering a shadow map
 		if (this->final != FinalTexture::FINAL &&
-			this->final != FinalTexture::SHADOW_MAP) return;
+			this->final != FinalTexture::CLASSIC_SHADOW_MAP &&
+			this->final != FinalTexture::VARIANCE_SHADOW_MAP) return;
 
 		// Since the polygon mode only applies to geometry, change to FILL
 		// mode when drawing lights.
@@ -422,8 +426,12 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	}
 
 	Texture2D DeferredRenderer::renderPostProcess() {
-		if (this->final == FinalTexture::SHADOW_MAP) 
-			return this->shadowMapTexture;
+		// If this is a shadow map, return the shadow map texture (note,
+		// post processing is not supported for non GBuffer textures).
+		if (this->final == FinalTexture::CLASSIC_SHADOW_MAP)
+			return this->cShadowMapTexture;
+		else if (this->final == FinalTexture::VARIANCE_SHADOW_MAP)
+			return this->vShadowMapTexture;
 
 		// Since we are going to read from one buffer and write to another,
 		// establish now which buffer will be read from and which one we will
@@ -482,7 +490,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		// Bind the Shadow Map Buffer
 		this->gBuffer.unbind();
-		glBindFramebuffer(GL_FRAMEBUFFER, this->shadowMapBuffer);
+		glBindFramebuffer(GL_FRAMEBUFFER, this->cShadowMapBuffer);
 		
 		// Clear the depth texture for each light
 		glDepthMask(GL_TRUE); // Depth Rendering required for Shadow Map
@@ -497,11 +505,11 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		// Fetch the Light Projection matrix and write it to the light shaders
 		Matrix4f lP = dL.getShadow().getProjection();
-		this->shadowMapShader.setUniform_mat4("lightProjection", lP);
+		this->cShadowMapShader.setUniform_mat4("lightProjection", lP);
 
 		// Render the scene from the perspective of the camera capturing the
 		// depth.
-		scene.render(this->shadowMapShader);
+		scene.render(this->cShadowMapShader);
 
 		// Set the window render viewport size back to the Window Size
 		glViewport(0, 0,

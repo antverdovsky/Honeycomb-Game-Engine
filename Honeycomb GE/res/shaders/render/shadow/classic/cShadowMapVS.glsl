@@ -1,8 +1,8 @@
 #version 330 core
 
-#include <../../standard/vertex/stdVertexVS.glsl>
-#include <../../standard/structs/stdCamera.glsl>
-#include <../../standard/structs/stdMaterial.glsl>
+#include <../../../standard/vertex/stdVertexVS.glsl>
+#include <../../../standard/structs/stdCamera.glsl>
+#include <../../../standard/structs/stdMaterial.glsl>
 
 uniform Camera camera;
 uniform mat4 lightProjection;
