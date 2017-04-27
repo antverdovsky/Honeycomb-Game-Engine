@@ -194,6 +194,8 @@ namespace HoneycombTest {
 		this->ambient->getComponent<AmbientLight>()->setIntensity(0.1F);
 		this->directional->getComponent<DirectionalLight>()->
 			setIntensity(1.0F);
+		this->directional->getComponent<DirectionalLight>()->
+			getShadow().setShadowType(ShadowType::SHADOW_VARIANCE);
 		this->directional->addComponent(*suzInputTranfs->clone());
 
 		// Construct a default Camera and give it a default Input Transformable
@@ -208,6 +210,8 @@ namespace HoneycombTest {
 			Vector3f(-2.5F, 1.0F, -5.0F));
 		this->cube2->getComponent<Transform>()->setTranslation(
 			Vector3f(0.0F, 1.0F, -3.5F));
+		this->cube2->getComponent<Transform>()->rotate(
+			Vector3f::getGlobalUp(), PI / 4.0F);
 		this->sphere->getComponent<Transform>()->setScale(
 			Vector3f(PI, PI, PI));
 		this->sphere->getComponent<Transform>()->setTranslation(

@@ -1,4 +1,5 @@
 #include <../../structs/stdCamera.glsl>
+#include <../../../util/math.glsl>
 
 // Shadow Type "enumeration"
 const int SHADOW_TYPE_NONE						= 0;
@@ -224,6 +225,13 @@ float sampleShadowVariance(sampler2D map, vec2 coords, float bias,
 	// compute the maximum P value (maximum probability the pixel is lit).
 	float d = curDepth - textureDepth;
 	float pMax = variance / (variance + d * d);
+
+	// Clamp the probability such that any values below MIN_P_MAX go to 0.0F 
+	// and any values greater than MAX_P_MAX go to 1.0F, using linear stepping.
+	// This helps lower the light bleeding artifact of VSM.
+	const float MIN_P_MAX = 0.2F;
+	const float MAX_P_MAX = 1.0F;
+	pMax = linstep(0.2F, 1.0F, pMax);
 
 	// Return the probability that the pixel is lit (which should be such that
 	// pMax > p is bounded between [0.0F, 1.0F])
