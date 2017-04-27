@@ -219,9 +219,9 @@ namespace Honeycomb { namespace Render {
 		// channels texture).
 		this->vShadowMapTexture.initialize();
 		this->vShadowMapTexture.setImageData(
-			nullptr, GL_FLOAT, GL_RG32F, GL_RGBA,
+			nullptr, GL_FLOAT, GL_RG32F, GL_RG,
 			Renderer::SHADOW_MAP_WIDTH, Renderer::SHADOW_MAP_HEIGHT);
-		this->vShadowMapTexture.setTextureFiltering(GL_NEAREST, GL_NEAREST);
+		this->vShadowMapTexture.setTextureFiltering(GL_LINEAR, GL_LINEAR);
 		this->vShadowMapTexture.setTextureWrap(GL_REPEAT, GL_REPEAT);
 
 		// Initialize the Variance Shadow Map Buffer (for the depth component,

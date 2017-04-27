@@ -4,6 +4,7 @@
 const int SHADOW_TYPE_NONE						= 0;
 const int SHADOW_TYPE_CLASSIC					= 1;
 const int SHADOW_TYPE_PCF						= 2;
+const int SHADOW_TYPE_VARIANCE					= 3;
 
 ///
 /// The basic structure for all lights.
@@ -42,7 +43,7 @@ struct Shadow {
 /// float bias : The shadow bias value.
 /// float curDepth : The current depth from the projection coordinates.
 /// return : The shadow value.
-float sampleShadowMapPCF(sampler2D map, vec2 coords, float bias, 
+float sampleShadowPCF(sampler2D map, vec2 coords, float bias, 
 		float curDepth);
 
 /// Samples the specified shadow map at the specified coordinates with no
@@ -52,7 +53,17 @@ float sampleShadowMapPCF(sampler2D map, vec2 coords, float bias,
 /// float bias : The shadow bias value.
 /// float curDepth : The current depth from the projection coordinates.
 /// return : The shadow value.
-float sampleShadowMapClassic(sampler2D map, vec2 coords, float bias,
+float sampleShadowClassic(sampler2D map, vec2 coords, float bias,
+		float curDepth);
+
+/// Samples the specified shadow map at the specified coordinates using the
+/// variance shadow mapping technique.
+/// sampler2D map : The shadow map rendered from the perspective of the light.
+/// vec2 coords : The coordnates at which to sample the shadow map.
+/// float bias : The shadow bias value.
+/// float curDepth : The current depth from the projection coordinates.
+/// return : The shadow value.
+float sampleShadowVariance(sampler2D map, vec2 coords, float bias,
 		float curDepth);
 
 /// Calculates the attenuation of the specified attenuation component at the
@@ -135,29 +146,31 @@ float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm,
 	float isValidShadow = float(currentDepth >= 0.0F && currentDepth <= 1.0F);
 
 	float shadow = 0.0F; // Stores the Shadow Value
-	
+
 	if (shdw.shadowType == SHADOW_TYPE_CLASSIC) {			// Classic Shadows
-		shadow = sampleShadowMapClassic(map, texCoords.xy, bias, currentDepth);
+		shadow = sampleShadowClassic(map, texCoords.xy, bias, currentDepth);
 	} else if (shdw.shadowType == SHADOW_TYPE_PCF) {		// PCF Shadows	
-		shadow = sampleShadowMapPCF(map, texCoords.xy, bias, currentDepth);
+		shadow = sampleShadowPCF(map, texCoords.xy, bias, currentDepth);
+	} else if (shdw.shadowType == SHADOW_TYPE_VARIANCE) {   // Variance Shadows
+		shadow = sampleShadowVariance(map, texCoords.xy, bias, currentDepth);
 	}
 
 	// Return the Shadow Value multiplied by the validity factor
-	return shadow * isValidShadow;
+	return (1.0F - shadow) * isValidShadow;
 }
 
-float sampleShadowMapClassic(sampler2D map, vec2 coords, float bias,
+float sampleShadowClassic(sampler2D map, vec2 coords, float bias,
 		float curDepth) {
 	// Get the depth value of the fragment from the shadow map
-	float shadowDepth = texture2D(map, coords.xy).r;
+	float textureDepth = texture2D(map, coords).r;
 
 	// If the current depth is greater than the shadow depth then the fragment
 	// is currently farther away from the light than according to the shadow.
 	// This implies the fragment is in shadow.
-	return (curDepth - bias > shadowDepth) ? 1.0F : 0.0F;
+	return step(curDepth - bias, textureDepth);
 }
 
-float sampleShadowMapPCF(sampler2D map, vec2 coords, float bias, 
+float sampleShadowPCF(sampler2D map, vec2 coords, float bias, 
 		float curDepth) {
 	// The number of samples used for PCF.
 	const int SAMPLE_COUNT = 1 * 3;	// DO NOT modify the value 3
@@ -183,10 +196,36 @@ float sampleShadowMapPCF(sampler2D map, vec2 coords, float bias,
 		// fragment is currently farther away from the light than according to 
 		// the shadow map. This implies the fragment is in shadow, therefore,
 		// increment the shadow value.
-		shadow += curDepth - bias > textureDepth ? 1.0F : 0.0F;
+		shadow += step(curDepth - bias, textureDepth);
 	}
 
 	// Since we sampled 9 pixels in total (8 surrounding + 1 center), we divide
 	// the shadow value by 9 to get the average shadow value.
 	return shadow / SAMPLE_COUNT_SQRD;
+}
+
+float sampleShadowVariance(sampler2D map, vec2 coords, float bias,
+		float curDepth) {
+	// Fetch the RG channels of the texture and use them to get the depth and
+	// depth ^ 2 values.
+	vec2 mapRG = texture2D(map, coords).rg;
+	float textureDepth = mapRG.r;
+	float textureDepth2 = mapRG.g;
+	
+	// The probability the texture is in shadow, according to classic shadow
+	// mapping. Bias is not really necessary anymore but it's left in for more
+	// user control.
+	float p = smoothstep(curDepth - bias, curDepth, textureDepth);
+
+	// Calculate the Variance value for Chebyshev's Inequality
+	float variance = max(textureDepth2 - textureDepth * textureDepth, 0.0002F);
+
+	// Calculate the distance from the mean (standard deviation) and use it to 
+	// compute the maximum P value (maximum probability the pixel is lit).
+	float d = curDepth - textureDepth;
+	float pMax = variance / (variance + d * d);
+
+	// Return the probability that the pixel is lit (which should be such that
+	// pMax > p is bounded between [0.0F, 1.0F])
+	return clamp(max(p, pMax), 0.0F, 1.0F);
 }
