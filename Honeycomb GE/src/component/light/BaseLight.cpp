@@ -158,7 +158,8 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 	bool Shadow::isClassicShadow(const ShadowType &shdw) {
 		return shdw == ShadowType::SHADOW_HARD ||
-			   shdw == ShadowType::SHADOW_PCF;
+			   shdw == ShadowType::SHADOW_PCF ||
+			   shdw == ShadowType::SHADOW_INTERPOLATED;
 	}
 
 	bool Shadow::isVarianceShadow(const ShadowType &shdw) {

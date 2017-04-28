@@ -1,4 +1,5 @@
 #include <../shadows/shadowHard.glsl>
+#include <../shadows/shadowInterpolated.glsl>
 #include <../shadows/shadowPCF.glsl>
 #include <../shadows/shadowVariance.glsl>
 
@@ -8,9 +9,10 @@
 const int SHADOW_TYPE_NONE						= 0;
 
 const int SHADOW_TYPE_HARD  					= 1;
-const int SHADOW_TYPE_PCF						= 2;
+const int SHADOW_TYPE_INTERPOLATED				= 2;
+const int SHADOW_TYPE_PCF						= 3;
 
-const int SHADOW_TYPE_VARIANCE					= 3;
+const int SHADOW_TYPE_VARIANCE					= 4;
 
 ///
 /// The basic structure for all lights.
@@ -114,21 +116,23 @@ float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm,
 	texCoords = texCoords * 0.5F + 0.5;			// to [ 0,  1]
 
 	// Get the current depth value of the fragment in relation to the light.
-	float currentDepth = texCoords.z;
+	float curDepth = texCoords.z;
 
 	// Information fetched from the texture is only valid if the Z component of
 	// the the texture coordinates is in range [0, 1]. Otherwise, this fragment
 	// is not in the texture map so any shadow calculation is unreliable.
-	float isValidShadow = float(currentDepth >= 0.0F && currentDepth <= 1.0F);
+	float isValidShadow = float(curDepth >= 0.0F && curDepth <= 1.0F);
 
 	float shadow = 0.0F; // Stores the Shadow Value
 
-	if (shdw.shadowType == SHADOW_TYPE_HARD) {				// Hard Shadows
-		shadow = sampleShadowHard(map, texCoords.xy, bias, currentDepth);
-	} else if (shdw.shadowType == SHADOW_TYPE_PCF) {		// PCF Shadows	
-		shadow = sampleShadowPCF(map, texCoords.xy, bias, currentDepth);
-	} else if (shdw.shadowType == SHADOW_TYPE_VARIANCE) {   // Variance Shadows
-		shadow = sampleShadowVariance(map, texCoords.xy, bias, currentDepth);
+	if (shdw.shadowType == SHADOW_TYPE_HARD) {
+		shadow = sampleShadowHard(map, texCoords.xy, bias, curDepth);
+	} else if (shdw.shadowType == SHADOW_TYPE_INTERPOLATED) {
+		shadow = sampleShadowInterpolated(map, texCoords.xy, bias, curDepth);
+	} else if (shdw.shadowType == SHADOW_TYPE_PCF) {
+		shadow = sampleShadowPCF(map, texCoords.xy, bias, curDepth);
+	} else if (shdw.shadowType == SHADOW_TYPE_VARIANCE) {
+		shadow = sampleShadowVariance(map, texCoords.xy, bias, curDepth);
 	}
 
 	// Return the Shadow Value multiplied by the validity factor

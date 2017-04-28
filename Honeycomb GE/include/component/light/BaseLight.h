@@ -9,21 +9,22 @@
 
 namespace Honeycomb { namespace Component { namespace Light {
 	enum LightType {
-		LIGHT_TYPE_AMBIENT,		// Ambient Light
-		LIGHT_TYPE_DIRECTIONAL,	// Directional Light
-		LIGHT_TYPE_POINT,		// Point Light
-		LIGHT_TYPE_SPOT			// Spot Light
+		LIGHT_TYPE_AMBIENT,			// Ambient Light
+		LIGHT_TYPE_DIRECTIONAL,		// Directional Light
+		LIGHT_TYPE_POINT,			// Point Light
+		LIGHT_TYPE_SPOT				// Spot Light
 	};
 
 	enum ShadowType {
-		SHADOW_NONE,			// Light uses no shadows
+		SHADOW_NONE,				// Light uses no shadows
 
 		// Classic Shadows:
-		SHADOW_HARD,			// Light uses hard shadows with no aliasing
-		SHADOW_PCF,				// Light uses PCF Soft Shadows
+		SHADOW_HARD,				// Light uses hard shadows with no aliasing
+		SHADOW_INTERPOLATED,		// Light uses interpolated "soft" shadows
+		SHADOW_PCF,					// Light uses PCF Soft Shadows
 
 		// Variance Shadows:
-		SHADOW_VARIANCE,		// Light uses Variance Shadow Mapping
+		SHADOW_VARIANCE,			// Light uses Variance Shadow Mapping
 	};
 
 	class BaseLight : 

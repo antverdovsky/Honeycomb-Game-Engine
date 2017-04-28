@@ -343,5 +343,6 @@
     <None Include="res\shaders\standard\light\shadows\shadowHard.glsl" />
     <None Include="res\shaders\standard\light\shadows\shadowPCF.glsl" />
     <None Include="res\shaders\standard\light\shadows\shadowVariance.glsl" />
+    <None Include="res\shaders\standard\light\shadows\shadowInterpolated.glsl" />
   </ItemGroup>
 </Project>

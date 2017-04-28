@@ -38,9 +38,13 @@ namespace HoneycombTest {
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_6)) {
 			this->directional->getComponent<DirectionalLight>()->getShadow().
-				setShadowType(ShadowType::SHADOW_PCF);
+				setShadowType(ShadowType::SHADOW_INTERPOLATED);
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_7)) {
+			this->directional->getComponent<DirectionalLight>()->getShadow().
+				setShadowType(ShadowType::SHADOW_PCF);
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_8)) {
 			this->directional->getComponent<DirectionalLight>()->getShadow().
 				setShadowType(ShadowType::SHADOW_VARIANCE);
 		}
@@ -232,7 +236,6 @@ namespace HoneycombTest {
 			Vector3f(-5.0F, 1.0F, -5.0F));
 
 		this->cube->addComponent(*suzInputTranfs->clone());
-		this->cube2->addComponent(*suzInputTranfs->clone());
 
 		// Construct a left and right spotlight for the front of the car and
 		// add to the car (similar to headlights).
