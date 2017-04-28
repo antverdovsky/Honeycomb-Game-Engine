@@ -1,19 +1,8 @@
-#ifndef STD_POINT_LIGHT_GLSL
-#define STD_POINT_LIGHT_GLSL
+#ifndef BLINN_PHONG_POINT_GLSL
+#define BLINN_PHONG_POINT_GLSL
 
-#include <stdBaseLight.glsl>
-
-///
-/// The point light structure.
-///
-struct PointLight {
-    BaseLight base; // The base component of the light
-	Attenuation attenuation; // The attenuation of the light
-	
-	vec3 position; // The 3D position of the light in the world
-    float range; // The sphere-like radius of the light (the higher this value
-                 // the more accurate the attenuation of the light).
-};
+#include <blinnPhongBase.glsl>
+#include <../../structs/light/stdPointLight.glsl>
 
 /// Calculates the light which should be applied to this fragment, given the
 /// point light which shines on it, the coordinates of the fragment position 

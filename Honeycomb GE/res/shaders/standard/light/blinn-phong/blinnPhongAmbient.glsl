@@ -1,14 +1,8 @@
-#ifndef STD_AMBIENT_LIGHT_GLSL
-#define STD_AMBIENT_LIGHT_GLSL
+#ifndef BLINN_PHONG_AMBIENT_GLSL
+#define BLINN_PHONG_AMBIENT_GLSL
 
-#include <stdBaseLight.glsl>
-
-///
-/// The ambient light strcture.
-///
-struct AmbientLight {
-    BaseLight base; // The base component of the light
-};
+#include <blinnPhongBase.glsl>
+#include <../../structs/light/stdAmbientLight.glsl>
 
 /// Calculates the light which should be applied to this fragment, given the
 /// ambient light which shines on it.

@@ -18,8 +18,8 @@ namespace Honeycomb { namespace Component { namespace Light {
 	const std::string DirectionalLight::INTENSITY_F = "base.intensity";
 	const std::string DirectionalLight::DIRECTION_VEC3 = "direction";
 
-	const std::string DirectionalLight::structFile = "../Honeycomb GE/"
-			"res/shaders/standard/light/blinn-phong/stdDirectionalLight.glsl";
+	const std::string DirectionalLight::structFile = "../Honeycomb GE/res/"
+		"shaders/standard/structs/light/stdDirectionalLight.glsl";
 	const std::string DirectionalLight::structName = "DirectionalLight";
 
 	DirectionalLight::DirectionalLight() : 

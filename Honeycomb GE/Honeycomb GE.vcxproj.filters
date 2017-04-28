@@ -318,11 +318,6 @@
     <None Include="res\shaders\standard\vertex\stdVertexVS.glsl" />
     <None Include="res\shaders\standard\structs\stdCamera.glsl" />
     <None Include="res\shaders\standard\structs\stdMaterial.glsl" />
-    <None Include="res\shaders\standard\light\blinn-phong\stdAmbientLight.glsl" />
-    <None Include="res\shaders\standard\light\blinn-phong\stdBaseLight.glsl" />
-    <None Include="res\shaders\standard\light\blinn-phong\stdDirectionalLight.glsl" />
-    <None Include="res\shaders\standard\light\blinn-phong\stdPointLight.glsl" />
-    <None Include="res\shaders\standard\light\blinn-phong\stdSpotLight.glsl" />
     <None Include="res\shaders\render\deferred\light\blinn-phong\ambientLightFS.glsl" />
     <None Include="res\shaders\render\deferred\light\blinn-phong\directionalLightFS.glsl" />
     <None Include="res\shaders\render\deferred\light\blinn-phong\lightVS.glsl" />
@@ -345,5 +340,15 @@
     <None Include="res\shaders\standard\light\shadows\shadowVariance.glsl" />
     <None Include="res\shaders\standard\light\shadows\shadowInterpolated.glsl" />
     <None Include="res\shaders\standard\light\shadows\shadowPCFInterpolated.glsl" />
+    <None Include="res\shaders\standard\structs\light\stdBaseLight.glsl" />
+    <None Include="res\shaders\standard\structs\light\stdAmbientLight.glsl" />
+    <None Include="res\shaders\standard\structs\light\stdDirectionalLight.glsl" />
+    <None Include="res\shaders\standard\structs\light\stdSpotLight.glsl" />
+    <None Include="res\shaders\standard\structs\light\stdPointLight.glsl" />
+    <None Include="res\shaders\standard\light\blinn-phong\blinnPhongAmbient.glsl" />
+    <None Include="res\shaders\standard\light\blinn-phong\blinnPhongBase.glsl" />
+    <None Include="res\shaders\standard\light\blinn-phong\blinnPhongDirectional.glsl" />
+    <None Include="res\shaders\standard\light\blinn-phong\blinnPhongPoint.glsl" />
+    <None Include="res\shaders\standard\light\blinn-phong\blinnPhongSpot.glsl" />
   </ItemGroup>
 </Project>

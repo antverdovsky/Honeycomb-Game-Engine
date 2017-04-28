@@ -1,22 +1,8 @@
-#ifndef STD_SPOT_LIGHT_GLSL
-#define STD_SPOT_LIGHT_GLSL
+#ifndef BLINN_PHONG_SPOT_GLSL
+#define BLINN_PHONG_SPOT_GLSL
 
-#include <stdBaseLight.glsl>
-
-///
-/// The spot light structure
-///
-struct SpotLight {
-    BaseLight base; // The base component of the light
-    Attenuation attenuation; // The attenuation of the light
-
-    vec3 position; // The 3D position of the light in the world
-    vec3 direction; // The direction of the light in the world
-    
-    float range; // The range of the light (height of the cone formed by the 
-                 // light point and light ray).
-    float angle; // The spot angle of the light.
-};
+#include <blinnPhongBase.glsl>
+#include <../../structs/light/stdSpotLight.glsl>
 
 /// Calculates the light which should be applied to this fragment given the
 /// spot light which shines upon it, the camera position, the world position of

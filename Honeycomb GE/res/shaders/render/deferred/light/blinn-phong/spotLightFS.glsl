@@ -2,7 +2,7 @@
 
 #include <../../../../util/packing.glsl>
 #include <../../../../standard/structs/stdMaterial.glsl>
-#include <../../../../standard/light/blinn-phong/stdSpotLight.glsl>
+#include <../../../../standard/light/blinn-phong/blinnPhongSpot.glsl>
 
 in vec3 out_vs_pos; // Take in the world position outputted by VS
 
