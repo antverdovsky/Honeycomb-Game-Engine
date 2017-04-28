@@ -1,6 +1,7 @@
 #include <../shadows/shadowHard.glsl>
 #include <../shadows/shadowInterpolated.glsl>
 #include <../shadows/shadowPCF.glsl>
+#include <../shadows/shadowPCFInterpolated.glsl>
 #include <../shadows/shadowVariance.glsl>
 
 #include <../../structs/stdCamera.glsl>
@@ -11,8 +12,9 @@ const int SHADOW_TYPE_NONE						= 0;
 const int SHADOW_TYPE_HARD  					= 1;
 const int SHADOW_TYPE_INTERPOLATED				= 2;
 const int SHADOW_TYPE_PCF						= 3;
+const int SHADOW_TYPE_PCF_INTERPOLATED			= 4;
 
-const int SHADOW_TYPE_VARIANCE					= 4;
+const int SHADOW_TYPE_VARIANCE					= 5;
 
 ///
 /// The basic structure for all lights.
@@ -112,11 +114,13 @@ float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm,
 	float bias = max(shdw.maxBias * diffuse, shdw.minBias);
 
 	// Convert the coordinates from light coordinates to texture coordinates.
-	vec3 texCoords = coords.xyz / coords.w;		// to [-1,  1]
-	texCoords = texCoords * 0.5F + 0.5;			// to [ 0,  1]
+	vec3 correctedCoords = coords.xyz / coords.w;		// to [-1,  1]
+	correctedCoords = correctedCoords * 0.5F + 0.5;		// to [ 0,  1]
 
-	// Get the current depth value of the fragment in relation to the light.
-	float curDepth = texCoords.z;
+	// Get the texture coordinates and the current depth value of the fragment 
+	// in relation to the light.
+	vec2 texCoords = correctedCoords.xy;
+	float curDepth = correctedCoords.z;
 
 	// Information fetched from the texture is only valid if the Z component of
 	// the the texture coordinates is in range [0, 1]. Otherwise, this fragment
@@ -126,13 +130,15 @@ float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm,
 	float shadow = 0.0F; // Stores the Shadow Value
 
 	if (shdw.shadowType == SHADOW_TYPE_HARD) {
-		shadow = sampleShadowHard(map, texCoords.xy, bias, curDepth);
+		shadow = sampleShadowHard(map, texCoords, bias, curDepth);
 	} else if (shdw.shadowType == SHADOW_TYPE_INTERPOLATED) {
-		shadow = sampleShadowInterpolated(map, texCoords.xy, bias, curDepth);
+		shadow = sampleShadowInterpolated(map, texCoords, bias, curDepth);
 	} else if (shdw.shadowType == SHADOW_TYPE_PCF) {
-		shadow = sampleShadowPCF(map, texCoords.xy, bias, curDepth);
+		shadow = sampleShadowPCF(map, texCoords, bias, curDepth);
+	} else if (shdw.shadowType == SHADOW_TYPE_PCF_INTERPOLATED) {
+		shadow = sampleShadowPCFInterpolated(map, texCoords, bias, curDepth);
 	} else if (shdw.shadowType == SHADOW_TYPE_VARIANCE) {
-		shadow = sampleShadowVariance(map, texCoords.xy, bias, curDepth);
+		shadow = sampleShadowVariance(map, texCoords, bias, curDepth);
 	}
 
 	// Return the Shadow Value multiplied by the validity factor

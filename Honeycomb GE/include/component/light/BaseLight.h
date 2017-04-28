@@ -22,6 +22,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		SHADOW_HARD,				// Light uses hard shadows with no aliasing
 		SHADOW_INTERPOLATED,		// Light uses interpolated "soft" shadows
 		SHADOW_PCF,					// Light uses PCF Soft Shadows
+		SHADOW_PCF_INTERPOLATED,	// Light uses PCF Interpolated Soft Shadows
 
 		// Variance Shadows:
 		SHADOW_VARIANCE,			// Light uses Variance Shadow Mapping

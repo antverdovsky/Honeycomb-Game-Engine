@@ -46,6 +46,10 @@ namespace HoneycombTest {
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_8)) {
 			this->directional->getComponent<DirectionalLight>()->getShadow().
+				setShadowType(ShadowType::SHADOW_PCF_INTERPOLATED);
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_9)) {
+			this->directional->getComponent<DirectionalLight>()->getShadow().
 				setShadowType(ShadowType::SHADOW_VARIANCE);
 		}
 	}

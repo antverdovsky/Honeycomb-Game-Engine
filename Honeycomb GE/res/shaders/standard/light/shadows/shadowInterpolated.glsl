@@ -1,3 +1,6 @@
+#ifndef SHADOW_INTERPOLATED_GLSL
+#define SHADOW_INTERPOLATED_GLSL
+
 /// Samples the specified shadow map at the specified coordinates with bilinear
 /// interpolation.
 /// sampler2D map : The shadow map rendered from the perspective of the light.
@@ -35,3 +38,5 @@ float sampleShadowInterpolated(sampler2D map, vec2 coords, float bias,
 
 	return mixC;
 }
+
+#endif
