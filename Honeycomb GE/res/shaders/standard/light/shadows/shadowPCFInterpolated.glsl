@@ -1,3 +1,6 @@
+#ifndef SHADOW_PCF_INTERPOLATED_GLSL
+#define SHADOW_PCF_INTERPOLATED_GLSL
+
 #include <shadowInterpolated.glsl>
 
 /// Samples the specified shadow map at the specified coordinates using
@@ -38,3 +41,5 @@ float sampleShadowPCFInterpolated(sampler2D map, vec2 coords, float bias,
 	// the shadow value by 9 to get the average shadow value.
 	return shadow / SAMPLE_COUNT_SQRD;
 }
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef SHADOW_PCF_GLSL
+#define SHADOW_PCF_GLSL
+
 /// Samples the specified shadow map at the specified coordinates using
 /// percentage-closer filtering (PCF).
 /// sampler2D map : The shadow map rendered from the perspective of the light.
@@ -39,3 +42,5 @@ float sampleShadowPCF(sampler2D map, vec2 coords, float bias, float curDepth) {
 	// the shadow value by 9 to get the average shadow value.
 	return shadow / SAMPLE_COUNT_SQRD;
 }
+
+#endif

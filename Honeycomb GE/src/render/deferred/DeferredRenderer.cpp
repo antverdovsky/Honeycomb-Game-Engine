@@ -491,7 +491,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// Image to which we wrote last is the FINAL final (note that since we
 		// swapped the buffers, the image to which we wrote last is now the
 		// read buffer).
-		return this->gBuffer.bufferTextures[readBuffer];
+		return this->gBuffer.bufferTextures[writeBuffer];
 	}
 
 	void DeferredRenderer::renderDirectionalShadowMap(

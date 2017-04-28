@@ -1,3 +1,6 @@
+#ifndef SHADOW_VARIANCE_GLSL
+#define SHADOW_VARIANCE_GLSL
+
 #include <../../../util/math.glsl>
 
 /// Samples the specified shadow map at the specified coordinates using the
@@ -42,3 +45,5 @@ float sampleShadowVariance(sampler2D map, vec2 coords, float bias,
 	// pMax > p is bounded between [0.0F, 1.0F])
 	return clamp(max(p, pMax), 0.0F, 1.0F);
 }
+
+#endif

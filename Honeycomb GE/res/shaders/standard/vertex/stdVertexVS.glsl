@@ -1,3 +1,6 @@
+#ifndef STD_VERTEX_GLSL
+#define STD_VERTEX_GLSL
+
 ///
 /// Defines the layouts of all of the Vertex attributes used in all standard
 /// Vertex Shaders.
@@ -39,3 +42,5 @@ out STD_VERTEX_OUT {
 
 	mat3 tbnMatrix;
 } vertexOut;
+
+#endif

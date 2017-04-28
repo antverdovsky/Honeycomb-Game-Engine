@@ -1,3 +1,6 @@
+#ifndef PACKING_GLSL
+#define PACKING_GLSL
+
 /// Packs the specified Vector3 color into a floating point value.
 /// vec3 color : The color to be packed.
 /// return : The packed floating point value.
@@ -57,3 +60,5 @@ vec4 unpackRGBA(float pack) {
 
 	return vec4(r, g, b, a);
 }
+
+#endif

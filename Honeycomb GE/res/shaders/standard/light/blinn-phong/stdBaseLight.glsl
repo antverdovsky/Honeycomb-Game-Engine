@@ -1,3 +1,6 @@
+#ifndef STD_BASE_LIGHT_GLSL
+#define STD_BASE_LIGHT_GLSL
+
 #include <../shadows/shadowHard.glsl>
 #include <../shadows/shadowInterpolated.glsl>
 #include <../shadows/shadowPCF.glsl>
@@ -144,3 +147,5 @@ float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm,
 	// Return the Shadow Value multiplied by the validity factor
 	return (1.0F - shadow) * isValidShadow;
 }
+
+#endif

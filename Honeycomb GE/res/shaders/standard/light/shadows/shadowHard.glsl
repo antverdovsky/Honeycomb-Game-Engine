@@ -1,3 +1,6 @@
+#ifndef SHADOW_HARD_GLSL
+#define SHADOW_HARD_GLSL
+
 /// Samples the specified shadow map at the specified coordinates with no
 /// antialiasing or special filtering.
 /// sampler2D map : The shadow map rendered from the perspective of the light.
@@ -17,3 +20,5 @@ float sampleShadowHard(sampler2D map, vec2 coords, float bias,
 	// return 1.0F.
 	return step(curDepth - bias, textureDepth);
 }
+
+#endif

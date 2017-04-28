@@ -1,3 +1,6 @@
+#ifndef STD_SPOT_LIGHT_GLSL
+#define STD_SPOT_LIGHT_GLSL
+
 #include <stdBaseLight.glsl>
 
 ///
@@ -68,3 +71,5 @@ vec3 calculateSpotLight(SpotLight sL, Camera cam, vec3 wP, vec3 norm,
     // Return the blend of the Diffuse and Specular lighting
     return ((dif * diffuse) + specular) * intensity;
 }
+
+#endif

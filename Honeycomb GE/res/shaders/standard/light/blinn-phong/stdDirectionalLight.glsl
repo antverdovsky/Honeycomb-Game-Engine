@@ -1,3 +1,6 @@
+#ifndef STD_DIRECTIONAL_LIGHT_GLSL
+#define STD_DIRECTIONAL_LIGHT_GLSL
+
 #include <stdBaseLight.glsl>
 
 ///
@@ -45,3 +48,5 @@ vec3 calculateDirectionalLight(DirectionalLight dL, Camera cam, vec3 wP,
     // Return the blend of the Diffuse and Specular lighting
     return shadowValue * ((dif * diffuse) + specular);
 }
+
+#endif

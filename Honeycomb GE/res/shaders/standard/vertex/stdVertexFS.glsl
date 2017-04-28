@@ -1,3 +1,6 @@
+#ifndef STD_VERTEX_GLSL
+#define STD_VERTEX_GLSL
+
 ///
 /// Standard Structure defining the vertex structure which is used as input 
 /// inside all standard Fragment Shaders.
@@ -13,3 +16,5 @@ in STD_VERTEX_OUT {
 
 	mat3 tbnMatrix;
 } vertexIn;
+
+#endif

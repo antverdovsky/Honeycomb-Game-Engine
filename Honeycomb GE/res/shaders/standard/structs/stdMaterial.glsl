@@ -1,3 +1,6 @@
+#ifndef STD_MATERIAL_GLSL
+#define STD_MATERIAL_GLSL
+
 ///
 /// The Texture structure.
 ///
@@ -201,3 +204,5 @@ vec4 textureCubeSRGB(samplerCube cube, vec3 coord, float gamma) {
 	vec4 texColor = texture(cube, coord);
 	return applyGammaSRGB(texColor, gamma);
 }
+
+#endif

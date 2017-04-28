@@ -1,3 +1,6 @@
+#ifndef STD_AMBIENT_LIGHT_GLSL
+#define STD_AMBIENT_LIGHT_GLSL
+
 #include <stdBaseLight.glsl>
 
 ///
@@ -17,3 +20,5 @@ vec3 calculateAmbientLight(AmbientLight aL) {
     // intensity is less than 1.0F.
     return aL.base.intensity * aL.base.color.xyz;
 }
+
+#endif

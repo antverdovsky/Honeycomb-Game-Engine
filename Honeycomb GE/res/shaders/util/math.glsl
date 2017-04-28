@@ -1,3 +1,6 @@
+#ifndef MATH_GLSL
+#define MATH_GLSL
+
 /// Linear Step Function which returns a value between 0 and 1 which represents
 /// the value's distance between the low and high values. If the value is lower
 /// than low or higher than high, 0.0F or 1.0F will be returned, respectively.
@@ -14,3 +17,5 @@ float linstep(float low, float high, float value) {
 	// If the value is outside of the [low, high] range, clamp it
 	return clamp(d, 0.0F, 1.0F);
 }
+
+#endif
