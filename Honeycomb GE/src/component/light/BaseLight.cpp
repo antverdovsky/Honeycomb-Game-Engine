@@ -156,7 +156,16 @@ namespace Honeycomb { namespace Component { namespace Light {
 	const std::string Shadow::PROJECTION_MAT4 = "projection";
 	const std::string Shadow::SHADOW_TYPE_I = "shadowType";
 
-	Shadow::Shadow() : Shadow(ShadowType::SHADOW_PCF) {
+	bool Shadow::isClassicShadow(const ShadowType &shdw) {
+		return shdw == ShadowType::SHADOW_HARD ||
+			   shdw == ShadowType::SHADOW_PCF;
+	}
+
+	bool Shadow::isVarianceShadow(const ShadowType &shdw) {
+		return shdw == ShadowType::SHADOW_VARIANCE;
+	}
+
+	Shadow::Shadow() : Shadow(ShadowType::SHADOW_VARIANCE) {
 
 	}
 

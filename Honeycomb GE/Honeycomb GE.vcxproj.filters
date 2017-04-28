@@ -340,5 +340,8 @@
     <None Include="res\shaders\render\shadow\variance\vShadowMapFS.glsl" />
     <None Include="res\shaders\render\shadow\variance\vShadowMapVS.glsl" />
     <None Include="res\shaders\util\math.glsl" />
+    <None Include="res\shaders\standard\light\shadows\shadowHard.glsl" />
+    <None Include="res\shaders\standard\light\shadows\shadowPCF.glsl" />
+    <None Include="res\shaders\standard\light\shadows\shadowVariance.glsl" />
   </ItemGroup>
 </Project>

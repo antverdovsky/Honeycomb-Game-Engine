@@ -1,10 +1,15 @@
+#include <../shadows/shadowHard.glsl>
+#include <../shadows/shadowPCF.glsl>
+#include <../shadows/shadowVariance.glsl>
+
 #include <../../structs/stdCamera.glsl>
-#include <../../../util/math.glsl>
 
 // Shadow Type "enumeration"
 const int SHADOW_TYPE_NONE						= 0;
-const int SHADOW_TYPE_CLASSIC					= 1;
+
+const int SHADOW_TYPE_HARD  					= 1;
 const int SHADOW_TYPE_PCF						= 2;
+
 const int SHADOW_TYPE_VARIANCE					= 3;
 
 ///
@@ -36,36 +41,6 @@ struct Shadow {
 	float minBias;	 // Minimum Bias (if light is parallel to surface)
 	float maxBias;	 // Maximum Bias (if light is perpendicular to surface)
 };
-
-/// Samples the specified shadow map at the specified coordinates using
-/// percentage-closer filtering (PCF).
-/// sampler2D map : The shadow map rendered from the perspective of the light.
-/// vec2 coords : The coordnates at which to sample the shadow map.
-/// float bias : The shadow bias value.
-/// float curDepth : The current depth from the projection coordinates.
-/// return : The shadow value.
-float sampleShadowPCF(sampler2D map, vec2 coords, float bias, 
-		float curDepth);
-
-/// Samples the specified shadow map at the specified coordinates with no
-/// antialiasing or special filtering.
-/// sampler2D map : The shadow map rendered from the perspective of the light.
-/// vec2 coords : The coordnates at which to sample the shadow map.
-/// float bias : The shadow bias value.
-/// float curDepth : The current depth from the projection coordinates.
-/// return : The shadow value.
-float sampleShadowClassic(sampler2D map, vec2 coords, float bias,
-		float curDepth);
-
-/// Samples the specified shadow map at the specified coordinates using the
-/// variance shadow mapping technique.
-/// sampler2D map : The shadow map rendered from the perspective of the light.
-/// vec2 coords : The coordnates at which to sample the shadow map.
-/// float bias : The shadow bias value.
-/// float curDepth : The current depth from the projection coordinates.
-/// return : The shadow value.
-float sampleShadowVariance(sampler2D map, vec2 coords, float bias,
-		float curDepth);
 
 /// Calculates the attenuation of the specified attenuation component at the
 /// specified distance.
@@ -148,8 +123,8 @@ float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm,
 
 	float shadow = 0.0F; // Stores the Shadow Value
 
-	if (shdw.shadowType == SHADOW_TYPE_CLASSIC) {			// Classic Shadows
-		shadow = sampleShadowClassic(map, texCoords.xy, bias, currentDepth);
+	if (shdw.shadowType == SHADOW_TYPE_HARD) {				// Hard Shadows
+		shadow = sampleShadowHard(map, texCoords.xy, bias, currentDepth);
 	} else if (shdw.shadowType == SHADOW_TYPE_PCF) {		// PCF Shadows	
 		shadow = sampleShadowPCF(map, texCoords.xy, bias, currentDepth);
 	} else if (shdw.shadowType == SHADOW_TYPE_VARIANCE) {   // Variance Shadows
@@ -158,82 +133,4 @@ float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm,
 
 	// Return the Shadow Value multiplied by the validity factor
 	return (1.0F - shadow) * isValidShadow;
-}
-
-float sampleShadowClassic(sampler2D map, vec2 coords, float bias,
-		float curDepth) {
-	// Get the depth value of the fragment from the shadow map
-	float textureDepth = texture2D(map, coords).r;
-
-	// If the current depth is greater than the shadow depth then the fragment
-	// is currently farther away from the light than according to the shadow.
-	// This implies the fragment is in shadow.
-	return step(curDepth - bias, textureDepth);
-}
-
-float sampleShadowPCF(sampler2D map, vec2 coords, float bias, 
-		float curDepth) {
-	// The number of samples used for PCF.
-	const int SAMPLE_COUNT = 1 * 3;	// DO NOT modify the value 3
-	const int SAMPLE_COUNT_SQRD = SAMPLE_COUNT * SAMPLE_COUNT;
-
-	// Get the texel size (inverse of the pixel size of the shadow map)
-	vec2 offset = 1.0F / textureSize(map, 0);
-	
-	// Stores the final shadow map depth value
-	float shadow = 0.0F;
-
-	// Loop through all of the surrounding pixels and the current pixel
-	for (int i = 0; i < SAMPLE_COUNT_SQRD; ++i) {
-		// Get the x and y offsets from the current pixel ([-1, 1])
-		int x = i / SAMPLE_COUNT - 1;
-		int y = i % SAMPLE_COUNT - 1;
-
-		// Fetch the depth from the shadow texture map at the current pixel
-		vec2 offsetCoord = coords + vec2(x, y) * offset;
-		float textureDepth = texture2D(map, offsetCoord).r;
-
-		// If the current depth is greater than the shadow depth then the 
-		// fragment is currently farther away from the light than according to 
-		// the shadow map. This implies the fragment is in shadow, therefore,
-		// increment the shadow value.
-		shadow += step(curDepth - bias, textureDepth);
-	}
-
-	// Since we sampled 9 pixels in total (8 surrounding + 1 center), we divide
-	// the shadow value by 9 to get the average shadow value.
-	return shadow / SAMPLE_COUNT_SQRD;
-}
-
-float sampleShadowVariance(sampler2D map, vec2 coords, float bias,
-		float curDepth) {
-	// Fetch the RG channels of the texture and use them to get the depth and
-	// depth ^ 2 values.
-	vec2 mapRG = texture2D(map, coords).rg;
-	float textureDepth = mapRG.r;
-	float textureDepth2 = mapRG.g;
-	
-	// The probability the texture is in shadow, according to classic shadow
-	// mapping. Bias is not really necessary anymore but it's left in for more
-	// user control.
-	float p = smoothstep(curDepth - bias, curDepth, textureDepth);
-
-	// Calculate the Variance value for Chebyshev's Inequality
-	float variance = max(textureDepth2 - textureDepth * textureDepth, 0.0002F);
-
-	// Calculate the distance from the mean (standard deviation) and use it to 
-	// compute the maximum P value (maximum probability the pixel is lit).
-	float d = curDepth - textureDepth;
-	float pMax = variance / (variance + d * d);
-
-	// Clamp the probability such that any values below MIN_P_MAX go to 0.0F 
-	// and any values greater than MAX_P_MAX go to 1.0F, using linear stepping.
-	// This helps lower the light bleeding artifact of VSM.
-	const float MIN_P_MAX = 0.2F;
-	const float MAX_P_MAX = 1.0F;
-	pMax = linstep(0.2F, 1.0F, pMax);
-
-	// Return the probability that the pixel is lit (which should be such that
-	// pMax > p is bounded between [0.0F, 1.0F])
-	return clamp(max(p, pMax), 0.0F, 1.0F);
 }

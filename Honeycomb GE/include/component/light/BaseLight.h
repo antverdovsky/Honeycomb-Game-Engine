@@ -17,8 +17,12 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 	enum ShadowType {
 		SHADOW_NONE,			// Light uses no shadows
-		SHADOW_CLASSIC,			// Light uses classic shadows with no aliasing
+
+		// Classic Shadows:
+		SHADOW_HARD,			// Light uses hard shadows with no aliasing
 		SHADOW_PCF,				// Light uses PCF Soft Shadows
+
+		// Variance Shadows:
 		SHADOW_VARIANCE,		// Light uses Variance Shadow Mapping
 	};
 
@@ -192,7 +196,23 @@ namespace Honeycomb { namespace Component { namespace Light {
 		static const std::string PROJECTION_MAT4;
 		static const std::string SHADOW_TYPE_I;
 
-		/// Initializes a default Shadow with a shadow type of PCF, 0.005F 
+		/// Returns a boolean indicating whether the following shadow is of 
+		/// type SHADOW_HARD or SHADOW_PCF. The classic depth buffer should be
+		/// used for these types of shadows.
+		/// const ShadowType &shdw : The shadow type to be checked.
+		/// return : True if the shadow is of type SHADOW_HARD or SHADOW_PCF.
+		///			 False otherwise.
+		static bool isClassicShadow(const ShadowType &shdw);
+
+		/// Returns a boolean indicating whether the following shadow is of
+		/// type SHADOW_VARIANCE. The variance RG16F buffer should be used for
+		/// these types of shadows.
+		/// const ShadowType &shdw : The shadow type to be checked.
+		/// return : True if the shadow is of type SHADOW_VARIANCE. False
+		///			 otherwise.
+		static bool isVarianceShadow(const ShadowType &shdw);
+
+		/// Initializes a default Shadow with a shadow type of Variance, 0.005F 
 		/// minimum bias, 0.050F maximum bias and a 0.75F intensity.
 		Shadow();
 

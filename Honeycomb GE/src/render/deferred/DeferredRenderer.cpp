@@ -23,6 +23,7 @@ using Honeycomb::Component::Light::DirectionalLight;
 using Honeycomb::Component::Light::PointLight;
 using Honeycomb::Component::Light::SpotLight;
 using Honeycomb::Component::Light::LightType;
+using Honeycomb::Component::Light::Shadow;
 using Honeycomb::Component::Light::ShadowType;
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Component::Render::CameraController;
@@ -283,15 +284,13 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			this->directionalLightShader.setUniform_i("shadowMap", 
 				DeferredRenderer::SHADOW_MAP_INDEX);
 			
-			// Bind the shadow map texture to the 
-			if (dL.getShadow().getShadowType() == ShadowType::SHADOW_CLASSIC ||
-					dL.getShadow().getShadowType() == ShadowType::SHADOW_PCF) {
-				this->cShadowMapTexture.bind(
-					DeferredRenderer::SHADOW_MAP_INDEX);
-			} else if (dL.getShadow().getShadowType() == 
-					ShadowType::SHADOW_VARIANCE) {
-				this->vShadowMapTexture.bind(
-					DeferredRenderer::SHADOW_MAP_INDEX);
+			// Bind the shadow map texture at the shadow map index for the
+			// light shaders
+			auto shadowType = dL.getShadow().getShadowType();
+			if (Shadow::isClassicShadow(shadowType)) {
+				this->cShadowMapTexture.bind(SHADOW_MAP_INDEX);
+			} else if (Shadow::isVarianceShadow(shadowType)) {
+				this->vShadowMapTexture.bind(SHADOW_MAP_INDEX);
 			}
 
 			this->renderLightQuad(dL, this->directionalLightShader,
@@ -504,17 +503,12 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// Bind the Shadow Map Buffer
 		glDepthMask(GL_TRUE);
 		this->gBuffer.unbind();
-		if (dL.getShadow().getShadowType() == ShadowType::SHADOW_CLASSIC ||
-				dL.getShadow().getShadowType() == ShadowType::SHADOW_PCF) {
+		auto shadowType = dL.getShadow().getShadowType();
+		if (Shadow::isClassicShadow(shadowType)) {
 			glBindFramebuffer(GL_FRAMEBUFFER, this->cShadowMapBuffer);
-
-			// Clear the depth texture for each light
 			glClear(GL_DEPTH_BUFFER_BIT);
-		} else if (dL.getShadow().getShadowType() == 
-				ShadowType::SHADOW_VARIANCE) {
+		} else if (Shadow::isVarianceShadow(shadowType)) {
 			glBindFramebuffer(GL_FRAMEBUFFER, this->vShadowMapBuffer);
-
-			// Clear the color texture for each light
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 
@@ -529,12 +523,10 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// and render the scene from the perspective of the camera using the
 		// shadow shader.
 		Matrix4f lP = dL.getShadow().getProjection();
-		if (dL.getShadow().getShadowType() == ShadowType::SHADOW_CLASSIC ||
-				dL.getShadow().getShadowType() == ShadowType::SHADOW_PCF) {
+		if (Shadow::isClassicShadow(shadowType)) {
 			this->cShadowMapShader.setUniform_mat4("lightProjection", lP);
 			scene.render(this->cShadowMapShader);
-		} else if (dL.getShadow().getShadowType() == 
-				ShadowType::SHADOW_VARIANCE) {
+		} else if (Shadow::isVarianceShadow(shadowType)) {
 			this->vShadowMapShader.setUniform_mat4("lightProjection", lP);
 			scene.render(this->vShadowMapShader);
 		}
