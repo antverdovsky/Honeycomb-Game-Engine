@@ -92,23 +92,6 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		/// rendered if the final texture target is NOT a depth or shadow map.
 		void renderBackground();
 		
-		/// Postprocesses the image using the FXAA antialiasing correction
-		/// algorithm.
-		/// const GBufferTextureType &r : The buffer from which we read the
-		///								  image which will be FXAA corrected.
-		/// const GBufferTextureType &r : The buffer to which we write the
-		///								  image which will be FXAA corrected.
-		void renderFXAA(const GBufferTextureType &r, 
-			const GBufferTextureType &w);
-
-		/// Postprocesses the image using the Gamma correction algorithm.
-		/// const GBufferTextureType &r : The buffer from which we read the
-		///								  image which will be FXAA corrected.
-		/// const GBufferTextureType &r : The buffer to which we write the
-		///								  image which will be FXAA corrected.
-		void renderGamma(const GBufferTextureType &r,
-			const GBufferTextureType &w);
-
 		/// Renders the specified Ambient Light using Deferred Rendering.
 		/// const AmbientLight &aL : The ambient light to be rendered.
 		void renderLightAmbient(const Honeycomb::Component::Light::AmbientLight
@@ -161,12 +144,24 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		/// GameScene &scene : The scene whose lights are to be rendered.
 		void renderPassLight(Honeycomb::Scene::GameScene &scene);
 
-		/// Post processes the specified target texture and returns the
-		/// texture which contains the final "final" texture (post processed).
-		/// Post processing is not supported for non GBuffer textures (i.e.
-		/// the shadow map).
-		/// return : The texture containing the post processed image.
-		Honeycomb::Graphics::Texture2D renderPostProcess();
+		/// Writes the final texture target data to the GBuffer::FINAL_2 and
+		/// performs post processing on the FINAL_2 buffer. At the end, the
+		/// texture containing the final post processed image is returned.
+		/// return : The texture containing the post processed final image.
+		Honeycomb::Graphics::Texture2D renderPassPostProcess();
+
+		/// Reads in a texture from the read buffer, post processes it with the
+		/// specified shader, and writes it to the write buffer. The read and
+		/// write are then swapped so that the read equals the old write, and
+		/// vice versa.
+		/// ShaderProgram &shader : The shader program to be used to post
+		///							process the texture.
+		/// int &read : The GBuffer texture index containing the image to be
+		///				post processed.
+		/// int &write : The GBuffer texture index into which the post 
+		///				 processed image is to be drawn into.
+		void renderPostProcessShader(Honeycomb::Shader::ShaderProgram &shader,
+				int &read, int &write);
 
 		/// Renders the shadow map of the specified directional light to the
 		/// shadow map buffer.

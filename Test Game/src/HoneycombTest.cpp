@@ -93,7 +93,7 @@ namespace HoneycombTest {
 		this->sharpShader.finalizeShaderProgram();
 
 		Renderer::getRenderer()->getPostShaders().push_back(this->sharpShader);
-		Renderer::getRenderer()->setDoPostProcess(true);
+		Renderer::getRenderer()->setDoPostProcess(false);
 		
 		// Import all of the mesh game objects and construct them
 		this->car = Builder::getBuilder()->

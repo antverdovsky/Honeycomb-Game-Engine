@@ -64,12 +64,12 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			"camera");
 		this->gBuffer.frameBegin(); 
 
-		this->renderPassGeometry(scene);	// Render Geometry
-		this->renderPassLight(scene);		// Render Lights
-		this->renderBackground();			// Render Background Cubebox
+		this->renderPassGeometry(scene);		// Render Geometry
+		this->renderPassLight(scene);			// Render Lights
+		this->renderBackground();				// Render Background Cubebox
 		
-		target = this->renderPostProcess(); // Post Process the Final Image
-		this->renderTexture(target);		// Render the final image
+		target = this->renderPassPostProcess(); // Post Process the Final Image
+		this->renderTexture(target);			// Render the final image
 	}
 
 	void DeferredRenderer::setFinalTexture(const FinalTexture &fin) {
@@ -244,27 +244,6 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		glDepthMask(GL_TRUE);
 	}
 
-	void DeferredRenderer::renderFXAA(const GBufferTextureType &r,
-			const GBufferTextureType &w) {
-		// Bind the buffer to which we will write the FXAA corrected image.
-		// Bind the preprocessed image to the FXAA Shader, and write the camera
-		// information to the Shader.
-		glDrawBuffer(GL_COLOR_ATTACHMENT0 + w);
-		this->gBuffer.bindTexture(r, this->fxaaShader, "gBufferFinal");
-		CameraController::getActiveCamera()->toShader(this->fxaaShader, 
-			"camera");
-		quad.draw(this->fxaaShader);
-	}
-
-	void DeferredRenderer::renderGamma(const GBufferTextureType &r,
-			const GBufferTextureType &w) {
-		// Bind the buffer to which we will write the Gamma corrected image.
-		// Bind the preprocessed image to the Gamma Shader, and post process.
-		glDrawBuffer(GL_COLOR_ATTACHMENT0 + w);
-		this->gBuffer.bindTexture(r, this->gammaShader, "gBufferFinal");
-		quad.draw(this->gammaShader);
-	}
-
 	void DeferredRenderer::renderLightAmbient(const AmbientLight &aL) {
 		glDisable(GL_STENCIL_TEST);
 		this->renderLightQuad(aL, this->ambientShader, "ambientLight");
@@ -436,62 +415,75 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		glDisable(GL_STENCIL_TEST);
 	}
 
-	Texture2D DeferredRenderer::renderPostProcess() {
-		// If this is a shadow map, return the shadow map texture (note,
-		// post processing is not supported for non GBuffer textures).
-		if (this->final == FinalTexture::CLASSIC_SHADOW_MAP) {
-			return this->cShadowMapTexture;
+	Texture2D DeferredRenderer::renderPassPostProcess() {
+		// Bind the FINAL_2 buffer so that we may write the rendered (geometry
+		// and light) image into it.
+		this->gBuffer.bind();
+		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL_2);
+
+		// Depth test must be disabled, since we just want to render a texture
+		// to FINAL_2.
+		glDisable(GL_DEPTH_TEST);
+
+		// Bind the texture to the quad shader
+		this->quadShader.setUniform_i("fsTexture", 0);
+		if (this->final <= FinalTexture::FINAL) {
+			this->gBuffer.bufferTextures[this->final].bind(0);
+		} else if (this->final == FinalTexture::CLASSIC_SHADOW_MAP) {
+			this->cShadowMapTexture.bind(0);
 		} else if (this->final == FinalTexture::VARIANCE_SHADOW_MAP) {
-			return this->vShadowMapTexture;
+			this->vShadowMapTexture.bind(0);
 		}
 
-		// Since we are going to read from one buffer and write to another,
-		// establish now which buffer will be read from and which one we will
-		// write to.
-		GBufferTextureType readBuffer  = (GBufferTextureType)(this->final);
-		GBufferTextureType writeBuffer = GBufferTextureType::FINAL_2;
+		// Render the texture using the quad shader into the FINAL_2 buffer
+		this->quad.draw(this->quadShader);
 
-		// Post Process using the user's post process shaders
+		// Now the FINAL_2 buffer contains the geometry + light rendered data.
+		// When post processing, we will read from the read buffer and write to
+		// the write buffer, then swap the buffers for each shader (since we
+		// cannot read to and write from the same buffer).
+		int read = GBufferTextureType::FINAL_2;
+		int write = GBufferTextureType::FINAL_1;
+
+		// Post Process the image with all of the user's custom post process
+		// shaders.
 		if (this->doPostProcess) {
 			for (ShaderProgram &s : this->getPostShaders()) {
-				// Set the draw buffer to write and render image using this
-				// post processing shader
-				glDrawBuffer(GL_COLOR_ATTACHMENT0 + writeBuffer);
-				this->gBuffer.bindTexture(readBuffer, s, "gBufferFinal");
-				quad.draw(s);
-
-				// Now read and write the other way (swap read and write)
-				GBufferTextureType tmp = readBuffer;
-				readBuffer = writeBuffer;
-				writeBuffer = tmp;
+				this->renderPostProcessShader(s, read, write);
 			}
 		}
 
-		// If Anti Aliasing is enabled, apply the FXAA Post Processing Shader
+		// FXAA post process
 		if (this->antiAliasing == AntiAliasing::FXAA) {
-			this->renderFXAA(readBuffer, writeBuffer);
-
-			// Now read and write the other way (swap read and write buffers)
-			GBufferTextureType tmp = readBuffer;
-			readBuffer = writeBuffer;
-			writeBuffer = tmp;
+			CameraController::getActiveCamera()->toShader(this->fxaaShader,
+				"camera");
+			this->renderPostProcessShader(this->fxaaShader, read, write);
 		}
 
-		// If post processing Gamma correction is enabled, apply the gamma
-		// shader.
+		// Gamma post process
 		if (this->colorSpace == ColorSpace::GAMMA_POST) {
-			this->renderGamma(readBuffer, writeBuffer);
-
-			// Now read and write the other way (swap read and write buffers)
-			GBufferTextureType tmp = readBuffer;
-			readBuffer = writeBuffer;
-			writeBuffer = tmp;
+			this->renderPostProcessShader(this->gammaShader, read, write);
 		}
 
-		// Image to which we wrote last is the FINAL final (note that since we
-		// swapped the buffers, the image to which we wrote last is now the
-		// read buffer).
-		return this->gBuffer.bufferTextures[writeBuffer];
+		// Now return the texture containing the last texture we wrote into
+		// (which is now the read texture). This contains the final post
+		// processed image.
+		return this->gBuffer.bufferTextures[read];
+	}
+
+	void DeferredRenderer::renderPostProcessShader(ShaderProgram &shader,
+			int &read, int &write) {
+		// Set the draw buffer to write and render image using this
+		// post processing shader
+		glDrawBuffer(GL_COLOR_ATTACHMENT0 + write);
+		this->gBuffer.bindTexture((GBufferTextureType)read, shader, 
+				"gBufferFinal");
+		quad.draw(shader);
+
+		// Now read and write the other way (swap read and write)
+		int tmp = read;
+		read = write;
+		write = tmp;
 	}
 
 	void DeferredRenderer::renderDirectionalShadowMap(
@@ -546,10 +538,13 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 	void DeferredRenderer::renderTexture(const Texture2D &tex) {
 		this->gBuffer.unbind();
+		glDisable(GL_DEPTH_TEST);
 
 		tex.bind(0);
 		this->quadShader.setUniform_i("fsTexture", 0);
 		quad.draw(this->quadShader);
+
+		glEnable(GL_DEPTH_TEST);
 	}
 
 	void DeferredRenderer::setGamma(const float &g) {
