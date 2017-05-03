@@ -22,7 +22,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			FINAL					= GBufferTextureType::FINAL_1,
 
 			CLASSIC_SHADOW_MAP,
-			VARIANCE_SHADOW_MAP
+			VARIANCE_SHADOW_MAP,
+			VARIANCE_SHADOW_MAP_AA
 		};
 
 		/// Returns the Deferred Renderer singleton instance.
@@ -158,10 +159,23 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		///							process the texture.
 		/// int &read : The GBuffer texture index containing the image to be
 		///				post processed.
-		/// int &write : The GBuffer texture index into which the post 
+		/// int &write : The color attachment index into which the post 
 		///				 processed image is to be drawn into.
 		void renderPostProcessShader(Honeycomb::Shader::ShaderProgram &shader,
 				int &read, int &write);
+
+		/// Reads in a texture from the read texture, post processes it with 
+		/// the specified shader, and writes it to the write buffer. The read
+		/// texture is not modified. Note that the color attachment buffer is
+		/// now changed to the write integer and must be changed back after
+		/// this method completes!
+		/// ShaderProgram &shader : The shader program to be used to post
+		///							process the texture.
+		/// const Texture2D &read : The texture from which to read.
+		/// const int &write : The color attachment index into which the post 
+		///					   processed image is to be drawn into.
+		void renderPostProcessShader(Honeycomb::Shader::ShaderProgram &shader,
+			const Honeycomb::Graphics::Texture2D &read, const int &write);
 
 		/// Renders the shadow map of the specified directional light to the
 		/// shadow map buffer.

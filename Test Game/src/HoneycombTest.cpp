@@ -27,11 +27,11 @@ namespace HoneycombTest {
 			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
 				DeferredRenderer::FinalTexture::VARIANCE_SHADOW_MAP);
 		}
-
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_4)) {
-			this->directional->getComponent<DirectionalLight>()->getShadow().
-				setShadowType(ShadowType::SHADOW_NONE);
+			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
+				DeferredRenderer::FinalTexture::VARIANCE_SHADOW_MAP_AA);
 		}
+
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_5)) {
 			this->directional->getComponent<DirectionalLight>()->getShadow().
 				setShadowType(ShadowType::SHADOW_HARD);
@@ -51,6 +51,10 @@ namespace HoneycombTest {
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_9)) {
 			this->directional->getComponent<DirectionalLight>()->getShadow().
 				setShadowType(ShadowType::SHADOW_VARIANCE);
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_0)) {
+			this->directional->getComponent<DirectionalLight>()->getShadow().
+				setShadowType(ShadowType::SHADOW_VARIANCE_AA);
 		}
 	}
 
@@ -203,7 +207,7 @@ namespace HoneycombTest {
 		this->directional->getComponent<DirectionalLight>()->
 			setIntensity(1.0F);
 		this->directional->getComponent<DirectionalLight>()->
-			getShadow().setShadowType(ShadowType::SHADOW_VARIANCE);
+			getShadow().setShadowType(ShadowType::SHADOW_VARIANCE_AA);
 		this->directional->addComponent(*suzInputTranfs->clone());
 
 		// Construct a default Camera and give it a default Input Transformable

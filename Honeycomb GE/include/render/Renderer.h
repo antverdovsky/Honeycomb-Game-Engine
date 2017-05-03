@@ -174,6 +174,7 @@ namespace Honeycomb { namespace Render {
 		// Variance Shadow Map Buffer, Texture and Shader
 		int vShadowMapBuffer;
 		Honeycomb::Graphics::Texture2D vShadowMapTexture;
+		Honeycomb::Graphics::Texture2D vShadowMapTextureAA;
 		Honeycomb::Shader::ShaderProgram vShadowMapShader;
 		
 		// Shaders for post processing the Final Image

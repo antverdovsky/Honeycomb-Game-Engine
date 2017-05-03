@@ -164,7 +164,8 @@ namespace Honeycomb { namespace Component { namespace Light {
 	}
 
 	bool Shadow::isVarianceShadow(const ShadowType &shdw) {
-		return shdw == ShadowType::SHADOW_VARIANCE;
+		return shdw == ShadowType::SHADOW_VARIANCE ||
+			   shdw == ShadowType::SHADOW_VARIANCE_AA;
 	}
 
 	Shadow::Shadow() : Shadow(ShadowType::SHADOW_VARIANCE) {

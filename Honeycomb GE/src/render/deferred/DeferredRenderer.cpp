@@ -204,7 +204,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// Skip Rendering if this is a Depth Map or a Shadow Map.
 		if (this->final == FinalTexture::DEPTH ||
 			this->final == FinalTexture::CLASSIC_SHADOW_MAP ||
-			this->final == FinalTexture::VARIANCE_SHADOW_MAP) return;
+			this->final == FinalTexture::VARIANCE_SHADOW_MAP ||
+			this->final == FinalTexture::VARIANCE_SHADOW_MAP_AA) return;
 
 		// Skybox will be drawn to the final image
 		glDrawBuffer(GL_COLOR_ATTACHMENT0 + this->final);
@@ -255,9 +256,10 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		this->renderDirectionalShadowMap(dL, scene);
 		
 		// Do not render the light itself if we are only looking for a shadow
-		// map
+		// map.
 		if (this->final != FinalTexture::CLASSIC_SHADOW_MAP &&
-			this->final != FinalTexture::VARIANCE_SHADOW_MAP) {
+			this->final != FinalTexture::VARIANCE_SHADOW_MAP &&
+			this->final != FinalTexture::VARIANCE_SHADOW_MAP_AA) {
 			glDisable(GL_STENCIL_TEST);
 
 			this->directionalLightShader.setUniform_i("shadowMap", 
@@ -350,7 +352,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	void DeferredRenderer::renderPassGeometry(GameScene &scene) {
 		// Skip if we're only rendering a Shadow Map
 		if (this->final == FinalTexture::CLASSIC_SHADOW_MAP ||
-			this->final == FinalTexture::VARIANCE_SHADOW_MAP) return;
+			this->final == FinalTexture::VARIANCE_SHADOW_MAP ||
+			this->final == FinalTexture::VARIANCE_SHADOW_MAP_AA) return;
 
 		// Bind the G Buffer for Drawing Geometry
 		this->gBuffer.bindDrawGeometry();
@@ -386,7 +389,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// or we are not rendering a shadow map
 		if (this->final != FinalTexture::FINAL &&
 			this->final != FinalTexture::CLASSIC_SHADOW_MAP &&
-			this->final != FinalTexture::VARIANCE_SHADOW_MAP) return;
+			this->final != FinalTexture::VARIANCE_SHADOW_MAP &&
+			this->final != FinalTexture::VARIANCE_SHADOW_MAP_AA) return;
 
 		// Since the polygon mode only applies to geometry, change to FILL
 		// mode when drawing lights.
@@ -433,6 +437,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			this->cShadowMapTexture.bind(0);
 		} else if (this->final == FinalTexture::VARIANCE_SHADOW_MAP) {
 			this->vShadowMapTexture.bind(0);
+		} else if (this->final == FinalTexture::VARIANCE_SHADOW_MAP_AA) {
+			this->vShadowMapTextureAA.bind(0);
 		}
 
 		// Render the texture using the quad shader into the FINAL_2 buffer
@@ -478,12 +484,23 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		glDrawBuffer(GL_COLOR_ATTACHMENT0 + write);
 		this->gBuffer.bindTexture((GBufferTextureType)read, shader, 
 				"gBufferFinal");
-		quad.draw(shader);
+		this->quad.draw(shader);
 
 		// Now read and write the other way (swap read and write)
 		int tmp = read;
 		read = write;
 		write = tmp;
+	}
+
+	void DeferredRenderer::renderPostProcessShader(ShaderProgram &shader,
+			const Texture2D &read, const int &write) {
+		// Set the draw buffer to write and render image using this
+		// post processing shader
+		glDrawBuffer(GL_COLOR_ATTACHMENT0 + write);
+		read.bind(0);
+		shader.setUniform_i("gBufferFinal", 0);
+
+		this->quad.draw(shader);
 	}
 
 	void DeferredRenderer::renderDirectionalShadowMap(
@@ -521,6 +538,23 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		} else if (Shadow::isVarianceShadow(shadowType)) {
 			this->vShadowMapShader.setUniform_mat4("lightProjection", lP);
 			scene.render(this->vShadowMapShader);
+		}
+
+		// If this is an Antialiased Variance Shadow Map, apply the gaussian
+		// blur to the standard VSM and write it to the VSM AA texture.
+		if (shadowType == ShadowType::SHADOW_VARIANCE_AA) {
+			glDepthMask(GL_FALSE);    // No need to draw to Depth for post
+			glDisable(GL_DEPTH_TEST); // process or do any depth testing.
+
+			this->renderPostProcessShader(this->quadShader, 
+				this->vShadowMapTexture, 1); // VSM AA in COLOR_ATTACHMENT_1
+			
+			// Very important, change the color buffer back to 0 since we do
+			// not actually want to write into 1 from here, that's done in
+			// the post process.
+			glDrawBuffer(GL_COLOR_ATTACHMENT0);
+
+			glEnable(GL_DEPTH_TEST); // Undo depth test mod
 		}
 
 		// Set the window render viewport size back to the Window Size

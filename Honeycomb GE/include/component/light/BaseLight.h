@@ -26,6 +26,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 		// Variance Shadows:
 		SHADOW_VARIANCE,			// Light uses Variance Shadow Mapping
+		SHADOW_VARIANCE_AA			// Light uses Antialiased VSM
 	};
 
 	class BaseLight : 

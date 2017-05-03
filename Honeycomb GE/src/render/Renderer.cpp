@@ -224,14 +224,27 @@ namespace Honeycomb { namespace Render {
 		this->vShadowMapTexture.setTextureFiltering(GL_LINEAR, GL_LINEAR);
 		this->vShadowMapTexture.setTextureWrap(GL_REPEAT, GL_REPEAT);
 
+		// Initialize the Anti Aliased Variance Shadow Map Texture (32 bit Red
+		// & Green channels texture).
+		this->vShadowMapTextureAA.initialize();
+		this->vShadowMapTextureAA.setImageData(
+			nullptr, GL_FLOAT, GL_RG32F, GL_RG,
+			Renderer::SHADOW_MAP_WIDTH, Renderer::SHADOW_MAP_HEIGHT);
+		this->vShadowMapTextureAA.setTextureFiltering(GL_LINEAR, GL_LINEAR);
+		this->vShadowMapTextureAA.setTextureWrap(GL_REPEAT, GL_REPEAT);
+
 		// Initialize the Variance Shadow Map Buffer (for the depth component,
-		// we borrow the depth buffer from the Classic Shadow Map Buffer).
+		// we borrow the depth buffer from the Classic Shadow Map Buffer). Also
+		// set the Color Attachment 1 texture to the Antialiased Shadow Map
+		// texture, so that we may antialias the standard VSM.
 		GLuint vBF;
 		glGenFramebuffers(1, &vBF);
 		this->vShadowMapBuffer = vBF;
 		glBindFramebuffer(GL_FRAMEBUFFER, this->vShadowMapBuffer);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
 			GL_TEXTURE_2D, this->vShadowMapTexture.getTextureID(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1,
+			GL_TEXTURE_2D, this->vShadowMapTextureAA.getTextureID(), 0);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
 			GL_TEXTURE_2D, this->cShadowMapTexture.getTextureID(), 0);
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);
