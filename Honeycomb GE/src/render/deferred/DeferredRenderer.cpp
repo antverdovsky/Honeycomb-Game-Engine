@@ -271,7 +271,10 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			if (Shadow::isClassicShadow(shadowType)) {
 				this->cShadowMapTexture.bind(SHADOW_MAP_INDEX);
 			} else if (Shadow::isVarianceShadow(shadowType)) {
-				this->vShadowMapTexture.bind(SHADOW_MAP_INDEX);
+				if (shadowType == ShadowType::SHADOW_VARIANCE)
+					this->vShadowMapTexture.bind(SHADOW_MAP_INDEX);
+				else if (shadowType == ShadowType::SHADOW_VARIANCE_AA)
+					this->vShadowMapTextureAA.bind(SHADOW_MAP_INDEX);
 			}
 
 			this->renderLightQuad(dL, this->directionalLightShader,

@@ -16,6 +16,7 @@ const int SHADOW_TYPE_PCF						= 3;
 const int SHADOW_TYPE_PCF_INTERPOLATED			= 4;
 
 const int SHADOW_TYPE_VARIANCE					= 5;
+const int SHADOW_TYPE_VARIANCE_AA               = 6;
 
 ///
 /// The basic structure for all lights.
@@ -100,7 +101,8 @@ float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm,
 		shadow = sampleShadowPCF(map, texCoords, bias, curDepth);
 	} else if (shdw.shadowType == SHADOW_TYPE_PCF_INTERPOLATED) {
 		shadow = sampleShadowPCFInterpolated(map, texCoords, bias, curDepth);
-	} else if (shdw.shadowType == SHADOW_TYPE_VARIANCE) {
+	} else if (shdw.shadowType == SHADOW_TYPE_VARIANCE || 
+			shdw.shadowType == SHADOW_TYPE_VARIANCE_AA) {
 		shadow = sampleShadowVariance(map, texCoords, bias, curDepth);
 	}
 
