@@ -351,5 +351,6 @@
     <None Include="res\shaders\standard\light\blinn-phong\blinnPhongPoint.glsl" />
     <None Include="res\shaders\standard\light\blinn-phong\blinnPhongSpot.glsl" />
     <None Include="res\shaders\post-processing\gaussBlur9FS.glsl" />
+    <None Include="res\shaders\post-processing\gaussBlur7FS.glsl" />
   </ItemGroup>
 </Project>

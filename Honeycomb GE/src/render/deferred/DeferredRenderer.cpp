@@ -547,7 +547,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			this->vsmGaussianBlurShader.setUniform_vec2("resolution",
 				Vector2f(SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT));
 			this->vsmGaussianBlurShader.setUniform_vec2("radius",
-				Vector2f(1.0F, 1.0F));
+				Vector2f(1.5F, 1.5F));
 
 			// Apply a horizontal blur and write the result into VSM AA texture
 			// (VSM AA is in color attachment 1).

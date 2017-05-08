@@ -265,7 +265,7 @@ namespace Honeycomb { namespace Render {
 			"post-processing/postProcessingVS.glsl", 
 			ShaderType::VERTEX_SHADER);
 		this->vsmGaussianBlurShader.addShader("../Honeycomb GE/res/shaders/"
-			"post-processing/gaussBlur9FS.glsl", ShaderType::FRAGMENT_SHADER);
+			"post-processing/gaussBlur7FS.glsl", ShaderType::FRAGMENT_SHADER);
 		this->vsmGaussianBlurShader.finalizeShaderProgram();
 	}
 
