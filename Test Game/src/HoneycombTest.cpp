@@ -27,10 +27,6 @@ namespace HoneycombTest {
 			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
 				DeferredRenderer::FinalTexture::VARIANCE_SHADOW_MAP);
 		}
-		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_4)) {
-			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
-				DeferredRenderer::FinalTexture::VARIANCE_SHADOW_MAP_AA);
-		}
 
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_5)) {
 			this->directional->getComponent<DirectionalLight>()->getShadow().

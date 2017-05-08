@@ -315,6 +315,7 @@
     <None Include="res\shaders\phong\phongSpotVertex.glsl" />
     <None Include="res\shaders\phong\phongVertex.glsl" />
     <None Include="res\shaders\phong\vertexShader.glsl" />
+    <None Include="res\shaders\post-processing\gaussBlur9FS.glsl" />
     <None Include="res\shaders\post-processing\grayscaleFS.glsl" />
     <None Include="res\shaders\post-processing\inversionFS.glsl" />
     <None Include="res\shaders\post-processing\postProcessingVS.glsl" />

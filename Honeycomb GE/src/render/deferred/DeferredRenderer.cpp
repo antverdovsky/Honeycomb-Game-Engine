@@ -204,8 +204,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// Skip Rendering if this is a Depth Map or a Shadow Map.
 		if (this->final == FinalTexture::DEPTH ||
 			this->final == FinalTexture::CLASSIC_SHADOW_MAP ||
-			this->final == FinalTexture::VARIANCE_SHADOW_MAP ||
-			this->final == FinalTexture::VARIANCE_SHADOW_MAP_AA) return;
+			this->final == FinalTexture::VARIANCE_SHADOW_MAP) return;
 
 		// Skybox will be drawn to the final image
 		glDrawBuffer(GL_COLOR_ATTACHMENT0 + this->final);
@@ -258,8 +257,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// Do not render the light itself if we are only looking for a shadow
 		// map.
 		if (this->final != FinalTexture::CLASSIC_SHADOW_MAP &&
-			this->final != FinalTexture::VARIANCE_SHADOW_MAP &&
-			this->final != FinalTexture::VARIANCE_SHADOW_MAP_AA) {
+			this->final != FinalTexture::VARIANCE_SHADOW_MAP) {
 			glDisable(GL_STENCIL_TEST);
 
 			this->directionalLightShader.setUniform_i("shadowMap", 
@@ -355,8 +353,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	void DeferredRenderer::renderPassGeometry(GameScene &scene) {
 		// Skip if we're only rendering a Shadow Map
 		if (this->final == FinalTexture::CLASSIC_SHADOW_MAP ||
-			this->final == FinalTexture::VARIANCE_SHADOW_MAP ||
-			this->final == FinalTexture::VARIANCE_SHADOW_MAP_AA) return;
+			this->final == FinalTexture::VARIANCE_SHADOW_MAP) return;
 
 		// Bind the G Buffer for Drawing Geometry
 		this->gBuffer.bindDrawGeometry();
@@ -392,8 +389,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// or we are not rendering a shadow map
 		if (this->final != FinalTexture::FINAL &&
 			this->final != FinalTexture::CLASSIC_SHADOW_MAP &&
-			this->final != FinalTexture::VARIANCE_SHADOW_MAP &&
-			this->final != FinalTexture::VARIANCE_SHADOW_MAP_AA) return;
+			this->final != FinalTexture::VARIANCE_SHADOW_MAP) return;
 
 		// Since the polygon mode only applies to geometry, change to FILL
 		// mode when drawing lights.
@@ -440,8 +436,6 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			this->cShadowMapTexture.bind(0);
 		} else if (this->final == FinalTexture::VARIANCE_SHADOW_MAP) {
 			this->vShadowMapTexture.bind(0);
-		} else if (this->final == FinalTexture::VARIANCE_SHADOW_MAP_AA) {
-			this->vShadowMapTextureAA.bind(0);
 		}
 
 		// Render the texture using the quad shader into the FINAL_2 buffer
@@ -549,8 +543,26 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			glDepthMask(GL_FALSE);    // No need to draw to Depth for post
 			glDisable(GL_DEPTH_TEST); // process or do any depth testing.
 
-			this->renderPostProcessShader(this->quadShader, 
-				this->vShadowMapTexture, 1); // VSM AA in COLOR_ATTACHMENT_1
+			// Set up the properties of the Gaussian Blur Shader
+			this->vsmGaussianBlurShader.setUniform_vec2("resolution",
+				Vector2f(SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT));
+			this->vsmGaussianBlurShader.setUniform_vec2("radius",
+				Vector2f(1.0F, 1.0F));
+
+			// Apply a horizontal blur and write the result into VSM AA texture
+			// (VSM AA is in color attachment 1).
+			this->vsmGaussianBlurShader.setUniform_vec2("direction",
+				Vector2f(1.0F, 0.0F));
+			this->renderPostProcessShader(this->vsmGaussianBlurShader, 
+				this->vShadowMapTexture, 1);
+
+			// Apply a vertical blur and write the result into VSM texture
+			// (VSM is in color attachment 0). Note that here we read from the
+			// VSM AA texture which is where we rendered just before.
+			this->vsmGaussianBlurShader.setUniform_vec2("direction",
+				Vector2f(0.0F, 1.0F));
+			this->renderPostProcessShader(this->vsmGaussianBlurShader,
+				this->vShadowMapTextureAA, 0);
 			
 			// Very important, change the color buffer back to 0 since we do
 			// not actually want to write into 1 from here, that's done in

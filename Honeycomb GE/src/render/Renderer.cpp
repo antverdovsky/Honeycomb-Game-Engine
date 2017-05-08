@@ -258,6 +258,15 @@ namespace Honeycomb { namespace Render {
 		this->vShadowMapShader.addShader("../Honeycomb GE/res/shaders/render/"
 			"shadow/variance/vShadowMapFS.glsl", ShaderType::FRAGMENT_SHADER);
 		this->vShadowMapShader.finalizeShaderProgram();
+
+		// Initialize the Gaussian Blur Post Processing Shader for VSM
+		this->vsmGaussianBlurShader.initialize();
+		this->vsmGaussianBlurShader.addShader("../Honeycomb GE/res/shaders/"
+			"post-processing/postProcessingVS.glsl", 
+			ShaderType::VERTEX_SHADER);
+		this->vsmGaussianBlurShader.addShader("../Honeycomb GE/res/shaders/"
+			"post-processing/gaussBlur9FS.glsl", ShaderType::FRAGMENT_SHADER);
+		this->vsmGaussianBlurShader.finalizeShaderProgram();
 	}
 
 	void Renderer::setBoolSettingGL(const int &cap, const bool &val) {

@@ -22,8 +22,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			FINAL					= GBufferTextureType::FINAL_1,
 
 			CLASSIC_SHADOW_MAP,
-			VARIANCE_SHADOW_MAP,
-			VARIANCE_SHADOW_MAP_AA
+			VARIANCE_SHADOW_MAP
 		};
 
 		/// Returns the Deferred Renderer singleton instance.
