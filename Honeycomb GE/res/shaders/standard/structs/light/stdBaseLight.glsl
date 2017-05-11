@@ -43,6 +43,7 @@ struct Shadow {
 	mat4 projection; // The projection of the Shadow
 
 	float intensity; // The intensity of the Shadow
+	float softness;  // The softness of the Shadow [0.0F, 1.0F]
 
 	float minBias;	 // Minimum Bias (if light is parallel to surface)
 	float maxBias;	 // Maximum Bias (if light is perpendicular to surface)

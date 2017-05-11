@@ -538,16 +538,24 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		}
 
 		// If this is an Antialiased Variance Shadow Map, apply the gaussian
-		// blur to the standard VSM and write it to the VSM AA texture.
-		if (shadowType == ShadowType::SHADOW_VARIANCE_AA) {
+		// blur to the standard VSM and write it to the VSM AA texture (only
+		// blur the image if the softness is at least some small value for
+		// performance purposes).
+		if (shadowType == ShadowType::SHADOW_VARIANCE_AA && 
+			dL.getShadow().getSoftness() >= 0.05F) {
 			glDepthMask(GL_FALSE);    // No need to draw to Depth for post
 			glDisable(GL_DEPTH_TEST); // process or do any depth testing.
+
+			// Calculate the radius of the gaussian blur using the softness
+			// value of the shadow.
+			const float MAX_RADIUS = 1.50F;
+			float radius = dL.getShadow().getSoftness() * MAX_RADIUS;
 
 			// Set up the properties of the Gaussian Blur Shader
 			this->vsmGaussianBlurShader.setUniform_vec2("resolution",
 				Vector2f(SHADOW_MAP_WIDTH, SHADOW_MAP_HEIGHT));
 			this->vsmGaussianBlurShader.setUniform_vec2("radius",
-				Vector2f(1.5F, 1.5F));
+				Vector2f(radius, radius));
 
 			// Apply a horizontal blur and write the result into VSM AA texture
 			// (VSM AA is in color attachment 1).

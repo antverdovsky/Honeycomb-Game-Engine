@@ -199,11 +199,13 @@ namespace HoneycombTest {
 		// intensity of the lights so they don't overwhelm the scene
 		this->ambient = Builder::getBuilder()->newAmbientLight();
 		this->directional = Builder::getBuilder()->newDirectionalLight();
-		this->ambient->getComponent<AmbientLight>()->setIntensity(0.1F);
+		this->ambient->getComponent<AmbientLight>()->setIntensity(0.05F);
 		this->directional->getComponent<DirectionalLight>()->
 			setIntensity(1.0F);
 		this->directional->getComponent<DirectionalLight>()->
 			getShadow().setShadowType(ShadowType::SHADOW_VARIANCE_AA);
+		this->directional->getComponent<DirectionalLight>()->
+			getShadow().setIntensity(1.0F);
 		this->directional->addComponent(*suzInputTranfs->clone());
 
 		// Construct a default Camera and give it a default Input Transformable
@@ -284,9 +286,12 @@ namespace HoneycombTest {
 		this->gameScene.stop();
 	}
 
+	int testing = 0;
 	void TestGame::update() {
-		// Sun Rotation
-//		this->directional->getComponent<Transform>()->rotate(
-//			Vector3f::getGlobalRight(), 0.0015F);
+		testing = (testing + 1) % 300;
+		float softness = testing / 300.0F;
+
+		this->directional->getComponent<DirectionalLight>()->getShadow().
+			setSoftness(softness);
 	}
 }

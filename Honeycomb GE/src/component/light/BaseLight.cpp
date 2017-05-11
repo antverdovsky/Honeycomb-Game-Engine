@@ -155,6 +155,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 	const std::string Shadow::MIN_BIAS_F = "minBias";
 	const std::string Shadow::PROJECTION_MAT4 = "projection";
 	const std::string Shadow::SHADOW_TYPE_I = "shadowType";
+	const std::string Shadow::SOFTNESS_F = "softness";
 
 	bool Shadow::isClassicShadow(const ShadowType &shdw) {
 		return shdw == ShadowType::SHADOW_HARD ||
@@ -180,6 +181,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		this->setMinimumBias(0.005F);
 		this->setMaximumBias(0.050F);
 		this->setIntensity(0.75F);
+		this->setSoftness(1.0F);
 	}
 
 	const float& Shadow::getIntensity() const {
@@ -202,6 +204,10 @@ namespace Honeycomb { namespace Component { namespace Light {
 		return (ShadowType)(this->glInts.getValue(Shadow::SHADOW_TYPE_I));
 	}
 
+	const float& Shadow::getSoftness() const {
+		return this->glFloats.getValue(Shadow::SOFTNESS_F);
+	}
+
 	void Shadow::setIntensity(const float &i) {
 		this->glFloats.setValue(Shadow::INTENSITY_F, i);
 	}
@@ -220,5 +226,14 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 	void Shadow::setShadowType(const ShadowType &shdw) {
 		this->glInts.setValue(Shadow::SHADOW_TYPE_I, (int)(shdw));
+	}
+
+	void Shadow::setSoftness(const float &soft) {
+		// Clamp the softness between [0.0F, 1.0F]
+		float softness = soft;
+		if (softness < 0.0F) softness = 0.0F;
+		else if (softness > 1.0F) softness = 1.0F;
+
+		this->glFloats.setValue(Shadow::SOFTNESS_F, softness);
 	}
 } } }

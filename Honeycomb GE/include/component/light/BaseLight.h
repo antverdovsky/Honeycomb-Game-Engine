@@ -198,6 +198,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		static const std::string MAX_BIAS_F;
 		static const std::string PROJECTION_MAT4;
 		static const std::string SHADOW_TYPE_I;
+		static const std::string SOFTNESS_F;
 
 		/// Returns a boolean indicating whether the following shadow is of 
 		/// type SHADOW_HARD or SHADOW_PCF. The classic depth buffer should be
@@ -216,7 +217,8 @@ namespace Honeycomb { namespace Component { namespace Light {
 		static bool isVarianceShadow(const ShadowType &shdw);
 
 		/// Initializes a default Shadow with a shadow type of Variance, 0.005F 
-		/// minimum bias, 0.050F maximum bias and a 0.75F intensity.
+		/// minimum bias, 0.050F maximum bias, 0.75F intensity and 1.0F
+		/// softness.
 		Shadow();
 
 		/// Initializes a Shadow with the specified shadow type.
@@ -243,6 +245,10 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// return : The shadow type enumeration.
 		ShadowType getShadowType() const;
 
+		/// Returns the softness of this Shadow.
+		/// return : The softness value of the shadow.
+		const float& getSoftness() const;
+
 		/// Sets the intensity of this Shadow.
 		/// const float &i : The intensity value.
 		void setIntensity(const float &i);
@@ -264,6 +270,11 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// Sets the shadow type of this Shadow.
 		/// const ShadowType &shdw : The shadow type.
 		void setShadowType(const ShadowType &shdw);
+
+		/// Sets the softness value of this Shadow.
+		/// const float &soft : The softness value. The value should be clamped
+		///                     between 0.0F and 1.0F.
+		void setSoftness(const float &soft);
 	};
 } } }
 
