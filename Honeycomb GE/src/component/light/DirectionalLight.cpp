@@ -72,7 +72,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 	Matrix4f DirectionalLight::calculateLightProjection() {
 		// Standard Orthographic Projection
 		const static Matrix4f PROJECTION =
-			Matrix4f::orthographic(35, 35, -25.0F, 25.0F);				// csm is going to be needed for this
+			Matrix4f::orthographic(21, 21, -20.0F, 20.0F);				// csm is going to be needed for this
 
 		// Fetch the orientation matrix and reverse its forward components (see
 		// the CameraController calculate projection code).

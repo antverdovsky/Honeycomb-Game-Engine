@@ -215,7 +215,7 @@ namespace HoneycombTest {
 		
 		// Scale and position the Game Objects
 		this->plane->getComponent<Transform>()->setScale(
-			Vector3f(25.0F, 1.0F, 25.0F));
+			Vector3f(15.0F, 1.0F, 15.0F));
 		this->cube->getComponent<Transform>()->setTranslation(
 			Vector3f(-2.5F, 1.0F, -5.0F));
 		this->cube2->getComponent<Transform>()->setTranslation(
@@ -242,6 +242,7 @@ namespace HoneycombTest {
 			Vector3f(-5.0F, 1.0F, -5.0F));
 
 		this->cube->addComponent(*suzInputTranfs->clone());
+		this->cube2->addComponent(*suzInputTranfs->clone());
 
 		// Construct a left and right spotlight for the front of the car and
 		// add to the car (similar to headlights).
@@ -286,12 +287,7 @@ namespace HoneycombTest {
 		this->gameScene.stop();
 	}
 
-	int testing = 0;
 	void TestGame::update() {
-		testing = (testing + 1) % 300;
-		float softness = testing / 300.0F;
 
-		this->directional->getComponent<DirectionalLight>()->getShadow().
-			setSoftness(softness);
 	}
 }

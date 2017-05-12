@@ -22,9 +22,8 @@ float sampleShadowVariance(sampler2D map, vec2 coords, float bias,
 	float textureDepth2 = mapRG.g;
 	
 	// The probability the texture is in shadow, according to classic shadow
-	// mapping. Bias is not really necessary anymore but it's left in for more
-	// user control.
-	float p = smoothstep(curDepth - bias, curDepth, textureDepth);
+	// mapping.
+	float p = smoothstep(curDepth - 0.025F, curDepth, textureDepth);
 
 	// Calculate the Variance value for Chebyshev's Inequality
 	float variance = max(textureDepth2 - textureDepth * textureDepth, 0.0002F);
@@ -34,16 +33,13 @@ float sampleShadowVariance(sampler2D map, vec2 coords, float bias,
 	float d = curDepth - textureDepth;
 	float pMax = variance / (variance + d * d);
 
-	// Clamp the probability such that any values below MIN_P_MAX go to 0.0F 
-	// and any values greater than MAX_P_MAX go to 1.0F, using linear stepping.
-	// This helps lower the light bleeding artifact of VSM.
-	const float MIN_P_MAX = 0.2F;
-	const float MAX_P_MAX = 1.0F;
-	pMax = linstep(0.2F, 1.0F, pMax);
+	// Step the p max value between some constants to reduce light bleeding
+	pMax = linstep(0.25F, 1.0F, pMax);
 
 	// Return the probability that the pixel is lit (which should be such that
 	// pMax > p is bounded between [0.0F, 1.0F])
-	return clamp(max(p, pMax), 0.0F, 1.0F);
+	float newP = clamp(max(p, pMax), 0.0F, 1.0F);
+	return newP;
 }
 
 #endif
