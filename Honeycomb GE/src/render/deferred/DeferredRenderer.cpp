@@ -252,7 +252,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 	void DeferredRenderer::renderLightDirectional(const DirectionalLight &dL,
 			GameScene &scene) {
-		this->renderDirectionalShadowMap(dL, scene);
+		this->renderTextureShadowMap(dL.getShadow(), scene);
 		
 		// Do not render the light itself if we are only looking for a shadow
 		// map.
@@ -291,8 +291,11 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		glDisable(GL_STENCIL_TEST);
 	}
 
-	void DeferredRenderer::renderLightSpot(const SpotLight &sL) {
+	void DeferredRenderer::renderLightSpot(const SpotLight &sL, 
+			GameScene &scene) {
 		this->writeSpotLightTransform(sL);
+
+		this->renderTextureShadowMap(sL.getShadow(), scene);
 		
 		glEnable(GL_STENCIL_TEST);
 		this->stencilLightVolume(this->lightVolumeSpot);
@@ -408,7 +411,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 //				this->renderLightPoint(*(bL->downcast<PointLight>()));
 				break;
 			case LightType::LIGHT_TYPE_SPOT:
-//				this->renderLightSpot(*(bL->downcast<SpotLight>()));
+				this->renderLightSpot(*(bL->downcast<SpotLight>()), scene);
 				break;
 			}
 		}
@@ -500,16 +503,16 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		this->quad.draw(shader);
 	}
 
-	void DeferredRenderer::renderDirectionalShadowMap(
-			const DirectionalLight &dL, GameScene &scene) {
+	void DeferredRenderer::renderTextureShadowMap(
+			const Shadow &shadow, GameScene &scene) {
 		// Do not bother rendering the shadow map if the light is not going to
 		// use it!
-		if (dL.getShadow().getShadowType() == ShadowType::SHADOW_NONE) return;
+		if (shadow.getShadowType() == ShadowType::SHADOW_NONE) return;
 
 		// Bind the Shadow Map Buffer
 		glDepthMask(GL_TRUE);
 		this->gBuffer.unbind();
-		auto shadowType = dL.getShadow().getShadowType();
+		auto shadowType = shadow.getShadowType();
 		if (Shadow::isClassicShadow(shadowType)) {
 			glBindFramebuffer(GL_FRAMEBUFFER, this->cShadowMapBuffer);
 			glClear(GL_DEPTH_BUFFER_BIT);
@@ -528,7 +531,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// Fetch the Light Projection matrix and write it to the light shaders,
 		// and render the scene from the perspective of the camera using the
 		// shadow shader.
-		Matrix4f lP = dL.getShadow().getProjection();
+		Matrix4f lP = shadow.getProjection();
 		if (Shadow::isClassicShadow(shadowType)) {
 			this->cShadowMapShader.setUniform_mat4("lightProjection", lP);
 			scene.render(this->cShadowMapShader);
@@ -542,14 +545,14 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// blur the image if the softness is at least some small value for
 		// performance purposes).
 		if (shadowType == ShadowType::SHADOW_VARIANCE_AA && 
-			dL.getShadow().getSoftness() >= 0.05F) {
+				shadow.getSoftness() >= 0.05F) {
 			glDepthMask(GL_FALSE);    // No need to draw to Depth for post
 			glDisable(GL_DEPTH_TEST); // process or do any depth testing.
 
 			// Calculate the radius of the gaussian blur using the softness
 			// value of the shadow.
-			const float MAX_RADIUS = 1.50F;
-			float radius = dL.getShadow().getSoftness() * MAX_RADIUS;
+			const float MAX_RADIUS = 1.0F;
+			float radius = shadow.getSoftness() * MAX_RADIUS;
 
 			// Set up the properties of the Gaussian Blur Shader
 			this->vsmGaussianBlurShader.setUniform_vec2("resolution",

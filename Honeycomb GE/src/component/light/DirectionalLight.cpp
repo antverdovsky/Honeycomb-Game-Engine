@@ -69,10 +69,17 @@ namespace Honeycomb { namespace Component { namespace Light {
 		BaseLight::start();
 	}
 
+	void DirectionalLight::toShader(
+		ShaderProgram &shader, const std::string &uni) const {
+		GenericStruct::toShader(shader, uni);
+
+		this->shadow.toShader(shader, uni + ".shadow");
+	}
+
 	Matrix4f DirectionalLight::calculateLightProjection() {
-		// Standard Orthographic Projection
+		// Standard Orthographic Projection [TODO]
 		const static Matrix4f PROJECTION =
-			Matrix4f::orthographic(21, 21, -20.0F, 20.0F);				// csm is going to be needed for this
+			Matrix4f::orthographic(21, 21, -20.0F, 20.0F);
 
 		// Fetch the orientation matrix and reverse its forward components (see
 		// the CameraController calculate projection code).
@@ -92,12 +99,5 @@ namespace Honeycomb { namespace Component { namespace Light {
 		this->calculateLightProjection();
 		this->glVector3fs.setValue(DirectionalLight::DIRECTION_VEC3,
 			this->transform->getLocalForward());
-	}
-
-	void DirectionalLight::toShader(
-			ShaderProgram &shader, const std::string &uni) const {
-		GenericStruct::toShader(shader, uni);
-
-		this->shadow.toShader(shader, uni + ".shadow");
 	}
 } } }

@@ -3,7 +3,9 @@
 #define SPOT_LIGHT_H
 
 #include "BaseLight.h"
-
+#include "../GameComponent.h"
+#include "../physics/Transform.h"
+#include "../../conjuncture/EventHandler.h"
 #include "../../math/Vector3f.h"
 
 namespace Honeycomb { namespace Component { namespace Light {
@@ -34,8 +36,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// const float &ran : The range of this light.
 		/// const float &ang : The angle of this light.
 		SpotLight(const float &inten, const Honeycomb::Math::Vector3f &col,
-			const Honeycomb::Component::Light::Attenuation &atten, 
-			const float &ran, const float &ang);
+			const Attenuation &atten, const float &ran, const float &ang);
 
 		/// Clones this Spot Light into a new, dynamically allocated, Spot 
 		/// Light. This function should be used instead of the copy constructor
@@ -51,13 +52,13 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// return : The constant reference to the angle.
 		const float& getAngle() const;
 
-		/// Returns the attenuation of this Point Light.
+		/// Returns the attenuation of this Spot Light.
 		/// return : The reference to the Attenuation.
-		Honeycomb::Component::Light::Attenuation& getAttenuation();
+		Attenuation& getAttenuation();
 
-		/// Returns the attenuation of this Point Light.
+		/// Returns the attenuation of this Spot Light.
 		/// return : The constant reference to the Attenuation.
-		const Honeycomb::Component::Light::Attenuation& getAttenuation() const;
+		const Attenuation& getAttenuation() const;
 
 		/// Returns the direction of this Spot Light.
 		/// return : The constant reference to the Direction.
@@ -67,41 +68,55 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// return : The constant reference to the Position.
 		const Honeycomb::Math::Vector3f& getPosition() const;
 
-		/// Returns the range of this Point Light.
+		/// Returns the range of this Spot Light.
 		/// return : The reference to the range.
 		float& getRange();
 
-		/// Returns the range of this Point Light.
+		/// Returns the range of this Spot Light.
 		/// return : The constant reference to the range.
 		const float& getRange() const;
+
+		/// Returns the shadow data of this Spot Light.
+		/// return : The reference to the shadow.
+		Shadow& getShadow();
+
+		/// Returns the shadow data of this Spot Light.
+		/// return : The constant reference to the shadow.
+		const Shadow& getShadow() const;
+
+		/// Sets the attenuation of this Spot Light.
+		/// const Attenuation &atten : The new attenuation of this Spot Light.
+		void setAttenuation(const Attenuation &atten);
+
+		/// Starts this Spot Light.
+		void start();
 
 		/// Writes the light and attenuation values of this Spot Light to the
 		/// specified Shader.
 		/// ShaderProgram &shader : The shader to which to write the values of
 		///							this light.
 		///	const string &uni : The uniform name of this Light in the Shader.
-		void toShader(Honeycomb::Shader::ShaderProgram &shader, 
+		void toShader(Honeycomb::Shader::ShaderProgram &shader,
 				const std::string &uni) const;
-
-		/// Sets the attenuation of this Point Light.
-		/// const Attenuation &atten : The new attenuation of this Point Light.
-		void setAttenuation(const Honeycomb::Component::Light::Attenuation&
-			atten);
-
-		/// Starts this Spot Light.
-		void start();
-
-		/// Updates this Spot Light.
-		void update();
 	private:
 		// The struct definition for the Spot Light.
 		const static std::string structFile;
 		const static std::string structName;
 
-		Honeycomb::Component::Light::Attenuation attenuation; // Attenuation
+		Honeycomb::Conjuncture::EventHandler
+			transformChangeHandler; // Handles the transform change event
 
-		const Honeycomb::Math::Vector3f *position; // Transform Position
-		const Honeycomb::Math::Vector3f *direction; // Transform Direction
+		Honeycomb::Component::Physics::Transform *transform;
+		Attenuation attenuation;
+		Shadow shadow;
+
+		/// Calculates the light projection for the shadow map.
+		Honeycomb::Math::Matrix4f calculateLightProjection();
+
+		/// Event which is called when the transform of the Spot Light
+		/// changes. Writes the direction and position data to the Generic 
+		/// Struct and recalculates and writes the shadow matrix.
+		void onTransformChange();
 	};
 } } }
 

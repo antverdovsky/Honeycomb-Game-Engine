@@ -4,15 +4,19 @@
 
 #include "../../../include/component/physics/Transform.h"
 #include "../../../include/math/MathUtils.h"
+#include "../../../include/math/Matrix4f.h"
 #include "../../../include/object/GameObject.h"
 #include "../../../include/scene/GameScene.h"
+#include "../../../include/render/Renderer.h"
 
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Utils::PI;
+using Honeycomb::Math::Matrix4f;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
 using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Shader::ShaderSource;
+using Honeycomb::Render::Renderer;
 
 namespace Honeycomb { namespace Component { namespace Light {
 	const std::string SpotLight::COLOR_VEC3 = "base.color";
@@ -75,11 +79,11 @@ namespace Honeycomb { namespace Component { namespace Light {
 	}
 
 	const Vector3f& SpotLight::getDirection() const {
-		return *this->direction;
+		return this->transform->getLocalForward();
 	}
 
 	const Vector3f& SpotLight::getPosition() const {
-		return *this->position;
+		return this->transform->getGlobalTranslation();
 	}
 
 	const float& SpotLight::getRange() const {
@@ -90,16 +94,26 @@ namespace Honeycomb { namespace Component { namespace Light {
 		return this->glFloats.getValue(SpotLight::RANGE_F);
 	}
 
+	Shadow& SpotLight::getShadow() {
+		return this->shadow;
+	}
+
+	const Shadow& SpotLight::getShadow() const {
+		return this->shadow;
+	}
+
 	void SpotLight::setAttenuation(const Attenuation &atten) {
 		this->attenuation = atten;
 	}
 
 	void SpotLight::start() {
-		// Get the position and direction.
-		this->position = &this->getAttached()->getComponent<Transform>()->
-			getGlobalTranslation();
-		this->direction = &this->getAttached()->getComponent<Transform>()->
-			getLocalForward();
+		this->transform = this->getAttached()->getComponent<Transform>();
+
+		// Add event handler to the Transform
+		this->transformChangeHandler.addAction(
+			std::bind(&SpotLight::onTransformChange, this));
+		this->transform->getChangedEvent().addEventHandler(
+			this->transformChangeHandler);
 
 		BaseLight::start();
 	}
@@ -109,11 +123,41 @@ namespace Honeycomb { namespace Component { namespace Light {
 		GenericStruct::toShader(shader, uni);
 
 		this->attenuation.toShader(shader, uni + ".attenuation");
+		this->shadow.toShader(shader, uni + ".shadow");
 	}
 
-	void SpotLight::update() {
-		this->glVector3fs.setValue(SpotLight::POSITION_VEC3, *this->position);
-		this->glVector3fs.setValue(SpotLight::DIRECTION_VEC3, 
-			*this->direction);
+	Matrix4f SpotLight::calculateLightProjection() {
+		// Perspective Projection Matrix based on the angle of the spot light
+		// (TODO: aspect ratio not always 1.0F).
+		const static Matrix4f PROJECTION = Matrix4f::perspective(
+				this->getAngle(), 1.0F, 0.1F, this->getRange());
+
+		// Fetch the orientation matrix and reverse its forward components (see
+		// the CameraController calculate projection code).
+		Matrix4f orientationMat = this->transform->getOrientationMatrix();
+		orientationMat.setAt(2, 0, -orientationMat.getAt(2, 0));
+		orientationMat.setAt(2, 1, -orientationMat.getAt(2, 1));
+		orientationMat.setAt(2, 2, -orientationMat.getAt(2, 2));
+
+		// Fetch the translation matrix from the transform and reverse its
+		// forward components (again, see the CameraController for reasoning).
+		Matrix4f translationMat = this->transform->getTranslationMatrix();
+		translationMat.setAt(0, 3, -translationMat.getAt(0, 3));
+		translationMat.setAt(1, 3, -translationMat.getAt(1, 3));
+		translationMat.setAt(2, 3, -translationMat.getAt(2, 3));
+
+		// Calculate the Light Projection Matrix for Shadow Mapping
+		Matrix4f lightMatrix = PROJECTION * orientationMat * translationMat;
+		this->shadow.setProjection(lightMatrix);
+
+		return lightMatrix;
+	}
+
+	void SpotLight::onTransformChange() {
+		this->calculateLightProjection();
+		this->glVector3fs.setValue(SpotLight::DIRECTION_VEC3,
+			this->transform->getLocalForward());
+		this->glVector3fs.setValue(SpotLight::POSITION_VEC3,
+			this->transform->getGlobalTranslation());
 	}
 } } }

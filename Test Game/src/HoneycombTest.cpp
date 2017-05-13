@@ -27,31 +27,6 @@ namespace HoneycombTest {
 			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
 				DeferredRenderer::FinalTexture::VARIANCE_SHADOW_MAP);
 		}
-
-		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_5)) {
-			this->directional->getComponent<DirectionalLight>()->getShadow().
-				setShadowType(ShadowType::SHADOW_HARD);
-		}
-		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_6)) {
-			this->directional->getComponent<DirectionalLight>()->getShadow().
-				setShadowType(ShadowType::SHADOW_INTERPOLATED);
-		}
-		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_7)) {
-			this->directional->getComponent<DirectionalLight>()->getShadow().
-				setShadowType(ShadowType::SHADOW_PCF);
-		}
-		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_8)) {
-			this->directional->getComponent<DirectionalLight>()->getShadow().
-				setShadowType(ShadowType::SHADOW_PCF_INTERPOLATED);
-		}
-		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_9)) {
-			this->directional->getComponent<DirectionalLight>()->getShadow().
-				setShadowType(ShadowType::SHADOW_VARIANCE);
-		}
-		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_0)) {
-			this->directional->getComponent<DirectionalLight>()->getShadow().
-				setShadowType(ShadowType::SHADOW_VARIANCE_AA);
-		}
 	}
 
 	void TestGame::render() {
@@ -194,6 +169,8 @@ namespace HoneycombTest {
 		suzPtLight->getComponent<PointLight>()->setRange(10.0F);
 		suzanne->addChild(*suzSpLight);
 		suzanne->addChild(*suzPtLight);
+		suzSpLight->getComponent<Transform>()->translate(
+			Vector3f::getGlobalForward());
 
 		// Construct a default Ambient and Directional Light; decrease the
 		// intensity of the lights so they don't overwhelm the scene
@@ -201,7 +178,7 @@ namespace HoneycombTest {
 		this->directional = Builder::getBuilder()->newDirectionalLight();
 		this->ambient->getComponent<AmbientLight>()->setIntensity(0.05F);
 		this->directional->getComponent<DirectionalLight>()->
-			setIntensity(1.0F);
+			setIntensity(0.25F);
 		this->directional->getComponent<DirectionalLight>()->
 			getShadow().setShadowType(ShadowType::SHADOW_VARIANCE_AA);
 		this->directional->getComponent<DirectionalLight>()->
@@ -266,7 +243,7 @@ namespace HoneycombTest {
 			Vector3f( -1.391F, 0.309F, 5.821F));
 
 		// Add all of the initialized objects to the Game Scene hierarchy
-		this->gameScene.addChild(*this->car);
+//		this->gameScene.addChild(*this->car);
 		this->gameScene.addChild(*this->cube);
 		this->gameScene.addChild(*this->cube2);
 		this->gameScene.addChild(*this->plane);
@@ -275,7 +252,7 @@ namespace HoneycombTest {
 		this->gameScene.addChild(*this->earth);
 		this->gameScene.addChild(*this->suzanne);
 		this->gameScene.addChild(*this->ambient);
-		this->gameScene.addChild(*this->directional);
+//		this->gameScene.addChild(*this->directional);
 		this->gameScene.addChild(*this->camera);
 		
 		// Start the Game Scene and set it as the active scene
