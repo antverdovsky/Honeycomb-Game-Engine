@@ -58,39 +58,18 @@ float calculateAttenuation(Attenuation atten, float d) {
 	return (atten.constant + atten.linear * d + atten.quadratic * d * d);
 }
 
-/// Checks if the fragment is in shadow.
+/// Checks if the fragment is in shadow using the specified shadow type
+/// algorithm. This method should be used for flat 2D shadow maps (i.e. Spot or
+/// Directional Lights only).
 /// sampler2D map : The shadow map rendered from the perspective of the light.
-/// vec4 coords : The light projection transformed coordinates which correspond
-///				  to the shadow map texture.
-/// vec3 dir : The direction of the light ray.
-/// vec3 norm : The normal of the surface of the fragment.
-/// Shadow shdw : The shadow of the light.
-/// return : 1.0F if the fragment is in shadow; 0.0F otherwise.
-float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm, 
-		Shadow shdw) {
-	// If the light uses no shadows, all fragments are outside of the shadow so
-	// always return 0.0F.
-	if (shdw.shadowType == SHADOW_TYPE_NONE) {
-		return 0.0F;
-	}
-	
-	// Calculate the bias using the diffuse component to reduce shadow acne
-	float diffuse = 1.0F - max(dot(-dir, norm), 0.0F);
-	float bias = max(shdw.maxBias * diffuse, shdw.minBias);
-
-	// since the depth is logarithmic for perspective projection spot lights,
-	// the bias cannot be constant for all depth values... TODO
-	bias = 0;																	// TODO: temporary for spot lights
-
-	// Convert the coordinates from light coordinates to texture coordinates.
-	vec3 correctedCoords = coords.xyz / coords.w;		// to [-1,  1]
-	correctedCoords = correctedCoords * 0.5F + 0.5;		// to [ 0,  1]
-
-	// Get the texture coordinates and the current depth value of the fragment 
-	// in relation to the light.
-	vec2 texCoords = correctedCoords.xy;
-	float curDepth = correctedCoords.z;
-
+/// vec2 texCoords : Coordinates using which to sample the 2D texture map.
+/// float bias : The bias of the shadow.
+/// float curDepth : The current depth of the fragment.
+/// int shadowType : The shadow to be used.
+/// return : A value between [0.0F, 1.0F] where 1.0F is fully in shadow and
+///          0.0F is fully not in shadow.
+float isInShadow2D(sampler2D map, vec2 texCoords, float bias, float curDepth,
+		int shadowType) {
 	// Information fetched from the texture is only valid if the Z component of
 	// the the texture coordinates is in range [0, 1]. Otherwise, this fragment
 	// is not in the texture map so any shadow calculation is unreliable.
@@ -98,16 +77,16 @@ float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm,
 
 	float shadow = 0.0F; // Stores the Shadow Value
 
-	if (shdw.shadowType == SHADOW_TYPE_HARD) {
+	if (shadowType == SHADOW_TYPE_HARD) {
 		shadow = sampleShadowHard(map, texCoords, bias, curDepth);
-	} else if (shdw.shadowType == SHADOW_TYPE_INTERPOLATED) {
+	} else if (shadowType == SHADOW_TYPE_INTERPOLATED) {
 		shadow = sampleShadowInterpolated(map, texCoords, bias, curDepth);
-	} else if (shdw.shadowType == SHADOW_TYPE_PCF) {
+	} else if (shadowType == SHADOW_TYPE_PCF) {
 		shadow = sampleShadowPCF(map, texCoords, bias, curDepth);
-	} else if (shdw.shadowType == SHADOW_TYPE_PCF_INTERPOLATED) {
+	} else if (shadowType == SHADOW_TYPE_PCF_INTERPOLATED) {
 		shadow = sampleShadowPCFInterpolated(map, texCoords, bias, curDepth);
-	} else if (shdw.shadowType == SHADOW_TYPE_VARIANCE || 
-			shdw.shadowType == SHADOW_TYPE_VARIANCE_AA) {
+	} else if (shadowType == SHADOW_TYPE_VARIANCE || 
+			shadowType == SHADOW_TYPE_VARIANCE_AA) {
 		shadow = sampleShadowVariance(map, texCoords, bias, curDepth);
 	}
 
