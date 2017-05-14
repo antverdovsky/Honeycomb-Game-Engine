@@ -176,7 +176,7 @@ namespace HoneycombTest {
 		// intensity of the lights so they don't overwhelm the scene
 		this->ambient = Builder::getBuilder()->newAmbientLight();
 		this->directional = Builder::getBuilder()->newDirectionalLight();
-		this->ambient->getComponent<AmbientLight>()->setIntensity(0.05F);
+		this->ambient->getComponent<AmbientLight>()->setIntensity(0.005F);
 		this->directional->getComponent<DirectionalLight>()->
 			setIntensity(0.25F);
 		this->directional->getComponent<DirectionalLight>()->
@@ -232,25 +232,30 @@ namespace HoneycombTest {
 		carHeadlightL->getComponent<SpotLight>()->getRange() = 30.0F;
 		carHeadlightL->getComponent<SpotLight>()->getAngle() = PI / 2.0F;
 		carHeadlightL->getComponent<SpotLight>()->setIntensity(4.0F);
+		carHeadlightL->getComponent<SpotLight>()->getShadow().setIntensity(1.0F);
 		carHeadlightL->getComponent<Transform>()->setTranslation(
-			Vector3f(-4.391F, 0.309F, 5.821F));
+			Vector3f(-4.391F, 0.309F, 4.821F));
 		carHeadlightR->getComponent<SpotLight>()->setAttenuation(
 			Attenuation(1.0F, 0.0F, 0.05F));
 		carHeadlightR->getComponent<SpotLight>()->getRange() = 30.0F;
 		carHeadlightR->getComponent<SpotLight>()->getAngle() = PI / 2.0F;
 		carHeadlightR->getComponent<SpotLight>()->setIntensity(4.0F);
+		carHeadlightR->getComponent<SpotLight>()->getShadow().setIntensity(1.0F);
 		carHeadlightR->getComponent<Transform>()->setTranslation(
-			Vector3f( -1.391F, 0.309F, 5.821F));
+			Vector3f( -1.391F, 0.309F, 4.821F));
+
+		carHeadlightL->getComponent<SpotLight>()->getShadow().setShadowType(ShadowType::SHADOW_HARD);
+		carHeadlightR->getComponent<SpotLight>()->getShadow().setShadowType(ShadowType::SHADOW_HARD);
 
 		// Add all of the initialized objects to the Game Scene hierarchy
-//		this->gameScene.addChild(*this->car);
+		this->gameScene.addChild(*this->car);
 		this->gameScene.addChild(*this->cube);
 		this->gameScene.addChild(*this->cube2);
 		this->gameScene.addChild(*this->plane);
 		this->gameScene.addChild(*this->sphere);
 		this->gameScene.addChild(*this->emeraldSph);
 		this->gameScene.addChild(*this->earth);
-		this->gameScene.addChild(*this->suzanne);
+//		this->gameScene.addChild(*this->suzanne);
 		this->gameScene.addChild(*this->ambient);
 //		this->gameScene.addChild(*this->directional);
 		this->gameScene.addChild(*this->camera);

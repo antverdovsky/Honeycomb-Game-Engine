@@ -16,9 +16,13 @@
 /// vec3 specColor : The color of the reflection (for specular reflection).
 /// vec3 dif : The diffuse material color of this fragment before applying the
 ///			   lighting.
+/// sampler2D shadowMap : The shadow map texture.
+/// vec4 shadowCoords : The light projection transformed coordinates for
+///						reading from the shadow map.
 /// return : The spot light color.
 vec3 calculateSpotLight(SpotLight sL, Camera cam, vec3 wP, vec3 norm, 
-        float shine, vec3 specColor, vec3 dif) {
+        float shine, vec3 specColor, vec3 dif, sampler2D shadowMap,
+		vec4 shadowCoords) {
     // Calculate the displacement vector between the world position of the
     // fragment and the spot light position.
     vec3 displacement = wP - sL.position;
@@ -51,11 +55,18 @@ vec3 calculateSpotLight(SpotLight sL, Camera cam, vec3 wP, vec3 norm,
     // Calculate the Diffuse and Specular Light components of the Spot Light 
     // and scale by the attenuation to adjust the light with distance.
     vec3 diffuse = calculateDiffuseLight(sL.base, direction, norm);
-    vec3 specular = calculateSpecularReflection(sL.base,  cam, wP, direction, 
+    vec3 specular = calculateSpecularReflection(sL.base, cam, wP, direction, 
 		norm, shine, specColor);
 
+	// Calculate the shadow value which will determine how much diffuse and
+	// specular lighting we should apply.
+	float inShadow = isInShadow(shadowMap, shadowCoords, direction, norm,
+		sL.shadow) * float(angleFactor > 0.0F);
+	float shadowValue = (1.0F - inShadow) + (1.0F - sL.shadow.intensity);
+	shadowValue = clamp(shadowValue, 0.0F, 1.0F);
+	
     // Return the blend of the Diffuse and Specular lighting
-    return ((dif * diffuse) + specular) * intensity;
+    return shadowValue * (((dif * diffuse) + specular) * intensity);
 }
 
 #endif

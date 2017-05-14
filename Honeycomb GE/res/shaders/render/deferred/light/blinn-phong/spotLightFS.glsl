@@ -6,12 +6,14 @@
 
 in vec3 out_vs_pos; // Take in the world position outputted by VS
 
-uniform SpotLight spotLight; // The point light
+uniform SpotLight spotLight; // The spot light
 uniform Camera camera;
 
 uniform sampler2D gBufferPosition;
 uniform sampler2D gBufferMaterial;
 uniform sampler2D gBufferNormal;
+
+uniform sampler2D shadowMap;
 
 out vec4 fragColor;
 
@@ -29,6 +31,8 @@ void main() {
 	vec3 spec = specShine.rgb;
 	float shine = specShine.a * 255.0F;
 
+	vec4 shadowCoords = spotLight.shadow.projection * vec4(pos, 1.0F);
+
 	fragColor = vec4(calculateSpotLight(spotLight, camera, pos, norm, shine, 
-		spec, diffuse), 1.0F);
+		spec, diffuse, shadowMap, shadowCoords), 1.0F);
 }

@@ -7,7 +7,8 @@
 /// The spot light structure
 ///
 struct SpotLight {
-    BaseLight base; // The base component of the light
+    BaseLight base;          // The base component of the light
+	Shadow shadow;	         // The shadow component of the light
     Attenuation attenuation; // The attenuation of the light
 
     vec3 position; // The 3D position of the light in the world

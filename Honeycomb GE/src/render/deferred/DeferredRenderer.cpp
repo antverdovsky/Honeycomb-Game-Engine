@@ -256,29 +256,16 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		
 		// Do not render the light itself if we are only looking for a shadow
 		// map.
-		if (this->final != FinalTexture::CLASSIC_SHADOW_MAP &&
-			this->final != FinalTexture::VARIANCE_SHADOW_MAP) {
-			glDisable(GL_STENCIL_TEST);
+		if (this->final == FinalTexture::CLASSIC_SHADOW_MAP ||
+			this->final == FinalTexture::VARIANCE_SHADOW_MAP) return;
 
-			this->directionalLightShader.setUniform_i("shadowMap", 
-				DeferredRenderer::SHADOW_MAP_INDEX);
-			
-			// Bind the shadow map texture at the shadow map index for the
-			// light shaders
-			auto shadowType = dL.getShadow().getShadowType();
-			if (Shadow::isClassicShadow(shadowType)) {
-				this->cShadowMapTexture.bind(SHADOW_MAP_INDEX);
-			} else if (Shadow::isVarianceShadow(shadowType)) {
-				if (shadowType == ShadowType::SHADOW_VARIANCE)
-					this->vShadowMapTexture.bind(SHADOW_MAP_INDEX);
-				else if (shadowType == ShadowType::SHADOW_VARIANCE_AA)
-					this->vShadowMapTextureAA.bind(SHADOW_MAP_INDEX);
-			}
-
-			this->renderLightQuad(dL, this->directionalLightShader,
+		// Write the shadow map to the shader and render the light quad
+		glDisable(GL_STENCIL_TEST);
+		this->writeShadowMapToShader(dL.getShadow().getShadowType(),
+			this->directionalLightShader);
+		this->renderLightQuad(dL, this->directionalLightShader,
 				"directionalLight");
-			glEnable(GL_STENCIL_TEST);
-		}
+		glEnable(GL_STENCIL_TEST);
 	}
 
 	void DeferredRenderer::renderLightPoint(const PointLight &pL) {
@@ -294,10 +281,17 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	void DeferredRenderer::renderLightSpot(const SpotLight &sL, 
 			GameScene &scene) {
 		this->writeSpotLightTransform(sL);
-
 		this->renderTextureShadowMap(sL.getShadow(), scene);
 		
+		// Do not render the light itself if we are only looking for a shadow
+		// map.
+		if (this->final == FinalTexture::CLASSIC_SHADOW_MAP ||
+			this->final == FinalTexture::VARIANCE_SHADOW_MAP) return;
+
+		// Write the shadow map to the shader and render the light volume
 		glEnable(GL_STENCIL_TEST);
+		this->writeShadowMapToShader(sL.getShadow().getShadowType(),
+			this->spotLightShader);
 		this->stencilLightVolume(this->lightVolumeSpot);
 		this->renderLightVolume(sL, this->lightVolumeSpot,
 			this->spotLightShader, "spotLight");
@@ -665,5 +659,22 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		this->stencilShader.setUniform_mat4("objTransform", transformM);
 		this->stencilShader.setUniform_f("lvRange", sLRange);
+	}
+
+	void DeferredRenderer::writeShadowMapToShader(const ShadowType &shadow,
+			ShaderProgram &shader) {
+		// Set the shadow map index to the shadow map uniform
+		shader.setUniform_i("shadowMap", DeferredRenderer::SHADOW_MAP_INDEX);
+
+		// Bind the shadow map texture at the shadow map index for the
+		// light shaders.
+		if (Shadow::isClassicShadow(shadow)) {
+			this->cShadowMapTexture.bind(SHADOW_MAP_INDEX);
+		} else if (Shadow::isVarianceShadow(shadow)) {
+			if (shadow == ShadowType::SHADOW_VARIANCE)
+				this->vShadowMapTexture.bind(SHADOW_MAP_INDEX);
+			else if (shadow == ShadowType::SHADOW_VARIANCE_AA)
+				this->vShadowMapTextureAA.bind(SHADOW_MAP_INDEX);
+		}
 	}
 } } }

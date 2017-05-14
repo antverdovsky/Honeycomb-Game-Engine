@@ -216,6 +216,15 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		///						  to be transformed.
 		void writeSpotLightTransform(const Honeycomb::Component::Light::
 				SpotLight &sL);
+
+		/// Binds the shadow map of the specified shadow type to the specified
+		/// shader.
+		/// const ShadowType &shadow : The shadow type.
+		/// ShaderProgram &shader : The shader to which the shadow map is to be
+		///                         binded to.
+		void writeShadowMapToShader(
+				const Honeycomb::Component::Light::ShadowType &shadow, 
+				Honeycomb::Shader::ShaderProgram &shader);
 	};
 } } }
 

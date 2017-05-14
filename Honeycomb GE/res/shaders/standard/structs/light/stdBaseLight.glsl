@@ -72,11 +72,15 @@ float isInShadow(sampler2D map, vec4 coords, vec3 dir, vec3 norm,
 	// always return 0.0F.
 	if (shdw.shadowType == SHADOW_TYPE_NONE) {
 		return 0.0F;
-	} 
+	}
 	
 	// Calculate the bias using the diffuse component to reduce shadow acne
 	float diffuse = 1.0F - max(dot(-dir, norm), 0.0F);
 	float bias = max(shdw.maxBias * diffuse, shdw.minBias);
+
+	// since the depth is logarithmic for perspective projection spot lights,
+	// the bias cannot be constant for all depth values... TODO
+	bias = 0;																	// TODO: temporary for spot lights
 
 	// Convert the coordinates from light coordinates to texture coordinates.
 	vec3 correctedCoords = coords.xyz / coords.w;		// to [-1,  1]
