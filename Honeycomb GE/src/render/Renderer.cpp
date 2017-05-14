@@ -207,13 +207,26 @@ namespace Honeycomb { namespace Render {
 		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		// Initialize the Classic Shadow Map Shader
+		// Initialize the Classic Shadow Map Shader (note: this should be used
+		// for orthographic lights such as the Directional Light).
 		this->cShadowMapShader.initialize();
 		this->cShadowMapShader.addShader("../Honeycomb GE/res/shaders/render/"
 			"shadow/classic/cShadowMapVS.glsl", ShaderType::VERTEX_SHADER);
 		this->cShadowMapShader.addShader("../Honeycomb GE/res/shaders/render/"
 			"shadow/classic/cShadowMapFS.glsl", ShaderType::FRAGMENT_SHADER);
 		this->cShadowMapShader.finalizeShaderProgram();
+
+		// Initialize the Classic Shadow Map Linear Shader (note: this should
+		// be used for perspective lights such as the Point Light or the Spot
+		// Light).
+		this->cShadowMapLinearShader.initialize();
+		this->cShadowMapLinearShader.addShader("../Honeycomb GE/res/shaders/"
+			"render/shadow/classic/cShadowMapVS.glsl", 
+			ShaderType::VERTEX_SHADER);
+		this->cShadowMapLinearShader.addShader("../Honeycomb GE/res/shaders/"
+			"render/shadow/classic/cShadowMapLinearFS.glsl", 
+			ShaderType::FRAGMENT_SHADER);
+		this->cShadowMapLinearShader.finalizeShaderProgram();
 
 		// Initialize the Variance Shadow Map Texture (32 bit Red & Green
 		// channels texture).

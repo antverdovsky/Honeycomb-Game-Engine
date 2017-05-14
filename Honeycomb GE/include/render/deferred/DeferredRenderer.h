@@ -180,13 +180,25 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			const Honeycomb::Graphics::Texture2D &read, const int &write);
 
 		/// Renders the shadow map of a flat light (Directional or Spot Light).
+		/// const bool &linear : Should the depth be rendered linearly? (Yes
+		///                      for spot lights, No for directional lights).
 		/// const Shadow &shadow : The shadow information to be used when
 		///                        rendering the light.
 		/// GameScene &scene : The scene for which the shadow map is to be
 		///					   rendered.
+		/// const Vector3f &pos : Optional parameter specifying the position of
+		///                       the light in world space. This should only be
+		///                       used for linear lights.
+		/// const float &zFar : Optional parameter specifying the z-far plane
+		///                     value. This should only be used for linear 
+		///                     lights.
 		void renderTextureShadowMap(
+				const bool &linear,
 				const Honeycomb::Component::Light::Shadow &shadow,
-				Honeycomb::Scene::GameScene &scene);
+				Honeycomb::Scene::GameScene &scene,
+				const Honeycomb::Math::Vector3f &pos = 
+					Honeycomb::Math::Vector3f(),
+				const float &zFar = 0.0F);
 
 		/// Renders the specified texture to the screen.
 		/// const Texture2D &tex : The texture which is to be rendered as a 

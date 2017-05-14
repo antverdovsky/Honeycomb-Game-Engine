@@ -252,7 +252,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 	void DeferredRenderer::renderLightDirectional(const DirectionalLight &dL,
 			GameScene &scene) {
-		this->renderTextureShadowMap(dL.getShadow(), scene);
+		this->renderTextureShadowMap(false, dL.getShadow(), scene);
 		
 		// Do not render the light itself if we are only looking for a shadow
 		// map.
@@ -281,7 +281,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	void DeferredRenderer::renderLightSpot(const SpotLight &sL, 
 			GameScene &scene) {
 		this->writeSpotLightTransform(sL);
-		this->renderTextureShadowMap(sL.getShadow(), scene);
+		this->renderTextureShadowMap(true, sL.getShadow(), scene,
+				sL.getPosition(), sL.getRange());
 		
 		// Do not render the light itself if we are only looking for a shadow
 		// map.
@@ -497,8 +498,9 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		this->quad.draw(shader);
 	}
 
-	void DeferredRenderer::renderTextureShadowMap(
-			const Shadow &shadow, GameScene &scene) {
+	void DeferredRenderer::renderTextureShadowMap(const bool &linear,
+			const Shadow &shadow, GameScene &scene, const Vector3f &pos, 
+			const float &zFar) {
 		// Do not bother rendering the shadow map if the light is not going to
 		// use it!
 		if (shadow.getShadowType() == ShadowType::SHADOW_NONE) return;
@@ -527,9 +529,21 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// shadow shader.
 		Matrix4f lP = shadow.getProjection();
 		if (Shadow::isClassicShadow(shadowType)) {
-			this->cShadowMapShader.setUniform_mat4("lightProjection", lP);
-			scene.render(this->cShadowMapShader);
+			if (!linear) { // Use standard CSM depth shader for non linear
+				this->cShadowMapShader.setUniform_mat4("lightProjection", lP);
+				
+				scene.render(this->cShadowMapShader);
+			} else {       // Use linear CSM depth shader for linear
+				this->cShadowMapLinearShader.setUniform_mat4("lightProjection",
+					lP);
+				this->cShadowMapLinearShader.setUniform_vec3("lightPos",
+					pos);
+				this->cShadowMapLinearShader.setUniform_f("zFar", zFar);
+
+				scene.render(this->cShadowMapLinearShader);
+			}
 		} else if (Shadow::isVarianceShadow(shadowType)) {
+			// TODO?
 			this->vShadowMapShader.setUniform_mat4("lightProjection", lP);
 			scene.render(this->vShadowMapShader);
 		}
