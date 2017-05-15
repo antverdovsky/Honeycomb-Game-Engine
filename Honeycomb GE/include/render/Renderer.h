@@ -177,6 +177,7 @@ namespace Honeycomb { namespace Render {
 		Honeycomb::Graphics::Texture2D vShadowMapTexture;
 		Honeycomb::Graphics::Texture2D vShadowMapTextureAA;
 		Honeycomb::Shader::ShaderProgram vShadowMapShader;
+		Honeycomb::Shader::ShaderProgram vShadowMapLinearShader;
 		Honeycomb::Shader::ShaderProgram vsmGaussianBlurShader;
 		
 		// Shaders for post processing the Final Image

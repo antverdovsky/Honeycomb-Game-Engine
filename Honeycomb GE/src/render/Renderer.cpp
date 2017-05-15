@@ -264,13 +264,25 @@ namespace Honeycomb { namespace Render {
 		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		// Initialize the Variance Shadow Map Shader
+		// Initialize the Variance Shadow Map Shader (used for orthographic
+		// projection lights).
 		this->vShadowMapShader.initialize();
 		this->vShadowMapShader.addShader("../Honeycomb GE/res/shaders/render/"
 			"shadow/variance/vShadowMapVS.glsl", ShaderType::VERTEX_SHADER);
 		this->vShadowMapShader.addShader("../Honeycomb GE/res/shaders/render/"
 			"shadow/variance/vShadowMapFS.glsl", ShaderType::FRAGMENT_SHADER);
 		this->vShadowMapShader.finalizeShaderProgram();
+
+		// Initialize the Variance Shadow Map Linear Depth Shader (used for
+		// perspective projection lights).
+		this->vShadowMapLinearShader.initialize();
+		this->vShadowMapLinearShader.addShader("../Honeycomb GE/res/shaders/"
+			"render/shadow/variance/vShadowMapVS.glsl", 
+			ShaderType::VERTEX_SHADER);
+		this->vShadowMapLinearShader.addShader("../Honeycomb GE/res/shaders/"
+			"render/shadow/variance/vShadowMapLinearFS.glsl",
+			ShaderType::FRAGMENT_SHADER);
+		this->vShadowMapLinearShader.finalizeShaderProgram();
 
 		// Initialize the Gaussian Blur Post Processing Shader for VSM
 		this->vsmGaussianBlurShader.initialize();

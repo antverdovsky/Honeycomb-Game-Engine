@@ -27,6 +27,49 @@ namespace HoneycombTest {
 			DeferredRenderer::getDeferredRenderer()->setFinalTexture(
 				DeferredRenderer::FinalTexture::VARIANCE_SHADOW_MAP);
 		}
+
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_4)) {
+			this->car->getChildren().at(5)->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_NONE);
+			this->car->getChildren().at(6)->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_NONE);
+		}
+		if(GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_5)) {
+			this->car->getChildren().at(5)->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_HARD);
+			this->car->getChildren().at(6)->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_HARD);
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_6)) {
+			this->car->getChildren().at(5)->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_INTERPOLATED);
+			this->car->getChildren().at(6)->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_INTERPOLATED);
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_7)) {
+			this->car->getChildren().at(5)->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_PCF);
+			this->car->getChildren().at(6)->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_PCF);
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_8)) {
+			this->car->getChildren().at(5)->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_PCF_INTERPOLATED);
+			this->car->getChildren().at(6)->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_PCF_INTERPOLATED);
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_9)) {
+			this->car->getChildren().at(5)->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_VARIANCE);
+			this->car->getChildren().at(6)->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_VARIANCE);
+		}
+		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_0)) {
+			this->car->getChildren().at(5)->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_VARIANCE_AA);
+			this->car->getChildren().at(6)->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_VARIANCE_AA);
+		}
 	}
 
 	void TestGame::render() {
@@ -257,7 +300,7 @@ namespace HoneycombTest {
 		this->gameScene.addChild(*this->earth);
 //		this->gameScene.addChild(*this->suzanne);
 		this->gameScene.addChild(*this->ambient);
-		this->gameScene.addChild(*this->directional);
+//		this->gameScene.addChild(*this->directional);
 		this->gameScene.addChild(*this->camera);
 		
 		// Start the Game Scene and set it as the active scene

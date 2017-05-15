@@ -13,4 +13,5 @@ void main() {
 	float a = material.refractiveIndex;
 
 	gl_Position = lightProjection * objTransform * vertexIn.position;
+	vertexOut.position = (objTransform * vertexIn.position).xyz;
 }

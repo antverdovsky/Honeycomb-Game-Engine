@@ -23,7 +23,7 @@ float sampleShadowVariance(sampler2D map, vec2 coords, float bias,
 	
 	// The probability the texture is in shadow, according to classic shadow
 	// mapping.
-	float p = smoothstep(curDepth - 0.025F, curDepth, textureDepth);
+	float p = smoothstep(curDepth - 0.01F, curDepth, textureDepth);
 
 	// Calculate the Variance value for Chebyshev's Inequality
 	float variance = max(textureDepth2 - textureDepth * textureDepth, 0.0002F);

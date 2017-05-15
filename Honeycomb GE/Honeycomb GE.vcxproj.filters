@@ -355,5 +355,6 @@
     <None Include="res\shaders\post-processing\gaussBlur5FS.glsl" />
     <None Include="res\shaders\post-processing\gaussBlur3FS.glsl" />
     <None Include="res\shaders\render\shadow\classic\cShadowMapLinearFS.glsl" />
+    <None Include="res\shaders\render\shadow\variance\vShadowMapLinearFS.glsl" />
   </ItemGroup>
 </Project>

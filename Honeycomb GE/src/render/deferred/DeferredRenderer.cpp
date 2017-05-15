@@ -543,9 +543,19 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 				scene.render(this->cShadowMapLinearShader);
 			}
 		} else if (Shadow::isVarianceShadow(shadowType)) {
-			// TODO?
-			this->vShadowMapShader.setUniform_mat4("lightProjection", lP);
-			scene.render(this->vShadowMapShader);
+			if (!linear) { // Use standard VSM depth shader for non linear
+				this->vShadowMapShader.setUniform_mat4("lightProjection", lP);
+
+				scene.render(this->vShadowMapShader);
+			} else {       // Use linear VSM depth shader for linear
+				this->vShadowMapLinearShader.setUniform_mat4("lightProjection",
+					lP);
+				this->vShadowMapLinearShader.setUniform_vec3("lightPos",
+					pos);
+				this->vShadowMapLinearShader.setUniform_f("zFar", zFar);
+
+				scene.render(this->vShadowMapLinearShader);
+			}
 		}
 
 		// If this is an Antialiased Variance Shadow Map, apply the gaussian
@@ -597,6 +607,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			GameWindow::getGameWindow()->getWindowHeight());
 
 		// Undo Culling & Depth Mask Changes
+		glCullFace(GL_BACK);
 		glDisable(GL_CULL_FACE);
 		glDepthMask(GL_FALSE);
 
