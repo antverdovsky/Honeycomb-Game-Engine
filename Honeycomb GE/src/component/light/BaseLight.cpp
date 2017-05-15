@@ -179,7 +179,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		this->setShadowType(shdw);
 		this->setProjection(Matrix4f::identity());
 		this->setMinimumBias(0.005F);
-		this->setMaximumBias(0.050F);
+		this->setMaximumBias(0.025F);
 		this->setIntensity(0.75F);
 		this->setSoftness(1.0F);
 	}

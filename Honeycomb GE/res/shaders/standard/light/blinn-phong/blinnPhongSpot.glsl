@@ -60,8 +60,7 @@ vec3 calculateSpotLight(SpotLight sL, Camera cam, vec3 wP, vec3 norm,
 
 	// Calculate the shadow value which will determine how much diffuse and
 	// specular lighting we should apply.
-	float inShadow = isInShadow(shadowMap, shadowCoords, direction, norm,
-		sL.shadow) * float(angleFactor > 0.0F);
+	float inShadow = isInShadow(shadowMap, shadowCoords, sL, norm, wP);
 	float shadowValue = (1.0F - inShadow) + (1.0F - sL.shadow.intensity);
 	shadowValue = clamp(shadowValue, 0.0F, 1.0F);
 	

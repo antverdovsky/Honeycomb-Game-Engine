@@ -176,9 +176,9 @@ namespace HoneycombTest {
 		// intensity of the lights so they don't overwhelm the scene
 		this->ambient = Builder::getBuilder()->newAmbientLight();
 		this->directional = Builder::getBuilder()->newDirectionalLight();
-		this->ambient->getComponent<AmbientLight>()->setIntensity(0.005F);
+		this->ambient->getComponent<AmbientLight>()->setIntensity(0.01F);
 		this->directional->getComponent<DirectionalLight>()->
-			setIntensity(0.25F);
+			setIntensity(0.05F);
 		this->directional->getComponent<DirectionalLight>()->
 			getShadow().setShadowType(ShadowType::SHADOW_VARIANCE_AA);
 		this->directional->getComponent<DirectionalLight>()->
@@ -204,7 +204,7 @@ namespace HoneycombTest {
 		this->sphere->getComponent<Transform>()->setTranslation(
 			Vector3f(3.0F, 0.0F, -7.5F));
 		this->car->getComponent<Transform>()->setTranslation(
-			Vector3f(-3.0F, 1.36F, 10.0F));
+			Vector3f(-3.0F, 1.36F, 8.0F));
 		this->car->getComponent<Transform>()->setScale(
 			Vector3f(2.0F, 2.0F, 2.0F));
 		this->suzanne->getComponent<Transform>()->setTranslation(
@@ -229,20 +229,20 @@ namespace HoneycombTest {
 		this->car->addChild(*carHeadlightR);
 		carHeadlightL->getComponent<SpotLight>()->setAttenuation(
 			Attenuation(1.0F, 0.0F, 0.05F));
-		carHeadlightL->getComponent<SpotLight>()->getRange() = 30.0F;
+		carHeadlightL->getComponent<SpotLight>()->getRange() = 25.0F;
 		carHeadlightL->getComponent<SpotLight>()->getAngle() = PI / 2.0F;
 		carHeadlightL->getComponent<SpotLight>()->setIntensity(4.0F);
 		carHeadlightL->getComponent<SpotLight>()->getShadow().setIntensity(1.0F);
 		carHeadlightL->getComponent<Transform>()->setTranslation(
-			Vector3f(-4.391F, 0.309F, 4.821F));
+			Vector3f(-4.391F, 0.709F, 3.321F));
 		carHeadlightR->getComponent<SpotLight>()->setAttenuation(
 			Attenuation(1.0F, 0.0F, 0.05F));
-		carHeadlightR->getComponent<SpotLight>()->getRange() = 30.0F;
+		carHeadlightR->getComponent<SpotLight>()->getRange() = 25.0F;
 		carHeadlightR->getComponent<SpotLight>()->getAngle() = PI / 2.0F;
 		carHeadlightR->getComponent<SpotLight>()->setIntensity(4.0F);
 		carHeadlightR->getComponent<SpotLight>()->getShadow().setIntensity(1.0F);
 		carHeadlightR->getComponent<Transform>()->setTranslation(
-			Vector3f( -1.391F, 0.309F, 4.821F));
+			Vector3f( -1.391F, 0.709F, 3.321F));
 
 		carHeadlightL->getComponent<SpotLight>()->getShadow().setShadowType(ShadowType::SHADOW_HARD);
 		carHeadlightR->getComponent<SpotLight>()->getShadow().setShadowType(ShadowType::SHADOW_HARD);
@@ -257,7 +257,7 @@ namespace HoneycombTest {
 		this->gameScene.addChild(*this->earth);
 //		this->gameScene.addChild(*this->suzanne);
 		this->gameScene.addChild(*this->ambient);
-//		this->gameScene.addChild(*this->directional);
+		this->gameScene.addChild(*this->directional);
 		this->gameScene.addChild(*this->camera);
 		
 		// Start the Game Scene and set it as the active scene

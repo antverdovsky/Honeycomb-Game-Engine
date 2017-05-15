@@ -15,6 +15,7 @@ void main() {
 	// Divide the distance by the zFar value to map the distance between [0, 1]
 	float depthDist = dist / zFar;
 
+	// Write the depth to the depth buffer
 	gl_FragDepth = depthDist;
 	color = vec4(depthDist, 0.0F, 0.0F, 0.0F);
 }
