@@ -33,16 +33,16 @@ vec3 calculatePointLight(PointLight pL, Camera cam, vec3 wP, vec3 norm,
     // Calculate the Attenuation of the Point Light, and the adjusted
     // attenuation which will make the attenuation zero at the range of the
     // point light to allow for a smoother light transition.
-	float atten = calculateAttenuation(pL.attenuation, dispMag);
-	float intensity = (1.0F / atten) * pL.base.intensity * 
-		((pL.range - dispMag) / pL.range);
+	float atten = 1.0F / calculateAttenuation(pL.attenuation, dispMag) - 
+		1.0F / calculateAttenuation(pL.attenuation, pL.range);
+	float intensity = atten * pL.base.intensity;
     
     // Calculate the Diffuse and Specular Light components of the Point Light 
     // and scale by the attenuation to adjust the light with distance.
     vec3 diffuse = calculateDiffuseLight(pL.base, direction, norm);
     vec3 specular = calculateSpecularReflection(pL.base, cam, wP, 
 		direction, norm, shine, specColor);
-    
+	
     // Return the blend of the Diffuse and Specular lighting
 	return ((dif * diffuse) + specular) * intensity;
 }

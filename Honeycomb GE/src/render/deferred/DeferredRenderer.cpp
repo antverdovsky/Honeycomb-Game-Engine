@@ -405,7 +405,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 					bL->downcast<DirectionalLight>()), scene);
 				break;
 			case LightType::LIGHT_TYPE_POINT:
-//				this->renderLightPoint(*(bL->downcast<PointLight>()));
+				this->renderLightPoint(*(bL->downcast<PointLight>()));
 				break;
 			case LightType::LIGHT_TYPE_SPOT:
 				this->renderLightSpot(*(bL->downcast<SpotLight>()), scene);
@@ -671,7 +671,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		this->pointLightShader.setUniform_mat4("objTransform", transformM);
 		this->pointLightShader.setUniform_f("lvRange", pLRange);
-		this->spotLightShader.setUniform_f("lvSpotAngle", PI);
+		this->pointLightShader.setUniform_f("lvSpotAngle", PI);
 
 		this->stencilShader.setUniform_mat4("objTransform", transformM);
 		this->stencilShader.setUniform_f("lvRange", pLRange);

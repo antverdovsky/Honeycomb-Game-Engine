@@ -225,7 +225,7 @@ namespace HoneycombTest {
 		suzPtLight->getComponent<PointLight>()->setIntensity(2.5F);
 		suzPtLight->getComponent<PointLight>()->setRange(10.0F);
 		suzanne->addChild(*suzSpLight);
-//		suzanne->addChild(*suzPtLight);
+		suzanne->addChild(*suzPtLight);
 		suzSpLight->getComponent<Transform>()->translate(
 			Vector3f::getGlobalForward());
 
@@ -315,7 +315,7 @@ namespace HoneycombTest {
 		this->gameScene.addChild(*this->earth);
 		this->gameScene.addChild(*this->suzanne);
 		this->gameScene.addChild(*this->ambient);
-//		this->gameScene.addChild(*this->directional);
+		this->gameScene.addChild(*this->directional);
 		this->gameScene.addChild(*this->camera);
 		
 		// Start the Game Scene and set it as the active scene
