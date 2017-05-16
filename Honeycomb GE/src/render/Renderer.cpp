@@ -35,6 +35,14 @@ namespace Honeycomb { namespace Render {
 		return this->postShaders;
 	}
 
+	const int& Renderer::getShadowMapHeight() const {
+		return this->SHADOW_MAP_HEIGHT;
+	}
+
+	const int& Renderer::getShadowMapWidth() const {
+		return this->SHADOW_MAP_WIDTH;
+	}
+
 	void Renderer::render(GameScene &scene) {
 
 	}

@@ -80,6 +80,14 @@ namespace Honeycomb { namespace Render {
 		/// return : The modifiable list of all of the shaders used.
 		std::vector<Honeycomb::Shader::ShaderProgram>& getPostShaders();
 
+		/// Returns the height of the shadow map texture.
+		/// return : The height.
+		const int& getShadowMapHeight() const;
+
+		/// Returns the width of the shadow map texture.
+		/// return : The width.
+		const int& getShadowMapWidth() const;
+
 		/// Virtual method which should be overriden to render the specified
 		/// scene.
 		/// GameScene &scene : The game scene to be rendered.

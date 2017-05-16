@@ -78,8 +78,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 	Matrix4f DirectionalLight::calculateLightProjection() {
 		// Standard Orthographic Projection [TODO]
-		const static Matrix4f PROJECTION =
-			Matrix4f::orthographic(21, 21, -20.0F, 20.0F);
+		Matrix4f ortho = Matrix4f::orthographic(21, 21, -20.0F, 20.0F);
 
 		// Fetch the orientation matrix and reverse its forward components (see
 		// the CameraController calculate projection code).
@@ -89,7 +88,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		orientationMat.setAt(2, 2, -orientationMat.getAt(2, 2));
 
 		// Calculate the Light Projection Matrix for Shadow Mapping
-		Matrix4f lightMatrix = PROJECTION * orientationMat;
+		Matrix4f lightMatrix = ortho * orientationMat;
 		this->shadow.setProjection(lightMatrix);
 		
 		return lightMatrix;

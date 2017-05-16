@@ -217,8 +217,8 @@ namespace HoneycombTest {
 		GameObject *suzPtLight = Builder::getBuilder()->newPointLight();
 		suzSpLight->getComponent<SpotLight>()->setColor(
 			Vector3f(1.0F, 1.0F, 1.0F));
-		suzSpLight->getComponent<SpotLight>()->setIntensity(20.0F);
-		suzSpLight->getComponent<SpotLight>()->getRange() = 50.0F;
+		suzSpLight->getComponent<SpotLight>()->setIntensity(2.5F);
+		suzSpLight->getComponent<SpotLight>()->getRange() = 10.0F;
 		suzSpLight->getComponent<SpotLight>()->getAngle() = PI / 2.0F;
 		suzPtLight->getComponent<PointLight>()->setColor(
 			Vector3f(1.0F, 1.0F, 1.0F));
@@ -315,7 +315,7 @@ namespace HoneycombTest {
 		this->gameScene.addChild(*this->earth);
 		this->gameScene.addChild(*this->suzanne);
 		this->gameScene.addChild(*this->ambient);
-		this->gameScene.addChild(*this->directional);
+//		this->gameScene.addChild(*this->directional);
 		this->gameScene.addChild(*this->camera);
 		
 		// Start the Game Scene and set it as the active scene

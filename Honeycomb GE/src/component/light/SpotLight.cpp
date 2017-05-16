@@ -128,9 +128,10 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 	Matrix4f SpotLight::calculateLightProjection() {
 		// Perspective Projection Matrix based on the angle of the spot light
-		// (TODO: aspect ratio not always 1.0F).
-		const static Matrix4f PROJECTION = Matrix4f::perspective(
-				this->getAngle(), 1.0F, 0.1F, this->getRange());
+		int aR = Renderer::getRenderer()->getShadowMapWidth() / 
+			Renderer::getRenderer()->getShadowMapHeight();
+		Matrix4f persp = Matrix4f::perspective(this->getAngle(), aR, 
+				0.1F, this->getRange());
 
 		// Fetch the orientation matrix and reverse its forward components (see
 		// the CameraController calculate projection code).
@@ -147,7 +148,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		translationMat.setAt(2, 3, -translationMat.getAt(2, 3));
 
 		// Calculate the Light Projection Matrix for Shadow Mapping
-		Matrix4f lightMatrix = PROJECTION * orientationMat * translationMat;
+		Matrix4f lightMatrix = persp * orientationMat * translationMat;
 		this->shadow.setProjection(lightMatrix);
 
 		return lightMatrix;
