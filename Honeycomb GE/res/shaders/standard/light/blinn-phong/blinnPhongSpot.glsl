@@ -38,8 +38,13 @@ vec3 calculateSpotLight(SpotLight sL, Camera cam, vec3 wP, vec3 norm,
     vec3 direction = normalize(displacement);
     float cosAngle = dot(direction, normalize(sL.direction));
    
-    // Calculate the Attenuation of the Point Light
-    float attenuation = calculateAttenuation(sL.attenuation, dispMag);
+    // Calculate the Attenuation of the Point Light. Subtract the attenuation 
+	// at the range of the light to assure the attenuation at the range is 
+	// zero. This makes the falloff less natural at low ranges, but fixes the
+	// sudden falloff which can occur if the intensity >> range.
+    float attenuation = 1.0F / calculateAttenuation(sL.attenuation, dispMag)
+		- 1.0F / calculateAttenuation(sL.attenuation, sL.range);
+	attenuation *= float(attenuation >= 0);
 
 	// Calculate the angle factor using the cosine angle and the cosine of the
 	// half angle. This factor will gradually fall off as the light angle
@@ -50,7 +55,7 @@ vec3 calculateSpotLight(SpotLight sL, Camera cam, vec3 wP, vec3 norm,
 
 	// Calculate the final intensity using the base intensity, attenuation
 	// and the angle factor.
-	float intensity = sL.base.intensity / attenuation * angleFactor;
+	float intensity = sL.base.intensity * attenuation * angleFactor;
     
     // Calculate the Diffuse and Specular Light components of the Spot Light 
     // and scale by the attenuation to adjust the light with distance.
@@ -63,7 +68,7 @@ vec3 calculateSpotLight(SpotLight sL, Camera cam, vec3 wP, vec3 norm,
 	float inShadow = isInShadow(shadowMap, shadowCoords, sL, norm, wP);
 	float shadowValue = (1.0F - inShadow) + (1.0F - sL.shadow.intensity);
 	shadowValue = clamp(shadowValue, 0.0F, 1.0F);
-	
+
     // Return the blend of the Diffuse and Specular lighting
     return shadowValue * (((dif * diffuse) + specular) * intensity);
 }

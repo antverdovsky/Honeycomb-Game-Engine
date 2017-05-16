@@ -33,11 +33,15 @@ namespace HoneycombTest {
 				getShadow().setShadowType(ShadowType::SHADOW_NONE);
 			this->car->getChildren().at(6)->getComponent<SpotLight>()->
 				getShadow().setShadowType(ShadowType::SHADOW_NONE);
+			this->suzanne->getChild("Spot Light")->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_NONE);
 		}
 		if(GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_5)) {
 			this->car->getChildren().at(5)->getComponent<SpotLight>()->
 				getShadow().setShadowType(ShadowType::SHADOW_HARD);
 			this->car->getChildren().at(6)->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_HARD);
+			this->suzanne->getChild("Spot Light")->getComponent<SpotLight>()->
 				getShadow().setShadowType(ShadowType::SHADOW_HARD);
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_6)) {
@@ -45,11 +49,15 @@ namespace HoneycombTest {
 				getShadow().setShadowType(ShadowType::SHADOW_INTERPOLATED);
 			this->car->getChildren().at(6)->getComponent<SpotLight>()->
 				getShadow().setShadowType(ShadowType::SHADOW_INTERPOLATED);
+			this->suzanne->getChild("Spot Light")->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_INTERPOLATED);
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_7)) {
 			this->car->getChildren().at(5)->getComponent<SpotLight>()->
 				getShadow().setShadowType(ShadowType::SHADOW_PCF);
 			this->car->getChildren().at(6)->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_PCF);
+			this->suzanne->getChild("Spot Light")->getComponent<SpotLight>()->
 				getShadow().setShadowType(ShadowType::SHADOW_PCF);
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_8)) {
@@ -57,17 +65,23 @@ namespace HoneycombTest {
 				getShadow().setShadowType(ShadowType::SHADOW_PCF_INTERPOLATED);
 			this->car->getChildren().at(6)->getComponent<SpotLight>()->
 				getShadow().setShadowType(ShadowType::SHADOW_PCF_INTERPOLATED);
+			this->suzanne->getChild("Spot Light")->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_PCF_INTERPOLATED);
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_9)) {
 			this->car->getChildren().at(5)->getComponent<SpotLight>()->
 				getShadow().setShadowType(ShadowType::SHADOW_VARIANCE);
 			this->car->getChildren().at(6)->getComponent<SpotLight>()->
 				getShadow().setShadowType(ShadowType::SHADOW_VARIANCE);
+			this->suzanne->getChild("Spot Light")->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_VARIANCE);
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_0)) {
 			this->car->getChildren().at(5)->getComponent<SpotLight>()->
 				getShadow().setShadowType(ShadowType::SHADOW_VARIANCE_AA);
 			this->car->getChildren().at(6)->getComponent<SpotLight>()->
+				getShadow().setShadowType(ShadowType::SHADOW_VARIANCE_AA);
+			this->suzanne->getChild("Spot Light")->getComponent<SpotLight>()->
 				getShadow().setShadowType(ShadowType::SHADOW_VARIANCE_AA);
 		}
 	}
@@ -202,16 +216,16 @@ namespace HoneycombTest {
 		GameObject *suzSpLight = Builder::getBuilder()->newSpotLight();
 		GameObject *suzPtLight = Builder::getBuilder()->newPointLight();
 		suzSpLight->getComponent<SpotLight>()->setColor(
-			Vector3f(0.0F, 0.0F, 1.0F));
-		suzSpLight->getComponent<SpotLight>()->setIntensity(5.0F);
-		suzSpLight->getComponent<SpotLight>()->getRange() = 30.0F;
+			Vector3f(1.0F, 1.0F, 1.0F));
+		suzSpLight->getComponent<SpotLight>()->setIntensity(20.0F);
+		suzSpLight->getComponent<SpotLight>()->getRange() = 50.0F;
 		suzSpLight->getComponent<SpotLight>()->getAngle() = PI / 2.0F;
 		suzPtLight->getComponent<PointLight>()->setColor(
 			Vector3f(1.0F, 1.0F, 1.0F));
 		suzPtLight->getComponent<PointLight>()->setIntensity(2.5F);
 		suzPtLight->getComponent<PointLight>()->setRange(10.0F);
 		suzanne->addChild(*suzSpLight);
-		suzanne->addChild(*suzPtLight);
+//		suzanne->addChild(*suzPtLight);
 		suzSpLight->getComponent<Transform>()->translate(
 			Vector3f::getGlobalForward());
 
@@ -235,7 +249,7 @@ namespace HoneycombTest {
 		
 		// Scale and position the Game Objects
 		this->plane->getComponent<Transform>()->setScale(
-			Vector3f(15.0F, 1.0F, 15.0F));
+			Vector3f(15.0F, 1.0F, 25.0F));
 		this->cube->getComponent<Transform>()->setTranslation(
 			Vector3f(-2.5F, 1.0F, -5.0F));
 		this->cube2->getComponent<Transform>()->setTranslation(
@@ -272,21 +286,22 @@ namespace HoneycombTest {
 		this->car->addChild(*carHeadlightR);
 		carHeadlightL->getComponent<SpotLight>()->setAttenuation(
 			Attenuation(1.0F, 0.0F, 0.05F));
-		carHeadlightL->getComponent<SpotLight>()->getRange() = 25.0F;
-		carHeadlightL->getComponent<SpotLight>()->getAngle() = PI / 2.0F;
-		carHeadlightL->getComponent<SpotLight>()->setIntensity(4.0F);
+		carHeadlightL->getComponent<SpotLight>()->getRange() = 15.0F;
+		carHeadlightL->getComponent<SpotLight>()->getAngle() = PI / 2;
+		carHeadlightL->getComponent<SpotLight>()->setIntensity(8.0F);
 		carHeadlightL->getComponent<SpotLight>()->getShadow().setIntensity(1.0F);
 		carHeadlightL->getComponent<Transform>()->setTranslation(
 			Vector3f(-4.391F, 0.709F, 3.321F));
 		carHeadlightR->getComponent<SpotLight>()->setAttenuation(
 			Attenuation(1.0F, 0.0F, 0.05F));
-		carHeadlightR->getComponent<SpotLight>()->getRange() = 25.0F;
-		carHeadlightR->getComponent<SpotLight>()->getAngle() = PI / 2.0F;
-		carHeadlightR->getComponent<SpotLight>()->setIntensity(4.0F);
+		carHeadlightR->getComponent<SpotLight>()->getRange() = 15.0F;
+		carHeadlightR->getComponent<SpotLight>()->getAngle() = PI / 2;
+		carHeadlightR->getComponent<SpotLight>()->setIntensity(8.0F);
 		carHeadlightR->getComponent<SpotLight>()->getShadow().setIntensity(1.0F);
 		carHeadlightR->getComponent<Transform>()->setTranslation(
 			Vector3f( -1.391F, 0.709F, 3.321F));
 
+		suzSpLight->getComponent<SpotLight>()->getShadow().setShadowType(ShadowType::SHADOW_HARD);
 		carHeadlightL->getComponent<SpotLight>()->getShadow().setShadowType(ShadowType::SHADOW_HARD);
 		carHeadlightR->getComponent<SpotLight>()->getShadow().setShadowType(ShadowType::SHADOW_HARD);
 
@@ -298,9 +313,9 @@ namespace HoneycombTest {
 		this->gameScene.addChild(*this->sphere);
 		this->gameScene.addChild(*this->emeraldSph);
 		this->gameScene.addChild(*this->earth);
-//		this->gameScene.addChild(*this->suzanne);
+		this->gameScene.addChild(*this->suzanne);
 		this->gameScene.addChild(*this->ambient);
-//		this->gameScene.addChild(*this->directional);
+		this->gameScene.addChild(*this->directional);
 		this->gameScene.addChild(*this->camera);
 		
 		// Start the Game Scene and set it as the active scene

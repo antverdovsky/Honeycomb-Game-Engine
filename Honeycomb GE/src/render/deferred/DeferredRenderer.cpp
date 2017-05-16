@@ -14,6 +14,7 @@
 #include "../../../include/component/render/MeshRenderer.h"
 
 #include "../../../include/geometry/Vertex.h"
+#include "../../../include/math/MathUtils.h"
 #include "../../../include/object/Builder.h"
 
 using Honeycomb::Base::GameWindow;
@@ -35,6 +36,7 @@ using Honeycomb::Math::Matrix4f;
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
+using Honeycomb::Math::Utils::PI;
 using Honeycomb::Object::Builder;
 using Honeycomb::Object::GameObject;
 using Honeycomb::Scene::GameScene;
@@ -669,21 +671,26 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		this->pointLightShader.setUniform_mat4("objTransform", transformM);
 		this->pointLightShader.setUniform_f("lvRange", pLRange);
+		this->spotLightShader.setUniform_f("lvSpotAngle", PI);
 
 		this->stencilShader.setUniform_mat4("objTransform", transformM);
 		this->stencilShader.setUniform_f("lvRange", pLRange);
+		this->stencilShader.setUniform_f("lvSpotAngle", PI);
 	}
 
 	void DeferredRenderer::writeSpotLightTransform(const SpotLight &sL) {
 		Transform sLT = *(sL.getAttached()->getComponent<Transform>());
 		Matrix4f transformM = sLT.getTransformationMatrix();
 		float sLRange = sL.getRange();
+		float sLAngle = sL.getAngle();
 
 		this->spotLightShader.setUniform_mat4("objTransform", transformM);
 		this->spotLightShader.setUniform_f("lvRange", sLRange);
+		this->spotLightShader.setUniform_f("lvSpotAngle", sLAngle);
 
 		this->stencilShader.setUniform_mat4("objTransform", transformM);
 		this->stencilShader.setUniform_f("lvRange", sLRange);
+		this->stencilShader.setUniform_f("lvSpotAngle", sLAngle);
 	}
 
 	void DeferredRenderer::writeShadowMapToShader(const ShadowType &shadow,
