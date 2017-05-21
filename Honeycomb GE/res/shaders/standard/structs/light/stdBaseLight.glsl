@@ -1,11 +1,11 @@
 #ifndef STD_BASE_LIGHT_GLSL
 #define STD_BASE_LIGHT_GLSL
 
-#include <../../light/shadows/shadowHard.glsl>
-#include <../../light/shadows/shadowInterpolated.glsl>
-#include <../../light/shadows/shadowPCF.glsl>
-#include <../../light/shadows/shadowPCFInterpolated.glsl>
-#include <../../light/shadows/shadowVariance.glsl>
+#include <../../light/shadows2d/shadowHard.glsl>
+#include <../../light/shadows2d/shadowInterpolated.glsl>
+#include <../../light/shadows2d/shadowPCF.glsl>
+#include <../../light/shadows2d/shadowPCFInterpolated.glsl>
+#include <../../light/shadows2d/shadowVariance.glsl>
 
 // Shadow Type "enumeration"
 const int SHADOW_TYPE_NONE						= 0;

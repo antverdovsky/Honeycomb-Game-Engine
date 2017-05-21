@@ -331,11 +331,11 @@
     <None Include="res\shaders\render\shadow\variance\vShadowMapFS.glsl" />
     <None Include="res\shaders\render\shadow\variance\vShadowMapLinearFS.glsl" />
     <None Include="res\shaders\render\shadow\variance\vShadowMapVS.glsl" />
-    <None Include="res\shaders\standard\light\shadows\shadowHard.glsl" />
-    <None Include="res\shaders\standard\light\shadows\shadowInterpolated.glsl" />
-    <None Include="res\shaders\standard\light\shadows\shadowPCF.glsl" />
-    <None Include="res\shaders\standard\light\shadows\shadowPCFInterpolated.glsl" />
-    <None Include="res\shaders\standard\light\shadows\shadowVariance.glsl" />
+    <None Include="res\shaders\standard\light\shadows2d\shadowHard.glsl" />
+    <None Include="res\shaders\standard\light\shadows2d\shadowInterpolated.glsl" />
+    <None Include="res\shaders\standard\light\shadows2d\shadowPCF.glsl" />
+    <None Include="res\shaders\standard\light\shadows2d\shadowPCFInterpolated.glsl" />
+    <None Include="res\shaders\standard\light\shadows2d\shadowVariance.glsl" />
     <None Include="res\shaders\standard\structs\light\stdAmbientLight.glsl" />
     <None Include="res\shaders\standard\structs\light\stdBaseLight.glsl" />
     <None Include="res\shaders\standard\structs\light\stdDirectionalLight.glsl" />
