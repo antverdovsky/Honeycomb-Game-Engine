@@ -1,22 +1,21 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "../../include/base/GameInput.h"
+#include "../../include/base/GameTime.h"
+#include "../../include/base/GameWindow.h"
 #include "../../include/base/BaseMain.h"
 #include "../../include/debug/Logger.h"
-#include "../../include/render/RenderingEngine.h"
 #include "../../include/scene/GameScene.h"
 
 using Honeycomb::Debug::Logger;
 using Honeycomb::Render::RenderingEngine;
-using Honeycomb::Render::RenderingType; // todo
+using Honeycomb::Render::RenderingType;
 using Honeycomb::Scene::GameScene;
 
 namespace Honeycomb { namespace Base {
-	BaseMain* BaseMain::baseMain = nullptr;
-
 	BaseMain& BaseMain::getBaseMain() {
-		if (baseMain == nullptr) baseMain = new BaseMain();
-
+		static BaseMain *baseMain = new BaseMain();
 		return *baseMain;
 	}
 
@@ -34,7 +33,7 @@ namespace Honeycomb { namespace Base {
 		
 		this->game->render();
 		if (GameScene::getActiveScene() != nullptr)
-			this->renderEngine->render(*GameScene::getActiveScene());
+			this->renderingEngine->render(*GameScene::getActiveScene());
 		
 		GameWindow::getGameWindow()->refresh();
 	}
@@ -109,8 +108,9 @@ namespace Honeycomb { namespace Base {
 		// Initialize GLEW and OpenGL.
 		glewExperimental = true;
 		glewInit();
-		this->renderEngine = RenderingEngine::getRenderingEngine();
-		this->renderEngine->setRenderingType(RenderingType::TYPE_DEFERRED_RENDERER);
+		this->renderingEngine = RenderingEngine::getRenderingEngine();
+		this->renderingEngine->setRenderingType(
+			RenderingType::TYPE_DEFERRED_RENDERER);
 
 		Logger::getLogger().logEntry(__FUNCTION__, __LINE__,
 			"All GLEW and GLFW initializations complete!");

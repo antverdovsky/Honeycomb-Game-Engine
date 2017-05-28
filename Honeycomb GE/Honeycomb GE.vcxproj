@@ -152,6 +152,7 @@
       <MinimalRebuild>true</MinimalRebuild>
       <DisableSpecificWarnings>
       </DisableSpecificWarnings>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
