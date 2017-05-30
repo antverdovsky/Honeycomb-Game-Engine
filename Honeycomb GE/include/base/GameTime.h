@@ -5,48 +5,63 @@
 namespace Honeycomb { namespace Base {
 	class GameTime {
 		friend class BaseMain; // Only allow BaseMain to set the delta time
-
 	public:
-		const static float SECOND; // Number of ms in a sec.
+		const static float SECOND; // Number of milliseconds in a second
 		
+		/// <summary>
 		/// Gets the time between the current frame and the last frame in
 		/// milliseconds.
-		/// return : The time between the frames (in milliseconds).
+		/// </summary>
+		/// <returns>
+		/// The time between the frames (in milliseconds).
+		/// </returns>
 		const float& getDeltaTimeMS() const;
 
+		/// <summary>
 		/// Gets the time between the current frame and the last frame in
 		/// seconds.
-		/// return : The time between the frames (in s).
+		/// </summary>
+		/// <returns>
+		/// The time between the frames (in seconds).
+		/// </returns>
 		float getDeltaTimeS() const;
 
-		/// Gets the elapsed game time (since the start of the game) in 
-		/// milliseconds.
-		/// return : The game time (in ms).
+		/// <summary>
+		/// Gets the elapsed game time (since the initialization of the game
+		/// engine) in milliseconds.
+		/// </summary>
+		/// <returns>
+		/// The game time (in milliseconds).
+		/// </returns>
 		float getElapsedTimeMS() const;
 
-		/// Gets the elapsed game time (since the start of the game) in 
-		/// seconds.
-		/// return : The game time (in s).
+		/// <summary>
+		/// Gets the elapsed game time (since the initialization of the game
+		/// engine) in seconds.
+		/// </summary>
+		/// <returns>
+		/// The game time (in seconds).
+		/// </returns>
 		float getElapsedTimeS() const;
 
+		/// <summary>
 		/// Returns the Game Time instance of this Singleton.
-		/// return : The Game Time instance.
+		/// </summary>
+		/// <returns>
+		/// The Game Time instance.
+		/// </returns>
 		static GameTime* getGameTime();
 	private:
-		static GameTime* gameTime; // Singleton Instance
-
 		float deltaTime; // The time between frames (in ms) for the last
-						 // two frames rendered.
+                         // two frames rendered.
 
-		/// Constructs a new Game Time instance.
-		GameTime();
-
-		/// Destructs this Game Time instance.
-		~GameTime();
-
+		/// <summary>
 		/// Sets the time between the current frame and the last frame in
 		/// milliseconds.
-		/// const float &ms : The delta time (in ms).
+		/// </summary>
+		/// <param name="ms">
+		/// The delta time (in milliseconds).
+		/// </param>
 		void setDeltaTimeMS(const float &ms);
 	};
 } }

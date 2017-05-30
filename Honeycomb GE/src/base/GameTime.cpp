@@ -4,7 +4,6 @@
 
 namespace Honeycomb { namespace Base {
 	const float GameTime::SECOND = 1000.0F;
-	GameTime* GameTime::gameTime = nullptr;
 
 	const float& GameTime::getDeltaTimeMS() const {
 		return this->deltaTime;
@@ -23,20 +22,11 @@ namespace Honeycomb { namespace Base {
 	}
 
 	GameTime* GameTime::getGameTime() {
-		if (gameTime == nullptr) gameTime = new GameTime();
-
+		static GameTime *gameTime = new GameTime();
 		return gameTime;
 	}
 
 	void GameTime::setDeltaTimeMS(const float &ms) {
 		this->deltaTime = ms;
-	}
-
-	GameTime::GameTime() {
-
-	}
-
-	GameTime::~GameTime() {
-
 	}
 } }

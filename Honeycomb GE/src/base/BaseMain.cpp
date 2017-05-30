@@ -1,12 +1,14 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "../../include/base/BaseGame.h"
+#include "../../include/base/BaseMain.h"
 #include "../../include/base/GameInput.h"
 #include "../../include/base/GameTime.h"
 #include "../../include/base/GameWindow.h"
-#include "../../include/base/BaseMain.h"
 #include "../../include/debug/Logger.h"
 #include "../../include/scene/GameScene.h"
+#include "../../include/render/RenderingEngine.h"
 
 using Honeycomb::Debug::Logger;
 using Honeycomb::Render::RenderingEngine;

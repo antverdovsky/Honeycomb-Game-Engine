@@ -2,8 +2,8 @@
 #ifndef BASE_MAIN_H
 #define BASE_MAIN_H
 
-#include "../../include/base/BaseGame.h"
-#include "../../include/render/RenderingEngine.h"
+namespace Honeycomb { namespace Base { class BaseGame; } }
+namespace Honeycomb { namespace Render { class RenderingEngine; } }
 
 namespace Honeycomb { namespace Base {
 	class BaseMain {
@@ -31,7 +31,7 @@ namespace Honeycomb { namespace Base {
 		const bool DRAW_BACK_FACES = false; // Draw back faces?
 
 		const int FRAME_RATE_CAP = 999;     // The maximum frames per second to
-										    // be drawn (or zero for unlimited)
+                                            // be drawn (or zero for unlimited)
 
 		/// <summary>
 		/// Conducts a single render pass for the game which is being run. The
