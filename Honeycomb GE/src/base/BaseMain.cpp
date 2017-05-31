@@ -30,9 +30,6 @@ namespace Honeycomb { namespace Base {
 	}
 
 	void BaseMain::render() {
-		// Clear the Screen -> Render the Game -> Update the Screen
-		GameWindow::getGameWindow()->clear();
-		
 		this->game->render();
 		if (GameScene::getActiveScene() != nullptr)
 			this->renderingEngine->render(*GameScene::getActiveScene());

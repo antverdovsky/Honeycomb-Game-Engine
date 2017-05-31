@@ -5,18 +5,8 @@
 using Honeycomb::Conjuncture::Event;
 
 namespace Honeycomb { namespace Base {
-	// Set the initial Game Window value to NULL, as it is not created until
-	// the getGameWindow() creates it.
-	GameWindow *GameWindow::gameWindow = nullptr;
-
-	void GameWindow::clear() {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the Window
-	}
-
 	GameWindow* GameWindow::getGameWindow() {
-		// If the game window instance does not yet exist -> Create a new one
-		if (gameWindow == nullptr) gameWindow = new GameWindow();
-		
+		static GameWindow *gameWindow = new GameWindow();
 		return gameWindow; // Return the game window instance
 	}
 
@@ -43,32 +33,44 @@ namespace Honeycomb { namespace Base {
 	bool GameWindow::isCloseRequested() const {
 		// If the GLFW reports that the user is trying to close the window,
 		// then consider it as a "close requested" event.
-		return glfwWindowShouldClose(this->glfwWindow) == 1 ? true : false;
+		return glfwWindowShouldClose(this->glfwWindow) == 1;
 	}
 
 	void GameWindow::refresh() {
-		glfwPollEvents(); // Update window input
-		glfwSwapBuffers(this->glfwWindow); // Swap the two buffers
+		glfwPollEvents();                    // Update window input
+		glfwSwapBuffers(this->glfwWindow);   // Swap the two buffers
+	}
+
+	void GameWindow::setWindowSize(
+			const unsigned int &w, const unsigned int &h) {
+		// Write the new window width & height to the singleton instance
+		this->width = w;
+		this->height = h;
+
+		// Tell OpenGL of the frame buffer size change
+		glViewport(0, 0, this->width, this->height);
+
+		this->resizeEvent.onEvent(); // Notify everyone that window has resized
+	}
+
+	void GameWindow::setWindowTitle(const std::string &title) {
+		this->title = title;
+		glfwSetWindowTitle(this->glfwWindow, title.c_str());
 	}
 
 	GameWindow::GameWindow() {
+		// Fetch video mode and set default parameters
 		videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-
-		glfwWindowHint(GLFW_SAMPLES, this->MSAA_SAMPLES);
-		glfwWindowHint(GLFW_RESIZABLE, this->RESIZABLE);
-		glfwWindowHint(GLFW_DECORATED, !this->FULL_SCREEN);
-//		glfwWindowHint(GLFW_MAXIMIZED,  this->FULL_SCREEN);						TODO: deprecated?
-
-		if (this->FULL_SCREEN) {
-			this->width = videoMode->width;
-			this->height = videoMode->height;
-		}
+		this->width = 1024;
+		this->height = 768;
+		this->title = "Game1";
 
 		// Create the GLFW window using the parameters and store it.
 		this->glfwWindow = glfwCreateWindow(width, height, title.c_str(), 
 			nullptr, nullptr);
 		glfwMakeContextCurrent(this->glfwWindow);
 
+		// Set the resize callback function for resize events
 		glfwSetFramebufferSizeCallback(this->glfwWindow, 
 			(GLFWframebuffersizefun)callbackFrameBuffersize);
 	}
@@ -78,18 +80,7 @@ namespace Honeycomb { namespace Base {
 	}
 
 	void GameWindow::callbackFrameBuffersize(GLFWwindow *window, 
-			int w, int h) {
+			unsigned int w, unsigned int h) {
 		getGameWindow()->setWindowSize(w, h);
-	}
-
-	void GameWindow::setWindowSize(const int &w, const int &h) {
-		// Write the new window width & height to the singleton instance
-		this->width = w;
-		this->height = h;
-
-		// Tell OpenGL of the frame buffer size change
-		glViewport(0, 0, this->width, this->height);
-
-		this->resizeEvent.onEvent(); // Notify everyone that window has resized
 	}
 } }

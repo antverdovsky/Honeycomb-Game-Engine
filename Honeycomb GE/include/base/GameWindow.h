@@ -11,74 +11,127 @@
 namespace Honeycomb { namespace Base {
 	class GameWindow {
 	public:
-		/// Clears the game window.
-		void clear();
-		
-		/// Gets the current active game window instance. If no instance
-		/// exists, a new instance will be created.
-		/// return : The game window stored in this singleton.
+		/// <summary>
+		/// Gets the singleton Game Window instance.
+		/// </summary>
+		/// <returns>
+		/// The pointer to the Game Window instance.
+		/// </returns>
 		static GameWindow *getGameWindow();
 
-		/// Gets the instance of the GLFW window stored in this Window 
-		/// instance.
-		/// return : The GLFW Window instance.
+		/// <summary>
+		/// Gets the GLFW Window instance of this Game Window.
+		/// </summary>
+		/// <returns>
+		/// The constant pointer to the GLFW Window instance.
+		/// </returns>
 		GLFWwindow *getGLFWwindow();
 
 		/// Returns the resize event for this window.
 		/// return : The window resize event.
+		/// <summary>
+		/// Gets the resize event for this window. This event is automatically
+		/// triggered any time the game window is resized.
+		/// </summary>
+		/// <returns>
+		/// The reference to the resize event.
+		/// </returns>
 		Honeycomb::Conjuncture::Event& getResizeEvent();
 
-		/// Gets the height of this window (in pixels).
-		/// return : The height.
+		/// <summary>
+		/// Gets the height of this window, in pixels.
+		/// </summary>
+		/// <returns>
+		/// The height of the window.
+		/// </returns>
 		const int& getWindowHeight() const;
 
-		/// Gets the title of this window.
-		/// return : The title.
+		/// <summary>
+		/// Gets the title of this window, as a string.
+		/// </summary>
+		/// <returns>
+		/// The title of the window.
+		/// </returns>
 		const std::string& getWindowTitle() const;
 
-		/// Gets the width of this window (in pixels).
-		/// return : The width.
+		/// <summary>
+		/// Gets the width of this window, in pixels.
+		/// </summary>
+		/// <returns>
+		/// The width of the window.
+		/// </returns>
 		const int& getWindowWidth() const;
 
-		/// Checks if the window is requesting to be closed (the user has
-		/// pressed the 'X' button on the window).
-		/// return : True if the user has pressed 'X'; False otherwise.
+		/// <summary>
+		/// Checks if a window close request has been raised by the operating
+		/// system.
+		/// </summary>
+		/// <returns>
+		/// True if a window close request has been raised, false otherwise.
+		/// </returns>
 		bool isCloseRequested() const;
 
-		/// Refreshes the game window.
+		/// <summary>
+		/// Updates the window input and swaps the window buffers.
+		/// </summary>
 		void refresh();
-	private:
-		static GameWindow *gameWindow; // Instance stored by the singleton
 
-		const GLFWvidmode *videoMode; // GLFW Video Mode
-		GLFWwindow *glfwWindow; // Stores the reference to the GLFW window
+		/// <summary>
+		/// Sets the size of the window to the specified width and height
+		/// values. The viewport is also changed and the resize event is
+		/// automatically triggered.
+		/// </summary>
+		/// <param name="w">
+		/// The new width of the game window, in pixels.
+		/// </param>
+		/// <param name="h">
+		/// The new height of the game window, in pixels.
+		/// </param>
+		void setWindowSize(const unsigned int &w, const unsigned int &h);
+
+		/// <summary>
+		/// Sets the title of the window to the specified string.
+		/// </summary>
+		/// <param name="title">
+		/// The new window title.
+		/// </param>
+		void setWindowTitle(const std::string &title);
+	private:
+		const GLFWvidmode *videoMode;              // GLFW Video Mode
+		GLFWwindow *glfwWindow;                    // Reference to GLFW window
 		Honeycomb::Conjuncture::Event resizeEvent; // Called on window resize
 		
-		const bool FULL_SCREEN = false; // Is the window full screen?
-		const int MSAA_SAMPLES = 4; // Number of samples for MultiSampling AA
-		const bool RESIZABLE = true; // Is the window resizable?
+		int width;                          // The current width of the window
+		int height;                         // The current height of the window
+		std::string title;                  // Title of the Game Window
 
-		int width = 1024; // The current width of the window.
-		int height = 768; // The current height of the window.
-		std::string title = "Honeycomb GE"; // Title of the Game Window
-
-		/// Constructs a new GLFW window using the width, height, resizeable,
-		/// and title parameters stored in this header file.
+		/// <summary>
+		/// Constructs a new Game Window with the default dimensions of 
+		/// 1024x768 and a title of "Game1".
+		/// </summary>
 		GameWindow();
 
-		/// Cleans up the Window, and destroys the GLFW window instance.
+		/// <summary>
+		/// Destroys this window from GLFW.
+		/// </summary>
 		~GameWindow();
 
-		/// Callback function for when the size of the window is modified.
-		/// GLFWwindow *window : The reference to the GLFW window instance.
-		/// int w : The new width of the window.
-		/// int h : The new height of the window.
-		static void callbackFrameBuffersize(GLFWwindow *window, int w, int h);
-
-		/// Sets the size of the window.
-		/// const int &w : The width of the window.
-		/// const int &h : The height of the window.
-		void setWindowSize(const int &w, const int &h);
+		/// <summary>
+		/// Callback function for setting the width and height dimensions of
+		/// the specified window. Since this is a singleton class, the
+		/// dimensions are always set only for the active window.
+		/// </summary>
+		/// <param name="window">
+		/// The window whose dimensions are to be changed.
+		/// </param>
+		/// <param name="w">
+		/// The new width of the game window, in pixels.
+		/// </param>
+		/// <param name="h">
+		/// The new height of the game window, in pixels.
+		/// </param>
+		static void callbackFrameBuffersize(GLFWwindow *window, 
+			unsigned int w, unsigned int h);
 	};
 } }
 

@@ -321,6 +321,8 @@ namespace HoneycombTest {
 		// Start the Game Scene and set it as the active scene
 		this->gameScene.start();
 		GameScene::setActiveScene(this->gameScene);
+
+		GameWindow::getGameWindow()->setWindowTitle("Honeycomb Test Game"); 
 	}
 
 	void TestGame::stop() {
