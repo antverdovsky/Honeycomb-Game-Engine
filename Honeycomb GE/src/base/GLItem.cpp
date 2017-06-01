@@ -1,5 +1,7 @@
 #include "../../include/base/GLItem.h"
 
+#include <sstream>
+
 namespace Honeycomb { namespace Base {
 	const bool& GLItem::getIsInitialized() const {
 		return this->isInitialized;
@@ -19,5 +21,27 @@ namespace Honeycomb { namespace Base {
 
 	GLItem::~GLItem() {
 
+	}
+
+	GLItemNotInitializedException::GLItemNotInitializedException(GLItem *item)
+			: std::runtime_error("GL Item not initialized") {
+		this->item = item;
+	}
+
+	const char* GLItemNotInitializedException::what() const throw() {
+		std::ostringstream oss("");
+		oss << std::runtime_error::what() << " at address " << this->item;
+		return oss.str().c_str();
+	}
+
+	GLItemAlreadyInitializedException::GLItemAlreadyInitializedException(
+			GLItem *item) : std::runtime_error("GL Item already initialized") {
+		this->item = item;
+	}
+
+	const char* GLItemAlreadyInitializedException::what() const throw() {
+		std::ostringstream oss("");
+		oss << std::runtime_error::what() << " at address " << this->item;
+		return oss.str().c_str();
 	}
 } }
