@@ -15,8 +15,10 @@ namespace Honeycomb { namespace File {
 			throw ImageIOLoadException(this->directory, SOIL_last_result());
 	}
 
-	ImageIO::~ImageIO() {
-		delete this->data;
+	void ImageIO::cleanup() {
+		if (this->data == nullptr) return;
+
+		SOIL_free_image_data(this->data);
 		this->data = nullptr;
 	}
 

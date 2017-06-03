@@ -23,9 +23,12 @@ namespace Honeycomb { namespace File {
 		ImageIO(const std::string &dir);
 
 		/// <summary>
-		/// Cleans up the data loaded in from the image.
+		/// Removes the data stored for this IO Image. After this method is
+		/// called, the <see cref="getData"/> method will always return a null
+		/// pointer. If this Image has already been cleaned up, no changes will
+		/// occur.
 		/// </summary>
-		~ImageIO();
+		void cleanup();
 
 		/// <summary>
 		/// Returns the data of the image, loaded in through the SOIL library.
