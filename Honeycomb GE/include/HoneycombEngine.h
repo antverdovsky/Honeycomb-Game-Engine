@@ -32,6 +32,7 @@
 #include "debug/Logger.h"
 
 #include "file/FileIO.h"
+#include "file/ImageIO.h"
 #include "file/LineOperation.h"
 
 #include "geometry/Mesh.h"
