@@ -158,13 +158,10 @@ namespace Honeycomb { namespace Shader {
 		else return it->second;
 	}
 
-	bool ShaderProgram::initialize() {
-		if (this->isInitialized) return false;
+	void ShaderProgram::initialize() {
+		GLItem::initialize();
 
 		this->programID = glCreateProgram();
-		
-		this->isInitialized = true;
-		return true;
 	}
 
 	void ShaderProgram::setUniform_f(const std::string &uni,

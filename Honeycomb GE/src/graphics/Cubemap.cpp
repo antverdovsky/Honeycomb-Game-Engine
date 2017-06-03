@@ -22,13 +22,14 @@ namespace Honeycomb { namespace Graphics {
 		glBindTexture(GL_TEXTURE_CUBE_MAP, this->textureID);
 	}
 
-	bool Cubemap::initialize() {
+	void Cubemap::initialize() {
+		GLItem::initialize();
+
 		GLuint texID;
 		glGenTextures(1, &texID);
 		this->textureID = texID;
 		
 		this->isInitialized = true;
-		return true;
 	}
 
 	void Cubemap::destroy() {

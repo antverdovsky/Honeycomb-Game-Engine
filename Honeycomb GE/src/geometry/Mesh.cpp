@@ -16,8 +16,8 @@ using Honeycomb::Math::Vector3f;
 using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb { namespace Geometry {
-	bool Mesh::initialize() {
-		if (this->isInitialized) return false;
+	void Mesh::initialize() {
+		GLItem::initialize();
 
 		// Placeholders to store the buffer ID after the glGenBuffers func.
 		GLuint ibo = 0;
@@ -36,10 +36,6 @@ namespace Honeycomb { namespace Geometry {
 		this->vertexBufferObj = vbo;
 		this->vertCount = 0;
 		this->vertSize = 0;
-
-		// Success!
-		this->isInitialized = true;
-		return true;
 	}
 
 	void Mesh::destroy() {

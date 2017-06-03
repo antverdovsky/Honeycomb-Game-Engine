@@ -35,7 +35,7 @@ namespace Honeycomb { namespace Graphics {
 
 		/// Initializes this Cubemap instance by generating the appropriate
 		/// texture buffer to store the texture data.
-		bool initialize();
+		void initialize();
 
 		/// Destroys this Cubemap instance by destroying the texture buffer
 		/// it used to store the texture data.

@@ -117,7 +117,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		/// Initializes this G Buffer structure with the position, diffuse,
 		/// normal and texture coordinate buffers. The Buffer texture size will
 		/// be set to the Game Window's size.
-		bool initialize();
+		void initialize();
 
 		/// Binds the default frame buffer object (0) for both drawing and
 		/// reading.

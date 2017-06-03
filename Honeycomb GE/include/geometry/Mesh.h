@@ -13,7 +13,7 @@ namespace Honeycomb { namespace Geometry {
 	public:
 		/// Initializes this Mesh by creating the appropriate Index and Vertex
 		/// buffers for it.
-		bool initialize();
+		void initialize();
 
 		/// Destroys this Mesh by destroying the appropriate Index and Vertex
 		/// buffers of it.

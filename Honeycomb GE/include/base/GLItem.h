@@ -23,7 +23,7 @@ namespace Honeycomb { namespace Base {
 		/// <exception cref="GLItemAlreadyInitializedException">
 		/// If the item is already initialized when the method is called.
 		/// </exception>
-		virtual bool initialize();
+		virtual void initialize();
 
 		/// <summary>
 		/// Destroys this item from OpenGL. If this item was being used by some
@@ -53,6 +53,7 @@ namespace Honeycomb { namespace Base {
 	/// but a method is invoked to reinitialize it.
 	/// </summary>
 	class GLItemAlreadyInitializedException : public std::runtime_error {
+	public:
 		/// <summary>
 		/// Creates a new already initialized exception with the specified
 		/// OpenGL item.

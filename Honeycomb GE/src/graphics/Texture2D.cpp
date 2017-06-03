@@ -39,15 +39,12 @@ namespace Honeycomb { namespace Graphics {
 		return this->textureID;
 	}
 
-	bool Texture2D::initialize() {
-		if (this->isInitialized) return false;
+	void Texture2D::initialize() {
+		GLItem::initialize();
 		
 		GLuint texID;
 		glGenTextures(1, &texID);
 		this->textureID = texID;
-
-		this->isInitialized = true;
-		return true;
 	}
 
 	void Texture2D::destroy() {

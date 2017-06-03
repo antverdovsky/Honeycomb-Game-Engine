@@ -33,7 +33,7 @@ namespace Honeycomb { namespace Graphics {
 
 		/// Initializes this 2D Texture instance by generating the appropriate
 		/// texture buffer to store the texture data.
-		bool initialize();
+		void initialize();
 		
 		/// Destroys this 2D Texture instance by destroying the appropriate
 		/// texture buffer.
@@ -101,8 +101,6 @@ namespace Honeycomb { namespace Graphics {
 		/// Unbinds this (and any other) texture from OpenGL.
 		static void unbind();
 	private:
-		bool isInitialized; // Has the texture been initialized?
-		
 		int textureID; // The texture "pointer"
 		std::string directory; // The file from which the texture was loaded
 	};

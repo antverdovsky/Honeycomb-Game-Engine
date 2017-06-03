@@ -121,8 +121,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		return this->frameBufferObj;
 	}
 
-	bool GBuffer::initialize() {
-		if (this->isInitialized) return false;
+	void GBuffer::initialize() {
+		GLItem::initialize();
 
 		GameWindow::getGameWindow()->getResizeEvent() += 
 			this->windowResizeHandler;
@@ -212,9 +212,6 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 				"Unable to Create Deferred GBuffer!");
 		}
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // Bind Default FrameBuffer
-		
-		this->isInitialized = true;
-		return true;
 	}
 
 	void GBuffer::unbind() {

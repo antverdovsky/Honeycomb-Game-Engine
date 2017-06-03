@@ -58,7 +58,7 @@ namespace Honeycomb { namespace Shader {
 		int getUniformLocation(const std::string &uni);
 
 		/// Initializes this Shader Program by creating the program on the GPU.
-		bool initialize();
+		void initialize();
 
 		/// Sets the specified uniform variable to the specified value. If the
 		/// uniform does not exist, no changes will be made.

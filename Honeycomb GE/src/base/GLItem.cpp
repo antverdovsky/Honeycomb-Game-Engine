@@ -7,8 +7,9 @@ namespace Honeycomb { namespace Base {
 		return this->isInitialized;
 	}
 
-	bool GLItem::initialize() {
-		return false;
+	void GLItem::initialize() {
+		if (this->isInitialized) throw GLItemAlreadyInitializedException(this);
+		this->isInitialized = true;
 	}
 
 	void GLItem::destroy() {
