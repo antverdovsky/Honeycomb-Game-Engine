@@ -161,8 +161,8 @@ namespace HoneycombTest {
 			this->plane->getComponent<MeshRenderer>()->getMaterial());
 		Texture2D *colorTexture = new Texture2D();
 		colorTexture->initialize();
-		colorTexture->
-			setImageData("../Test Game/res/textures/colors.bmp");
+		colorTexture-> // vvvvvv this is a leak here but whatever for now...
+			setImageData(ImageIO("../Test Game/res/textures/colors.bmp"));
 		colorMaterial->glSampler2Ds.setValue("albedoTexture.sampler", 
 			*colorTexture);
 		colorMaterial->glFloats.setValue("shininess", 128.0F);
@@ -178,7 +178,7 @@ namespace HoneycombTest {
 			this->cube2->getChild("Cube")->getComponent<MeshRenderer>()->getMaterial());
 		Texture2D *displacementTexture = new Texture2D();
 		displacementTexture->initialize();
-		displacementTexture->setImageData("../Test Game/res/textures/brick-cube2/displace.bmp");
+		displacementTexture->setImageData(ImageIO("../Test Game/res/textures/brick-cube2/displace.bmp"));
 		cube2Material->glSampler2Ds.setValue("displacementTexture.sampler", *displacementTexture);
 		cube2Material->glVector2fs.setValue("globalTiling", Vector2f(2.0F, 2.0F));
 		this->cube2->getChild("Cube")->getComponent<MeshRenderer>()->setMaterial(*cube2Material);

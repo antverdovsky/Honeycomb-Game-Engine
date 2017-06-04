@@ -9,6 +9,7 @@
 #include "../../include/component/physics/Transform.h"
 #include "../../include/component/render/MeshRenderer.h"
 #include "../../include/debug/Logger.h"
+#include "../../include/file/ImageIO.h"
 #include "../../include/geometry/Vertex.h"
 #include "../../include/graphics/Material.h"
 #include "../../include/graphics/Texture2D.h"
@@ -22,6 +23,8 @@ using Assimp::Importer;
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Component::Physics::Space;
 using Honeycomb::Component::Render::MeshRenderer;
+using Honeycomb::File::ImageIO;
+using Honeycomb::File::ImageIOLoadException;
 using Honeycomb::Debug::Logger;
 using Honeycomb::Graphics::Material;
 using Honeycomb::Graphics::Texture2D;
@@ -173,8 +176,15 @@ namespace Honeycomb { namespace Geometry {
 			aiString dir;
 			aMat.GetTexture(aTT, 0, &dir);
 
-			// Set the previously initialized texture to contain the data
-			texture->setImageData(dir.C_Str(), r, g, b);
+			// If the image can be loaded, set the texture to the image data;
+			// otherwise set the texture to the R, G, B values.
+			try {
+				ImageIO image = ImageIO(dir.C_Str());
+				texture->setImageData(image);
+			} catch (ImageIOLoadException e) {
+				texture->setImageData(r, g, b);
+				return;
+			}
 		} else {
 			// Set the previously initialized texture to default value
 			texture->setImageData(r, g, b);

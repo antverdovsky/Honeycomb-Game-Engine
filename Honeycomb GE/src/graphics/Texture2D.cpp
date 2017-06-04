@@ -7,6 +7,7 @@
 
 #include "../../include/file/FileIO.h"
 
+using Honeycomb::Base::GLItemNotInitializedException;
 using namespace Honeycomb::File;
 
 namespace Honeycomb { namespace Graphics {
@@ -60,28 +61,14 @@ namespace Honeycomb { namespace Graphics {
 			GL_UNSIGNED_BYTE, color);
 	}
 
-	void Texture2D::setImageData(const std::string &file, 
-			const int &r, const int &g, const int &b) {
-		this->setImageData(file, GL_RGB, GL_RGB, r, g, b);
+	void Texture2D::setImageData(const ImageIO &image) {
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
+
+		this->setImageData(image.getData(), GL_UNSIGNED_BYTE, GL_RGB, GL_RGB,
+				image.getWidth(), image.getHeight());
 	}
 
-	void Texture2D::setImageData(const std::string &file, const int &in, 
-			const int &ex, const int &r, const int &g, const int &b) {
-		// Read in the data from the image file
-		int w, h;
-		auto data = File::readImageToUChar(file, w, h);
-
-		if (data != nullptr) {	// Data was read in -> Send to texture
-			this->setImageData(data, GL_UNSIGNED_BYTE, in, ex, w, h);
-			this->directory = file;
-		} else {				// Data was not read in -> Send RGB to texture
-			this->setImageData(r, g, b);
-
-			delete data;		// Delete the data
-		}
-	}
-
-	void Texture2D::setImageData(unsigned char *data, const int &type, 
+	void Texture2D::setImageData(const unsigned char *data, const int &type, 
 			const int &in, const int &ex, const int &w, const int &h) {
 		this->bind();
 
