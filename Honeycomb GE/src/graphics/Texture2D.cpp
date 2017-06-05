@@ -11,6 +11,83 @@ using Honeycomb::Base::GLItemNotInitializedException;
 using namespace Honeycomb::File;
 
 namespace Honeycomb { namespace Graphics {
+	int Texture2D::textureCount = 0;
+
+	const int& Texture2D::getInitializedTexturesCount() {
+		return Texture2D::textureCount;
+	}
+
+	const Texture2D& Texture2D::getTextureBlack() {
+		static Texture2D blackTexture;
+
+		if (!blackTexture.isInitialized) {
+			blackTexture.initialize();
+			blackTexture.setImageDataFill(0, 0, 0, 255);
+		}
+
+		return blackTexture;
+	}
+
+	const Texture2D& Texture2D::getTextureBlue() {
+		static Texture2D blueTexture;
+
+		if (!blueTexture.isInitialized) {
+			blueTexture.initialize();
+			blueTexture.setImageDataFill(0, 0, 255, 255);
+		}
+
+		return blueTexture;
+	}
+
+	const Texture2D& Texture2D::getTextureCommonFill(
+			const Texture2DCommonFillColor &c) {
+		switch (c) {
+		case Texture2DCommonFillColor::BLACK:
+			return Texture2D::getTextureBlack();
+		case Texture2DCommonFillColor::BLUE:
+			return Texture2D::getTextureBlue();
+		case Texture2DCommonFillColor::GREEN:
+			return Texture2D::getTextureGreen();
+		case Texture2DCommonFillColor::RED:
+			return Texture2D::getTextureRed();
+		case Texture2DCommonFillColor::WHITE:
+			return Texture2D::getTextureWhite();
+		}
+	}
+
+	const Texture2D& Texture2D::getTextureGreen() {
+		static Texture2D greenTexture;
+
+		if (!greenTexture.isInitialized) {
+			greenTexture.initialize();
+			greenTexture.setImageDataFill(0, 255, 0, 255);
+		}
+
+		return greenTexture;
+	}
+
+	const Texture2D& Texture2D::getTextureRed() {
+		static Texture2D redTexture;
+
+		if (!redTexture.isInitialized) {
+			redTexture.initialize();
+			redTexture.setImageDataFill(255, 0, 0, 255);
+		}
+
+		return redTexture;
+	}
+
+	const Texture2D& Texture2D::getTextureWhite() {
+		static Texture2D whiteTexture;
+
+		if (!whiteTexture.isInitialized) {
+			whiteTexture.initialize();
+			whiteTexture.setImageDataFill(255, 255, 255, 255);
+		}
+
+		return whiteTexture;
+	}
+
 	Texture2D::Texture2D() {
 		this->isInitialized = false;
 		this->directory = "";
@@ -46,11 +123,19 @@ namespace Honeycomb { namespace Graphics {
 		GLuint texID;
 		glGenTextures(1, &texID);
 		this->textureID = texID;
+		
+		++(Texture2D::textureCount);
+
+		std::cout << "Init new, " << (Texture2D::textureCount) << std::endl;
 	}
 
 	void Texture2D::destroy() {
 		GLuint texID = this->textureID;
 		glDeleteTextures(1, &texID); // Delete Texture from OpenGL
+
+		--(Texture2D::textureCount);
+
+		std::cout << "Dest old, " << (Texture2D::textureCount) << std::endl;
 	}
 
 	void Texture2D::setImageDataFill(

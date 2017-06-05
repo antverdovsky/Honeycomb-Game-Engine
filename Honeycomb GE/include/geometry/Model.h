@@ -132,7 +132,7 @@ namespace Honeycomb { namespace Geometry {
 		// All game objects built from this model will reference these in some
 		// form.
 		std::vector<const Honeycomb::Geometry::Mesh*> meshes;
-		std::vector<const Honeycomb::Graphics::Texture2D*> textures;
+		std::vector<Honeycomb::Graphics::Texture2D> textures;                  // TODO: for textures it is imperative that textures are CONST since they are now shared
 		std::vector<const Honeycomb::Graphics::Material*> materials;
 
 		ModelSettings settings; // The settings used to import this model
@@ -203,7 +203,7 @@ namespace Honeycomb { namespace Geometry {
 		///				   cannot be imported. Bounded to [0, 255].
 		void fetchMaterialTexture(const aiMaterial &aMat, const int &tT, 
 			Honeycomb::Graphics::Material &mat, const std::string &matUni,
-			const int &r = 255, const int &g = 255, const int &b = 255);
+			const Honeycomb::Graphics::Texture2DCommonFillColor &defColor);
 
 		/// Loads the model object from the file path and using settings stored
 		/// in this Model.

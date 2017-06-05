@@ -8,8 +8,85 @@
 #include "../file/ImageIO.h"
 
 namespace Honeycomb { namespace Graphics {
+	enum Texture2DCommonFillColor {
+		BLACK,
+		BLUE,
+		GREEN,
+		RED,
+		WHITE
+	};
+
 	class Texture2D : public Honeycomb::Base::GLItem {
 	public:
+		/// <summary>
+		/// Returns the number of textures which have been initialized. This
+		/// does not relate to the total number of texture instances, but
+		/// rather the amount of textures that have been created on the GPU
+		/// through OpenGL.
+		/// </summary>
+		/// <returns>
+		/// The total number of initialized textures.
+		/// </returns>
+		static const int& getInitializedTexturesCount();
+
+		/// <summary>
+		/// Returns a texture whose image data is a 1x1 pixel with the black
+		/// color (RGBA = { 0, 0, 0, 255 }).
+		/// </summary>
+		/// <returns>
+		/// The constant reference to the black texture.
+		/// </returns>
+		static const Texture2D& getTextureBlack();
+
+		/// <summary>
+		/// Returns a texture whose image data is a 1x1 pixel with the blue
+		/// color (RGBA = { 0, 0, 255, 255 }).
+		/// </summary>
+		/// <returns>
+		/// The constant reference to the blue texture.
+		/// </returns>
+		static const Texture2D& getTextureBlue();
+
+		/// <summary>
+		/// Returns a texture whose image data is a 1x1 pixel and is of the
+		/// specified fill color.
+		/// </summary>
+		/// <param name="c">
+		/// The fill color of the texture.
+		/// </param>
+		/// <returns>
+		/// The constant reference to the texture of the specified fill color.
+		/// </returns>
+		static const Texture2D& getTextureCommonFill(const 
+				Texture2DCommonFillColor &c);
+
+		/// <summary>
+		/// Returns a texture whose image data is a 1x1 pixel with the green
+		/// color (RGBA = { 0, 255, 0, 255 }).
+		/// </summary>
+		/// <returns>
+		/// The constant reference to the green texture.
+		/// </returns>
+		static const Texture2D& getTextureGreen();
+
+		/// <summary>
+		/// Returns a texture whose image data is a 1x1 pixel with the red
+		/// color (RGBA = { 255, 0, 0, 255 }).
+		/// </summary>
+		/// <returns>
+		/// The constant reference to the red texture.
+		/// </returns>
+		static const Texture2D& getTextureRed();
+
+		/// <summary>
+		/// Returns a texture whose image data is a 1x1 pixel with the white
+		/// color (RGBA = { 255, 255, 255, 255 }).
+		/// </summary>
+		/// <returns>
+		/// The constant reference to the white texture.
+		/// </returns>
+		static const Texture2D& getTextureWhite();
+
 		/// Creates an empty Texture instance.
 		Texture2D();
 
@@ -58,7 +135,7 @@ namespace Honeycomb { namespace Graphics {
 		/// </param>
 		void setImageDataFill(
 				const int &r, const int &g, const int &b, const int &a);
-
+		
 		/// <summary>
 		/// Sets this texture data to the data of the specified IO image. If
 		/// the image has not yet been initialized, a GLItemNotInitialized
@@ -94,6 +171,8 @@ namespace Honeycomb { namespace Graphics {
 		/// Unbinds this (and any other) texture from OpenGL.
 		static void unbind();
 	private:
+		static int textureCount; // The number of GL initialized textures
+		
 		int textureID; // The texture "pointer"
 		std::string directory; // The file from which the texture was loaded
 	};

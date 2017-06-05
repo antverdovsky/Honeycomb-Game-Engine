@@ -28,6 +28,7 @@ using Honeycomb::File::ImageIOLoadException;
 using Honeycomb::Debug::Logger;
 using Honeycomb::Graphics::Material;
 using Honeycomb::Graphics::Texture2D;
+using Honeycomb::Graphics::Texture2DCommonFillColor;
 using Honeycomb::Object::GameObject;
 using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
@@ -81,8 +82,6 @@ namespace Honeycomb { namespace Geometry {
 	}
 
 	Model::~Model() {
-		for (const Texture2D *tex : this->textures)
-			delete tex;
 		for (const Material *mat : this->materials)
 			delete mat;
 		for (const Mesh *mesh : this->meshes)
@@ -164,12 +163,10 @@ namespace Honeycomb { namespace Geometry {
 	}
 
 	void Model::fetchMaterialTexture(const aiMaterial &aMat, const int &tT, 
-			Material &mat, const std::string &matUni, const int &r, 
-			const int &g, const int &b) {
-		// Create and initialize the texture
-		Texture2D *texture = new Texture2D();
-		texture->initialize();
-
+			Material &mat, const std::string &matUni, 
+			const Texture2DCommonFillColor &defColor) {
+		Texture2D texture;
+		
 		aiTextureType aTT = (aiTextureType)(tT);
 		if (aMat.GetTextureCount(aTT)) { // If material has the texture we want
 			// Get the texture directory
@@ -180,17 +177,18 @@ namespace Honeycomb { namespace Geometry {
 			// otherwise set the texture to the R, G, B values.
 			try {
 				ImageIO image = ImageIO(dir.C_Str());
-				texture->setImageDataIO(image);
+				texture.initialize();
+				texture.setImageDataIO(image);
 			} catch (ImageIOLoadException e) {
-				texture->setImageDataFill(r, g, b, 255);
+				texture = Texture2D::getTextureCommonFill(defColor);
 				return;
 			}
 		} else {
 			// Set the previously initialized texture to default value
-			texture->setImageDataFill(r, g, b, 255);
+			texture = Texture2D::getTextureCommonFill(defColor);
 		}
 
-		mat.glSampler2Ds.setValue(matUni + ".sampler", *texture);
+		mat.glSampler2Ds.setValue(matUni + ".sampler", texture);
 		mat.glFloats.setValue(matUni + ".intensity", 1.0F);
 
 		this->textures.push_back(texture);
@@ -234,25 +232,23 @@ namespace Honeycomb { namespace Geometry {
 		// Retrieve the Textures from ASSIMP.
 		this->fetchMaterialTexture(*aMat, 
 			aiTextureType::aiTextureType_DIFFUSE, *material, 
-			"albedoTexture", 255, 255, 255);
+			"albedoTexture", Texture2DCommonFillColor::WHITE);
 		this->fetchMaterialTexture(*aMat,
 			aiTextureType::aiTextureType_AMBIENT, *material,
-			"ambientTexture", 255, 255, 255);
+			"ambientTexture", Texture2DCommonFillColor::WHITE);
 		this->fetchMaterialTexture(*aMat, 
 			aiTextureType::aiTextureType_SPECULAR, *material, 
-			"specularTexture", 255, 255, 255);
+			"specularTexture", Texture2DCommonFillColor::WHITE);
 		this->fetchMaterialTexture(*aMat, 
 			aiTextureType::aiTextureType_NORMALS, *material,
-			"normalsTexture", 0, 0, 0);
+			"normalsTexture", Texture2DCommonFillColor::BLACK);
 		this->fetchMaterialTexture(*aMat,
 			aiTextureType::aiTextureType_DISPLACEMENT, *material,
-			"displacementTexture", 0, 0, 0);
+			"displacementTexture", Texture2DCommonFillColor::BLACK);
 
 		// Special default value for diffuse map (TODO: Method for this?)
-		Texture2D *diffuse = new Texture2D();
-		diffuse->initialize();
-		diffuse->setImageDataFill(255, 255, 255, 255);
-		material->glSampler2Ds.setValue("diffuseTexture.sampler", *diffuse);
+		Texture2D diffuse = Texture2D::getTextureWhite();
+		material->glSampler2Ds.setValue("diffuseTexture.sampler", diffuse);
 		material->glFloats.setValue("diffuseTexture.intensity", 1.0F);
 		material->glVector3fs.setValue("diffuseColor",
 			Vector3f(1.0F, 1.0F, 1.0F));
