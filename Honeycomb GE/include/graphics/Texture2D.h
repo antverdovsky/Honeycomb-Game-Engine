@@ -8,6 +8,28 @@
 #include "../file/ImageIO.h"
 
 namespace Honeycomb { namespace Graphics {
+	/// <summary>
+	/// Enumeration of the different types of Texture2D filtering modes.
+	/// </summary>
+	enum Texture2DFilterMode {
+		LINEAR                             = 0x2601,
+		NEAREST                            = 0x2600
+	};
+
+	/// <summary>
+	/// Enumeration of the different types of Texture 2D wrapping modes.
+	/// </summary>
+	enum Texture2DWrapMode {
+		CLAMP_TO_BORDER                    = 0x812D,
+		CLAMP_TO_EDGE                      = 0x812F,
+		MIRRORED_REPEAT                    = 0x8370,
+		REPEAT                             = 0x2901
+	};
+
+	/// <summary>
+	/// Enumeration of common Texture2D colors. These colors are initialized by
+	/// default and can be shared across multiple texture instances.
+	/// </summary>
 	enum Texture2DCommonFillColor {
 		BLACK,
 		BLUE,
@@ -16,6 +38,9 @@ namespace Honeycomb { namespace Graphics {
 		WHITE
 	};
 
+	/// <summary>
+	/// Object oriented representation of GL_TEXTURE2D.
+	/// </summary>
 	class Texture2D : public Honeycomb::Base::GLItem {
 	public:
 		/// <summary>
@@ -118,6 +143,29 @@ namespace Honeycomb { namespace Graphics {
 		void destroy();
 
 		/// <summary>
+		/// Sets the texture filtering mode for the minifying and magnifying of
+		/// the texture.
+		/// </summary>
+		/// <param name="filter">
+		/// The filter mode to be used when minifying and magnifying the 
+		/// texture.
+		/// </param>
+		void setFiltering(const Texture2DFilterMode &filter);
+
+		/// <summary>
+		/// Sets the texture filtering mode for the minifying and magnifying of
+		/// the texture.
+		/// </summary>
+		/// <param name="min">
+		/// The filter mode to be used when minifying the texture.
+		/// </param>
+		/// <param name="mag">
+		/// The filter mode to be used when magnifying the texture.
+		/// </param>
+		void setFiltering(const Texture2DFilterMode &min,
+			const Texture2DFilterMode &mag);
+
+		/// <summary>
 		/// Creates a texture with a width of one pixel and a height of one
 		/// pixel (1x1) and solid fills it with the specified RGBA color.
 		/// </summary>
@@ -158,18 +206,24 @@ namespace Honeycomb { namespace Graphics {
 		void setImageDataManual(const unsigned char *data, const int &type, 
 			const int &in, const int &ex, const int &w, const int &h);
 
-		/// Sets the texture filtering for minifying and magnifying operations.
-		/// const int &min : The filtering when minifying.
-		/// const int &mag : The filtering when magnifying.
-		void setTextureFiltering(const int &min, const int &mag);
+		/// <summary>
+		/// Sets the wrapping mode for the S and T axes of the texture.
+		/// </summary>
+		/// <param name="wrap">
+		/// The wrapping mode to be used on the S and T axes.
+		/// </param>
+		void setWrap(const Texture2DWrapMode &wrap);
 
-		/// Sets the texture wrapping on the s and t coordinate axes.
-		/// const int &s : The wrapping on the s coordinate axis.
-		/// const int &t : The wrapping on the t coordinate axis.
-		void setTextureWrap(const int &s, const int &t);
-
-		/// Unbinds this (and any other) texture from OpenGL.
-		static void unbind();
+		/// <summary>
+		/// Sets the wrapping mode for the S and T axes of the texture.
+		/// </summary>
+		/// <param name="s">
+		/// The wrapping mode to be used for the S axis.
+		/// </param>
+		/// <param name="t">
+		/// The wrapping mode to be used for the T axis.
+		/// </param>
+		void setWrap(const Texture2DWrapMode &s, const Texture2DWrapMode &t);
 	private:
 		static int textureCount; // The number of GL initialized textures
 		

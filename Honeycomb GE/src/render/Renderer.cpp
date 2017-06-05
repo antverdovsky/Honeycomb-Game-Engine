@@ -9,6 +9,8 @@
 
 using Honeycomb::Component::Render::MeshRenderer;
 using Honeycomb::Graphics::Cubemap;
+using Honeycomb::Graphics::Texture2DFilterMode;
+using Honeycomb::Graphics::Texture2DWrapMode;
 using Honeycomb::Object::Builder;
 using Honeycomb::Math::Vector4f;
 using Honeycomb::Scene::GameScene;
@@ -201,8 +203,10 @@ namespace Honeycomb { namespace Render {
 		this->cShadowMapTexture.setImageDataManual(
 			nullptr, GL_FLOAT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, 
 			Renderer::SHADOW_MAP_WIDTH, Renderer::SHADOW_MAP_HEIGHT);
-		this->cShadowMapTexture.setTextureFiltering(GL_NEAREST, GL_NEAREST);
-		this->cShadowMapTexture.setTextureWrap(GL_REPEAT, GL_REPEAT);
+		this->cShadowMapTexture.setFiltering(Texture2DFilterMode::NEAREST, 
+			Texture2DFilterMode::NEAREST);
+		this->cShadowMapTexture.setWrap(Texture2DWrapMode::REPEAT, 
+			Texture2DWrapMode::REPEAT);
 
 		// Initialize the Classic Shadow Map Buffer
 		GLuint cBF;
@@ -242,8 +246,10 @@ namespace Honeycomb { namespace Render {
 		this->vShadowMapTexture.setImageDataManual(
 			nullptr, GL_FLOAT, GL_RG32F, GL_RG,
 			Renderer::SHADOW_MAP_WIDTH, Renderer::SHADOW_MAP_HEIGHT);
-		this->vShadowMapTexture.setTextureFiltering(GL_LINEAR, GL_LINEAR);
-		this->vShadowMapTexture.setTextureWrap(GL_REPEAT, GL_REPEAT);
+		this->vShadowMapTexture.setFiltering(Texture2DFilterMode::LINEAR, 
+			Texture2DFilterMode::LINEAR);
+		this->vShadowMapTexture.setWrap(Texture2DWrapMode::REPEAT, 
+			Texture2DWrapMode::REPEAT);
 
 		// Initialize the Anti Aliased Variance Shadow Map Texture (32 bit Red
 		// & Green channels texture).
@@ -251,8 +257,10 @@ namespace Honeycomb { namespace Render {
 		this->vShadowMapTextureAA.setImageDataManual(
 			nullptr, GL_FLOAT, GL_RG32F, GL_RG,
 			Renderer::SHADOW_MAP_WIDTH, Renderer::SHADOW_MAP_HEIGHT);
-		this->vShadowMapTextureAA.setTextureFiltering(GL_LINEAR, GL_LINEAR);
-		this->vShadowMapTextureAA.setTextureWrap(GL_REPEAT, GL_REPEAT);
+		this->vShadowMapTextureAA.setFiltering(Texture2DFilterMode::LINEAR,
+			Texture2DFilterMode::LINEAR);
+		this->vShadowMapTextureAA.setWrap(Texture2DWrapMode::REPEAT,
+			Texture2DWrapMode::REPEAT);
 
 		// Initialize the Variance Shadow Map Buffer (for the depth component,
 		// we borrow the depth buffer from the Classic Shadow Map Buffer). Also

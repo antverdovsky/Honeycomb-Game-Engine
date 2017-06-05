@@ -125,8 +125,6 @@ namespace Honeycomb { namespace Graphics {
 		this->textureID = texID;
 		
 		++(Texture2D::textureCount);
-
-		std::cout << "Init new, " << (Texture2D::textureCount) << std::endl;
 	}
 
 	void Texture2D::destroy() {
@@ -134,8 +132,21 @@ namespace Honeycomb { namespace Graphics {
 		glDeleteTextures(1, &texID); // Delete Texture from OpenGL
 
 		--(Texture2D::textureCount);
+	}
 
-		std::cout << "Dest old, " << (Texture2D::textureCount) << std::endl;
+	void Texture2D::setFiltering(const Texture2DFilterMode &filter) {
+		this->bind();
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+	}
+
+	void Texture2D::setFiltering(const Texture2DFilterMode &min,
+			const Texture2DFilterMode &mag) {
+		this->bind();
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag);
 	}
 
 	void Texture2D::setImageDataFill(
@@ -163,27 +174,24 @@ namespace Honeycomb { namespace Graphics {
 		glTexImage2D(GL_TEXTURE_2D, 0, in, w, h, 0, ex, type, data);
 
 		// Default Texture2D settings
-		this->setTextureFiltering(GL_NEAREST, GL_NEAREST);
-		this->setTextureWrap(GL_REPEAT, GL_REPEAT);
+		this->setFiltering(Texture2DFilterMode::NEAREST, 
+			Texture2DFilterMode::NEAREST);
+		this->setWrap(Texture2DWrapMode::REPEAT, Texture2DWrapMode::REPEAT);
 		this->genMipMap();
 	}
 
-	void Texture2D::setTextureFiltering(const int &min, const int &mag) {
+	void Texture2D::setWrap(const Texture2DWrapMode &wrap) {
 		this->bind();
 
-		// Set the minifying and magnifying filter parameters
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 	}
 
-	void Texture2D::setTextureWrap(const int &s, const int &t) {
+	void Texture2D::setWrap(const Texture2DWrapMode &s, 
+			const Texture2DWrapMode &t) {
 		this->bind();
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, s);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, t);
-	}
-
-	void Texture2D::unbind() {
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, t);
 	}
 } }
