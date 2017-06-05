@@ -90,7 +90,6 @@ namespace Honeycomb { namespace Graphics {
 
 	Texture2D::Texture2D() {
 		this->isInitialized = false;
-		this->directory = "";
 		this->textureID = -1;
 	}
 
@@ -99,6 +98,8 @@ namespace Honeycomb { namespace Graphics {
 	}
 
 	void Texture2D::bind(const int &loc) const {
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
+
 		glActiveTexture(GL_TEXTURE0 + loc);
 		glBindTexture(GL_TEXTURE_2D, this->textureID);
 	}
@@ -107,10 +108,6 @@ namespace Honeycomb { namespace Graphics {
 		this->bind();
 
 		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-
-	const std::string& Texture2D::getDirectory() const {
-		return this->directory;
 	}
 
 	const int& Texture2D::getTextureID() const {
@@ -128,6 +125,8 @@ namespace Honeycomb { namespace Graphics {
 	}
 
 	void Texture2D::destroy() {
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
+
 		GLuint texID = this->textureID;
 		glDeleteTextures(1, &texID); // Delete Texture from OpenGL
 
@@ -135,6 +134,7 @@ namespace Honeycomb { namespace Graphics {
 	}
 
 	void Texture2D::setFiltering(const Texture2DFilterMode &filter) {
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
@@ -143,6 +143,7 @@ namespace Honeycomb { namespace Graphics {
 
 	void Texture2D::setFiltering(const Texture2DFilterMode &min,
 			const Texture2DFilterMode &mag) {
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
@@ -151,6 +152,7 @@ namespace Honeycomb { namespace Graphics {
 
 	void Texture2D::setImageDataFill(
 			const int &r, const int &g, const int &b, const int &a) {
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
 
 		GLubyte color[] = { (GLubyte)r, (GLubyte)g, (GLubyte)b, (GLubyte)a };
@@ -168,6 +170,7 @@ namespace Honeycomb { namespace Graphics {
 
 	void Texture2D::setImageDataManual(const unsigned char *data, const int &type, 
 			const int &in, const int &ex, const int &w, const int &h) {
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
 
 		// Pass in the Image to OpenGL using the given parameters
@@ -181,6 +184,7 @@ namespace Honeycomb { namespace Graphics {
 	}
 
 	void Texture2D::setWrap(const Texture2DWrapMode &wrap) {
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
@@ -189,6 +193,7 @@ namespace Honeycomb { namespace Graphics {
 
 	void Texture2D::setWrap(const Texture2DWrapMode &s, 
 			const Texture2DWrapMode &t) {
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, s);

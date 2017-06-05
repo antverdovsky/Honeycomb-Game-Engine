@@ -41,7 +41,7 @@ namespace Honeycomb { namespace Graphics {
 	}
 
 	void Cubemap::setFace(const TextureTarget &face, const Texture2D &tex) {
-		this->setFace(face, tex.getDirectory());
+//		this->setFace(face, tex.getDirectory());			TODO
 	}
 
 	void Cubemap::setFace(const TextureTarget &face, const std::string &tex) {

@@ -61,7 +61,7 @@ namespace Honeycomb { namespace Base {
 		/// <param name="item">
 		/// The item for which the exception was created.
 		/// </param>
-		GLItemAlreadyInitializedException(GLItem *item);
+		GLItemAlreadyInitializedException(const GLItem *item);
 
 		/// <summary>
 		/// Returns a constant character string containing the description of
@@ -72,7 +72,7 @@ namespace Honeycomb { namespace Base {
 		/// </returns>
 		virtual const char* what() const throw();
 	private:
-		GLItem *item;
+		const GLItem *item;
 	};
 
 	/// <summary>
@@ -88,7 +88,7 @@ namespace Honeycomb { namespace Base {
 		/// <param name="item">
 		/// The item for which the exception was created.
 		/// </param>
-		GLItemNotInitializedException(GLItem *item);
+		GLItemNotInitializedException(const GLItem *item);
 
 		/// <summary>
 		/// Returns a constant character string containing the description of
@@ -99,7 +99,7 @@ namespace Honeycomb { namespace Base {
 		/// </returns>
 		virtual const char* what() const throw();
 	private:
-		GLItem *item;
+		const GLItem *item;
 	};
 } }
 

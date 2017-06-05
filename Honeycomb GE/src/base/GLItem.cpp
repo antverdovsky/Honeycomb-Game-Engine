@@ -24,8 +24,9 @@ namespace Honeycomb { namespace Base {
 
 	}
 
-	GLItemNotInitializedException::GLItemNotInitializedException(GLItem *item)
-			: std::runtime_error("GL Item not initialized") {
+	GLItemNotInitializedException::GLItemNotInitializedException(
+			const GLItem *item) : 
+			std::runtime_error("GL Item not initialized") {
 		this->item = item;
 	}
 
@@ -36,7 +37,8 @@ namespace Honeycomb { namespace Base {
 	}
 
 	GLItemAlreadyInitializedException::GLItemAlreadyInitializedException(
-			GLItem *item) : std::runtime_error("GL Item already initialized") {
+			const GLItem *item) : 
+			std::runtime_error("GL Item already initialized") {
 		this->item = item;
 	}
 

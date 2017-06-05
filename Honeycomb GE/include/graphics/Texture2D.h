@@ -112,39 +112,57 @@ namespace Honeycomb { namespace Graphics {
 		/// </returns>
 		static const Texture2D& getTextureWhite();
 
-		/// Creates an empty Texture instance.
+		/// <summary>
+		/// Creates an empty, uninitialized texture instance.
+		/// </summary>
 		Texture2D();
 
-		/// Binds this texture to OpenGL at GL_TEXTURE0.
+		/// <summary>
+		/// Binds this texture to OpenGL at GL_TEXTURE0. If the texture has not
+		/// yet been initialized, a GLItemNotInitialized exception will be
+		/// thrown.
+		/// </summary>
 		void bind() const;
 
-		/// Binds this texture to OpenGL at the specified location. 
-		/// const int &loc : The location of the texture in memory. This is
-		///					 treated as the displacement from GL_TEXTURE0.
+		/// <summary>
+		/// Binds this texture to OpenGL at the specified GL_TEXTURE position.
+		/// If the texture has not yet been initialized, a GLItemNotInitialized
+		/// exception will be thrown.
+		/// </summary>
+		/// <param name="loc">
+		/// The displacement from GL_TEXTURE0.
+		/// </param>
 		void bind(const int &loc) const;
 
 		/// Generates a MipMap for the texture.
 		void genMipMap();
 
-		/// Returns the directory of this 2D Texture.
-		/// return : The system directory.
-		const std::string& getDirectory() const;
-
-		/// Returns the texture ID of this 2D Texture.
-		/// return : The Texture ID.
+		/// <summary>
+		/// Returns the raw OpenGL pointer of the texture. If the texture has
+		/// not yet been initialized, the texture ID will be negative.
+		/// </summary>
+		/// <returns>
+		/// The OpenGL pointer.
+		/// </returns>
 		const int& getTextureID() const;
 
-		/// Initializes this 2D Texture instance by generating the appropriate
-		/// texture buffer to store the texture data.
+		/// <summary>
+		/// Initializes the Texture to a new OpenGL texture. If the texture has
+		/// already been initialized, a GLItemAlreadyInitialized exception will
+		/// be thrown.
+		/// </summary>
 		void initialize();
 		
-		/// Destroys this 2D Texture instance by destroying the appropriate
-		/// texture buffer.
+		/// <summary>
+		/// Destroys this Texture from OpenGL. If the texture has not yet been
+		/// initialized, a GLItemNotInitialized exception is thrown.
+		/// </summary>
 		void destroy();
 
 		/// <summary>
 		/// Sets the texture filtering mode for the minifying and magnifying of
-		/// the texture.
+		/// the texture. If the texture has not yet been initialized, a
+		/// GLItemNotInitialized exception is thrown.
 		/// </summary>
 		/// <param name="filter">
 		/// The filter mode to be used when minifying and magnifying the 
@@ -154,7 +172,8 @@ namespace Honeycomb { namespace Graphics {
 
 		/// <summary>
 		/// Sets the texture filtering mode for the minifying and magnifying of
-		/// the texture.
+		/// the texture. If the texture has not yet been initialized, a
+		/// GLItemNotInitialized exception is thrown.
 		/// </summary>
 		/// <param name="min">
 		/// The filter mode to be used when minifying the texture.
@@ -167,7 +186,11 @@ namespace Honeycomb { namespace Graphics {
 
 		/// <summary>
 		/// Creates a texture with a width of one pixel and a height of one
-		/// pixel (1x1) and solid fills it with the specified RGBA color.
+		/// pixel (1x1) and solid fills it with the specified RGBA color. If 
+		/// the texture has not yet been initialized, a 
+		/// GLItemNotInitialized exception is thrown. If this image has already
+		/// had its data set, the previous data will be lost and replaced with 
+		/// the new image data.
 		/// </summary>
 		/// <param name="r">
 		/// The red channel of the texture color, in range between 0 and 255.
@@ -196,6 +219,9 @@ namespace Honeycomb { namespace Graphics {
 		/// </param>
 		void setImageDataIO(const Honeycomb::File::ImageIO &image);
 
+		/// <summary>
+		/// TODO
+		/// </summary>
 		/// Passes the specified image data to OpenGL.
 		/// unsigned char *data : The image data to be sent to OpenGL.
 		/// const int &type : The type of data being passed in.
@@ -207,7 +233,9 @@ namespace Honeycomb { namespace Graphics {
 			const int &in, const int &ex, const int &w, const int &h);
 
 		/// <summary>
-		/// Sets the wrapping mode for the S and T axes of the texture.
+		/// Sets the wrapping mode for the S and T axes of the texture. If the
+		/// texture has not yet been initialized, a GLItemNotInitialized
+		/// exception will be thrown.
 		/// </summary>
 		/// <param name="wrap">
 		/// The wrapping mode to be used on the S and T axes.
@@ -215,7 +243,9 @@ namespace Honeycomb { namespace Graphics {
 		void setWrap(const Texture2DWrapMode &wrap);
 
 		/// <summary>
-		/// Sets the wrapping mode for the S and T axes of the texture.
+		/// Sets the wrapping mode for the S and T axes of the texture. If the
+		/// texture has not yet been initialized, a GLItemNotInitialized
+		/// exception will be thrown.
 		/// </summary>
 		/// <param name="s">
 		/// The wrapping mode to be used for the S axis.
@@ -227,8 +257,7 @@ namespace Honeycomb { namespace Graphics {
 	private:
 		static int textureCount; // The number of GL initialized textures
 		
-		int textureID; // The texture "pointer"
-		std::string directory; // The file from which the texture was loaded
+		int textureID;           // The texture "pointer"
 	};
 } }
 
