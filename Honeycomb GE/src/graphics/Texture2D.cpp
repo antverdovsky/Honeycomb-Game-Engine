@@ -53,22 +53,24 @@ namespace Honeycomb { namespace Graphics {
 		glDeleteTextures(1, &texID); // Delete Texture from OpenGL
 	}
 
-	void Texture2D::setImageData(const int &r, const int &g, const int &b) {
+	void Texture2D::setImageDataFill(
+			const int &r, const int &g, const int &b, const int &a) {
 		this->bind();
 
-		GLubyte color[] = { (GLubyte)r, (GLubyte)g, (GLubyte)b };
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1, 1, 0, GL_RGB,
+		GLubyte color[] = { (GLubyte)r, (GLubyte)g, (GLubyte)b, (GLubyte)a };
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA,
 			GL_UNSIGNED_BYTE, color);
 	}
 
-	void Texture2D::setImageData(const ImageIO &image) {
+	void Texture2D::setImageDataIO(const ImageIO &image) {
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 
-		this->setImageData(image.getData(), GL_UNSIGNED_BYTE, GL_RGB, GL_RGB,
-				image.getWidth(), image.getHeight());
+		this->setImageDataManual(
+			image.getData(), GL_UNSIGNED_BYTE, GL_RGB, GL_RGB,
+			image.getWidth(), image.getHeight());
 	}
 
-	void Texture2D::setImageData(const unsigned char *data, const int &type, 
+	void Texture2D::setImageDataManual(const unsigned char *data, const int &type, 
 			const int &in, const int &ex, const int &w, const int &h) {
 		this->bind();
 

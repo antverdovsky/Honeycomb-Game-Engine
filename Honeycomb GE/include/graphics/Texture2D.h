@@ -40,13 +40,24 @@ namespace Honeycomb { namespace Graphics {
 		/// texture buffer.
 		void destroy();
 
-		/// Creates a 1x1 pixel of the specified color and sets it data to this
-		/// Texture's data.
-		/// const int &r : The red component of the color [0, 255].
-		/// const int &g : The green component of the color [0, 255].
-		/// const int &b : The blue component of the color [0, 255].
-		void setImageData(const int &r = 255, const int &g = 255,
-			const int &b = 255);
+		/// <summary>
+		/// Creates a texture with a width of one pixel and a height of one
+		/// pixel (1x1) and solid fills it with the specified RGBA color.
+		/// </summary>
+		/// <param name="r">
+		/// The red channel of the texture color, in range between 0 and 255.
+		/// </param>
+		/// <param name="g">
+		/// The green channel of the texture color, in range between 0 and 255.
+		/// </param>
+		/// <param name="b">
+		/// The blue channel of the texture color, in range between 0 and 255.
+		/// </param>
+		/// <param name="a">
+		/// The alpha channel of the texture color, in range between 0 and 255.
+		/// </param>
+		void setImageDataFill(
+				const int &r, const int &g, const int &b, const int &a);
 
 		/// <summary>
 		/// Sets this texture data to the data of the specified IO image. If
@@ -58,7 +69,7 @@ namespace Honeycomb { namespace Graphics {
 		/// <param name="image">
 		/// The image which is to be stored in this Texture.
 		/// </param>
-		void setImageData(const Honeycomb::File::ImageIO &image);
+		void setImageDataIO(const Honeycomb::File::ImageIO &image);
 
 		/// Passes the specified image data to OpenGL.
 		/// unsigned char *data : The image data to be sent to OpenGL.
@@ -67,7 +78,7 @@ namespace Honeycomb { namespace Graphics {
 		/// const int &ex : The external format of the data passed in.
 		/// const int &w : The width of the image.
 		/// const int &h : The height of the image.
-		void setImageData(const unsigned char *data, const int &type, 
+		void setImageDataManual(const unsigned char *data, const int &type, 
 			const int &in, const int &ex, const int &w, const int &h);
 
 		/// Sets the texture filtering for minifying and magnifying operations.

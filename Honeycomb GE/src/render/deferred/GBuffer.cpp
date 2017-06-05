@@ -152,7 +152,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			// values in the texture outside of the standard [0, 1] clamp.
 			this->bufferTextures[i].initialize();
 			this->bufferTextures[i].bind();
-			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGB16F, 
+			this->bufferTextures[i].setImageDataManual(NULL, GL_FLOAT, GL_RGB16F, 
 				GL_RGB, this->textureWidth, this->textureHeight);
 
 			// Bind the texture to the Frame Buffer Object
@@ -168,7 +168,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			// into large floating point numbers.
 			this->bufferTextures[i].initialize();
 			this->bufferTextures[i].bind();
-			this->bufferTextures[i].setImageData(
+			this->bufferTextures[i].setImageDataManual(
 				NULL, GL_UNSIGNED_INT, GL_RGBA32UI, GL_RGBA_INTEGER, 
 				this->textureWidth, this->textureHeight);
 
@@ -183,7 +183,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		for (; i < GBufferTextureType::FINAL_1; i++) {
 			this->bufferTextures[i].initialize();
 			this->bufferTextures[i].bind();
-			this->bufferTextures[i].setImageData(NULL,
+			this->bufferTextures[i].setImageDataManual(NULL,
 				GL_FLOAT_32_UNSIGNED_INT_24_8_REV, GL_DEPTH32F_STENCIL8,
 				GL_DEPTH_STENCIL, this->textureWidth, this->textureHeight);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
@@ -194,7 +194,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		for (; i <= GBufferTextureType::FINAL_2; ++i) {
 			this->bufferTextures[i].initialize();
 			this->bufferTextures[i].bind();
-			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGB, 
+			this->bufferTextures[i].setImageDataManual(NULL, GL_FLOAT, GL_RGB, 
 				GL_RGB, this->textureWidth, this->textureHeight);
 
 			glFramebufferTexture2D(GL_FRAMEBUFFER,
@@ -234,27 +234,27 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		// Resize RGB16F textures (POSITION and NORMAL)
 		for (; i < GBufferTextureType::MATERIAL; i++) {
-			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGB16F,
+			this->bufferTextures[i].setImageDataManual(NULL, GL_FLOAT, GL_RGB16F,
 				GL_RGB, this->textureWidth, this->textureHeight);
 		}
 		
 		// Resize RGBA32F textures (MATERIAL)
 		for (; i < GBufferTextureType::DEPTH; i++) {
-			this->bufferTextures[i].setImageData(
+			this->bufferTextures[i].setImageDataManual(
 				NULL, GL_UNSIGNED_INT, GL_RGBA32UI, GL_RGBA_INTEGER,
 				this->textureWidth, this->textureHeight);
 		}
 
 		// Resize DEPTH32F_STENCIL8 texture (DEPTH)
 		for (; i < GBufferTextureType::FINAL_1; i++) {
-			this->bufferTextures[GBufferTextureType::DEPTH].setImageData(NULL,
+			this->bufferTextures[GBufferTextureType::DEPTH].setImageDataManual(NULL,
 				GL_FLOAT_32_UNSIGNED_INT_24_8_REV, GL_DEPTH32F_STENCIL8,
 				GL_DEPTH_STENCIL, this->textureWidth, this->textureHeight);
 		}
 
 		// Resize the final RGB textures (FINAL_1 and FINAL_2)
 		for (int i = GBufferTextureType::FINAL_1; i <= FINAL_2; ++i) {
-			this->bufferTextures[i].setImageData(NULL, GL_FLOAT, GL_RGB, 
+			this->bufferTextures[i].setImageDataManual(NULL, GL_FLOAT, GL_RGB, 
 				GL_RGB, this->textureWidth, this->textureHeight);
 		}
 	}

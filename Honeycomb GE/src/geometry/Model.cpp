@@ -180,14 +180,14 @@ namespace Honeycomb { namespace Geometry {
 			// otherwise set the texture to the R, G, B values.
 			try {
 				ImageIO image = ImageIO(dir.C_Str());
-				texture->setImageData(image);
+				texture->setImageDataIO(image);
 			} catch (ImageIOLoadException e) {
-				texture->setImageData(r, g, b);
+				texture->setImageDataFill(r, g, b, 255);
 				return;
 			}
 		} else {
 			// Set the previously initialized texture to default value
-			texture->setImageData(r, g, b);
+			texture->setImageDataFill(r, g, b, 255);
 		}
 
 		mat.glSampler2Ds.setValue(matUni + ".sampler", *texture);
@@ -251,7 +251,7 @@ namespace Honeycomb { namespace Geometry {
 		// Special default value for diffuse map (TODO: Method for this?)
 		Texture2D *diffuse = new Texture2D();
 		diffuse->initialize();
-		diffuse->setImageData(255, 255, 255);
+		diffuse->setImageDataFill(255, 255, 255, 255);
 		material->glSampler2Ds.setValue("diffuseTexture.sampler", *diffuse);
 		material->glFloats.setValue("diffuseTexture.intensity", 1.0F);
 		material->glVector3fs.setValue("diffuseColor",
