@@ -232,19 +232,19 @@ namespace Honeycomb { namespace Geometry {
 		// Retrieve the Textures from ASSIMP.
 		this->fetchMaterialTexture(*aMat, 
 			aiTextureType::aiTextureType_DIFFUSE, *material, 
-			"albedoTexture", Texture2DCommonFillColor::WHITE);
+			"albedoTexture", Texture2DCommonFillColor::COLOR_WHITE);
 		this->fetchMaterialTexture(*aMat,
 			aiTextureType::aiTextureType_AMBIENT, *material,
-			"ambientTexture", Texture2DCommonFillColor::WHITE);
+			"ambientTexture", Texture2DCommonFillColor::COLOR_WHITE);
 		this->fetchMaterialTexture(*aMat, 
 			aiTextureType::aiTextureType_SPECULAR, *material, 
-			"specularTexture", Texture2DCommonFillColor::WHITE);
+			"specularTexture", Texture2DCommonFillColor::COLOR_WHITE);
 		this->fetchMaterialTexture(*aMat, 
 			aiTextureType::aiTextureType_NORMALS, *material,
-			"normalsTexture", Texture2DCommonFillColor::BLACK);
+			"normalsTexture", Texture2DCommonFillColor::COLOR_BLACK);
 		this->fetchMaterialTexture(*aMat,
 			aiTextureType::aiTextureType_DISPLACEMENT, *material,
-			"displacementTexture", Texture2DCommonFillColor::BLACK);
+			"displacementTexture", Texture2DCommonFillColor::COLOR_BLACK);
 
 		// Special default value for diffuse map (TODO: Method for this?)
 		Texture2D diffuse = Texture2D::getTextureWhite();

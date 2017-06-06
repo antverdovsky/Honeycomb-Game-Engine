@@ -210,27 +210,127 @@ namespace Honeycomb { namespace Graphics {
 
 	GLint Texture2D::getGLintFilterMode(const Texture2DFilterMode &filter) {
 		switch (filter) {
-		case Texture2DFilterMode::FILTER_LINEAR:
-			return GL_LINEAR;
-		case Texture2DFilterMode::FILTER_NEAREST:
-			return GL_NEAREST;
-		default:
-			return -1;
+		case FILTER_LINEAR:                          return GL_LINEAR;
+		case FILTER_NEAREST:                         return GL_NEAREST;
+		default:                                     return -1;
+		}
+	}
+
+	GLint Texture2D::getGLintDataFormat(const Texture2DDataFormat &format) {
+		switch (format) {
+		case FORMAT_BGR:                             return GL_BGR;
+		case FORMAT_BGRA:                            return GL_BGRA;
+		case FORMAT_BGRA_INTEGER:                    return GL_BGRA_INTEGER;
+		case FORMAT_BGR_INTEGER:                     return GL_BGR_INTEGER;
+		case FORMAT_DEPTH_COMPONENT:                 return GL_DEPTH_COMPONENT;
+		case FORMAT_DEPTH_STENCIL:                   return GL_DEPTH_STENCIL;
+		case FORMAT_RED:                             return GL_RED;
+		case FORMAT_RED_INTEGER:                     return GL_RED_INTEGER;
+		case FORMAT_RG:                              return GL_RG;
+		case FORMAT_RGB:                             return GL_RGB;
+		case FORMAT_RGBA:                            return GL_RGBA;
+		case FORMAT_RGBA_INTEGER:                    return GL_RGBA_INTEGER;
+		case FORMAT_RGB_INTEGER:                     return GL_RGB_INTEGER;
+		case FORMAT_RG_INTEGER:                      return GL_RG_INTEGER;
+		case FORMAT_STENCIL_INDEX:                   return GL_STENCIL_INDEX;
+		default:                                     return -1;
+		}
+	}
+
+	GLint Texture2D::getGLintDataType(const Texture2DDataType &type) {
+		switch (type) {
+		case DATA_BYTE:                              return GL_BYTE;
+		case DATA_FLOAT:                             return GL_FLOAT;
+		case DATA_INT:                               return GL_INT;
+		case DATA_SHORT:                             return GL_SHORT;
+		case DATA_UNSIGNED_BYTE:                     return GL_UNSIGNED_BYTE;
+		case DATA_UNSIGNED_INT:                      return GL_UNSIGNED_INT;
+		case DATA_UNSIGNED_SHORT:                    return GL_UNSIGNED_SHORT;
+		default:                                     return -1;
+		}
+	}
+
+	GLint Texture2D::getGLintInternalDataFormat(
+			const Texture2DDataInternalFormat &iformat) {
+		switch (iformat) {
+		case INTERNAL_FORMAT_DEPTH_COMPONENT:        return GL_DEPTH_COMPONENT;
+		case INTERNAL_FORMAT_DEPTH_STENCIL:          return GL_DEPTH_STENCIL;
+		case INTERNAL_FORMAT_RED:                    return GL_RED;
+		case INTERNAL_FORMAT_RG:                     return GL_RG;
+		case INTERNAL_FORMAT_RGB:                    return GL_RGB;
+		case INTERNAL_FORMAT_RGBA:                   return GL_RGBA;
+		case INTERNAL_FORMAT_R8:                     return GL_R8;
+		case INTERNAL_FORMAT_R8_SNORM:               return GL_R8_SNORM;
+		case INTERNAL_FORMAT_R16:                    return GL_R16;
+		case INTERNAL_FORMAT_R16_SNORM:              return GL_R16_SNORM;
+		case INTERNAL_FORMAT_RG8:                    return GL_RG8;
+		case INTERNAL_FORMAT_RG8_SNORM:              return GL_RG8_SNORM;
+		case INTERNAL_FORMAT_RG16:                   return GL_RG16;
+		case INTERNAL_FORMAT_RG16_SNORM:             return GL_RG16_SNORM;
+		case INTERNAL_FORMAT_R3_G3_B2:               return GL_R3_G3_B2;
+		case INTERNAL_FORMAT_RGB4:                   return GL_RGB4;
+		case INTERNAL_FORMAT_RGB5:                   return GL_RGB5;
+		case INTERNAL_FORMAT_RGB8:                   return GL_RGB8;
+		case INTERNAL_FORMAT_RGB8_SNORM:             return GL_RGB8_SNORM;
+		case INTERNAL_FORMAT_RGB10:                  return GL_RGB10;
+		case INTERNAL_FORMAT_RGB12:                  return GL_RGB12;
+		case INTERNAL_FORMAT_RGB16_SNORM:            return GL_RGB16_SNORM;
+		case INTERNAL_FORMAT_RGBA2:                  return GL_RGBA2;
+		case INTERNAL_FORMAT_RGBA4:                  return GL_RGBA4;
+		case INTERNAL_FORMAT_RGB5_A1:                return GL_RGB5_A1;
+		case INTERNAL_FORMAT_RGBA8:                  return GL_RGBA8;
+		case INTERNAL_FORMAT_RGBA8_SNORM:            return GL_RGBA8_SNORM;
+		case INTERNAL_FORMAT_RGB10_A2:               return GL_RGB10_A2;
+		case INTERNAL_FORMAT_RGB10_A2UI:             return GL_RGB10_A2UI;
+		case INTERNAL_FORMAT_RGBA12:                 return GL_RGBA12;
+		case INTERNAL_FORMAT_RGBA16:                 return GL_RGBA16;
+		case INTERNAL_FORMAT_SRGB8:                  return GL_SRGB8;
+		case INTERNAL_FORMAT_SRGB8_ALPHA8:           return GL_SRGB8_ALPHA8;
+		case INTERNAL_FORMAT_R16F:                   return GL_R16F;
+		case INTERNAL_FORMAT_RG16F:                  return GL_RG16F;
+		case INTERNAL_FORMAT_RGB16F:                 return GL_RGB16F;
+		case INTERNAL_FORMAT_RGBA16F:                return GL_RGBA16F;
+		case INTERNAL_FORMAT_R32F:                   return GL_R32F;
+		case INTERNAL_FORMAT_RG32F:                  return GL_RG32F;
+		case INTERNAL_FORMAT_RGB32F:                 return GL_RGB32F;
+		case INTERNAL_FORMAT_RGBA32F:                return GL_RGBA32F;
+		case INTERNAL_FORMAT_R11F_G11F_B10F:         return GL_R11F_G11F_B10F;
+		case INTERNAL_FORMAT_RGB9_E5:                return GL_RGB9_E5;
+		case INTERNAL_FORMAT_R8I:                    return GL_R8I;
+		case INTERNAL_FORMAT_R8UI:                   return GL_R8UI;
+		case INTERNAL_FORMAT_R16I:                   return GL_R16I;
+		case INTERNAL_FORMAT_R16UI:                  return GL_R16UI;
+		case INTERNAL_FORMAT_R32I:                   return GL_R32I;
+		case INTERNAL_FORMAT_R32UI:                  return GL_R32UI;
+		case INTERNAL_FORMAT_RG8I:                   return GL_RG8I;
+		case INTERNAL_FORMAT_RG8UI:                  return GL_RG8UI;
+		case INTERNAL_FORMAT_RG16I:                  return GL_RG16I;
+		case INTERNAL_FORMAT_RG16UI:                 return GL_RG16UI;
+		case INTERNAL_FORMAT_RG32I:                  return GL_RG32I;
+		case INTERNAL_FORMAT_RG32UI:                 return GL_RG32UI;
+		case INTERNAL_FORMAT_RGB8I:                  return GL_RGB8I;
+		case INTERNAL_FORMAT_RGB8UI:                 return GL_RGB8UI;
+		case INTERNAL_FORMAT_RGB16I:                 return GL_RGB16I;
+		case INTERNAL_FORMAT_RGB16UI:                return GL_RGB16UI;
+		case INTERNAL_FORMAT_RGB32I:                 return GL_RGB32I;
+		case INTERNAL_FORMAT_RGB32UI:                return GL_RGB32UI;
+		case INTERNAL_FORMAT_RGBA8I:                 return GL_RGBA8I;
+		case INTERNAL_FORMAT_RGBA8UI:                return GL_RGBA8UI;
+		case INTERNAL_FORMAT_RGBA16I:                return GL_RGBA16I;
+		case INTERNAL_FORMAT_RGBA16UI:               return GL_RGBA16UI;
+		case INTERNAL_FORMAT_RGBA32I:                return GL_RGBA32I;
+		case INTERNAL_FORMAT_RGBA32UI:               return GL_RGBA32UI;
+		default:                                     return -1;
 		}
 	}
 
 	GLint Texture2D::getGLintWrapMode(const Texture2DWrapMode &wrap) {
 		switch (wrap) {
-		case Texture2DWrapMode::WRAP_CLAMP_TO_BORDER:
-			return GL_CLAMP_TO_BORDER;
-		case Texture2DWrapMode::WRAP_CLAMP_TO_EDGE:
-			return GL_CLAMP_TO_EDGE;
-		case Texture2DWrapMode::WRAP_MIRRORED_REPEAT:
-			return GL_MIRRORED_REPEAT;
-		case Texture2DWrapMode::WRAP_REPEAT:
-			return GL_REPEAT;
-		default:
-			return -1;
+		case WRAP_CLAMP_TO_BORDER:                   return GL_CLAMP_TO_BORDER;
+		case WRAP_CLAMP_TO_EDGE:                     return GL_CLAMP_TO_EDGE;
+		case WRAP_MIRRORED_REPEAT:                   return GL_MIRRORED_REPEAT;
+		case WRAP_REPEAT:                            return GL_REPEAT;
+		default:                                     return -1;
 		}
 	}
 } }
