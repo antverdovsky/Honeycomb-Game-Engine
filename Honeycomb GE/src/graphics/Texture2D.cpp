@@ -42,15 +42,15 @@ namespace Honeycomb { namespace Graphics {
 	const Texture2D& Texture2D::getTextureCommonFill(
 			const Texture2DCommonFillColor &c) {
 		switch (c) {
-		case Texture2DCommonFillColor::BLACK:
+		case Texture2DCommonFillColor::COLOR_BLACK:
 			return Texture2D::getTextureBlack();
-		case Texture2DCommonFillColor::BLUE:
+		case Texture2DCommonFillColor::COLOR_BLUE:
 			return Texture2D::getTextureBlue();
-		case Texture2DCommonFillColor::GREEN:
+		case Texture2DCommonFillColor::COLOR_GREEN:
 			return Texture2D::getTextureGreen();
-		case Texture2DCommonFillColor::RED:
+		case Texture2DCommonFillColor::COLOR_RED:
 			return Texture2D::getTextureRed();
-		case Texture2DCommonFillColor::WHITE:
+		case Texture2DCommonFillColor::COLOR_WHITE:
 			return Texture2D::getTextureWhite();
 		}
 	}
@@ -137,8 +137,10 @@ namespace Honeycomb { namespace Graphics {
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, 
+			Texture2D::getGLintFilterMode(filter));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, 
+			Texture2D::getGLintFilterMode(filter));
 	}
 
 	void Texture2D::setFiltering(const Texture2DFilterMode &min,
@@ -146,8 +148,10 @@ namespace Honeycomb { namespace Graphics {
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, min);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mag);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+			Texture2D::getGLintFilterMode(min));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+			Texture2D::getGLintFilterMode(mag));
 	}
 
 	void Texture2D::setImageDataFill(
@@ -177,9 +181,9 @@ namespace Honeycomb { namespace Graphics {
 		glTexImage2D(GL_TEXTURE_2D, 0, in, w, h, 0, ex, type, data);
 
 		// Default Texture2D settings
-		this->setFiltering(Texture2DFilterMode::NEAREST, 
-			Texture2DFilterMode::NEAREST);
-		this->setWrap(Texture2DWrapMode::REPEAT, Texture2DWrapMode::REPEAT);
+		this->setFiltering(Texture2DFilterMode::FILTER_NEAREST, 
+			Texture2DFilterMode::FILTER_NEAREST);
+		this->setWrap(Texture2DWrapMode::WRAP_REPEAT, Texture2DWrapMode::WRAP_REPEAT);
 		this->genMipMap();
 	}
 
@@ -187,8 +191,10 @@ namespace Honeycomb { namespace Graphics {
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
+			Texture2D::getGLintWrapMode(wrap));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
+			Texture2D::getGLintWrapMode(wrap));
 	}
 
 	void Texture2D::setWrap(const Texture2DWrapMode &s, 
@@ -196,7 +202,35 @@ namespace Honeycomb { namespace Graphics {
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, s);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, t);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
+			Texture2D::getGLintWrapMode(s));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
+			Texture2D::getGLintWrapMode(t));
+	}
+
+	GLint Texture2D::getGLintFilterMode(const Texture2DFilterMode &filter) {
+		switch (filter) {
+		case Texture2DFilterMode::FILTER_LINEAR:
+			return GL_LINEAR;
+		case Texture2DFilterMode::FILTER_NEAREST:
+			return GL_NEAREST;
+		default:
+			return -1;
+		}
+	}
+
+	GLint Texture2D::getGLintWrapMode(const Texture2DWrapMode &wrap) {
+		switch (wrap) {
+		case Texture2DWrapMode::WRAP_CLAMP_TO_BORDER:
+			return GL_CLAMP_TO_BORDER;
+		case Texture2DWrapMode::WRAP_CLAMP_TO_EDGE:
+			return GL_CLAMP_TO_EDGE;
+		case Texture2DWrapMode::WRAP_MIRRORED_REPEAT:
+			return GL_MIRRORED_REPEAT;
+		case Texture2DWrapMode::WRAP_REPEAT:
+			return GL_REPEAT;
+		default:
+			return -1;
+		}
 	}
 } }

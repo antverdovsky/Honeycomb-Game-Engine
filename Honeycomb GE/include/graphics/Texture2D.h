@@ -7,23 +7,25 @@
 #include "../base/GLItem.h"
 #include "../file/ImageIO.h"
 
+typedef int GLint;
+
 namespace Honeycomb { namespace Graphics {
 	/// <summary>
 	/// Enumeration of the different types of Texture2D filtering modes.
 	/// </summary>
 	enum Texture2DFilterMode {
-		LINEAR                             = 0x2601,
-		NEAREST                            = 0x2600
+		FILTER_LINEAR,
+		FILTER_NEAREST
 	};
 
 	/// <summary>
 	/// Enumeration of the different types of Texture 2D wrapping modes.
 	/// </summary>
 	enum Texture2DWrapMode {
-		CLAMP_TO_BORDER                    = 0x812D,
-		CLAMP_TO_EDGE                      = 0x812F,
-		MIRRORED_REPEAT                    = 0x8370,
-		REPEAT                             = 0x2901
+		WRAP_CLAMP_TO_BORDER,
+		WRAP_CLAMP_TO_EDGE,
+		WRAP_MIRRORED_REPEAT,
+		WRAP_REPEAT
 	};
 
 	/// <summary>
@@ -31,11 +33,11 @@ namespace Honeycomb { namespace Graphics {
 	/// default and can be shared across multiple texture instances.
 	/// </summary>
 	enum Texture2DCommonFillColor {
-		BLACK,
-		BLUE,
-		GREEN,
-		RED,
-		WHITE
+		COLOR_BLACK,
+		COLOR_BLUE,
+		COLOR_GREEN,
+		COLOR_RED,
+		COLOR_WHITE
 	};
 
 	/// <summary>
@@ -255,6 +257,30 @@ namespace Honeycomb { namespace Graphics {
 		/// </param>
 		void setWrap(const Texture2DWrapMode &s, const Texture2DWrapMode &t);
 	private:
+		/// <summary>
+		/// Converts the specified Texture2D Filter Mode enumeration to its
+		/// GLint counterpart.
+		/// </summary>
+		/// <param name="filter">
+		/// The filter mode value.
+		/// </param>
+		/// <returns>
+		/// The GLint value representation of the filter value.
+		/// </returns>
+		static GLint getGLintFilterMode(const Texture2DFilterMode &filter);
+
+		/// <summary>
+		/// Converts the specified Texture2D Wrap Mode eneumeration to its
+		/// GLint counterpart.
+		/// </summary>
+		/// <param name="wrap">
+		/// The wrapping mode value.
+		/// </param>
+		/// <returns>
+		/// The GLint value representation of the wrap value.
+		/// </returns>
+		static GLint getGLintWrapMode(const Texture2DWrapMode &wrap);
+
 		static int textureCount; // The number of GL initialized textures
 		
 		int textureID;           // The texture "pointer"
