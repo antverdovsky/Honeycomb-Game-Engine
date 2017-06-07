@@ -165,26 +165,35 @@ namespace Honeycomb { namespace Graphics {
 	}
 
 	void Texture2D::setImageDataIO(const ImageIO &image) {
-		if (!this->isInitialized) throw GLItemNotInitializedException(this);
-
-		this->setImageDataManual(
-			image.getData(), GL_UNSIGNED_BYTE, GL_RGB, GL_RGB,
+		this->setImageDataManual<unsigned char>(
+			image.getData(),
+			Texture2DDataType::DATA_UNSIGNED_BYTE,
+			Texture2DDataInternalFormat::INTERNAL_FORMAT_RGB,
+			Texture2DDataFormat::FORMAT_RGB,
 			image.getWidth(), image.getHeight());
 	}
 
-	void Texture2D::setImageDataManual(const unsigned char *data, const int &type, 
-			const int &in, const int &ex, const int &w, const int &h) {
+	template <typename T>
+	void Texture2D::setImageDataManual(const T *data,
+			const Texture2DDataType &type,
+			const Texture2DDataInternalFormat &iformat,
+			const Texture2DDataFormat &format,
+			const int &width, const int &height) {
+		// If not initialized, throw exception; bind texture for change
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
 
-		// Pass in the Image to OpenGL using the given parameters
-		glTexImage2D(GL_TEXTURE_2D, 0, in, w, h, 0, ex, type, data);
+		// Write the data to the texture
+		glTexImage2D(GL_TEXTURE_2D, 0,
+			Texture2D::getGLintInternalDataFormat(iformat),
+			width, height, 0,
+			Texture2D::getGLintDataFormat(format),
+			Texture2D::getGLintDataType(type),
+			data);
 
-		// Default Texture2D settings
-		this->setFiltering(Texture2DFilterMode::FILTER_NEAREST, 
-			Texture2DFilterMode::FILTER_NEAREST);
-		this->setWrap(Texture2DWrapMode::WRAP_REPEAT, Texture2DWrapMode::WRAP_REPEAT);
-		this->genMipMap();
+		// Set the default Texture2D Settings
+		this->setFiltering(Texture2DFilterMode::FILTER_NEAREST);
+		this->setWrap(Texture2DWrapMode::WRAP_REPEAT);
 	}
 
 	void Texture2D::setWrap(const Texture2DWrapMode &wrap) {
@@ -241,11 +250,28 @@ namespace Honeycomb { namespace Graphics {
 		switch (type) {
 		case DATA_BYTE:                              return GL_BYTE;
 		case DATA_FLOAT:                             return GL_FLOAT;
+		case DATA_FLOAT_32_UNSIGNED_INT_24_8_REV:
+			return GL_FLOAT_32_UNSIGNED_INT_24_8_REV;
+		case DATA_HALF_FLOAT:                        return GL_HALF_FLOAT;
 		case DATA_INT:                               return GL_INT;
 		case DATA_SHORT:                             return GL_SHORT;
 		case DATA_UNSIGNED_BYTE:                     return GL_UNSIGNED_BYTE;
 		case DATA_UNSIGNED_INT:                      return GL_UNSIGNED_INT;
+		case DATA_UNSIGNED_INT_2_10_10_10_REV:
+			return GL_UNSIGNED_INT_2_10_10_10_REV;
+		case DATA_UNSIGNED_INT_10F_11F_11F_REV:
+			return GL_UNSIGNED_INT_10F_11F_11F_REV;
+		case DATA_UNSIGNED_INT_5_9_9_9_REV:
+			return GL_UNSIGNED_INT_5_9_9_9_REV;
+		case DATA_UNSIGNED_INT_24_8:
+			return GL_UNSIGNED_INT_24_8;
 		case DATA_UNSIGNED_SHORT:                    return GL_UNSIGNED_SHORT;
+		case DATA_UNSIGNED_SHORT_5_6_5:
+			return GL_UNSIGNED_SHORT_5_6_5;
+		case DATA_UNSIGNED_SHORT_4_4_4_4:
+			return GL_UNSIGNED_SHORT_4_4_4_4;
+		case DATA_UNSIGNED_SHORT_5_5_5_1:
+			return GL_UNSIGNED_SHORT_5_5_5_1;
 		default:                                     return -1;
 		}
 	}
@@ -320,6 +346,16 @@ namespace Honeycomb { namespace Graphics {
 		case INTERNAL_FORMAT_RGBA16UI:               return GL_RGBA16UI;
 		case INTERNAL_FORMAT_RGBA32I:                return GL_RGBA32I;
 		case INTERNAL_FORMAT_RGBA32UI:               return GL_RGBA32UI;
+		case INTERNAL_FORMAT_DEPTH_COMPONENT16:
+			return GL_DEPTH_COMPONENT16;
+		case INTERNAL_FORMAT_DEPTH_COMPONENT24:
+			return GL_DEPTH_COMPONENT24;
+		case INTERNAL_FORMAT_DEPTH_COMPONENT32F:
+			return GL_DEPTH_COMPONENT32F;
+		case INTERNAL_FORMAT_DEPTH24_STENCIL8:
+			return GL_DEPTH24_STENCIL8;
+		case INTERNAL_FORMAT_DEPTH32F_STENCIL8:
+			return GL_DEPTH32F_STENCIL8;
 		default:                                     return -1;
 		}
 	}
@@ -333,4 +369,50 @@ namespace Honeycomb { namespace Graphics {
 		default:                                     return -1;
 		}
 	}
+
+	/// <summary>
+	/// Forward Declarations for the setImageDataManual function.
+	/// </summary>
+	template void Texture2D::setImageDataManual<signed char>(
+			const signed char *data,
+			const Texture2DDataType &type,
+			const Texture2DDataInternalFormat &iformat,
+			const Texture2DDataFormat &format,
+			const int &width, const int &height);
+	template void Texture2D::setImageDataManual<float>(
+			const float *data,
+			const Texture2DDataType &type,
+			const Texture2DDataInternalFormat &iformat,
+			const Texture2DDataFormat &format,
+			const int &width, const int &height);
+	template void Texture2D::setImageDataManual<int>(
+			const int *data,
+			const Texture2DDataType &type,
+			const Texture2DDataInternalFormat &iformat,
+			const Texture2DDataFormat &format,
+			const int &width, const int &height);
+	template void Texture2D::setImageDataManual<short>(
+			const short *data,
+			const Texture2DDataType &type,
+			const Texture2DDataInternalFormat &iformat,
+			const Texture2DDataFormat &format,
+			const int &width, const int &height);
+	template void Texture2D::setImageDataManual<unsigned char>(
+			const unsigned char *data,
+			const Texture2DDataType &type,
+			const Texture2DDataInternalFormat &iformat,
+			const Texture2DDataFormat &format,
+			const int &width, const int &height);
+	template void Texture2D::setImageDataManual<unsigned int>(
+			const unsigned int *data,
+			const Texture2DDataType &type,
+			const Texture2DDataInternalFormat &iformat,
+			const Texture2DDataFormat &format,
+			const int &width, const int &height);
+	template void Texture2D::setImageDataManual<unsigned short>(
+			const unsigned short *data,
+			const Texture2DDataType &type,
+			const Texture2DDataInternalFormat &iformat,
+			const Texture2DDataFormat &format,
+			const int &width, const int &height);
 } }

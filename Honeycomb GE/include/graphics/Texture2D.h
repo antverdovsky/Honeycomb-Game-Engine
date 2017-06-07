@@ -117,7 +117,12 @@ namespace Honeycomb { namespace Graphics {
 		INTERNAL_FORMAT_RGBA16I,
 		INTERNAL_FORMAT_RGBA16UI,
 		INTERNAL_FORMAT_RGBA32I,
-		INTERNAL_FORMAT_RGBA32UI
+		INTERNAL_FORMAT_RGBA32UI,
+		INTERNAL_FORMAT_DEPTH_COMPONENT16,
+		INTERNAL_FORMAT_DEPTH_COMPONENT24,
+		INTERNAL_FORMAT_DEPTH_COMPONENT32F,
+		INTERNAL_FORMAT_DEPTH24_STENCIL8,
+		INTERNAL_FORMAT_DEPTH32F_STENCIL8
 	};
 
 	/// <summary>
@@ -126,11 +131,20 @@ namespace Honeycomb { namespace Graphics {
 	enum Texture2DDataType {
 		DATA_BYTE,
 		DATA_FLOAT,
+		DATA_FLOAT_32_UNSIGNED_INT_24_8_REV,
+		DATA_HALF_FLOAT,
 		DATA_INT,
 		DATA_SHORT,
 		DATA_UNSIGNED_BYTE,
 		DATA_UNSIGNED_INT,
-		DATA_UNSIGNED_SHORT
+		DATA_UNSIGNED_INT_2_10_10_10_REV,
+		DATA_UNSIGNED_INT_10F_11F_11F_REV,
+		DATA_UNSIGNED_INT_5_9_9_9_REV,
+		DATA_UNSIGNED_INT_24_8,
+		DATA_UNSIGNED_SHORT,
+		DATA_UNSIGNED_SHORT_5_6_5,
+		DATA_UNSIGNED_SHORT_4_4_4_4,
+		DATA_UNSIGNED_SHORT_5_5_5_1
 	};
 
 	/// <summary>
@@ -333,17 +347,38 @@ namespace Honeycomb { namespace Graphics {
 		void setImageDataIO(const Honeycomb::File::ImageIO &image);
 
 		/// <summary>
-		/// TODO
+		/// Sets this texture data to the specified custom pixel data. If the
+		/// image has not yet been initialized, a GLItemNotInitialized 
+		/// exception will be thrown. If this image has already had its data
+		/// set, the previous data will be lost and replaced with the new image
+		/// data.
 		/// </summary>
-		/// Passes the specified image data to OpenGL.
-		/// unsigned char *data : The image data to be sent to OpenGL.
-		/// const int &type : The type of data being passed in.
-		/// const int &in : The internal format with which to store the image.
-		/// const int &ex : The external format of the data passed in.
-		/// const int &w : The width of the image.
-		/// const int &h : The height of the image.
-		void setImageDataManual(const unsigned char *data, const int &type, 
-			const int &in, const int &ex, const int &w, const int &h);
+		/// <param name="data">
+		/// The data to be written to the texture instance.
+		/// </param>
+		/// <param name="type">
+		/// The type of data which is to be passed to the texture. This should
+		/// be based on the template argument.
+		/// </param>
+		/// <param name="iformat">
+		/// The internal format with which the data should be stored, this
+		/// specifies the number of color components of the texture.
+		/// </param>
+		/// <param name="format">
+		/// The format of the pixel data to be passed to the texture.
+		/// </param>
+		/// <param name="width">
+		/// The width of the texture, in pixels.
+		/// </param>
+		/// <param name="height">
+		/// The height of the texture, in pixels.
+		/// </param>
+		template <typename T>
+		void setImageDataManual(const T *data, 
+				const Texture2DDataType &type,
+				const Texture2DDataInternalFormat &iformat,
+				const Texture2DDataFormat &format,
+				const int &width, const int &height);
 
 		/// <summary>
 		/// Sets the wrapping mode for the S and T axes of the texture. If the
