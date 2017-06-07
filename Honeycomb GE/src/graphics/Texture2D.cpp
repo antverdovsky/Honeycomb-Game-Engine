@@ -5,8 +5,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "../../include/file/FileIO.h"
-
 using Honeycomb::Base::GLItemNotInitializedException;
 using namespace Honeycomb::File;
 
@@ -91,6 +89,10 @@ namespace Honeycomb { namespace Graphics {
 	Texture2D::Texture2D() {
 		this->isInitialized = false;
 		this->textureID = -1;
+		
+		this->usesMipMap = false;
+		this->height = -1;
+		this->width = -1;
 	}
 
 	void Texture2D::bind() const {
@@ -104,14 +106,16 @@ namespace Honeycomb { namespace Graphics {
 		glBindTexture(GL_TEXTURE_2D, this->textureID);
 	}
 
-	void Texture2D::genMipMap() {
-		this->bind();
-
-		glGenerateMipmap(GL_TEXTURE_2D);
+	const int& Texture2D::getHeight() const {
+		return this->height;
 	}
 
 	const int& Texture2D::getTextureID() const {
 		return this->textureID;
+	}
+
+	const int& Texture2D::getWidth() const {
+		return this->width;
 	}
 
 	void Texture2D::initialize() {
@@ -162,15 +166,17 @@ namespace Honeycomb { namespace Graphics {
 		GLubyte color[] = { (GLubyte)r, (GLubyte)g, (GLubyte)b, (GLubyte)a };
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA,
 			GL_UNSIGNED_BYTE, color);
+
+		this->width = this->height = 1;
 	}
 
-	void Texture2D::setImageDataIO(const ImageIO &image) {
+	void Texture2D::setImageDataIO(const ImageIO &image, const bool &mipmap) {
 		this->setImageDataManual<unsigned char>(
 			image.getData(),
 			Texture2DDataType::DATA_UNSIGNED_BYTE,
 			Texture2DDataInternalFormat::INTERNAL_FORMAT_RGB,
 			Texture2DDataFormat::FORMAT_RGB,
-			image.getWidth(), image.getHeight());
+			image.getWidth(), image.getHeight(), mipmap);
 	}
 
 	template <typename T>
@@ -178,12 +184,15 @@ namespace Honeycomb { namespace Graphics {
 			const Texture2DDataType &type,
 			const Texture2DDataInternalFormat &iformat,
 			const Texture2DDataFormat &format,
-			const int &width, const int &height) {
+			const int &width, const int &height, const bool &mipmap) {
 		// If not initialized, throw exception; bind texture for change
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
 
 		// Write the data to the texture
+		this->width = width;
+		this->height = height;
+		this->usesMipMap = mipmap;
 		glTexImage2D(GL_TEXTURE_2D, 0,
 			Texture2D::getGLintInternalDataFormat(iformat),
 			width, height, 0,
@@ -192,8 +201,17 @@ namespace Honeycomb { namespace Graphics {
 			data);
 
 		// Set the default Texture2D Settings
-		this->setFiltering(Texture2DFilterMode::FILTER_NEAREST);
-		this->setWrap(Texture2DWrapMode::WRAP_REPEAT);
+		this->setWrap(WRAP_REPEAT);
+		if (this->usesMipMap) {
+			this->setFiltering(FILTER_LINEAR_MIPMAP_LINEAR);
+
+			glGenerateMipmap(GL_TEXTURE_2D);
+		} else {
+			this->setFiltering(FILTER_LINEAR);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+		}
 	}
 
 	void Texture2D::setWrap(const Texture2DWrapMode &wrap) {
@@ -220,7 +238,15 @@ namespace Honeycomb { namespace Graphics {
 	GLint Texture2D::getGLintFilterMode(const Texture2DFilterMode &filter) {
 		switch (filter) {
 		case FILTER_LINEAR:                          return GL_LINEAR;
+		case FILTER_LINEAR_MIPMAP_LINEAR:            
+			return GL_LINEAR_MIPMAP_LINEAR;
+		case FILTER_LINEAR_MIPMAP_NEAREST:
+			return GL_LINEAR_MIPMAP_NEAREST;
 		case FILTER_NEAREST:                         return GL_NEAREST;
+		case FILTER_NEAREST_MIPMAP_LINEAR:
+			return GL_NEAREST_MIPMAP_LINEAR;
+		case FILTER_NEAREST_MIPMAP_NEAREST:
+			return GL_NEAREST_MIPMAP_NEAREST;
 		default:                                     return -1;
 		}
 	}
@@ -378,41 +404,41 @@ namespace Honeycomb { namespace Graphics {
 			const Texture2DDataType &type,
 			const Texture2DDataInternalFormat &iformat,
 			const Texture2DDataFormat &format,
-			const int &width, const int &height);
+			const int &width, const int &height, const bool &mipmap);
 	template void Texture2D::setImageDataManual<float>(
 			const float *data,
 			const Texture2DDataType &type,
 			const Texture2DDataInternalFormat &iformat,
 			const Texture2DDataFormat &format,
-			const int &width, const int &height);
+			const int &width, const int &height, const bool &mipmap);
 	template void Texture2D::setImageDataManual<int>(
 			const int *data,
 			const Texture2DDataType &type,
 			const Texture2DDataInternalFormat &iformat,
 			const Texture2DDataFormat &format,
-			const int &width, const int &height);
+			const int &width, const int &height, const bool &mipmap);
 	template void Texture2D::setImageDataManual<short>(
 			const short *data,
 			const Texture2DDataType &type,
 			const Texture2DDataInternalFormat &iformat,
 			const Texture2DDataFormat &format,
-			const int &width, const int &height);
+			const int &width, const int &height, const bool &mipmap);
 	template void Texture2D::setImageDataManual<unsigned char>(
 			const unsigned char *data,
 			const Texture2DDataType &type,
 			const Texture2DDataInternalFormat &iformat,
 			const Texture2DDataFormat &format,
-			const int &width, const int &height);
+			const int &width, const int &height, const bool &mipmap);
 	template void Texture2D::setImageDataManual<unsigned int>(
 			const unsigned int *data,
 			const Texture2DDataType &type,
 			const Texture2DDataInternalFormat &iformat,
 			const Texture2DDataFormat &format,
-			const int &width, const int &height);
+			const int &width, const int &height, const bool &mipmap);
 	template void Texture2D::setImageDataManual<unsigned short>(
 			const unsigned short *data,
 			const Texture2DDataType &type,
 			const Texture2DDataInternalFormat &iformat,
 			const Texture2DDataFormat &format,
-			const int &width, const int &height);
+			const int &width, const int &height, const bool &mipmap);
 } }

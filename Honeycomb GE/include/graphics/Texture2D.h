@@ -152,7 +152,11 @@ namespace Honeycomb { namespace Graphics {
 	/// </summary>
 	enum Texture2DFilterMode {
 		FILTER_LINEAR,
-		FILTER_NEAREST
+		FILTER_LINEAR_MIPMAP_LINEAR,
+		FILTER_LINEAR_MIPMAP_NEAREST,
+		FILTER_NEAREST,
+		FILTER_NEAREST_MIPMAP_LINEAR,
+		FILTER_NEAREST_MIPMAP_NEAREST
 	};
 
 	/// <summary>
@@ -261,8 +265,14 @@ namespace Honeycomb { namespace Graphics {
 		/// </param>
 		void bind(const int &loc) const;
 
-		/// Generates a MipMap for the texture.
-		void genMipMap();
+		/// <summary>
+		/// Returns the height of the texture, in pixels. If the texture has
+		/// not yet been initialized, the height will be negative.
+		/// </summary>
+		/// <returns>
+		/// The height of the texture.
+		/// </returns>
+		const int& getHeight() const;
 
 		/// <summary>
 		/// Returns the raw OpenGL pointer of the texture. If the texture has
@@ -272,6 +282,15 @@ namespace Honeycomb { namespace Graphics {
 		/// The OpenGL pointer.
 		/// </returns>
 		const int& getTextureID() const;
+
+		/// <summary>
+		/// Returns the width of texture, in pixels. If the texture has
+		/// not yet been initialized, the width will be negative.
+		/// </summary>
+		/// <returns>
+		/// The width of the texture.
+		/// </returns>
+		const int& getWidth() const;
 
 		/// <summary>
 		/// Initializes the Texture to a new OpenGL texture. If the texture has
@@ -309,7 +328,7 @@ namespace Honeycomb { namespace Graphics {
 		/// The filter mode to be used when magnifying the texture.
 		/// </param>
 		void setFiltering(const Texture2DFilterMode &min,
-			const Texture2DFilterMode &mag);
+				const Texture2DFilterMode &mag);
 
 		/// <summary>
 		/// Creates a texture with a width of one pixel and a height of one
@@ -344,7 +363,11 @@ namespace Honeycomb { namespace Graphics {
 		/// <param name="image">
 		/// The image which is to be stored in this Texture.
 		/// </param>
-		void setImageDataIO(const Honeycomb::File::ImageIO &image);
+		/// <param name="mipmap">
+		/// Should mip maps be generated for the texture? True by default.
+		/// </param>
+		void setImageDataIO(const Honeycomb::File::ImageIO &image, 
+				const bool &mipmap = true);
 
 		/// <summary>
 		/// Sets this texture data to the specified custom pixel data. If the
@@ -373,12 +396,16 @@ namespace Honeycomb { namespace Graphics {
 		/// <param name="height">
 		/// The height of the texture, in pixels.
 		/// </param>
+		/// <param name="mipmap">
+		/// Should mip maps be generated for the texture? True by default.
+		/// </param>
 		template <typename T>
 		void setImageDataManual(const T *data, 
 				const Texture2DDataType &type,
 				const Texture2DDataInternalFormat &iformat,
 				const Texture2DDataFormat &format,
-				const int &width, const int &height);
+				const int &width, const int &height, 
+				const bool &mipmap = true);
 
 		/// <summary>
 		/// Sets the wrapping mode for the S and T axes of the texture. If the
@@ -467,6 +494,10 @@ namespace Honeycomb { namespace Graphics {
 		static int textureCount; // The number of GL initialized textures
 		
 		int textureID;           // The texture "pointer"
+
+		bool usesMipMap;         // Does the texture use mip mapping?
+		int height;              // The height of the texture, in pixels
+		int width;               // The width of the texture, in pixels
 	};
 } }
 
