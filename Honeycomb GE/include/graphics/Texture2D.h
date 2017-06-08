@@ -262,7 +262,10 @@ namespace Honeycomb { namespace Graphics {
 		/// Binds this texture to OpenGL at GL_TEXTURE0. If the texture has not
 		/// yet been initialized, a GLItemNotInitialized exception will be
 		/// thrown.
-		/// </summary>
+		/// </summary> 
+		/// <exception cref="GLItemNotInitialized">
+		/// Thrown if the Texture has not yet been initialized.
+		/// </exception>
 		void bind() const;
 
 		/// <summary>
@@ -274,6 +277,12 @@ namespace Honeycomb { namespace Graphics {
 		/// <param name="loc">
 		/// The displacement from GL_TEXTURE0.
 		/// </param>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Texture has not yet been initialized.
+		/// </exception>
+		/// <exception cref="GLErrorException">
+		/// Thrown if the location parameter is out of the [0, 31] bounds.
+		/// </exception>
 		void bind(const int &loc) const;
 
 		/// <summary>
@@ -308,13 +317,36 @@ namespace Honeycomb { namespace Graphics {
 		/// already been initialized, a GLItemAlreadyInitialized exception will
 		/// be thrown.
 		/// </summary>
+		/// <exception cref="GLItemAlreadyInitializedException">
+		/// Thrown if the Texture has already been initialized.
+		/// </exception>
 		void initialize();
 		
 		/// <summary>
 		/// Destroys this Texture from OpenGL. If the texture has not yet been
 		/// initialized, a GLItemNotInitialized exception is thrown.
 		/// </summary>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Texture has not yet been initialized.
+		/// </exception>
 		void destroy();
+
+		/// <summary>
+		/// Sets the maximum anisotropic filtering value for this texture. If
+		/// the texture has not yet been initialized, a GLItemNotInitialized 
+		/// exception is thrown. If the aniso parameter value is negative, a
+		/// GLError exception may also be thrown.
+		/// </summary>
+		/// <param name="aniso">
+		/// The maximum anisotropic filtering value.
+		/// </param>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Texture has not yet been initialized.
+		/// </exception>
+		/// <exception cref="GLErrorException">
+		/// Thrown if the Anisotropic value is negative or is invalid.
+		/// </exception>
+		void setAnisotropicFiltering(const int &aniso);
 
 		/// <summary>
 		/// Sets the texture filtering mode for both the minifying and 
@@ -325,6 +357,9 @@ namespace Honeycomb { namespace Graphics {
 		/// The filter mode to be used when minifying and magnifying the
 		/// texture.
 		/// </param>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Texture has not yet been initialized.
+		/// </exception>
 		void setFiltering(const Texture2DFilterMagMode &filter);
 
 		/// <summary>
@@ -338,6 +373,9 @@ namespace Honeycomb { namespace Graphics {
 		/// <param name="mag">
 		/// The filter mode to be used when magnifying the texture.
 		/// </param>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Texture has not yet been initialized.
+		/// </exception>
 		void setFiltering(const Texture2DFilterMinMode &min,
 				const Texture2DFilterMagMode &mag);
 
@@ -361,6 +399,12 @@ namespace Honeycomb { namespace Graphics {
 		/// <param name="a">
 		/// The alpha channel of the texture color, in range between 0 and 255.
 		/// </param>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Texture has not yet been initialized.
+		/// </exception>
+		/// <exception cref="GLErrorException">
+		/// Thrown if the RGBA data is invalid.
+		/// </exception>
 		void setImageDataFill(
 				const int &r, const int &g, const int &b, const int &a);
 		
@@ -377,6 +421,9 @@ namespace Honeycomb { namespace Graphics {
 		/// <param name="mipmap">
 		/// Should mip maps be generated for the texture? True by default.
 		/// </param>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Texture has not yet been initialized.
+		/// </exception>
 		void setImageDataIO(const Honeycomb::File::ImageIO &image, 
 				const bool &mipmap = true);
 
@@ -410,6 +457,12 @@ namespace Honeycomb { namespace Graphics {
 		/// <param name="mipmap">
 		/// Should mip maps be generated for the texture? True by default.
 		/// </param>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Texture has not yet been initialized.
+		/// </exception>
+		/// <exception cref="GLErrorException">
+		/// Thrown if any of the parameters are invalid.
+		/// </exception>
 		template <typename T>
 		void setImageDataManual(const T *data, 
 				const Texture2DDataType &type,
@@ -426,6 +479,9 @@ namespace Honeycomb { namespace Graphics {
 		/// <param name="wrap">
 		/// The wrapping mode to be used on the S and T axes.
 		/// </param>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Texture has not yet been initialized.
+		/// </exception>
 		void setWrap(const Texture2DWrapMode &wrap);
 
 		/// <summary>
@@ -439,6 +495,9 @@ namespace Honeycomb { namespace Graphics {
 		/// <param name="t">
 		/// The wrapping mode to be used for the T axis.
 		/// </param>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Texture has not yet been initialized.
+		/// </exception>
 		void setWrap(const Texture2DWrapMode &s, const Texture2DWrapMode &t);
 	private:
 		/// <summary>
@@ -520,6 +579,7 @@ namespace Honeycomb { namespace Graphics {
 		
 		int textureID;           // The texture "pointer"
 
+		int anisoFiltering;      // Anisotrophic Filtering values
 		bool usesMipMap;         // Does the texture use mip mapping?
 		int height;              // The height of the texture, in pixels
 		int width;               // The width of the texture, in pixels

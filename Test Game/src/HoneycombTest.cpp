@@ -163,6 +163,7 @@ namespace HoneycombTest {
 		colorTexture->initialize();
 		colorTexture-> // vvvvvv this is a leak here but whatever for now...
 			setImageDataIO(ImageIO("../Test Game/res/textures/colors.bmp"));
+		colorTexture->setAnisotropicFiltering(8);
 		colorMaterial->glSampler2Ds.setValue("albedoTexture.sampler", 
 			*colorTexture);
 		colorMaterial->glFloats.setValue("shininess", 128.0F);

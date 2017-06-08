@@ -146,6 +146,17 @@ namespace Honeycomb { namespace Graphics {
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
+	void Texture2D::setAnisotropicFiltering(const int &aniso) {
+		GLErrorException::clear();
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
+
+		this->anisoFiltering = aniso;
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
+			this->anisoFiltering);
+
+		GLErrorException::checkGLError(__FILE__, __LINE__);
+	}
+
 	void Texture2D::setFiltering(const Texture2DFilterMagMode &filter) {
 		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
@@ -218,6 +229,7 @@ namespace Honeycomb { namespace Graphics {
 
 		// Set the default Texture2D Settings
 		this->setWrap(WRAP_REPEAT);
+		this->setAnisotropicFiltering(1.0F);
 		if (this->usesMipMap) {
 			this->setFiltering(FILTER_MIN_LINEAR_MIPMAP_LINEAR, 
 				FILTER_MAG_LINEAR);
