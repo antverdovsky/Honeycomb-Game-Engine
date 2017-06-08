@@ -11,7 +11,7 @@ using Honeycomb::Debug::Logger;
 using Honeycomb::Graphics::Texture2DDataFormat;
 using Honeycomb::Graphics::Texture2DDataInternalFormat;
 using Honeycomb::Graphics::Texture2DDataType;
-using Honeycomb::Graphics::Texture2DFilterMode;
+using Honeycomb::Graphics::Texture2DFilterMagMode;
 using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb { namespace Render { namespace Deferred {
@@ -161,7 +161,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 				Texture2DDataFormat::FORMAT_RGB,
 				this->textureWidth, this->textureHeight);
 			this->bufferTextures[i].setFiltering(
-				Texture2DFilterMode::FILTER_NEAREST);
+				Texture2DFilterMagMode::FILTER_MAG_NEAREST);
 
 			// Bind the texture to the Frame Buffer Object
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i,
@@ -181,7 +181,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 				Texture2DDataFormat::FORMAT_RGBA_INTEGER,
 				this->textureWidth, this->textureHeight);
 			this->bufferTextures[i].setFiltering(
-				Texture2DFilterMode::FILTER_NEAREST);
+				Texture2DFilterMagMode::FILTER_MAG_NEAREST);
 
 			// Bind the texture to the Frame Buffer Object
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i,
@@ -201,7 +201,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 				Texture2DDataFormat::FORMAT_DEPTH_STENCIL,
 				this->textureWidth, this->textureHeight);
 			this->bufferTextures[i].setFiltering(
-				Texture2DFilterMode::FILTER_NEAREST);
+				Texture2DFilterMagMode::FILTER_MAG_NEAREST);
 
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
 				GL_TEXTURE_2D, this->bufferTextures[i].getTextureID(), 0);
@@ -218,7 +218,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 				Texture2DDataFormat::FORMAT_RGB,
 				this->textureWidth, this->textureHeight);
 			this->bufferTextures[i].setFiltering(
-				Texture2DFilterMode::FILTER_NEAREST);
+				Texture2DFilterMagMode::FILTER_MAG_NEAREST);
 
 			glFramebufferTexture2D(GL_FRAMEBUFFER,
 				GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, 
@@ -263,7 +263,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 				Texture2DDataFormat::FORMAT_RGB,
 				this->textureWidth, this->textureHeight);
 			this->bufferTextures[i].setFiltering(
-				Texture2DFilterMode::FILTER_NEAREST);
+				Texture2DFilterMagMode::FILTER_MAG_NEAREST);
 		}
 		
 		// Resize RGBA32F textures (MATERIAL)
@@ -274,7 +274,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 				Texture2DDataFormat::FORMAT_RGBA_INTEGER,
 				this->textureWidth, this->textureHeight);
 			this->bufferTextures[i].setFiltering(
-				Texture2DFilterMode::FILTER_NEAREST);
+				Texture2DFilterMagMode::FILTER_MAG_NEAREST);
 		}
 
 		// Resize DEPTH32F_STENCIL8 texture (DEPTH)
@@ -286,7 +286,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 				Texture2DDataFormat::FORMAT_DEPTH_STENCIL,
 				this->textureWidth, this->textureHeight);
 			this->bufferTextures[i].setFiltering(
-				Texture2DFilterMode::FILTER_NEAREST);
+				Texture2DFilterMagMode::FILTER_MAG_NEAREST);
 		}
 
 		// Resize the final RGB textures (FINAL_1 and FINAL_2)
@@ -298,7 +298,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 				Texture2DDataFormat::FORMAT_RGB,
 				this->textureWidth, this->textureHeight);
 			this->bufferTextures[i].setFiltering(
-				Texture2DFilterMode::FILTER_NEAREST);
+				Texture2DFilterMagMode::FILTER_MAG_NEAREST);
 		}
 	}
 } } }

@@ -5,6 +5,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "../../include/base/GLErrorException.h"
+
+using Honeycomb::Base::GLErrorException;
 using Honeycomb::Base::GLItemNotInitializedException;
 using namespace Honeycomb::File;
 
@@ -100,10 +103,12 @@ namespace Honeycomb { namespace Graphics {
 	}
 
 	void Texture2D::bind(const int &loc) const {
+		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 
 		glActiveTexture(GL_TEXTURE0 + loc);
 		glBindTexture(GL_TEXTURE_2D, this->textureID);
+		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
 	const int& Texture2D::getHeight() const {
@@ -119,6 +124,7 @@ namespace Honeycomb { namespace Graphics {
 	}
 
 	void Texture2D::initialize() {
+		GLErrorException::clear();
 		GLItem::initialize();
 		
 		GLuint texID;
@@ -126,40 +132,48 @@ namespace Honeycomb { namespace Graphics {
 		this->textureID = texID;
 		
 		++(Texture2D::textureCount);
+		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
 	void Texture2D::destroy() {
+		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 
 		GLuint texID = this->textureID;
 		glDeleteTextures(1, &texID); // Delete Texture from OpenGL
 
 		--(Texture2D::textureCount);
+		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
-	void Texture2D::setFiltering(const Texture2DFilterMode &filter) {
-		if (!this->isInitialized) throw GLItemNotInitializedException(this);
-		this->bind();
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, 
-			Texture2D::getGLintFilterMode(filter));
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, 
-			Texture2D::getGLintFilterMode(filter));
-	}
-
-	void Texture2D::setFiltering(const Texture2DFilterMode &min,
-			const Texture2DFilterMode &mag) {
+	void Texture2D::setFiltering(const Texture2DFilterMagMode &filter) {
+		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-			Texture2D::getGLintFilterMode(min));
+			Texture2D::getGLintFilterMagMode(filter));
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-			Texture2D::getGLintFilterMode(mag));
+			Texture2D::getGLintFilterMagMode(filter));
+		GLErrorException::checkGLError(__FILE__, __LINE__);
+	}
+
+	void Texture2D::setFiltering(const Texture2DFilterMinMode &min,
+			const Texture2DFilterMagMode &mag) {
+		GLErrorException::clear();
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
+		this->bind();
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+			Texture2D::getGLintFilterMinMode(min));
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+			Texture2D::getGLintFilterMagMode(mag));
+		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
 	void Texture2D::setImageDataFill(
 			const int &r, const int &g, const int &b, const int &a) {
+		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
 
@@ -168,6 +182,7 @@ namespace Honeycomb { namespace Graphics {
 			GL_UNSIGNED_BYTE, color);
 
 		this->width = this->height = 1;
+		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
 	void Texture2D::setImageDataIO(const ImageIO &image, const bool &mipmap) {
@@ -186,6 +201,7 @@ namespace Honeycomb { namespace Graphics {
 			const Texture2DDataFormat &format,
 			const int &width, const int &height, const bool &mipmap) {
 		// If not initialized, throw exception; bind texture for change
+		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
 
@@ -203,18 +219,21 @@ namespace Honeycomb { namespace Graphics {
 		// Set the default Texture2D Settings
 		this->setWrap(WRAP_REPEAT);
 		if (this->usesMipMap) {
-			this->setFiltering(FILTER_LINEAR_MIPMAP_LINEAR);
+			this->setFiltering(FILTER_MIN_LINEAR_MIPMAP_LINEAR, 
+				FILTER_MAG_LINEAR);
 
 			glGenerateMipmap(GL_TEXTURE_2D);
 		} else {
-			this->setFiltering(FILTER_LINEAR);
+			this->setFiltering(FILTER_MAG_LINEAR);
 
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
 		}
+		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
 	void Texture2D::setWrap(const Texture2DWrapMode &wrap) {
+		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
 
@@ -222,10 +241,12 @@ namespace Honeycomb { namespace Graphics {
 			Texture2D::getGLintWrapMode(wrap));
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
 			Texture2D::getGLintWrapMode(wrap));
+		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
 	void Texture2D::setWrap(const Texture2DWrapMode &s, 
 			const Texture2DWrapMode &t) {
+		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
 
@@ -233,21 +254,31 @@ namespace Honeycomb { namespace Graphics {
 			Texture2D::getGLintWrapMode(s));
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
 			Texture2D::getGLintWrapMode(t));
+		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
-	GLint Texture2D::getGLintFilterMode(const Texture2DFilterMode &filter) {
+	GLint Texture2D::getGLintFilterMagMode(const Texture2DFilterMagMode 
+			&filter) {
 		switch (filter) {
-		case FILTER_LINEAR:                          return GL_LINEAR;
-		case FILTER_LINEAR_MIPMAP_LINEAR:            
-			return GL_LINEAR_MIPMAP_LINEAR;
-		case FILTER_LINEAR_MIPMAP_NEAREST:
-			return GL_LINEAR_MIPMAP_NEAREST;
-		case FILTER_NEAREST:                         return GL_NEAREST;
-		case FILTER_NEAREST_MIPMAP_LINEAR:
-			return GL_NEAREST_MIPMAP_LINEAR;
-		case FILTER_NEAREST_MIPMAP_NEAREST:
-			return GL_NEAREST_MIPMAP_NEAREST;
+		case FILTER_MAG_LINEAR:                      return GL_LINEAR;
+		case FILTER_MAG_NEAREST:                     return GL_NEAREST;
 		default:                                     return -1;
+		}
+	}
+
+	GLint Texture2D::getGLintFilterMinMode(const Texture2DFilterMinMode 
+			&filter) {
+		switch (filter) {
+		case FILTER_MAG_LINEAR:                      return GL_LINEAR;
+		case FILTER_MIN_LINEAR_MIPMAP_LINEAR:
+			return GL_LINEAR_MIPMAP_LINEAR;
+		case FILTER_MIN_LINEAR_MIPMAP_NEAREST:
+			return GL_LINEAR_MIPMAP_NEAREST;
+		case FILTER_MIN_NEAREST:                     return GL_NEAREST;
+		case FILTER_MIN_NEAREST_MIPMAP_LINEAR:
+			return GL_NEAREST_MIPMAP_LINEAR;
+		case FILTER_MIN_NEAREST_MIPMAP_NEAREST:
+			return GL_NEAREST_MIPMAP_NEAREST;
 		}
 	}
 

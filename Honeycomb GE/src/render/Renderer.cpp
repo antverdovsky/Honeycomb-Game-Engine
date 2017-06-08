@@ -9,7 +9,7 @@
 
 using Honeycomb::Component::Render::MeshRenderer;
 using Honeycomb::Graphics::Cubemap;
-using Honeycomb::Graphics::Texture2DFilterMode;
+using Honeycomb::Graphics::Texture2DFilterMagMode;
 using Honeycomb::Graphics::Texture2DDataFormat;
 using Honeycomb::Graphics::Texture2DDataInternalFormat;
 using Honeycomb::Graphics::Texture2DDataType;
@@ -209,7 +209,7 @@ namespace Honeycomb { namespace Render {
 			Texture2DDataFormat::FORMAT_DEPTH_COMPONENT,
 			Renderer::SHADOW_MAP_WIDTH, Renderer::SHADOW_MAP_HEIGHT);
 		this->cShadowMapTexture.setFiltering(
-			Texture2DFilterMode::FILTER_NEAREST);
+			Texture2DFilterMagMode::FILTER_MAG_NEAREST);
 		this->cShadowMapTexture.setWrap(Texture2DWrapMode::WRAP_REPEAT);
 
 		// Initialize the Classic Shadow Map Buffer
@@ -253,7 +253,7 @@ namespace Honeycomb { namespace Render {
 			Texture2DDataFormat::FORMAT_RG,
 			Renderer::SHADOW_MAP_WIDTH, Renderer::SHADOW_MAP_HEIGHT);
 		this->vShadowMapTexture.setFiltering(
-			Texture2DFilterMode::FILTER_LINEAR);
+			Texture2DFilterMagMode::FILTER_MAG_LINEAR);
 		this->vShadowMapTexture.setWrap(Texture2DWrapMode::WRAP_REPEAT);
 
 		// Initialize the Anti Aliased Variance Shadow Map Texture (32 bit Red
@@ -265,7 +265,7 @@ namespace Honeycomb { namespace Render {
 			Texture2DDataFormat::FORMAT_RG,
 			Renderer::SHADOW_MAP_WIDTH, Renderer::SHADOW_MAP_HEIGHT);
 		this->vShadowMapTextureAA.setFiltering(
-			Texture2DFilterMode::FILTER_LINEAR);
+			Texture2DFilterMagMode::FILTER_MAG_NEAREST);
 		this->vShadowMapTextureAA.setWrap(Texture2DWrapMode::WRAP_REPEAT);
 
 		// Initialize the Variance Shadow Map Buffer (for the depth component,

@@ -148,15 +148,25 @@ namespace Honeycomb { namespace Graphics {
 	};
 
 	/// <summary>
-	/// Enumeration of the different types of Texture2D filtering modes.
+	/// Enumeration of the different types of Texture2D filtering modes when
+	/// magnifying the texture.
 	/// </summary>
-	enum Texture2DFilterMode {
-		FILTER_LINEAR,
-		FILTER_LINEAR_MIPMAP_LINEAR,
-		FILTER_LINEAR_MIPMAP_NEAREST,
-		FILTER_NEAREST,
-		FILTER_NEAREST_MIPMAP_LINEAR,
-		FILTER_NEAREST_MIPMAP_NEAREST
+	enum Texture2DFilterMagMode {
+		FILTER_MAG_LINEAR,
+		FILTER_MAG_NEAREST
+	};
+
+	/// <summary>
+	/// Enumeration of the different types of Texture2D filtering modes when
+	/// minifying the texture.
+	/// </summary>
+	enum Texture2DFilterMinMode {
+		FILTER_MIN_LINEAR,
+		FILTER_MIN_LINEAR_MIPMAP_LINEAR,
+		FILTER_MIN_LINEAR_MIPMAP_NEAREST,
+		FILTER_MIN_NEAREST,
+		FILTER_MIN_NEAREST_MIPMAP_LINEAR,
+		FILTER_MIN_NEAREST_MIPMAP_NEAREST
 	};
 
 	/// <summary>
@@ -258,7 +268,8 @@ namespace Honeycomb { namespace Graphics {
 		/// <summary>
 		/// Binds this texture to OpenGL at the specified GL_TEXTURE position.
 		/// If the texture has not yet been initialized, a GLItemNotInitialized
-		/// exception will be thrown.
+		/// exception will be thrown. If the parameter value is less than zero
+		/// or greater than thirty-one, a GLError exception will be thrown.
 		/// </summary>
 		/// <param name="loc">
 		/// The displacement from GL_TEXTURE0.
@@ -306,15 +317,15 @@ namespace Honeycomb { namespace Graphics {
 		void destroy();
 
 		/// <summary>
-		/// Sets the texture filtering mode for the minifying and magnifying of
-		/// the texture. If the texture has not yet been initialized, a
-		/// GLItemNotInitialized exception is thrown.
+		/// Sets the texture filtering mode for both the minifying and 
+		/// magnifying of the texture. If the texture has not yet been 
+		/// initialized, a GLItemNotInitialized exception is thrown.
 		/// </summary>
 		/// <param name="filter">
-		/// The filter mode to be used when minifying and magnifying the 
+		/// The filter mode to be used when minifying and magnifying the
 		/// texture.
 		/// </param>
-		void setFiltering(const Texture2DFilterMode &filter);
+		void setFiltering(const Texture2DFilterMagMode &filter);
 
 		/// <summary>
 		/// Sets the texture filtering mode for the minifying and magnifying of
@@ -327,8 +338,8 @@ namespace Honeycomb { namespace Graphics {
 		/// <param name="mag">
 		/// The filter mode to be used when magnifying the texture.
 		/// </param>
-		void setFiltering(const Texture2DFilterMode &min,
-				const Texture2DFilterMode &mag);
+		void setFiltering(const Texture2DFilterMinMode &min,
+				const Texture2DFilterMagMode &mag);
 
 		/// <summary>
 		/// Creates a texture with a width of one pixel and a height of one
@@ -455,8 +466,8 @@ namespace Honeycomb { namespace Graphics {
 		static GLint getGLintDataType(const Texture2DDataType &type);
 
 		/// <summary>
-		/// Converts the specified Texture2D Filter Mode enumeration to its
-		/// GLint counterpart.
+		/// Converts the specified Texture2D Filter Magnifying Mode enumeration
+		/// to its GLint counterpart.
 		/// </summary>
 		/// <param name="filter">
 		/// The filter mode value.
@@ -464,7 +475,21 @@ namespace Honeycomb { namespace Graphics {
 		/// <returns>
 		/// The GLint value representation of the filter value.
 		/// </returns>
-		static GLint getGLintFilterMode(const Texture2DFilterMode &filter);
+		static GLint getGLintFilterMagMode(
+			const Texture2DFilterMagMode &filter);
+
+		/// <summary>
+		/// Converts the specified Texture2D Filter Minifying Mode enumeration
+		/// to its GLint counterpart.
+		/// </summary>
+		/// <param name="filter">
+		/// The filter mode value.
+		/// </param>
+		/// <returns>
+		/// The GLint value representation of the filter value.
+		/// </returns>
+		static GLint getGLintFilterMinMode(
+				const Texture2DFilterMinMode &filter);
 
 		/// <summary>
 		/// Converts the specified Texture2D Internal Data Format enumeration 
