@@ -2,6 +2,8 @@
 #ifndef TEXTURE_ENUMS_H
 #define TEXTURE_ENUMS_H
 
+typedef int GLint;
+
 namespace Honeycomb { namespace Graphics {
 	/// <summary>
 	/// Enumeration of the different types of Texture pixel data formats.
@@ -159,6 +161,81 @@ namespace Honeycomb { namespace Graphics {
 		WRAP_MIRRORED_REPEAT,
 		WRAP_REPEAT
 	};
+
+	/// <summary>
+	/// Converts the specified Texture2D Data Format enumeration to its
+	/// GLint counterpart.
+	/// </summary>
+	/// <param name="format">
+	/// The data format value.
+	/// </param>
+	/// <returns>
+	/// The GLint value representation of the format value.
+	/// </returns>
+	static GLint getGLintDataFormat(const TextureDataFormat &format);
+
+	/// <summary>
+	/// Converts the specified Texture2D Data Type enumeration to its
+	/// GLint counterpart.
+	/// </summary>
+	/// <param name="type">
+	/// The data type value.
+	/// </param>
+	/// <returns>
+	/// The GLint value representation of the type value.
+	/// </returns>
+	static GLint getGLintDataType(const TextureDataType &type);
+
+	/// <summary>
+	/// Converts the specified Texture2D Filter Magnifying Mode enumeration
+	/// to its GLint counterpart.
+	/// </summary>
+	/// <param name="filter">
+	/// The filter mode value.
+	/// </param>
+	/// <returns>
+	/// The GLint value representation of the filter value.
+	/// </returns>
+	static GLint getGLintFilterMagMode(
+		const TextureFilterMagMode &filter);
+
+	/// <summary>
+	/// Converts the specified Texture2D Filter Minifying Mode enumeration
+	/// to its GLint counterpart.
+	/// </summary>
+	/// <param name="filter">
+	/// The filter mode value.
+	/// </param>
+	/// <returns>
+	/// The GLint value representation of the filter value.
+	/// </returns>
+	static GLint getGLintFilterMinMode(
+		const TextureFilterMinMode &filter);
+
+	/// <summary>
+	/// Converts the specified Texture2D Internal Data Format enumeration 
+	/// to its GLint counterpart.
+	/// </summary>
+	/// <param name="iformat">
+	/// The internal data format value.
+	/// </param>
+	/// <returns>
+	/// The GLint value representation of the internal format value.
+	/// </returns>
+	static GLint getGLintInternalDataFormat(
+		const TextureDataInternalFormat &iformat);
+
+	/// <summary>
+	/// Converts the specified Texture2D Wrap Mode enumeration to its
+	/// GLint counterpart.
+	/// </summary>
+	/// <param name="wrap">
+	/// The wrapping mode value.
+	/// </param>
+	/// <returns>
+	/// The GLint value representation of the wrap value.
+	/// </returns>
+	static GLint getGLintWrapMode(const TextureWrapMode &wrap);
 } }
 
 #endif

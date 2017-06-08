@@ -223,6 +223,7 @@
     <ClCompile Include="src\file\ImageIO.cpp" />
     <ClCompile Include="src\file\LineOperation.cpp" />
     <ClCompile Include="src\graphics\Cubemap.cpp" />
+    <ClCompile Include="src\graphics\TextureEnums.cpp" />
     <ClCompile Include="src\render\deferred\DeferredRenderer.cpp" />
     <ClCompile Include="src\render\deferred\GBuffer.cpp" />
     <ClCompile Include="src\render\Renderer.cpp" />
