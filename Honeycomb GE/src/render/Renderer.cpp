@@ -9,11 +9,11 @@
 
 using Honeycomb::Component::Render::MeshRenderer;
 using Honeycomb::Graphics::Cubemap;
-using Honeycomb::Graphics::Texture2DFilterMagMode;
-using Honeycomb::Graphics::Texture2DDataFormat;
-using Honeycomb::Graphics::Texture2DDataInternalFormat;
-using Honeycomb::Graphics::Texture2DDataType;
-using Honeycomb::Graphics::Texture2DWrapMode;
+using Honeycomb::Graphics::TextureFilterMagMode;
+using Honeycomb::Graphics::TextureDataFormat;
+using Honeycomb::Graphics::TextureDataInternalFormat;
+using Honeycomb::Graphics::TextureDataType;
+using Honeycomb::Graphics::TextureWrapMode;
 using Honeycomb::Object::Builder;
 using Honeycomb::Math::Vector4f;
 using Honeycomb::Scene::GameScene;
@@ -204,13 +204,13 @@ namespace Honeycomb { namespace Render {
 		// Initialize the Classic Shadow Map Texture (simple depth texture)
 		this->cShadowMapTexture.initialize();
 		this->cShadowMapTexture.setImageDataManual<float>(
-			nullptr, Texture2DDataType::DATA_FLOAT,
-			Texture2DDataInternalFormat::INTERNAL_FORMAT_DEPTH_COMPONENT,
-			Texture2DDataFormat::FORMAT_DEPTH_COMPONENT,
+			nullptr, TextureDataType::DATA_FLOAT,
+			TextureDataInternalFormat::INTERNAL_FORMAT_DEPTH_COMPONENT,
+			TextureDataFormat::FORMAT_DEPTH_COMPONENT,
 			Renderer::SHADOW_MAP_WIDTH, Renderer::SHADOW_MAP_HEIGHT);
 		this->cShadowMapTexture.setFiltering(
-			Texture2DFilterMagMode::FILTER_MAG_NEAREST);
-		this->cShadowMapTexture.setWrap(Texture2DWrapMode::WRAP_REPEAT);
+			TextureFilterMagMode::FILTER_MAG_NEAREST);
+		this->cShadowMapTexture.setWrap(TextureWrapMode::WRAP_REPEAT);
 
 		// Initialize the Classic Shadow Map Buffer
 		GLuint cBF;
@@ -248,25 +248,25 @@ namespace Honeycomb { namespace Render {
 		// channels texture).
 		this->vShadowMapTexture.initialize();
 		this->vShadowMapTexture.setImageDataManual<float>(
-			nullptr, Texture2DDataType::DATA_FLOAT,
-			Texture2DDataInternalFormat::INTERNAL_FORMAT_RG32F,
-			Texture2DDataFormat::FORMAT_RG,
+			nullptr, TextureDataType::DATA_FLOAT,
+			TextureDataInternalFormat::INTERNAL_FORMAT_RG32F,
+			TextureDataFormat::FORMAT_RG,
 			Renderer::SHADOW_MAP_WIDTH, Renderer::SHADOW_MAP_HEIGHT);
 		this->vShadowMapTexture.setFiltering(
-			Texture2DFilterMagMode::FILTER_MAG_LINEAR);
-		this->vShadowMapTexture.setWrap(Texture2DWrapMode::WRAP_REPEAT);
+			TextureFilterMagMode::FILTER_MAG_LINEAR);
+		this->vShadowMapTexture.setWrap(TextureWrapMode::WRAP_REPEAT);
 
 		// Initialize the Anti Aliased Variance Shadow Map Texture (32 bit Red
 		// & Green channels texture).
 		this->vShadowMapTextureAA.initialize();
 		this->vShadowMapTextureAA.setImageDataManual<float>(
-			nullptr, Texture2DDataType::DATA_FLOAT,
-			Texture2DDataInternalFormat::INTERNAL_FORMAT_RG32F,
-			Texture2DDataFormat::FORMAT_RG,
+			nullptr, TextureDataType::DATA_FLOAT,
+			TextureDataInternalFormat::INTERNAL_FORMAT_RG32F,
+			TextureDataFormat::FORMAT_RG,
 			Renderer::SHADOW_MAP_WIDTH, Renderer::SHADOW_MAP_HEIGHT);
 		this->vShadowMapTextureAA.setFiltering(
-			Texture2DFilterMagMode::FILTER_MAG_NEAREST);
-		this->vShadowMapTextureAA.setWrap(Texture2DWrapMode::WRAP_REPEAT);
+			TextureFilterMagMode::FILTER_MAG_NEAREST);
+		this->vShadowMapTextureAA.setWrap(TextureWrapMode::WRAP_REPEAT);
 
 		// Initialize the Variance Shadow Map Buffer (for the depth component,
 		// we borrow the depth buffer from the Classic Shadow Map Buffer). Also

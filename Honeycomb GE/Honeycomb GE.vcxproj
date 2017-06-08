@@ -269,6 +269,7 @@
     <ClInclude Include="include\file\ImageIO.h" />
     <ClInclude Include="include\file\LineOperation.h" />
     <ClInclude Include="include\graphics\Cubemap.h" />
+    <ClInclude Include="include\graphics\TextureEnums.h" />
     <ClInclude Include="include\render\deferred\DeferredRenderer.h" />
     <ClInclude Include="include\render\deferred\GBuffer.h" />
     <ClInclude Include="include\render\Renderer.h" />

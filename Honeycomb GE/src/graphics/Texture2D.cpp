@@ -157,7 +157,7 @@ namespace Honeycomb { namespace Graphics {
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
-	void Texture2D::setFiltering(const Texture2DFilterMagMode &filter) {
+	void Texture2D::setFiltering(const TextureFilterMagMode &filter) {
 		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
@@ -169,8 +169,8 @@ namespace Honeycomb { namespace Graphics {
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
-	void Texture2D::setFiltering(const Texture2DFilterMinMode &min,
-			const Texture2DFilterMagMode &mag) {
+	void Texture2D::setFiltering(const TextureFilterMinMode &min,
+			const TextureFilterMagMode &mag) {
 		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
@@ -199,17 +199,17 @@ namespace Honeycomb { namespace Graphics {
 	void Texture2D::setImageDataIO(const ImageIO &image, const bool &mipmap) {
 		this->setImageDataManual<unsigned char>(
 			image.getData(),
-			Texture2DDataType::DATA_UNSIGNED_BYTE,
-			Texture2DDataInternalFormat::INTERNAL_FORMAT_RGB,
-			Texture2DDataFormat::FORMAT_RGB,
+			TextureDataType::DATA_UNSIGNED_BYTE,
+			TextureDataInternalFormat::INTERNAL_FORMAT_RGB,
+			TextureDataFormat::FORMAT_RGB,
 			image.getWidth(), image.getHeight(), mipmap);
 	}
 
 	template <typename T>
 	void Texture2D::setImageDataManual(const T *data,
-			const Texture2DDataType &type,
-			const Texture2DDataInternalFormat &iformat,
-			const Texture2DDataFormat &format,
+			const TextureDataType &type,
+			const TextureDataInternalFormat &iformat,
+			const TextureDataFormat &format,
 			const int &width, const int &height, const bool &mipmap) {
 		// If not initialized, throw exception; bind texture for change
 		GLErrorException::clear();
@@ -244,7 +244,7 @@ namespace Honeycomb { namespace Graphics {
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
-	void Texture2D::setWrap(const Texture2DWrapMode &wrap) {
+	void Texture2D::setWrap(const TextureWrapMode &wrap) {
 		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
@@ -256,8 +256,8 @@ namespace Honeycomb { namespace Graphics {
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
-	void Texture2D::setWrap(const Texture2DWrapMode &s, 
-			const Texture2DWrapMode &t) {
+	void Texture2D::setWrap(const TextureWrapMode &s, 
+			const TextureWrapMode &t) {
 		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
@@ -269,7 +269,7 @@ namespace Honeycomb { namespace Graphics {
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
-	GLint Texture2D::getGLintFilterMagMode(const Texture2DFilterMagMode 
+	GLint Texture2D::getGLintFilterMagMode(const TextureFilterMagMode 
 			&filter) {
 		switch (filter) {
 		case FILTER_MAG_LINEAR:                      return GL_LINEAR;
@@ -278,7 +278,7 @@ namespace Honeycomb { namespace Graphics {
 		}
 	}
 
-	GLint Texture2D::getGLintFilterMinMode(const Texture2DFilterMinMode 
+	GLint Texture2D::getGLintFilterMinMode(const TextureFilterMinMode 
 			&filter) {
 		switch (filter) {
 		case FILTER_MAG_LINEAR:                      return GL_LINEAR;
@@ -294,7 +294,7 @@ namespace Honeycomb { namespace Graphics {
 		}
 	}
 
-	GLint Texture2D::getGLintDataFormat(const Texture2DDataFormat &format) {
+	GLint Texture2D::getGLintDataFormat(const TextureDataFormat &format) {
 		switch (format) {
 		case FORMAT_BGR:                             return GL_BGR;
 		case FORMAT_BGRA:                            return GL_BGRA;
@@ -315,7 +315,7 @@ namespace Honeycomb { namespace Graphics {
 		}
 	}
 
-	GLint Texture2D::getGLintDataType(const Texture2DDataType &type) {
+	GLint Texture2D::getGLintDataType(const TextureDataType &type) {
 		switch (type) {
 		case DATA_BYTE:                              return GL_BYTE;
 		case DATA_FLOAT:                             return GL_FLOAT;
@@ -346,7 +346,7 @@ namespace Honeycomb { namespace Graphics {
 	}
 
 	GLint Texture2D::getGLintInternalDataFormat(
-			const Texture2DDataInternalFormat &iformat) {
+			const TextureDataInternalFormat &iformat) {
 		switch (iformat) {
 		case INTERNAL_FORMAT_DEPTH_COMPONENT:        return GL_DEPTH_COMPONENT;
 		case INTERNAL_FORMAT_DEPTH_STENCIL:          return GL_DEPTH_STENCIL;
@@ -429,7 +429,7 @@ namespace Honeycomb { namespace Graphics {
 		}
 	}
 
-	GLint Texture2D::getGLintWrapMode(const Texture2DWrapMode &wrap) {
+	GLint Texture2D::getGLintWrapMode(const TextureWrapMode &wrap) {
 		switch (wrap) {
 		case WRAP_CLAMP_TO_BORDER:                   return GL_CLAMP_TO_BORDER;
 		case WRAP_CLAMP_TO_EDGE:                     return GL_CLAMP_TO_EDGE;
@@ -444,44 +444,44 @@ namespace Honeycomb { namespace Graphics {
 	/// </summary>
 	template void Texture2D::setImageDataManual<signed char>(
 			const signed char *data,
-			const Texture2DDataType &type,
-			const Texture2DDataInternalFormat &iformat,
-			const Texture2DDataFormat &format,
+			const TextureDataType &type,
+			const TextureDataInternalFormat &iformat,
+			const TextureDataFormat &format,
 			const int &width, const int &height, const bool &mipmap);
 	template void Texture2D::setImageDataManual<float>(
 			const float *data,
-			const Texture2DDataType &type,
-			const Texture2DDataInternalFormat &iformat,
-			const Texture2DDataFormat &format,
+			const TextureDataType &type,
+			const TextureDataInternalFormat &iformat,
+			const TextureDataFormat &format,
 			const int &width, const int &height, const bool &mipmap);
 	template void Texture2D::setImageDataManual<int>(
 			const int *data,
-			const Texture2DDataType &type,
-			const Texture2DDataInternalFormat &iformat,
-			const Texture2DDataFormat &format,
+			const TextureDataType &type,
+			const TextureDataInternalFormat &iformat,
+			const TextureDataFormat &format,
 			const int &width, const int &height, const bool &mipmap);
 	template void Texture2D::setImageDataManual<short>(
 			const short *data,
-			const Texture2DDataType &type,
-			const Texture2DDataInternalFormat &iformat,
-			const Texture2DDataFormat &format,
+			const TextureDataType &type,
+			const TextureDataInternalFormat &iformat,
+			const TextureDataFormat &format,
 			const int &width, const int &height, const bool &mipmap);
 	template void Texture2D::setImageDataManual<unsigned char>(
 			const unsigned char *data,
-			const Texture2DDataType &type,
-			const Texture2DDataInternalFormat &iformat,
-			const Texture2DDataFormat &format,
+			const TextureDataType &type,
+			const TextureDataInternalFormat &iformat,
+			const TextureDataFormat &format,
 			const int &width, const int &height, const bool &mipmap);
 	template void Texture2D::setImageDataManual<unsigned int>(
 			const unsigned int *data,
-			const Texture2DDataType &type,
-			const Texture2DDataInternalFormat &iformat,
-			const Texture2DDataFormat &format,
+			const TextureDataType &type,
+			const TextureDataInternalFormat &iformat,
+			const TextureDataFormat &format,
 			const int &width, const int &height, const bool &mipmap);
 	template void Texture2D::setImageDataManual<unsigned short>(
 			const unsigned short *data,
-			const Texture2DDataType &type,
-			const Texture2DDataInternalFormat &iformat,
-			const Texture2DDataFormat &format,
+			const TextureDataType &type,
+			const TextureDataInternalFormat &iformat,
+			const TextureDataFormat &format,
 			const int &width, const int &height, const bool &mipmap);
 } }
