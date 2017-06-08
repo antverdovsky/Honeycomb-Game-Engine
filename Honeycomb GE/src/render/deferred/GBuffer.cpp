@@ -155,7 +155,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			// Create an empty texture. Use RGB16F, to allow us to store
 			// values in the texture outside of the standard [0, 1] clamp.
 			this->bufferTextures[i].initialize();
-			this->bufferTextures[i].setImageDataManual<float>(
+			this->bufferTextures[i].setImageDataManual(
 				nullptr, TextureDataType::DATA_FLOAT,
 				TextureDataInternalFormat::INTERNAL_FORMAT_RGB16F,
 				TextureDataFormat::FORMAT_RGB,
@@ -175,7 +175,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			// Same as above but 32F required since we are encoding the colors
 			// into large floating point numbers.
 			this->bufferTextures[i].initialize();
-			this->bufferTextures[i].setImageDataManual<unsigned int>(
+			this->bufferTextures[i].setImageDataManual(
 				nullptr, TextureDataType::DATA_UNSIGNED_INT,
 				TextureDataInternalFormat::INTERNAL_FORMAT_RGBA32UI,
 				TextureDataFormat::FORMAT_RGBA_INTEGER,
@@ -194,7 +194,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		for (; i < GBufferTextureType::FINAL_1; i++) {
 			this->bufferTextures[i].initialize();
 			this->bufferTextures[i].bind();
-			this->bufferTextures[i].setImageDataManual<float>(
+			this->bufferTextures[i].setImageDataManual(
 				nullptr,
 				TextureDataType::DATA_FLOAT_32_UNSIGNED_INT_24_8_REV,
 				TextureDataInternalFormat::INTERNAL_FORMAT_DEPTH32F_STENCIL8,
@@ -211,7 +211,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		for (; i <= GBufferTextureType::FINAL_2; ++i) {
 			this->bufferTextures[i].initialize();
 			this->bufferTextures[i].bind();
-			this->bufferTextures[i].setImageDataManual<float>(
+			this->bufferTextures[i].setImageDataManual(
 				nullptr,
 				TextureDataType::DATA_FLOAT,
 				TextureDataInternalFormat::INTERNAL_FORMAT_RGB,
@@ -257,7 +257,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		// Resize RGB16F textures (POSITION and NORMAL)
 		for (; i < GBufferTextureType::MATERIAL; i++) {
-			this->bufferTextures[i].setImageDataManual<float>(
+			this->bufferTextures[i].setImageDataManual(
 				nullptr, TextureDataType::DATA_FLOAT,
 				TextureDataInternalFormat::INTERNAL_FORMAT_RGB16F,
 				TextureDataFormat::FORMAT_RGB,
@@ -268,7 +268,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		
 		// Resize RGBA32F textures (MATERIAL)
 		for (; i < GBufferTextureType::DEPTH; i++) {
-			this->bufferTextures[i].setImageDataManual<unsigned int>(
+			this->bufferTextures[i].setImageDataManual(
 				nullptr, TextureDataType::DATA_UNSIGNED_INT,
 				TextureDataInternalFormat::INTERNAL_FORMAT_RGBA32UI,
 				TextureDataFormat::FORMAT_RGBA_INTEGER,
@@ -279,7 +279,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		// Resize DEPTH32F_STENCIL8 texture (DEPTH)
 		for (; i < GBufferTextureType::FINAL_1; i++) {
-			this->bufferTextures[i].setImageDataManual<float>(
+			this->bufferTextures[i].setImageDataManual(
 				nullptr,
 				TextureDataType::DATA_FLOAT_32_UNSIGNED_INT_24_8_REV,
 				TextureDataInternalFormat::INTERNAL_FORMAT_DEPTH32F_STENCIL8,
@@ -291,7 +291,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		// Resize the final RGB textures (FINAL_1 and FINAL_2)
 		for (int i = GBufferTextureType::FINAL_1; i <= FINAL_2; ++i) {
-			this->bufferTextures[i].setImageDataManual<float>(
+			this->bufferTextures[i].setImageDataManual(
 				nullptr,
 				TextureDataType::DATA_FLOAT,
 				TextureDataInternalFormat::INTERNAL_FORMAT_RGB,

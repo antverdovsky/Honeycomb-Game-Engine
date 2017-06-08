@@ -197,7 +197,7 @@ namespace Honeycomb { namespace Graphics {
 	}
 
 	void Texture2D::setImageDataIO(const ImageIO &image, const bool &mipmap) {
-		this->setImageDataManual<unsigned char>(
+		this->setImageDataManual(
 			image.getData(),
 			TextureDataType::DATA_UNSIGNED_BYTE,
 			TextureDataInternalFormat::INTERNAL_FORMAT_RGB,
@@ -205,8 +205,7 @@ namespace Honeycomb { namespace Graphics {
 			image.getWidth(), image.getHeight(), mipmap);
 	}
 
-	template <typename T>
-	void Texture2D::setImageDataManual(const T *data,
+	void Texture2D::setImageDataManual(const void *data,
 			const TextureDataType &type,
 			const TextureDataInternalFormat &iformat,
 			const TextureDataFormat &format,
@@ -438,50 +437,4 @@ namespace Honeycomb { namespace Graphics {
 		default:                                     return -1;
 		}
 	}
-
-	/// <summary>
-	/// Forward Declarations for the setImageDataManual function.
-	/// </summary>
-	template void Texture2D::setImageDataManual<signed char>(
-			const signed char *data,
-			const TextureDataType &type,
-			const TextureDataInternalFormat &iformat,
-			const TextureDataFormat &format,
-			const int &width, const int &height, const bool &mipmap);
-	template void Texture2D::setImageDataManual<float>(
-			const float *data,
-			const TextureDataType &type,
-			const TextureDataInternalFormat &iformat,
-			const TextureDataFormat &format,
-			const int &width, const int &height, const bool &mipmap);
-	template void Texture2D::setImageDataManual<int>(
-			const int *data,
-			const TextureDataType &type,
-			const TextureDataInternalFormat &iformat,
-			const TextureDataFormat &format,
-			const int &width, const int &height, const bool &mipmap);
-	template void Texture2D::setImageDataManual<short>(
-			const short *data,
-			const TextureDataType &type,
-			const TextureDataInternalFormat &iformat,
-			const TextureDataFormat &format,
-			const int &width, const int &height, const bool &mipmap);
-	template void Texture2D::setImageDataManual<unsigned char>(
-			const unsigned char *data,
-			const TextureDataType &type,
-			const TextureDataInternalFormat &iformat,
-			const TextureDataFormat &format,
-			const int &width, const int &height, const bool &mipmap);
-	template void Texture2D::setImageDataManual<unsigned int>(
-			const unsigned int *data,
-			const TextureDataType &type,
-			const TextureDataInternalFormat &iformat,
-			const TextureDataFormat &format,
-			const int &width, const int &height, const bool &mipmap);
-	template void Texture2D::setImageDataManual<unsigned short>(
-			const unsigned short *data,
-			const TextureDataType &type,
-			const TextureDataInternalFormat &iformat,
-			const TextureDataFormat &format,
-			const int &width, const int &height, const bool &mipmap);
 } }

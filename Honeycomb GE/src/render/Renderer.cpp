@@ -203,7 +203,7 @@ namespace Honeycomb { namespace Render {
 	void Renderer::initializeShadowMapDependencies() {
 		// Initialize the Classic Shadow Map Texture (simple depth texture)
 		this->cShadowMapTexture.initialize();
-		this->cShadowMapTexture.setImageDataManual<float>(
+		this->cShadowMapTexture.setImageDataManual(
 			nullptr, TextureDataType::DATA_FLOAT,
 			TextureDataInternalFormat::INTERNAL_FORMAT_DEPTH_COMPONENT,
 			TextureDataFormat::FORMAT_DEPTH_COMPONENT,
@@ -247,7 +247,7 @@ namespace Honeycomb { namespace Render {
 		// Initialize the Variance Shadow Map Texture (32 bit Red & Green
 		// channels texture).
 		this->vShadowMapTexture.initialize();
-		this->vShadowMapTexture.setImageDataManual<float>(
+		this->vShadowMapTexture.setImageDataManual(
 			nullptr, TextureDataType::DATA_FLOAT,
 			TextureDataInternalFormat::INTERNAL_FORMAT_RG32F,
 			TextureDataFormat::FORMAT_RG,
@@ -259,7 +259,7 @@ namespace Honeycomb { namespace Render {
 		// Initialize the Anti Aliased Variance Shadow Map Texture (32 bit Red
 		// & Green channels texture).
 		this->vShadowMapTextureAA.initialize();
-		this->vShadowMapTextureAA.setImageDataManual<float>(
+		this->vShadowMapTextureAA.setImageDataManual(
 			nullptr, TextureDataType::DATA_FLOAT,
 			TextureDataInternalFormat::INTERNAL_FORMAT_RG32F,
 			TextureDataFormat::FORMAT_RG,

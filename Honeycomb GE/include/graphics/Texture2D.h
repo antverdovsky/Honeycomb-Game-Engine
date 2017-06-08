@@ -279,11 +279,12 @@ namespace Honeycomb { namespace Graphics {
 		/// data.
 		/// </summary>
 		/// <param name="data">
-		/// The data to be written to the texture instance.
+		/// The pointer to the image data to be written to the texture 
+		/// instance.
 		/// </param>
 		/// <param name="type">
 		/// The type of data which is to be passed to the texture. This should
-		/// be based on the template argument.
+		/// be the type of the void pointer passed in.
 		/// </param>
 		/// <param name="iformat">
 		/// The internal format with which the data should be stored, this
@@ -307,8 +308,7 @@ namespace Honeycomb { namespace Graphics {
 		/// <exception cref="GLErrorException">
 		/// Thrown if any of the parameters are invalid.
 		/// </exception>
-		template <typename T>
-		void setImageDataManual(const T *data, 
+		void setImageDataManual(const void *data, 
 				const TextureDataType &type,
 				const TextureDataInternalFormat &iformat,
 				const TextureDataFormat &format,
