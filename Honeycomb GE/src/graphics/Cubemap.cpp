@@ -3,8 +3,12 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "../../include/base/GLErrorException.h"
 #include "../../include/file/FileIO.h"
 
+using Honeycomb::Base::GLErrorException;
+using Honeycomb::Base::GLItemAlreadyInitializedException;
+using Honeycomb::Base::GLItemNotInitializedException;
 using Honeycomb::File::readImageToUChar;
 
 namespace Honeycomb { namespace Graphics {
@@ -18,33 +22,37 @@ namespace Honeycomb { namespace Graphics {
 	}
 
 	void Cubemap::bind(const int &loc) const {
+		GLErrorException::clear();
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
+
 		glActiveTexture(GL_TEXTURE0 + loc);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, this->textureID);
+
+		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
 	void Cubemap::initialize() {
+		GLErrorException::clear();
 		GLItem::initialize();
 
 		GLuint texID;
 		glGenTextures(1, &texID);
 		this->textureID = texID;
 		
-		this->isInitialized = true;
+		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
 	void Cubemap::destroy() {
+		GLErrorException::clear();
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
+
 		GLuint texID = this->textureID;
-		glDeleteTextures(1, &texID); // Delete Texture from OpenGL
+		glDeleteTextures(1, &texID);
 
-		// Set all of the textures to contain empty directories
-		for (int i = 0; i < 6; ++i) this->faces[i] = "";
+		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
-	void Cubemap::setFace(const TextureTarget &face, const Texture2D &tex) {
-//		this->setFace(face, tex.getDirectory());			TODO
-	}
-
-	void Cubemap::setFace(const TextureTarget &face, const std::string &tex) {
+	void Cubemap::setFace(const CubemapTextureTarget &face, const std::string &tex) {
 		this->bind(); // Bind the texture before modifying its faces
 
 		// Read in the image data from the file of the texture
@@ -72,13 +80,8 @@ namespace Honeycomb { namespace Graphics {
 			GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	}
 
-	void Cubemap::setFaces(const Texture2D tex[6]) {
-		for (int i = 0; i < 6; ++i)
-			this->setFace((TextureTarget)(TextureTarget::RIGHT + i), tex[i]);
-	}
-
 	void Cubemap::setFaces(const std::string tex[6]) {
 		for (int i = 0; i < 6; ++i)
-			this->setFace((TextureTarget)(TextureTarget::RIGHT + i), tex[i]);
+			this->setFace((CubemapTextureTarget)(CubemapTextureTarget::RIGHT + i), tex[i]);
 	}
 } }
