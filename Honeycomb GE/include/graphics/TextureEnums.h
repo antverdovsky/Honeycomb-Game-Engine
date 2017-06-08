@@ -172,7 +172,7 @@ namespace Honeycomb { namespace Graphics {
 	/// <returns>
 	/// The GLint value representation of the format value.
 	/// </returns>
-	static GLint getGLintDataFormat(const TextureDataFormat &format);
+	GLint getGLintDataFormat(const TextureDataFormat &format);
 
 	/// <summary>
 	/// Converts the specified Texture2D Data Type enumeration to its
@@ -184,7 +184,7 @@ namespace Honeycomb { namespace Graphics {
 	/// <returns>
 	/// The GLint value representation of the type value.
 	/// </returns>
-	static GLint getGLintDataType(const TextureDataType &type);
+	GLint getGLintDataType(const TextureDataType &type);
 
 	/// <summary>
 	/// Converts the specified Texture2D Filter Magnifying Mode enumeration
@@ -196,8 +196,7 @@ namespace Honeycomb { namespace Graphics {
 	/// <returns>
 	/// The GLint value representation of the filter value.
 	/// </returns>
-	static GLint getGLintFilterMagMode(
-		const TextureFilterMagMode &filter);
+	GLint getGLintFilterMagMode(const TextureFilterMagMode &filter);
 
 	/// <summary>
 	/// Converts the specified Texture2D Filter Minifying Mode enumeration
@@ -209,8 +208,7 @@ namespace Honeycomb { namespace Graphics {
 	/// <returns>
 	/// The GLint value representation of the filter value.
 	/// </returns>
-	static GLint getGLintFilterMinMode(
-		const TextureFilterMinMode &filter);
+	GLint getGLintFilterMinMode(const TextureFilterMinMode &filter);
 
 	/// <summary>
 	/// Converts the specified Texture2D Internal Data Format enumeration 
@@ -222,8 +220,7 @@ namespace Honeycomb { namespace Graphics {
 	/// <returns>
 	/// The GLint value representation of the internal format value.
 	/// </returns>
-	static GLint getGLintInternalDataFormat(
-		const TextureDataInternalFormat &iformat);
+	GLint getGLintInternalDataFormat(const TextureDataInternalFormat &iformat);
 
 	/// <summary>
 	/// Converts the specified Texture2D Wrap Mode enumeration to its
@@ -235,7 +232,7 @@ namespace Honeycomb { namespace Graphics {
 	/// <returns>
 	/// The GLint value representation of the wrap value.
 	/// </returns>
-	static GLint getGLintWrapMode(const TextureWrapMode &wrap);
+	GLint getGLintWrapMode(const TextureWrapMode &wrap);
 } }
 
 #endif

@@ -9,7 +9,7 @@
 using Honeycomb::Base::GLErrorException;
 using Honeycomb::Base::GLItemAlreadyInitializedException;
 using Honeycomb::Base::GLItemNotInitializedException;
-using Honeycomb::File::readImageToUChar;
+using Honeycomb::File::ImageIO;
 
 namespace Honeycomb { namespace Graphics {
 	Cubemap::Cubemap() {
@@ -52,36 +52,43 @@ namespace Honeycomb { namespace Graphics {
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
-	void Cubemap::setFace(const CubemapTextureTarget &face, const std::string &tex) {
-		this->bind(); // Bind the texture before modifying its faces
+	void Cubemap::setFaceDataFill(const CubemapTextureTarget &target,
+			const int &r, const int &g, const int &b, const int &a) {
+		GLErrorException::clear();
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
+		this->bind();
 
-		// Read in the image data from the file of the texture
-		int width, height;
-		auto image = readImageToUChar(tex, width, height);
+		GLubyte color[] = { (GLubyte)r, (GLubyte)g, (GLubyte)b, (GLubyte)a };
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + target,
+			0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, color);
 
-		// Write the image data to the Cubemap (see Texture2D for explanation)
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
-			0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-
-		// Store the directory, just in case, for the future
-		this->faces[face] = tex;
-
-		// Set the minification and magnification filtering of the cubemap to
-		// Linear
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-		// Set the S, T, R (3D) wrapping of the cubemap 
-		glTexParameteri(GL_TEXTURE_CUBE_MAP,
-			GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP,
-			GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP,
-			GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
-	void Cubemap::setFaces(const std::string tex[6]) {
-		for (int i = 0; i < 6; ++i)
-			this->setFace((CubemapTextureTarget)(CubemapTextureTarget::RIGHT + i), tex[i]);
+	void Cubemap::setFaceDataIO(const CubemapTextureTarget &target,
+			const ImageIO &image) {
+		this->setFaceDataManual(
+			target, image.getData(),
+			TextureDataType::DATA_UNSIGNED_BYTE,
+			TextureDataInternalFormat::INTERNAL_FORMAT_RGB,
+			TextureDataFormat::FORMAT_RGB,
+			image.getWidth(), image.getHeight());
+	}
+
+	void Cubemap::setFaceDataManual(const CubemapTextureTarget &target,
+			const void *data, const TextureDataType &type,
+			const TextureDataInternalFormat &iformat,
+			const TextureDataFormat &format,
+			const int &width, const int &height) {
+		GLErrorException::clear();
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
+		this->bind();
+
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + target,
+			0, getGLintInternalDataFormat(iformat),
+			width, height, 0,
+			getGLintDataFormat(format), getGLintDataType(type), data);
+
+		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 } }
