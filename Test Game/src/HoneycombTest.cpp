@@ -94,17 +94,25 @@ namespace HoneycombTest {
 		// Build the Skybox and send to the Renderer
 		std::string skyboxDir =
 			"../Honeycomb GE/res/textures/default/aurora_skybox/";
-		std::string skyboxTex[6] = {
-			skyboxDir + "right.bmp",
-			skyboxDir + "left.bmp",
-			skyboxDir + "top.bmp",
-			skyboxDir + "bottom.bmp",
-			skyboxDir + "back.bmp",
-			skyboxDir + "front.bmp"
+		CubemapTextureTarget targets[6] = {
+			CubemapTextureTarget::RIGHT,
+			CubemapTextureTarget::LEFT,
+			CubemapTextureTarget::TOP,
+			CubemapTextureTarget::BOTTOM,
+			CubemapTextureTarget::BACK,
+			CubemapTextureTarget::FRONT
+		};
+		ImageIO skyboxTex[6] = {
+			ImageIO(skyboxDir + "right.bmp"),
+			ImageIO(skyboxDir + "left.bmp"),
+			ImageIO(skyboxDir + "top.bmp"),
+			ImageIO(skyboxDir + "bottom.bmp"),
+			ImageIO(skyboxDir + "back.bmp"),
+			ImageIO(skyboxDir + "front.bmp")
 		};
 		Cubemap skybox;
 		skybox.initialize();
-		skybox.setFaces(skyboxTex);
+		skybox.setFacesDataIO(6, targets, skyboxTex);
 		Renderer::getRenderer()->setSkybox(skybox);
 
 		// Create the Post Processing Shaders and add to the Renderer

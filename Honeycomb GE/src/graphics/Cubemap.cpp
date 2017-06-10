@@ -90,5 +90,72 @@ namespace Honeycomb { namespace Graphics {
 			getGLintDataFormat(format), getGLintDataType(type), data);
 
 		GLErrorException::checkGLError(__FILE__, __LINE__);
+
+/*TODO*/
+		// Set the minification and magnification filtering of the cubemap to
+		// Linear
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+		// Set the S, T, R (3D) wrapping of the cubemap 
+		glTexParameteri(GL_TEXTURE_CUBE_MAP,
+			GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP,
+			GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP,
+			GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	}
+
+	void Cubemap::setFacesDataFill(const int &r, const int &g, const int &b,
+			const int &a) {
+		for (unsigned int i = 0; i < 6; ++i) {
+			this->setFaceDataFill((CubemapTextureTarget)(i), r, g, b, a);
+		}
+	}
+
+	void Cubemap::setFacesDataFill(const unsigned int &numTargets,
+			const CubemapTextureTarget targets[],
+			const int r[], const int g[], const int b[], const int a[]) {
+		for (unsigned int i = 0; i < numTargets; ++i) {
+			this->setFaceDataFill(targets[i], r[i], g[i], b[i], a[i]);
+		}
+	}
+
+	void Cubemap::setFacesDataIO(const ImageIO &image) {
+		for (unsigned int i = 0; i < 6; ++i) {
+			this->setFaceDataIO((CubemapTextureTarget)(i), image);
+		}
+	}
+
+	void Cubemap::setFacesDataIO(const unsigned int &numTargets,
+			const CubemapTextureTarget targets[],
+			const ImageIO images[]) {
+		for (unsigned int i = 0; i < numTargets; ++i) {
+			this->setFaceDataIO(targets[i], images[i]);
+		}
+	}
+
+	void Cubemap::setFacesDataManual(const void *data,
+			const TextureDataType &type,
+			const TextureDataInternalFormat &iformat,
+			const TextureDataFormat &format,
+			const int &width, const int &height) {
+		for (unsigned int i = 0; i < 6; ++i) {
+			this->setFaceDataManual((CubemapTextureTarget)(i), data, type,
+				iformat, format, width, height);
+		}
+	}
+
+	void Cubemap::setFacesDataManual(const unsigned int &numTargets,
+			const CubemapTextureTarget targets[],
+			const void *data[],
+			const TextureDataType type[],
+			const TextureDataInternalFormat iformat[],
+			const TextureDataFormat format[],
+			const int width[], const int height[]) {
+		for (unsigned int i = 0; i < numTargets; ++i) {
+			this->setFaceDataManual(targets[i], data[i], type[i], iformat[i],
+				format[i], width[i], height[i]);
+		}
 	}
 } }
