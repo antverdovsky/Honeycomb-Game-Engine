@@ -8,84 +8,141 @@
 #include "../../include/math/Vector3f.h"
 
 namespace Honeycomb { namespace Geometry {
+	/// <summary>
+	/// Class for storing any mesh data for a Vertex.
+	/// </summary>
 	class Vertex {
+		friend class Mesh;
 	public:
-		const static int ELEMENTS_PER_ATTRIBUTE_COUNT = 4;
-		const static int ATTRIBUTES_PER_VERTEX_COUNT  = 4;
-		const static int ELEMENTS_PER_VERTEX_COUNT    = 
-			ELEMENTS_PER_ATTRIBUTE_COUNT * ATTRIBUTES_PER_VERTEX_COUNT;
+		/// <summary>
+		/// Converts the specified array of vertices to a float buffer which
+		/// may be directly passed to an OpenGL mesh buffer. For each vertex,
+		/// the position, normal, tangent and index zero texture coordinates
+		/// are appended to the float buffer, in that order. For each vector,
+		/// if the vector has less than four elements, zeros are appended to 
+		/// the remaining components to pad the data.
+		/// </summary>
+		/// <param name="verts">
+		/// The vertices array which is to be converted to a float buffer.
+		/// </param>
+		/// <param name="count">
+		/// The number of vertices passed in (size of the vertices array).
+		/// </param>
+		/// <returns>
+		/// The mesh float buffer constructed from the vertices array.
+		/// </returns>
+		static std::vector<float> toFloatBuffer(Vertex verts[],
+				const int &count);
 
-		const static int ELEMENT_SIZE				  = sizeof(float);
-		const static int ELEMENTS_PER_ATTRIBUTE_SIZE  = 
-			ELEMENT_SIZE * ELEMENTS_PER_ATTRIBUTE_COUNT;
-		const static int ELEMENTS_PER_VERTEX_SIZE	  =
-			ELEMENT_SIZE * ELEMENTS_PER_VERTEX_COUNT;
-
-		/// Creates an empty vertex, with the position, texture coordinates,
-		/// normals and tangent being set to their default Vector values.
+		/// <summary>
+		/// Creates a new vertex with the position, normals, tangents and
+		/// texture coordinates being set to their default Vector2f and
+		/// Vector3f values.
+		/// </summary>
 		Vertex();
 
-		/// Creates a vertex initialized to the specified position, normals,
-		/// tangent and texture coordinates.
-		/// const Vector3f &pos : The position of the vertex.
-		/// const Vector3f &norm : The normal of the vertex.
-		/// const Vector3f &tan : The tangent vector of the vertex.
-		/// const Vector2f &uv : The texture coordinates 0 of the vertex.
+		/// <summary>
+		/// Creates a new vertex with the specified position, normals,
+		/// tangents and texture coordinates.
+		/// </summary>
+		/// <param name="pos">
+		/// The world space position vector of the vertex.
+		/// </param>
+		/// <param name="norm">
+		/// The normal vector of the vertex.
+		/// </param>
+		/// <param name="tan">
+		/// The tangent vector of the vertex.
+		/// </param>
+		/// <param name="tc0">
+		/// The texture coordinates at index zero of the vertex.
+		/// </param>
 		Vertex(const Honeycomb::Math::Vector3f &pos,
-			const Honeycomb::Math::Vector3f &norm,
-			const Honeycomb::Math::Vector3f &tan,
-			const Honeycomb::Math::Vector2f &tc0);
+				const Honeycomb::Math::Vector3f &norm,
+				const Honeycomb::Math::Vector3f &tan,
+				const Honeycomb::Math::Vector2f &tc0);
 
-		/// Gets the normal of this vertex.
-		/// return : The normal vector.
+		/// <summary>
+		/// Gets the normal vector of the vertex.
+		/// </summary>
+		/// <returns>
+		/// The normal vector.
+		/// </returns>
 		const Honeycomb::Math::Vector3f& getNormal() const;
 		
-		/// Gets the position of this vertex.
-		/// return : The position vector.
+		/// <summary>
+		/// Gets the position vector of the vertex.
+		/// </summary>
+		/// <returns>
+		/// The position vector.
+		/// </returns>
 		const Honeycomb::Math::Vector3f& getPosition() const;
 
-		/// Gets the tangent of this vertex.
-		/// return : The tangent vector.
+		/// <summary>
+		/// Gets the tangent vector of the vertex.
+		/// </summary>
+		/// <returns>
+		/// The tangent vector.
+		/// </returns>
 		const Honeycomb::Math::Vector3f& getTangent() const;
 
-		/// Gets the texture coordinates 0 of this vertex.
-		/// return : The texture coordinates 0 vector.
+		/// <summary>
+		/// Gets the index zero texture coordinates vector of the vertex.
+		/// </summary>
+		/// <returns>
+		/// The index zero texture coordinates vector.
+		/// </returns>
 		const Honeycomb::Math::Vector2f& getTexCoords0() const;
 
-		/// Sets the normal of this vertex.
-		/// const Vector3f &norm : The normal vector.
+		/// <summary>
+		/// Sets the normal vector of the vertex.
+		/// </summary>
+		/// <param name="norm">
+		/// The normal vector.
+		/// </param>
 		void setNormal(const Honeycomb::Math::Vector3f &norm);
 
-		/// Sets the position of this vertex.
-		/// const Vector3f &pos : The position vector.
+		/// <summary>
+		/// Sets the position vector of the vertex.
+		/// </summary>
+		/// <param name="pos">
+		/// The position vector.
+		/// </param>
 		void setPosition(const Honeycomb::Math::Vector3f &pos);
 		
-		/// Sets the tangent of this vertex.
-		/// const Vector3f &tan : The tangent vector.
+		/// <summary>
+		/// Sets the tangent vector of the vertex.
+		/// </summary>
+		/// <param name="norm">
+		/// The tangent vector.
+		/// </param>
 		void setTangent(const Honeycomb::Math::Vector3f &tan);
 
-		/// Sets the texture coordinates 0 of this vertex.
-		/// const Vector2f &uv : The texture coordinates 0 vector.
+		/// <summary>
+		/// Sets the index zero texture coordinates vector of the vertex.
+		/// </summary>
+		/// <param name="uv">
+		/// The index zero texture coordinates vector.
+		/// </param>
 		void setTexCoords0(const Honeycomb::Math::Vector2f &uv);
-
-		/// Converts the array of vertices to a float buffer. For each vertex,
-		/// the attributes of the vertex are padded to four elements and then
-		/// added to the buffer in the order of position, normal, tangent,
-		/// texture coordinates.
-		/// Vertex verts[] : The array of vertices to be converted to a float
-		///					 buffer.
-		/// int count : The number of vertices passed in (length of the verts
-		///				array).
-		/// return : The float buffer.
-		static std::vector<float> toFloatBuffer(Vertex verts[], 
-				const int &count);
 	private:
-												// ATTRIBUTE  (LAYOUT LOCATION)
-		Honeycomb::Math::Vector3f position;		// Model Position			(0)
-		Honeycomb::Math::Vector3f normal;		// Model Normal				(1)
-		Honeycomb::Math::Vector3f tangent;		// Model Tangent			(2)
+		const static int ELEMENTS_PER_ATTRIBUTE_COUNT = 4;
+		const static int ATTRIBUTES_PER_VERTEX_COUNT = 4;
+		const static int ELEMENTS_PER_VERTEX_COUNT =
+			ELEMENTS_PER_ATTRIBUTE_COUNT * ATTRIBUTES_PER_VERTEX_COUNT;
 
-		Honeycomb::Math::Vector2f texCoords0;	// Texture Coordinates 0	(3)
+		const static int ELEMENT_SIZE = sizeof(float);
+		const static int ELEMENTS_PER_ATTRIBUTE_SIZE =
+			ELEMENT_SIZE * ELEMENTS_PER_ATTRIBUTE_COUNT;
+		const static int ELEMENTS_PER_VERTEX_SIZE =
+			ELEMENT_SIZE * ELEMENTS_PER_VERTEX_COUNT;
+
+		                                        // ATTRIBUTE  (LAYOUT LOCATION)
+		Honeycomb::Math::Vector3f position;     // Model Position           (0)
+		Honeycomb::Math::Vector3f normal;       // Model Normal             (1)
+		Honeycomb::Math::Vector3f tangent;      // Model Tangent            (2)
+
+		Honeycomb::Math::Vector2f texCoords0;   // Texture Coordinates 0    (3)
 	};
 } }
 

@@ -6,6 +6,48 @@ using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
 
 namespace Honeycomb { namespace Geometry {
+	std::vector<float> Vertex::toFloatBuffer(Vertex verts[], const int 
+			&count) {
+		// Create a buffer and set its capacity to the number of elements to be
+		// written to the buffer.
+		std::vector<float> buffer;
+		buffer.reserve(ELEMENTS_PER_ATTRIBUTE_SIZE * count);
+
+		for (int i = 0; i < count; ++i) {
+			// Get the attributes of the vertex
+			Vector3f curPos = verts[i].getPosition();
+			Vector3f curNorm = verts[i].getNormal();
+			Vector3f curTan = verts[i].getTangent();
+			Vector2f curTC0 = verts[i].getTexCoords0();
+
+			// Push { P.x, P.y, P.z, 1.0F } for the Position Vector
+			buffer.push_back(curPos.getX());
+			buffer.push_back(curPos.getY());
+			buffer.push_back(curPos.getZ());
+			buffer.push_back(1.0F);
+
+			// Push { N.x, N.y, N.z, 0.0F } for the Normal Vector
+			buffer.push_back(curNorm.getX());
+			buffer.push_back(curNorm.getY());
+			buffer.push_back(curNorm.getZ());
+			buffer.push_back(0.0F);
+
+			// Push { T.x, T.y, T.z, 0.0F } for the Tangent Vector
+			buffer.push_back(curTan.getX());
+			buffer.push_back(curTan.getY());
+			buffer.push_back(curTan.getZ());
+			buffer.push_back(0.0F);
+
+			// Push { TC0.x, TC0.y, 0.0F, 1.0F } for Texture Coords 0 Vector
+			buffer.push_back(curTC0.getX());
+			buffer.push_back(curTC0.getY());
+			buffer.push_back(0.0F);
+			buffer.push_back(1.0F);
+		}
+
+		return buffer; // Return the float buffer
+	}
+
 	Vertex::Vertex() {
 		this->position = Vector3f();
 		this->normal = Vector3f();
@@ -51,44 +93,5 @@ namespace Honeycomb { namespace Geometry {
 
 	void Vertex::setTexCoords0(const Vector2f &uv) {
 		this->texCoords0 = uv;
-	}
-
-	std::vector<float> Vertex::toFloatBuffer(Vertex verts[], const int 
-			&count) {
-		std::vector<float> buffer;
-
-		for (int i = 0; i < count; ++i) {
-			// Get the attributes of the vertex
-			Vector3f curPos = verts[i].getPosition();
-			Vector3f curNorm = verts[i].getNormal();
-			Vector3f curTan = verts[i].getTangent();
-			Vector2f curTC0 = verts[i].getTexCoords0();
-
-			// Push { P.x, P.y, P.z, 1.0F } for the Position Vector
-			buffer.push_back(curPos.getX());
-			buffer.push_back(curPos.getY());
-			buffer.push_back(curPos.getZ());
-			buffer.push_back(1.0F);
-
-			// Push { N.x, N.y, N.z, 0.0F } for the Normal Vector
-			buffer.push_back(curNorm.getX());
-			buffer.push_back(curNorm.getY());
-			buffer.push_back(curNorm.getZ());
-			buffer.push_back(0.0F);
-
-			// Push { T.x, T.y, T.z, 0.0F } for the Tangent Vector
-			buffer.push_back(curTan.getX());
-			buffer.push_back(curTan.getY());
-			buffer.push_back(curTan.getZ());
-			buffer.push_back(0.0F);
-
-			// Push { TC0.x, TC0.y, 0.0F, 1.0F } for Texture Coords 0 Vector
-			buffer.push_back(curTC0.getX());
-			buffer.push_back(curTC0.getY());
-			buffer.push_back(0.0F);
-			buffer.push_back(1.0F);
-		}
-
-		return buffer; // Return the float buffer
 	}
 } }

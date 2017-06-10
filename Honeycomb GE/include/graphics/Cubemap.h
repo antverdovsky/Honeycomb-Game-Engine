@@ -37,6 +37,9 @@ namespace Honeycomb { namespace Graphics {
 		/// yet been initialized, a GLItemNotInitialized exception will be
 		/// thrown.
 		/// </summary>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Texture has not yet been initialized.
+		/// </exception>
 		void bind() const;
 
 		/// <summary>
@@ -122,6 +125,12 @@ namespace Honeycomb { namespace Graphics {
 		/// <param name="image">
 		/// The image whose data is to be set for the cubemap target.
 		/// </param>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Texture has not yet been initialized.
+		/// </exception>
+		/// <exception cref="GLErrorException">
+		/// Thrown if any of the parameters are invalid.
+		/// </exception>
 		void setFaceDataIO(const CubemapTextureTarget &target,
 				const Honeycomb::File::ImageIO &image);
 
