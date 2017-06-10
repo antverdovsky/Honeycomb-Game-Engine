@@ -244,7 +244,8 @@ namespace Honeycomb { namespace Graphics {
 		/// ImageIO's data. If the cubemap has not yet been initialized, a 
 		/// GLItemNotInitialized exception will be thrown. If this cubemap has
 		/// already had its data set for the any target, the previous data will
-		/// be lost and replaced with the new image data.
+		/// be lost and replaced with the new image data. For this method, the
+		/// filtering mode is set to LINEAR and the wrap to CLAMP_TO_EDGE.
 		/// </summary>
 		/// <param name="image">
 		/// The inputted image whose data is to be set to the faces of the
@@ -258,7 +259,8 @@ namespace Honeycomb { namespace Graphics {
 		/// If the cubemap has not yet been initialized, a GLItemNotInitialized
 		/// exception will be thrown. If this cubemap has already had its data 
 		/// set for the specified target, the previous data will be lost and 
-		/// replaced with the new image data.
+		/// replaced with the new image data. For this method, the filtering
+		/// mode is set to LINEAR and the wrap to CLAMP_TO_EDGE.
 		/// </summary>
 		/// <param name="numTargets">
 		/// The number of targets (sizes of the targets and images arrays).
@@ -285,7 +287,8 @@ namespace Honeycomb { namespace Graphics {
 		/// has not yet been initialized, a GLItemNotInitialized exception will
 		/// be thrown. If this cubemap has already had its data set for any 
 		/// target, the previous data will be lost and replaced with the new 
-		/// image data.
+		/// image data. For this method, the filtering mode is set to LINEAR 
+		/// and the wrap to CLAMP_TO_EDGE.
 		/// </summary>
 		/// <param name="data">
 		/// The pointer to the image data to be written to the texture 
@@ -326,7 +329,8 @@ namespace Honeycomb { namespace Graphics {
 		/// targets array. If the cubemap has not yet been initialized, a 
 		/// GLItemNotInitialized exception will be thrown. If this cubemap has 
 		/// already had its data set for any target, the previous data will be 
-		/// lost and replaced with the new image data.
+		/// lost and replaced with the new image data. For this method, the
+		/// filtering mode is set to LINEAR and the wrap to CLAMP_TO_EDGE.
 		/// </summary>
 		/// <param name="numTargets">
 		/// The number of targets (sizes of the targets and images arrays).
@@ -368,6 +372,70 @@ namespace Honeycomb { namespace Graphics {
 				const TextureDataInternalFormat iformat[],
 				const TextureDataFormat format[],
 				const int width[], const int height[]);
+
+		/// <summary>
+		/// Sets the texture filtering mode for both the minifying and 
+		/// magnifying of the texture. If the cubemap has not yet been 
+		/// initialized, a GLItemNotInitialized exception is thrown.
+		/// </summary>
+		/// <param name="filter">
+		/// The filter mode to be used when minifying and magnifying the
+		/// cubemap.
+		/// </param>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Cubemap has not yet been initialized.
+		/// </exception>
+		void setFiltering(const TextureFilterMagMode &filter);
+
+		/// <summary>
+		/// Sets the texture filtering mode for the minifying and magnifying of
+		/// the texture. If the cubemap has not yet been initialized, a
+		/// GLItemNotInitialized exception is thrown.
+		/// </summary>
+		/// <param name="min">
+		/// The filter mode to be used when minifying the cubemap.
+		/// </param>
+		/// <param name="mag">
+		/// The filter mode to be used when magnifying the cubemap.
+		/// </param>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Cubemap has not yet been initialized.
+		/// </exception>
+		void setFiltering(const TextureFilterMagMode &min,
+				const TextureFilterMagMode &mag);
+
+		/// <summary>
+		/// Sets the texture wrapping mode for the R, S, and T coordinates of
+		/// the cubemap. If the cubemap has not yet been initialized, a
+		/// GLItemNotInitialized exception is thrown.
+		/// </summary>
+		/// <param name="wrap">
+		/// The wrap mode to be used for all cubemap coordinates.
+		/// </param>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Cubemap has not yet been initialized.
+		/// </exception>
+		void setWrap(const TextureWrapMode &wrap);
+
+		/// <summary>
+		/// Sets the texture wrapping mode for the R, S, and T coordinates of
+		/// the cubemap. If the cubemap has not yet been initialized, a
+		/// GLItemNotInitialized exception is thrown.
+		/// </summary>
+		/// <param name="r">
+		/// The wrap mode to be used for the R coordinate.
+		/// </param>
+		/// <param name="s">
+		/// The wrap mode to be used for the S coordinate.
+		/// </param>
+		/// <param name="t">
+		/// The wrap mode to be used for the T coordinate.
+		/// </param>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Cubemap has not yet been initialized.
+		/// </exception>
+		void setWrap(const TextureWrapMode &r, const TextureWrapMode &s,
+				const TextureWrapMode &t);
 	private:
 		int textureID;                           // The texture "pointer"
 	};

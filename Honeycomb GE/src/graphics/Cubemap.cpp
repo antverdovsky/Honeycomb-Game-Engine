@@ -90,20 +90,6 @@ namespace Honeycomb { namespace Graphics {
 			getGLintDataFormat(format), getGLintDataType(type), data);
 
 		GLErrorException::checkGLError(__FILE__, __LINE__);
-
-/*TODO*/
-		// Set the minification and magnification filtering of the cubemap to
-		// Linear
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-		// Set the S, T, R (3D) wrapping of the cubemap 
-		glTexParameteri(GL_TEXTURE_CUBE_MAP,
-			GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP,
-			GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP,
-			GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	}
 
 	void Cubemap::setFacesDataFill(const int &r, const int &g, const int &b,
@@ -125,6 +111,9 @@ namespace Honeycomb { namespace Graphics {
 		for (unsigned int i = 0; i < 6; ++i) {
 			this->setFaceDataIO((CubemapTextureTarget)(i), image);
 		}
+
+		this->setFiltering(TextureFilterMagMode::FILTER_MAG_LINEAR);
+		this->setWrap(TextureWrapMode::WRAP_CLAMP_TO_EDGE);
 	}
 
 	void Cubemap::setFacesDataIO(const unsigned int &numTargets,
@@ -133,6 +122,9 @@ namespace Honeycomb { namespace Graphics {
 		for (unsigned int i = 0; i < numTargets; ++i) {
 			this->setFaceDataIO(targets[i], images[i]);
 		}
+
+		this->setFiltering(TextureFilterMagMode::FILTER_MAG_LINEAR);
+		this->setWrap(TextureWrapMode::WRAP_CLAMP_TO_EDGE);
 	}
 
 	void Cubemap::setFacesDataManual(const void *data,
@@ -144,6 +136,9 @@ namespace Honeycomb { namespace Graphics {
 			this->setFaceDataManual((CubemapTextureTarget)(i), data, type,
 				iformat, format, width, height);
 		}
+
+		this->setFiltering(TextureFilterMagMode::FILTER_MAG_LINEAR);
+		this->setWrap(TextureWrapMode::WRAP_CLAMP_TO_EDGE);
 	}
 
 	void Cubemap::setFacesDataManual(const unsigned int &numTargets,
@@ -157,5 +152,66 @@ namespace Honeycomb { namespace Graphics {
 			this->setFaceDataManual(targets[i], data[i], type[i], iformat[i],
 				format[i], width[i], height[i]);
 		}
+
+		this->setFiltering(TextureFilterMagMode::FILTER_MAG_LINEAR);
+		this->setWrap(TextureWrapMode::WRAP_CLAMP_TO_EDGE);
+	}
+
+	void Cubemap::setFiltering(const TextureFilterMagMode &filter) {
+		GLErrorException::clear();
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
+		this->bind();
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER,
+			getGLintFilterMagMode(filter));
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER,
+			getGLintFilterMagMode(filter));
+
+		GLErrorException::checkGLError(__FILE__, __LINE__);
+	}
+	
+	void Cubemap::setFiltering(const TextureFilterMagMode &mag,
+			const TextureFilterMagMode &min) {
+		GLErrorException::clear();
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
+		this->bind();
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER,
+			getGLintFilterMagMode(mag));
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER,
+			getGLintFilterMagMode(min));
+
+		GLErrorException::checkGLError(__FILE__, __LINE__);
+	}
+
+	void Cubemap::setWrap(const TextureWrapMode &wrap) {
+		GLErrorException::clear();
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
+		this->bind();
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R,
+			getGLintWrapMode(wrap));
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, 
+			getGLintWrapMode(wrap));
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T,
+			getGLintWrapMode(wrap));
+
+		GLErrorException::checkGLError(__FILE__, __LINE__);
+	}
+
+	void Cubemap::setWrap(const TextureWrapMode &r, const TextureWrapMode &s,
+			const TextureWrapMode &t) {
+		GLErrorException::clear();
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
+		this->bind();
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R,
+			getGLintWrapMode(r));
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S,
+			getGLintWrapMode(s));
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T,
+			getGLintWrapMode(t));
+
+		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 } }
