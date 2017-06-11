@@ -198,8 +198,10 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		// Build the Quad Mesh & initialize so that it may be drawn
 		this->quad.initialize();
-		this->quad.setVertexData(quadVerts, 4);
-		this->quad.setIndexData(indices, 6);
+		this->quad.setVertexData(
+			std::vector<Vertex>(quadVerts, quadVerts + 4));
+		this->quad.setIndexData(
+			std::vector<int>(indices, indices + 6));
 	}
 
 	void DeferredRenderer::renderBackground() {

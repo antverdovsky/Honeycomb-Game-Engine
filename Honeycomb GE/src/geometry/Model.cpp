@@ -307,8 +307,8 @@ namespace Honeycomb { namespace Geometry {
 		// Create a new Honeycomb Mesh with the fetched vertex and index data.
 		Mesh *mesh = new Mesh();
 		mesh->initialize();
-		mesh->setIndexData(&indices[0], indices.size());
-		mesh->setVertexData(&vertices[0], vertices.size());
+		mesh->setIndexData(indices);
+		mesh->setVertexData(vertices);
 		this->meshes.push_back(mesh);
 
 		return mesh;

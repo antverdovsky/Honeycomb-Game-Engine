@@ -2,47 +2,77 @@
 #ifndef MESH_H
 #define MESH_H
 
-#include <string>
-
 #include "Vertex.h"
 #include "../base/GLItem.h"
 #include "../shader/ShaderProgram.h"
 
 namespace Honeycomb { namespace Geometry {
+	/// <summary>
+	/// Class responsible for storing the vertex and index data of a Mesh.
+	/// </summary>
 	class Mesh : public Honeycomb::Base::GLItem {
 	public:
-		/// Initializes this Mesh by creating the appropriate Index and Vertex
-		/// buffers for it.
-		void initialize();
+		/// <summary>
+		/// Creates a new, empty Mesh item.
+		/// </summary>
+		Mesh();
 
-		/// Destroys this Mesh by destroying the appropriate Index and Vertex
-		/// buffers of it.
+		/// <summary>
+		/// Destroys this Mesh item by destroying the mesh buffer. If the Mesh
+		/// has not yet been initialized, a GLItemNotInitialized exception will
+		/// be thrown.
+		/// </summary>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Texture has not yet been initialized.
+		/// </exception>
 		void destroy();
 
-		/// Draws this Mesh to the screen using the vertex data.
-		/// ShaderProgram &shader : The shader which will draw the mesh.
+		/// <summary>
+		/// Draws this Mesh using the specified shader program. If the Mesh
+		/// has not yet been initialized, a GLItemNotInitialized exception will
+		/// be thrown.
+		/// </summary>
+		/// <param name="shader">
+		/// The shader using which the Mesh should be drawn.
+		/// </param>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Texture has not yet been initialized.
+		/// </exception>
 		void draw(Honeycomb::Shader::ShaderProgram &shader) const;
 
-		/// Sets the Index Data for this Mesh. Do note that the index buffer
-		/// will be cleared before any data is modified for this Mesh.
-		/// int indices[] : The array of indices to be passed to the IBO.
-		/// const int &count : The length of the index array.
-		void setIndexData(int indices[], const int &count);
+		/// <summary>
+		/// Initializes this Mesh item by creating the appropriate mesh buffer.
+		/// If the Mesh has been initialized, a GLItemAlreadyInitialized
+		/// exception will be thrown.
+		/// </summary>
+		/// <exception cref="GLItemAlreadyInitializedException">
+		/// Thrown if the Texture has already been initialized.
+		/// </exception>
+		void initialize();
 
-		/// Sets the Vertex Data for this Mesh. Do note that the vertex buffer
-		/// will be cleared before any data is modified for this Mesh.
-		/// Vertex vert[] : The array of vertices to be passed to the VBO.
-		/// const int &count : The length of the vertex array.
-		void setVertexData(Honeycomb::Geometry::Vertex vert[], const int 
-				&count);
+		/// <summary>
+		/// Sets the indices data for this Mesh.
+		/// </summary>
+		/// <param name="indices">
+		/// The vector of indices which define this Mesh.
+		/// </param>
+		void setIndexData(const std::vector<int> &indices);
+
+		/// <summary>
+		/// Sets the vertices data for this Mesh.
+		/// </summary>
+		/// <param name="vertices">
+		/// The vector of vertices which define this Mesh.
+		/// </param>
+		void setVertexData(const std::vector<Vertex> &vertices);
 	private:
-		int vertexBufferObj; // VBO "Pointer"
-		int vertCount; // The count of vertices stored for this mesh
-		int vertSize; // The byte size of the vertices stored for this mesh
+		int vertexBufferObj;  // VBO "Pointer"
+		int vertCount;        // The number of vertices
+		int vertSize;         // The byte size of the vertices
 
-		int indexBufferObj; // IBO "Pointer" (for VBO indexing)
-		int indexCount; // The count of the indices stored for this mesh
-		int indexSize; // The byte size of the indices stored for this mesh
+		int indexBufferObj;   // IBO "Pointer" (for VBO indexing)
+		int indexCount;       // The number of indices
+		int indexSize;        // The byte size of the indices
 	};
 } }
 

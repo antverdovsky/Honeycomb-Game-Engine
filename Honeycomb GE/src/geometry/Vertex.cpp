@@ -6,19 +6,20 @@ using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
 
 namespace Honeycomb { namespace Geometry {
-	std::vector<float> Vertex::toFloatBuffer(Vertex verts[], const int 
-			&count) {
+	std::vector<float> Vertex::toFloatBuffer(const std::vector<Vertex> 
+			&verts) {
 		// Create a buffer and set its capacity to the number of elements to be
 		// written to the buffer.
 		std::vector<float> buffer;
-		buffer.reserve(ELEMENTS_PER_ATTRIBUTE_SIZE * count);
+		buffer.reserve(ELEMENTS_PER_ATTRIBUTE_SIZE * verts.size());
 
-		for (int i = 0; i < count; ++i) {
+		for (int i = 0; i < verts.size(); ++i) {
 			// Get the attributes of the vertex
-			Vector3f curPos = verts[i].getPosition();
-			Vector3f curNorm = verts[i].getNormal();
-			Vector3f curTan = verts[i].getTangent();
-			Vector2f curTC0 = verts[i].getTexCoords0();
+			Vertex vertex = verts[i];
+			Vector3f curPos  = vertex.getPosition();
+			Vector3f curNorm = vertex.getNormal();
+			Vector3f curTan  = vertex.getTangent();
+			Vector2f curTC0  = vertex.getTexCoords0();
 
 			// Push { P.x, P.y, P.z, 1.0F } for the Position Vector
 			buffer.push_back(curPos.getX());

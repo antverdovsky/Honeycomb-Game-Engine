@@ -25,14 +25,11 @@ namespace Honeycomb { namespace Geometry {
 		/// <param name="verts">
 		/// The vertices array which is to be converted to a float buffer.
 		/// </param>
-		/// <param name="count">
-		/// The number of vertices passed in (size of the vertices array).
-		/// </param>
 		/// <returns>
 		/// The mesh float buffer constructed from the vertices array.
 		/// </returns>
-		static std::vector<float> toFloatBuffer(Vertex verts[],
-				const int &count);
+		static std::vector<float> toFloatBuffer(const std::vector<Vertex>
+				&verts);
 
 		/// <summary>
 		/// Creates a new vertex with the position, normals, tangents and
