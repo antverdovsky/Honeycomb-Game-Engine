@@ -16,29 +16,36 @@ struct aiNode;
 struct aiScene;
 
 namespace Honeycomb { namespace Geometry {
+	/// <summary>
+	/// Simple struct which stores all of the the different settings using
+	/// which a Model can be loaded.
+	/// </summary>
 	struct ModelSettings {
 		friend class Model;
 	public:
-		float scaleFactor; // The scale factor of the Model
+		float scaleFactor;             // The scale factor of the Model
 
-		bool calcTangentSpace; // Calculate tangent space for imported models?
-		bool joinDuplicateVertices; // Should duplicate vertices be joined?
-		bool makeLeftHanded; // Should the coordinate system be left-handed?
-		bool triangulate; // Should the model be triangulated?
-		bool genNormals; // Should normals be generated?
-		bool genSmoothNormals; // Should smooth normals be generated?
-		bool splitLargeMeshes; // Should large meshes be split?
-		bool preTransformVertices; // Should all vertices be pretransformed?
-		bool delUnusedMaterials; // Remove redundant materials?
-		bool fixInfacingNormals; // Fix normals facing inwards?
-		bool genUVCoords; // Generate UV coordinates for non-UV mappings?
-		bool transformUVCoords; // Transform UV Coordinates?
-		bool optimizeMesh; // Optimize the mesh?
-		bool optimizeGraph; // Optimize the scene graph?
-		bool flipUVs; // Flip the UV coordinates along y-axis?
-		bool flipWindingOrder; // Flip Face Winding Order to CW?
+		bool calcTangentSpace;         // Calculate tangent space?
+		bool joinDuplicateVertices;    // Should duplicate vertices be joined?
+		bool makeLeftHanded;           // Should coord. system be left-handed?
+		bool triangulate;              // Should the model be triangulated?
+		bool genNormals;               // Should normals be generated?
+		bool genSmoothNormals;         // Should smooth normals be generated?
+		bool splitLargeMeshes;         // Should large meshes be split?
+		bool preTransformVertices;     // Should vertices be pretransformed?
+		bool delUnusedMaterials;       // Remove redundant materials?
+		bool fixInfacingNormals;       // Fix normals facing inwards?
+		bool genUVCoords;              // Generate UV coordinates?
+		bool transformUVCoords;        // Transform UV Coordinates?
+		bool optimizeMesh;             // Optimize the mesh?
+		bool optimizeGraph;            // Optimize the scene graph?
+		bool flipUVs;                  // Flip the UV coordinates along y-axis?
+		bool flipWindingOrder;         // Flip Face Winding Order to CW?
 
-		/// Sets the Model Settings to their Default Settings:
+		/// <summary>
+		/// Creates a model settings structure with the following default
+		/// settings:
+		/// 
 		/// scaleFactor = 0.01F;
 		/// calcTangentSpace = true;
 		/// joinDuplicateVertices = true;
@@ -56,39 +63,19 @@ namespace Honeycomb { namespace Geometry {
 		/// optimizeGraph = false;
 		/// flipUVs = true;
 		/// flipWindingOrder = false;
-		ModelSettings() {
-			this->scaleFactor = 0.01F;
-
-			this->calcTangentSpace = true;
-			this->joinDuplicateVertices = true;
-			this->makeLeftHanded = false;
-			this->triangulate = true;
-			this->genNormals = false;
-			this->genSmoothNormals = true;
-			this->splitLargeMeshes = true;
-			this->preTransformVertices = false;
-			this->delUnusedMaterials = false;
-			this->fixInfacingNormals = false;
-			this->genUVCoords = false;
-			this->transformUVCoords = false;
-			this->optimizeMesh = true;
-			this->optimizeGraph = false;
-			this->flipUVs = true;
-			this->flipWindingOrder = false;
-		}
-
-		/// Checks if these model settings are equal to the specified model
-		/// settings.
-		/// const ModelSettings &that : The model settings which are to be
-		///							    compared to these model settings.
-		/// return : True if the model settings are equal; False otherwise.
-		bool operator== (const ModelSettings &that);
+		/// </summary>
+		ModelSettings();
 	private:
-		/// Converts the Model Settings to PFlags which may be used by ASSIMP.
-		/// return : The PFlags.
+		/// <summary>
+		/// Converts the Model Settings to PFlags which can be used by ASSIMP.
+		/// </summary>
+		/// <returns></returns>
 		unsigned int toPFlags() const;
 	};
 
+	/// <summary>
+	/// Class representing a 3D model which was loaded in from file.
+	/// </summary>
 	class Model {
 	public:
 		/// Deletes this model, and the materials / textures imported from it.
@@ -238,6 +225,40 @@ namespace Honeycomb { namespace Geometry {
 		///			 containing the information extracted from the ASSIMP 
 		///			 Mesh.
 		Honeycomb::Geometry::Mesh* processAiMeshGeometry(aiMesh *aMesh);
+	};
+
+	/// <summary>
+	/// Represents an exception which is thrown when a Model cannot be loaded
+	/// from the system directory.
+	/// </summary>
+	class ModelLoadException : public std::runtime_error {
+	public:
+		/// <summary>
+		/// Creates a new Model Load Exception for the model which could not be
+		/// loaded from the specified path.
+		/// </summary>
+		/// <param name="path">
+		/// The path from which the model could not be loaded.
+		/// </param>
+		/// <param name="err">
+		/// The error returned by ASSIMP which occured while the model was
+		/// being loaded.
+		/// </param>
+		ModelLoadException(const std::string &path, const std::string &err);
+
+		/// <summary>
+		/// Returns a constant character string containing the description of
+		/// the exception.
+		/// </summary>
+		/// <returns>
+		/// The constant character string exception info containing the
+		/// directory of the model which could not be loaded and the error
+		/// returned by the ASSIMP library.
+		/// </returns>
+		virtual const char* what() const throw();
+	private:
+		std::string directory;
+		std::string assimpError;
 	};
 } }
 

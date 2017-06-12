@@ -1,6 +1,7 @@
 #include "../../include/geometry/Model.h"
 
 #include <iostream>
+#include <sstream>
 
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
@@ -38,47 +39,48 @@ using Honeycomb::Math::Quaternion;
 namespace Honeycomb { namespace Geometry {
 	std::vector<Model*> Model::imports = std::vector<Model*>();
 
+	ModelSettings::ModelSettings() {
+		this->scaleFactor           = 0.01F;
+
+		this->calcTangentSpace      = true;
+		this->joinDuplicateVertices = true;
+		this->makeLeftHanded        = false;
+		this->triangulate           = true;
+		this->genNormals            = false;
+		this->genSmoothNormals      = true;
+		this->splitLargeMeshes      = true;
+		this->preTransformVertices  = false;
+		this->delUnusedMaterials    = false;
+		this->fixInfacingNormals    = false;
+		this->genUVCoords           = false;
+		this->transformUVCoords     = false;
+		this->optimizeMesh          = true;
+		this->optimizeGraph         = false;
+		this->flipUVs               = true;
+		this->flipWindingOrder      = false;
+	}
+
 	unsigned int ModelSettings::toPFlags() const {
 		unsigned int pF = 0;
 
-		pF |= calcTangentSpace ? aiProcess_CalcTangentSpace : 0;
-		pF |= joinDuplicateVertices ? aiProcess_JoinIdenticalVertices : 0;
-		pF |= makeLeftHanded ? aiProcess_MakeLeftHanded : 0;
-		pF |= triangulate ? aiProcess_Triangulate : 0;
-		pF |= genNormals ? aiProcess_GenNormals : 0;
-		pF |= genSmoothNormals ? aiProcess_GenSmoothNormals : 0;
-		pF |= splitLargeMeshes ? aiProcess_SplitLargeMeshes : 0;
-		pF |= preTransformVertices ? aiProcess_PreTransformVertices : 0;
-		pF |= delUnusedMaterials ? aiProcess_RemoveRedundantMaterials : 0;
-		pF |= fixInfacingNormals ? aiProcess_FixInfacingNormals : 0;
-		pF |= genUVCoords ? aiProcess_GenUVCoords : 0;
-		pF |= transformUVCoords ? aiProcess_TransformUVCoords : 0;
-		pF |= optimizeMesh ? aiProcess_OptimizeMeshes : 0;
-		pF |= optimizeGraph ? aiProcess_OptimizeGraph : 0;
-		pF |= flipUVs ? aiProcess_FlipUVs : 0;
-		pF |= flipWindingOrder ? aiProcess_FlipWindingOrder : 0;
+		pF |= calcTangentSpace      ? aiProcess_CalcTangentSpace         : 0;
+		pF |= joinDuplicateVertices ? aiProcess_JoinIdenticalVertices    : 0;
+		pF |= makeLeftHanded        ? aiProcess_MakeLeftHanded           : 0;
+		pF |= triangulate           ? aiProcess_Triangulate              : 0;
+		pF |= genNormals            ? aiProcess_GenNormals               : 0;
+		pF |= genSmoothNormals      ? aiProcess_GenSmoothNormals         : 0;
+		pF |= splitLargeMeshes      ? aiProcess_SplitLargeMeshes         : 0;
+		pF |= preTransformVertices  ? aiProcess_PreTransformVertices     : 0;
+		pF |= delUnusedMaterials    ? aiProcess_RemoveRedundantMaterials : 0;
+		pF |= fixInfacingNormals    ? aiProcess_FixInfacingNormals       : 0;
+		pF |= genUVCoords           ? aiProcess_GenUVCoords              : 0;
+		pF |= transformUVCoords     ? aiProcess_TransformUVCoords        : 0;
+		pF |= optimizeMesh          ? aiProcess_OptimizeMeshes           : 0;
+		pF |= optimizeGraph         ? aiProcess_OptimizeGraph            : 0;
+		pF |= flipUVs               ? aiProcess_FlipUVs                  : 0;
+		pF |= flipWindingOrder      ? aiProcess_FlipWindingOrder         : 0;
 
 		return pF;
-	}
-
-	bool ModelSettings::operator== (const ModelSettings &that) {
-		return
-			this->calcTangentSpace == that.calcTangentSpace &&
-			this->joinDuplicateVertices == that.joinDuplicateVertices &&
-			this->makeLeftHanded == that.makeLeftHanded &&
-			this->triangulate == that.triangulate &&
-			this->genNormals == that.genNormals &&
-			this->genSmoothNormals == that.genSmoothNormals &&
-			this->splitLargeMeshes == that.splitLargeMeshes &&
-			this->preTransformVertices == that.preTransformVertices &&
-			this->delUnusedMaterials == that.delUnusedMaterials &&
-			this->fixInfacingNormals == that.fixInfacingNormals &&
-			this->genUVCoords == that.genUVCoords &&
-			this->transformUVCoords == that.transformUVCoords &&
-			this->optimizeMesh == that.optimizeMesh &&
-			this->optimizeGraph == that.optimizeGraph &&
-			this->flipUVs == that.flipUVs &&
-			this->flipWindingOrder == that.flipWindingOrder;
 	}
 
 	Model::~Model() {
@@ -371,5 +373,19 @@ namespace Honeycomb { namespace Geometry {
 		}
 
 		return object; // Return the instantiated object
+	}
+
+	ModelLoadException::ModelLoadException(const std::string &path,
+			const std::string &err) : 
+			std::runtime_error("Model could not be loaded") {
+		this->directory = path;
+		this->assimpError = err;
+	}
+
+	const char* ModelLoadException::what() const {
+		std::ostringstream oss("");
+		oss << std::runtime_error::what() << " from directory " <<
+			this->directory << " | " << this->assimpError;
+		return oss.str().c_str();
 	}
 } }
