@@ -77,20 +77,6 @@ namespace Honeycomb { namespace Geometry {
 		void destroy();
 
 		/// <summary>
-		/// Draws this Mesh using the specified shader program. 
-		/// 
-		/// If the Mesh has not yet been initialized, a GLItemNotInitialized 
-		/// exception will be thrown.
-		/// </summary>
-		/// <param name="shader">
-		/// The shader using which the Mesh should be drawn.
-		/// </param>
-		/// <exception cref="GLItemNotInitializedException">
-		/// Thrown if the Texture has not yet been initialized.
-		/// </exception>
-		void draw(Honeycomb::Shader::ShaderProgram &shader) const;
-
-		/// <summary>
 		/// Returns the raw pointer of the index buffer object of this Mesh.
 		/// 
 		/// If the mesh has not yet been initialized, this pointer will be
@@ -138,6 +124,20 @@ namespace Honeycomb { namespace Geometry {
 		/// Thrown if the Texture has already been initialized.
 		/// </exception>
 		void initialize();
+
+		/// <summary>
+		/// Draws this Mesh using the specified shader program. 
+		/// 
+		/// If the Mesh has not yet been initialized, a GLItemNotInitialized 
+		/// exception will be thrown.
+		/// </summary>
+		/// <param name="shader">
+		/// The shader using which the Mesh should be drawn.
+		/// </param>
+		/// <exception cref="GLItemNotInitializedException">
+		/// Thrown if the Texture has not yet been initialized.
+		/// </exception>
+		void render(Honeycomb::Shader::ShaderProgram &shader) const;
 
 		/// <summary>
 		/// Sets the indices data for this Mesh.

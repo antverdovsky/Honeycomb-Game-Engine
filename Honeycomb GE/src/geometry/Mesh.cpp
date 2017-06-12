@@ -82,7 +82,40 @@ namespace Honeycomb { namespace Geometry {
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
-	void Mesh::draw(ShaderProgram &shader) const {
+	const int& Mesh::getIndexBufferObject() const {
+		return this->indexBufferObject;
+	}
+
+	const std::vector<unsigned int> Mesh::getIndices() const {
+		return this->indices;
+	}
+
+	const int& Mesh::getVertexBufferObject() const {
+		return this->vertexBufferObject;
+	}
+
+	const std::vector<Vertex> Mesh::getVertices() const {
+		return this->vertices;
+	}
+
+	void Mesh::initialize() {
+		GLErrorException::clear();
+		GLItem::initialize();
+
+		// Placeholders to store the buffer ID after the glGenBuffers func.
+		GLuint ibo = 0;
+		GLuint vbo = 0;
+
+		// Generate the IBO and VBO buffers
+		glGenBuffers(1, &ibo);
+		glGenBuffers(1, &vbo);
+		this->indexBufferObject = ibo;
+		this->vertexBufferObject = vbo;
+
+		GLErrorException::checkGLError(__FILE__, __LINE__);
+	}
+
+	void Mesh::render(ShaderProgram &shader) const {
 		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 
@@ -120,48 +153,14 @@ namespace Honeycomb { namespace Geometry {
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
-	const int& Mesh::getIndexBufferObject() const {
-		return this->indexBufferObject;
-	}
-
-	const std::vector<unsigned int> Mesh::getIndices() const {
-		return this->indices;
-	}
-
-	const int& Mesh::getVertexBufferObject() const {
-		return this->vertexBufferObject;
-	}
-
-	const std::vector<Vertex> Mesh::getVertices() const {
-		return this->vertices;
-	}
-
-	void Mesh::initialize() {
-		GLErrorException::clear();
-		GLItem::initialize();
-
-		// Placeholders to store the buffer ID after the glGenBuffers func.
-		GLuint ibo = 0;
-		GLuint vbo = 0;
-
-		// Generate the IBO and VBO buffers
-		glGenBuffers(1, &ibo);
-		glGenBuffers(1, &vbo);
-		this->indexBufferObject = ibo;
-		this->vertexBufferObject = vbo;
-
-		GLErrorException::checkGLError(__FILE__, __LINE__);
-	}
-
 	void Mesh::setIndexData(const std::vector<unsigned int> &indices) {
 		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 
-		this->indices = indices; // Set the indices
-
 		// Bind the Buffer & invalidate it, in case there is already some data
 		this->bindIndexBuffer();
 		this->clearIndices();
+		this->indices = indices;
 
 		// Send the index data to the buffer (Static Draw indicates that the
 		// data is constant).
@@ -175,11 +174,10 @@ namespace Honeycomb { namespace Geometry {
 		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 
-		this->vertices = verts; // Set the vertices
-
 		// Bind the Buffer & invalidate it, in case there is already some data
 		this->bindVertexBuffer();
 		this->clearVertices();
+		this->vertices = verts;
 
 		// Convert the verticies into a float buffer which OpenGL understands
 		std::vector<float> vertFloats = Vertex::toFloatBuffer(verts);

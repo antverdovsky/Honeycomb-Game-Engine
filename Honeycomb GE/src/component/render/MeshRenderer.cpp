@@ -58,7 +58,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 
 		// Render the mesh using the shader and material provided.
 		if (this->material != nullptr) this->material->toShader(shader, "material"); // todo
-		if (this->mesh != nullptr) this->mesh->draw(shader);
+		if (this->mesh != nullptr) this->mesh->render(shader);
 
 		// Undo the winding order flip for the front face, if necessary.
 		if (this->transform->isOddNegativelyScaled()) {

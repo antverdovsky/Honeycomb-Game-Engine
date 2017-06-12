@@ -229,7 +229,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			this->skyboxShader.setUniform_i("cube", 0);
 			this->skybox.bind(0);
 
-			this->cubemapMesh.draw(this->skyboxShader);
+			this->cubemapMesh.render(this->skyboxShader);
 			break;
 		case BackgroundMode::SOLID_COLOR:
 			this->solidColorShader.bindShaderProgram();
@@ -238,7 +238,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			this->solidColorShader.setUniform_vec4(
 				"solidColor", this->solidColor);
 
-			this->cubemapMesh.draw(this->solidColorShader);
+			this->cubemapMesh.render(this->solidColorShader);
 			break;
 		}
 
@@ -316,7 +316,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		this->gBuffer.bindDrawLight(shader, bL.getType());
 		
-		quad.draw(shader);
+		quad.render(shader);
 
 		// Undo the Changes
 		glDisable(GL_CULL_FACE);
@@ -343,7 +343,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		glCullFace(GL_FRONT);	// front faces.
 
 		// Render the point light sphere with the given shader
-		volume.draw(shader);
+		volume.render(shader);
 
 		// Undo the Changes
 		glCullFace(GL_BACK);
@@ -441,7 +441,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		}
 
 		// Render the texture using the quad shader into the FINAL_2 buffer
-		this->quad.draw(this->quadShader);
+		this->quad.render(this->quadShader);
 
 		// Now the FINAL_2 buffer contains the geometry + light rendered data.
 		// When post processing, we will read from the read buffer and write to
@@ -483,7 +483,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		glDrawBuffer(GL_COLOR_ATTACHMENT0 + write);
 		this->gBuffer.bindTexture((GBufferTextureType)read, shader, 
 				"gBufferFinal");
-		this->quad.draw(shader);
+		this->quad.render(shader);
 
 		// Now read and write the other way (swap read and write)
 		int tmp = read;
@@ -499,7 +499,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		read.bind(0);
 		shader.setUniform_i("gBufferFinal", 0);
 
-		this->quad.draw(shader);
+		this->quad.render(shader);
 	}
 
 	void DeferredRenderer::renderTextureShadowMap(const bool &linear,
@@ -625,7 +625,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		tex.bind(0);
 		this->quadShader.setUniform_i("fsTexture", 0);
-		quad.draw(this->quadShader);
+		quad.render(this->quadShader);
 
 		glEnable(GL_DEPTH_TEST);
 	}
@@ -658,7 +658,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
 
 		// Render the Cone with the basic stencil shader
-		volume.draw(this->stencilShader);
+		volume.render(this->stencilShader);
 
 		// Clean up
 		glDisable(GL_DEPTH_TEST);
