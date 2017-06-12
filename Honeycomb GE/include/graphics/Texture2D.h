@@ -341,15 +341,38 @@ namespace Honeycomb { namespace Graphics {
 		/// Thrown if the Texture has not yet been initialized.
 		/// </exception>
 		void setWrap(const TextureWrapMode &s, const TextureWrapMode &t);
+
+		/// <summary>
+		/// Compares this Texture for equality with the other texture. This
+		/// will return true only if the texture pointer of this texture is
+		/// equivalent to the texture pointer of the other texture.
+		/// </summary>
+		/// <param name="other">
+		/// The other texture, to be compared to this.
+		/// </param>
+		/// <returns>
+		/// True if the texture pointers of this and the other texture are
+		/// equal, false otherwise.
+		/// </returns>
+		bool operator==(const Texture2D &that) const;
+
+		/// <summary>
+		/// Compares this Texture for inequality with the other texture. This
+		/// will return true only if the texture pointer of this texture is
+		/// not equivalent to the texture pointer of the other texture.
+		/// </summary>
+		/// <param name="other">
+		/// The other texture, to be compared to this.
+		/// </param>
+		/// <returns>
+		/// True if the texture pointers of this and the other texture are
+		/// not equal, false otherwise.
+		/// </returns>
+		bool operator!=(const Texture2D &that) const;
 	private:
 		static int textureCount; // The number of GL initialized textures
 		
 		int textureID;           // The texture "pointer"
-
-		int anisoFiltering;      // Anisotrophic Filtering values
-		bool usesMipMap;         // Does the texture use mip mapping?
-		int height;              // The height of the texture, in pixels
-		int width;               // The width of the texture, in pixels
 	};
 } }
 

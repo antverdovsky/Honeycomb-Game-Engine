@@ -445,6 +445,34 @@ namespace Honeycomb { namespace Graphics {
 		/// </exception>
 		void setWrap(const TextureWrapMode &r, const TextureWrapMode &s,
 				const TextureWrapMode &t);
+
+		/// <summary>
+		/// Compares this Cubemap for equality with the other cubemap. This
+		/// will return true only if the texture pointer of this cubemap is
+		/// equivalent to the texture pointer of the other cubemap.
+		/// </summary>
+		/// <param name="other">
+		/// The other cubemap, to be compared to this.
+		/// </param>
+		/// <returns>
+		/// True if the texture pointers of this and the other cubemap are
+		/// equal, false otherwise.
+		/// </returns>
+		bool operator==(const Cubemap &that) const;
+
+		/// <summary>
+		/// Compares this Cubemap for inequality with the other cubemap. This
+		/// will return true only if the texture pointer of this cubemap is
+		/// not equivalent to the texture pointer of the other cubemap.
+		/// </summary>
+		/// <param name="other">
+		/// The other cubemap, to be compared to this.
+		/// </param>
+		/// <returns>
+		/// True if the texture pointers of this and the other cubemap are
+		/// not equal, false otherwise.
+		/// </returns>
+		bool operator!=(const Cubemap &that) const;
 	private:
 		int textureID;                           // The texture "pointer"
 	};

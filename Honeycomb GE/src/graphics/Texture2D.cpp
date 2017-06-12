@@ -92,10 +92,6 @@ namespace Honeycomb { namespace Graphics {
 	Texture2D::Texture2D() {
 		this->isInitialized = false;
 		this->textureID = -1;
-		
-		this->usesMipMap = false;
-		this->height = -1;
-		this->width = -1;
 	}
 
 	void Texture2D::bind() const {
@@ -112,7 +108,9 @@ namespace Honeycomb { namespace Graphics {
 	}
 
 	const int& Texture2D::getHeight() const {
-		return this->height;
+		int height;
+		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &height);
+		return height;
 	}
 
 	const int& Texture2D::getTextureID() const {
@@ -120,7 +118,9 @@ namespace Honeycomb { namespace Graphics {
 	}
 
 	const int& Texture2D::getWidth() const {
-		return this->width;
+		int width;
+		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+		return width;
 	}
 
 	void Texture2D::initialize() {
@@ -150,9 +150,7 @@ namespace Honeycomb { namespace Graphics {
 		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 
-		this->anisoFiltering = aniso;
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT,
-			this->anisoFiltering);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, aniso);
 
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
@@ -192,7 +190,6 @@ namespace Honeycomb { namespace Graphics {
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA,
 			GL_UNSIGNED_BYTE, color);
 
-		this->width = this->height = 1;
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
@@ -216,9 +213,6 @@ namespace Honeycomb { namespace Graphics {
 		this->bind();
 
 		// Write the data to the texture
-		this->width = width;
-		this->height = height;
-		this->usesMipMap = mipmap;
 		glTexImage2D(GL_TEXTURE_2D, 0,
 			getGLintInternalDataFormat(iformat),
 			width, height, 0,
@@ -229,7 +223,7 @@ namespace Honeycomb { namespace Graphics {
 		// Set the default Texture2D Settings
 		this->setWrap(WRAP_REPEAT);
 		this->setAnisotropicFiltering(1.0F);
-		if (this->usesMipMap) {
+		if (mipmap) {
 			this->setFiltering(FILTER_MIN_LINEAR_MIPMAP_LINEAR, 
 				FILTER_MAG_LINEAR);
 
@@ -266,5 +260,13 @@ namespace Honeycomb { namespace Graphics {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, 
 			getGLintWrapMode(t));
 		GLErrorException::checkGLError(__FILE__, __LINE__);
+	}
+
+	bool Texture2D::operator==(const Texture2D &that) const {
+		return this->textureID == that.textureID;
+	}
+
+	bool Texture2D::operator!=(const Texture2D &that) const {
+		return this->textureID != that.textureID;
 	}
 } }

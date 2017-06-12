@@ -214,4 +214,12 @@ namespace Honeycomb { namespace Graphics {
 
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
+
+	bool Cubemap::operator==(const Cubemap &that) const {
+		return this->textureID == that.textureID;
+	}
+
+	bool Cubemap::operator!=(const Cubemap &that) const {
+		return this->textureID != that.textureID;
+	}
 } }
