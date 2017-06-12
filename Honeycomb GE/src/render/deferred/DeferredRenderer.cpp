@@ -194,14 +194,14 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		};
 
 		// The indices of the two triangles of the Quad
-		int indices[6] = { 0, 3, 2, 2, 1, 0 };
+		unsigned int indices[6] = { 0, 3, 2, 2, 1, 0 };
 
 		// Build the Quad Mesh & initialize so that it may be drawn
 		this->quad.initialize();
 		this->quad.setVertexData(
 			std::vector<Vertex>(quadVerts, quadVerts + 4));
 		this->quad.setIndexData(
-			std::vector<int>(indices, indices + 6));
+			std::vector<unsigned int>(indices, indices + 6));
 	}
 
 	void DeferredRenderer::renderBackground() {

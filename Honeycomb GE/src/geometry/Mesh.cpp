@@ -20,9 +20,49 @@ using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb { namespace Geometry {
 	Mesh::Mesh() {
-		this->vertexBufferObj = -1;
-		this->vertCount = 0;
-		this->vertSize = 0;
+		this->vertexBufferObject = -1;
+		this->indexBufferObject = -1;
+	}
+
+	void Mesh::bindIndices() {
+		GLErrorException::clear();
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
+
+		glBindBuffer(GL_ARRAY_BUFFER, this->indexBufferObject);
+
+		GLErrorException::checkGLError(__FILE__, __LINE__);
+	}
+
+	void Mesh::bindVertices() {
+		GLErrorException::clear();
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
+
+		glBindBuffer(GL_ARRAY_BUFFER, this->vertexBufferObject);
+
+		GLErrorException::checkGLError(__FILE__, __LINE__);
+	}
+
+	void Mesh::clearIndices() {
+		GLErrorException::clear();
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
+
+		glBindBuffer(GL_ARRAY_BUFFER, this->indexBufferObject);
+		glBufferData(GL_ARRAY_BUFFER, this->indices.size() * sizeof(int),
+			nullptr, GL_STATIC_DRAW);
+
+		GLErrorException::checkGLError(__FILE__, __LINE__);
+	}
+
+	void Mesh::clearVertices() {
+		GLErrorException::clear();
+		if (!this->isInitialized) throw GLItemNotInitializedException(this);
+
+		glBindBuffer(GL_ARRAY_BUFFER, this->vertexBufferObject);
+		glBufferData(GL_ARRAY_BUFFER, 
+			this->vertices.size() * Vertex::ELEMENTS_PER_VERTEX_SIZE,
+			nullptr, GL_STATIC_DRAW);
+
+		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
 	void Mesh::destroy() {
@@ -30,8 +70,8 @@ namespace Honeycomb { namespace Geometry {
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		
 		// Placeholders to store the buffer ID for the glDeleteBuffers func.
-		GLuint ibo = this->indexBufferObj;
-		GLuint vbo = this->vertexBufferObj;;
+		GLuint ibo = this->indexBufferObject;
+		GLuint vbo = this->vertexBufferObject;;
 
 		// Delete the IBO and VBO buffers
 		glDeleteBuffers(1, &ibo);
@@ -52,7 +92,7 @@ namespace Honeycomb { namespace Geometry {
 			glEnableVertexAttribArray(i);
 
 		// Bind the buffer to the VBO.
-		glBindBuffer(GL_ARRAY_BUFFER, this->vertexBufferObj);
+		glBindBuffer(GL_ARRAY_BUFFER, this->vertexBufferObject);
 
 		// Set the attribute pointer for each attribute of the vertex. Since
 		// all attributes are uniform in the number of elements, the same
@@ -64,11 +104,11 @@ namespace Honeycomb { namespace Geometry {
 				(void*)(Vertex::ELEMENTS_PER_ATTRIBUTE_SIZE * i));
 
 		// Bind the buffer to the IBO.
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBufferObj);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->indexBufferObject);
 
 		// Draw the vertex array data as triangles, from the starting vertex to
 		// the final one.
-		glDrawElements(GL_TRIANGLES, this->indexCount, GL_UNSIGNED_INT,
+		glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT,
 			(void*)0);
 
 		// Disable attribute arrays for each attribute of the vertex
@@ -76,6 +116,22 @@ namespace Honeycomb { namespace Geometry {
 			glDisableVertexAttribArray(i);
 
 		GLErrorException::checkGLError(__FILE__, __LINE__);
+	}
+
+	const int& Mesh::getIndexBufferObject() const {
+		return this->indexBufferObject;
+	}
+
+	const std::vector<unsigned int> Mesh::getIndices() const {
+		return this->indices;
+	}
+
+	const int& Mesh::getVertexBufferObject() const {
+		return this->vertexBufferObject;
+	}
+
+	const std::vector<Vertex> Mesh::getVertices() const {
+		return this->vertices;
 	}
 
 	void Mesh::initialize() {
@@ -89,40 +145,26 @@ namespace Honeycomb { namespace Geometry {
 		// Generate the IBO and VBO buffers
 		glGenBuffers(1, &ibo);
 		glGenBuffers(1, &vbo);
-
-		// Initialize the IBO buffer information of this Mesh to default
-		this->indexBufferObj = ibo;
-		this->indexCount = 0;
-		this->indexSize = 0;
-
-		// Initialize the VBO buffer information of this Mesh to default
-		this->vertexBufferObj = vbo;
-		this->vertCount = 0;
-		this->vertSize = 0;
+		this->indexBufferObject = ibo;
+		this->vertexBufferObject = vbo;
 
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
-	void Mesh::setIndexData(const std::vector<int> &indices) {
+	void Mesh::setIndexData(const std::vector<unsigned int> &indices) {
 		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 
-		// Bind the Buffer & invalidate it, in case there is already some data
-		glBindBuffer(GL_ARRAY_BUFFER, this->indexBufferObj);
-		glBufferData(GL_ARRAY_BUFFER, this->indexSize, nullptr, 
-			GL_STATIC_DRAW);
+		this->indices = indices; // Set the indices
 
-		// Set the count and size variables. The count represents the length of
-		// the index array, where as size represents the raw size, in bytes, of
-		// the index array. The total size of the array is equal to the size of
-		// one integer multiplied by the amount of integers in the array.
-		this->indexCount = indices.size();
-		this->indexSize = indices.size() * sizeof(int);
+		// Bind the Buffer & invalidate it, in case there is already some data
+		this->bindIndices();
+		this->clearIndices();
 
 		// Send the index data to the buffer (Static Draw indicates that the
 		// data is constant).
-		glBufferData(GL_ARRAY_BUFFER, this->indexSize, &indices[0],
-			GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, this->indices.size() * sizeof(int),
+			&indices[0], GL_STATIC_DRAW);
 
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
@@ -131,21 +173,20 @@ namespace Honeycomb { namespace Geometry {
 		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 
+		this->vertices = verts; // Set the vertices
+
 		// Bind the Buffer & invalidate it, in case there is already some data
-		glBindBuffer(GL_ARRAY_BUFFER, this->vertexBufferObj);
-		glBufferData(GL_ARRAY_BUFFER, this->vertSize, nullptr, GL_STATIC_DRAW);
+		this->bindVertices();
+		this->clearVertices();
 
 		// Convert the verticies into a float buffer which OpenGL understands
 		std::vector<float> vertFloats = Vertex::toFloatBuffer(verts);
 
-		// Set the count and size variables.
-		this->vertCount = verts.size();
-		this->vertSize = Vertex::ELEMENTS_PER_VERTEX_SIZE * this->vertCount;
-
 		// Send the vertex data to the buffer (Static Draw indicates that the
 		// data is constant).
-		glBufferData(GL_ARRAY_BUFFER, this->vertSize, &vertFloats[0], 
-			GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER,
+			this->vertices.size() * Vertex::ELEMENTS_PER_VERTEX_SIZE, 
+			&vertFloats[0], GL_STATIC_DRAW);
 
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}

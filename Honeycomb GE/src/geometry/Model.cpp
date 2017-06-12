@@ -265,7 +265,7 @@ namespace Honeycomb { namespace Geometry {
 
 	Honeycomb::Geometry::Mesh* Model::processAiMeshGeometry(aiMesh *aMesh) {
 		std::vector<Vertex> vertices; // Vertices Data
-		std::vector<int> indices; // Indices Data
+		std::vector<unsigned int> indices; // Indices Data
 
 		// Go through all the vertices of the Mesh (for the tangents, if the
 		// Mesh has no tangents, we should not use a default Vector3 of values
@@ -299,7 +299,7 @@ namespace Honeycomb { namespace Geometry {
 
 			// Go through all the indices of the Face
 			for (unsigned int j = 0; j < face.mNumIndices; j++) {
-				int indx = face.mIndices[j]; // Get the index
+				unsigned int indx = face.mIndices[j]; // Get the index
 				indices.push_back(indx); // Add the index to Mesh data
 			}
 		}
