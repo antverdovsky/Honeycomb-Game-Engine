@@ -20,28 +20,34 @@ namespace Honeycomb { namespace Geometry {
 		/// <summary>
 		/// Binds this Mesh's index buffer to OpenGL. Note that this is a
 		/// global bind and so any currently bound index buffer will be 
-		/// unbinded. If the mesh has not yet been initialized, a
-		/// GLItemNotInitialization exception is thrown.
+		/// unbinded.
+		/// 
+		/// If the mesh has not yet been initialized, a GLItemNotInitialized
+		/// exception is thrown.
 		/// </summary>
 		/// <exception cref="GLItemNotInitializedException">
 		/// Thrown if the Texture has not yet been initialized.
 		/// </exception>
-		void bindIndices();
+		void bindIndexBuffer();
 
 		/// <summary>
 		/// Binds this Mesh's vertex buffer to OpenGL. Note that this is a
 		/// global bind and so any currently bound vertex buffer will be
-		/// unbinded. If the mesh has not yet been initialized, a
-		/// GLItemNotInitialization exception is thrown.
+		/// unbinded.
+		/// 
+		/// If the mesh has not yet been initialized, a GLItemNotInitialized
+		/// exception is thrown.
 		/// </summary>
 		/// <exception cref="GLItemNotInitializedException">
 		/// Thrown if the Texture has not yet been initialized.
 		/// </exception>
-		void bindVertices();
+		void bindVertexBuffer();
 
 		/// <summary>
-		/// Clears the indices data of this Mesh. If the mesh has not yet been 
-		/// initialized, a GLItemNotInitialization exception is thrown.
+		/// Clears the indices data of this Mesh. 
+		/// 
+		/// If the mesh has not yet been initialized, a GLItemNotInitialized
+		/// exception is thrown.
 		/// </summary>
 		/// <exception cref="GLItemNotInitializedException">
 		/// Thrown if the Texture has not yet been initialized.
@@ -49,8 +55,10 @@ namespace Honeycomb { namespace Geometry {
 		void clearIndices();
 
 		/// <summary>
-		/// Clears the vertices data of this Mesh. If the mesh has not yet been
-		/// initialized, a GLItemNotInitialization exception is thrown.
+		/// Clears the vertices data of this Mesh. 
+		/// 
+		/// If the mesh has not yet been initialized, a GLItemNotInitialized
+		/// exception is thrown.
 		/// </summary>
 		/// <exception cref="GLItemNotInitializedException">
 		/// Thrown if the Texture has not yet been initialized.
@@ -58,9 +66,10 @@ namespace Honeycomb { namespace Geometry {
 		void clearVertices();
 
 		/// <summary>
-		/// Destroys this Mesh item by destroying the mesh buffer. If the Mesh
-		/// has not yet been initialized, a GLItemNotInitialized exception will
-		/// be thrown.
+		/// Destroys this Mesh item by destroying the mesh buffer. 
+		/// 
+		/// If the Mesh has not yet been initialized, a GLItemNotInitialized 
+		/// exception will be thrown.
 		/// </summary>
 		/// <exception cref="GLItemNotInitializedException">
 		/// Thrown if the Texture has not yet been initialized.
@@ -68,9 +77,10 @@ namespace Honeycomb { namespace Geometry {
 		void destroy();
 
 		/// <summary>
-		/// Draws this Mesh using the specified shader program. If the Mesh
-		/// has not yet been initialized, a GLItemNotInitialized exception will
-		/// be thrown.
+		/// Draws this Mesh using the specified shader program. 
+		/// 
+		/// If the Mesh has not yet been initialized, a GLItemNotInitialized 
+		/// exception will be thrown.
 		/// </summary>
 		/// <param name="shader">
 		/// The shader using which the Mesh should be drawn.
@@ -82,6 +92,9 @@ namespace Honeycomb { namespace Geometry {
 
 		/// <summary>
 		/// Returns the raw pointer of the index buffer object of this Mesh.
+		/// 
+		/// If the mesh has not yet been initialized, this pointer will be
+		/// negative.
 		/// </summary>
 		/// <returns>
 		/// The index buffer object pointer.
@@ -99,6 +112,9 @@ namespace Honeycomb { namespace Geometry {
 		/// <summary>
 		/// Returns the raw pointer of the vertex buffer object of this Mesh.
 		/// </summary>
+		/// 
+		/// If the mesh has not yet been initialized, this pointer will be
+		/// negative.
 		/// <returns>
 		/// The vertex buffer object pointer.
 		/// </returns>
@@ -114,6 +130,7 @@ namespace Honeycomb { namespace Geometry {
 
 		/// <summary>
 		/// Initializes this Mesh item by creating the appropriate mesh buffer.
+		/// 
 		/// If the Mesh has been initialized, a GLItemAlreadyInitialized
 		/// exception will be thrown.
 		/// </summary>
@@ -124,18 +141,30 @@ namespace Honeycomb { namespace Geometry {
 
 		/// <summary>
 		/// Sets the indices data for this Mesh.
+		/// 
+		/// If the Mesh has not yet been initialized, a GLItemNotInitialized 
+		/// exception will be thrown.
 		/// </summary>
 		/// <param name="indices">
 		/// The vector of indices which define this Mesh.
 		/// </param>
+		/// <exception cref="GLItemAlreadyInitializedException">
+		/// Thrown if the Texture has already been initialized.
+		/// </exception>
 		void setIndexData(const std::vector<unsigned int> &indices);
 
 		/// <summary>
 		/// Sets the vertices data for this Mesh.
+		/// 
+		/// If the Mesh has not yet been initialized, a GLItemNotInitialized 
+		/// exception will be thrown.
 		/// </summary>
 		/// <param name="vertices">
 		/// The vector of vertices which define this Mesh.
 		/// </param>
+		/// <exception cref="GLItemAlreadyInitializedException">
+		/// Thrown if the Texture has already been initialized.
+		/// </exception>
 		void setVertexData(const std::vector<Vertex> &vertices);
 	private:
 		int vertexBufferObject;                  // VBO "Pointer"

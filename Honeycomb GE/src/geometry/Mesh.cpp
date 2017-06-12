@@ -24,7 +24,7 @@ namespace Honeycomb { namespace Geometry {
 		this->indexBufferObject = -1;
 	}
 
-	void Mesh::bindIndices() {
+	void Mesh::bindIndexBuffer() {
 		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 
@@ -33,7 +33,7 @@ namespace Honeycomb { namespace Geometry {
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
-	void Mesh::bindVertices() {
+	void Mesh::bindVertexBuffer() {
 		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 
@@ -46,6 +46,7 @@ namespace Honeycomb { namespace Geometry {
 		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 
+		this->indices.clear();
 		glBindBuffer(GL_ARRAY_BUFFER, this->indexBufferObject);
 		glBufferData(GL_ARRAY_BUFFER, this->indices.size() * sizeof(int),
 			nullptr, GL_STATIC_DRAW);
@@ -57,6 +58,7 @@ namespace Honeycomb { namespace Geometry {
 		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 
+		this->vertices.clear();
 		glBindBuffer(GL_ARRAY_BUFFER, this->vertexBufferObject);
 		glBufferData(GL_ARRAY_BUFFER, 
 			this->vertices.size() * Vertex::ELEMENTS_PER_VERTEX_SIZE,
@@ -158,13 +160,13 @@ namespace Honeycomb { namespace Geometry {
 		this->indices = indices; // Set the indices
 
 		// Bind the Buffer & invalidate it, in case there is already some data
-		this->bindIndices();
+		this->bindIndexBuffer();
 		this->clearIndices();
 
 		// Send the index data to the buffer (Static Draw indicates that the
 		// data is constant).
 		glBufferData(GL_ARRAY_BUFFER, this->indices.size() * sizeof(int),
-			&indices[0], GL_STATIC_DRAW);
+			&this->indices[0], GL_STATIC_DRAW);
 
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
@@ -176,7 +178,7 @@ namespace Honeycomb { namespace Geometry {
 		this->vertices = verts; // Set the vertices
 
 		// Bind the Buffer & invalidate it, in case there is already some data
-		this->bindVertices();
+		this->bindVertexBuffer();
 		this->clearVertices();
 
 		// Convert the verticies into a float buffer which OpenGL understands
