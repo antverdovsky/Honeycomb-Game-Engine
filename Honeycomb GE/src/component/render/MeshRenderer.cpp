@@ -79,6 +79,6 @@ namespace Honeycomb { namespace Component { namespace Render {
 	}
 
 	void MeshRenderer::start() {
-		this->transform = this->getAttached()->getComponent<Transform>();
+		this->transform = &this->getAttached()->getComponent<Transform>();
 	}
 } } }

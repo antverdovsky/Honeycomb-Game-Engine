@@ -28,59 +28,59 @@ namespace HoneycombTest {
 				DeferredRenderer::FinalTexture::VARIANCE_SHADOW_MAP);
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_4)) {
-			this->car->getChildren().at(5)->getComponent<SpotLight>()->
+			this->car->getChildren().at(5)->getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_NONE);
-			this->car->getChildren().at(6)->getComponent<SpotLight>()->
+			this->car->getChildren().at(6)->getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_NONE);
-			this->suzanne.getChild("Spot Light").getComponent<SpotLight>()->
+			this->suzanne.getChild("Spot Light").getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_NONE);
 		}
 		if(GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_5)) {
-			this->car->getChildren().at(5)->getComponent<SpotLight>()->
+			this->car->getChildren().at(5)->getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_HARD);
-			this->car->getChildren().at(6)->getComponent<SpotLight>()->
+			this->car->getChildren().at(6)->getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_HARD);
-			this->suzanne.getChild("Spot Light").getComponent<SpotLight>()->
+			this->suzanne.getChild("Spot Light").getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_HARD);
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_6)) {
-			this->car->getChildren().at(5)->getComponent<SpotLight>()->
+			this->car->getChildren().at(5)->getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_INTERPOLATED);
-			this->car->getChildren().at(6)->getComponent<SpotLight>()->
+			this->car->getChildren().at(6)->getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_INTERPOLATED);
-			this->suzanne.getChild("Spot Light").getComponent<SpotLight>()->
+			this->suzanne.getChild("Spot Light").getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_INTERPOLATED);
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_7)) {
-			this->car->getChildren().at(5)->getComponent<SpotLight>()->
+			this->car->getChildren().at(5)->getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_PCF);
-			this->car->getChildren().at(6)->getComponent<SpotLight>()->
+			this->car->getChildren().at(6)->getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_PCF);
-			this->suzanne.getChild("Spot Light").getComponent<SpotLight>()->
+			this->suzanne.getChild("Spot Light").getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_PCF);
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_8)) {
-			this->car->getChildren().at(5)->getComponent<SpotLight>()->
+			this->car->getChildren().at(5)->getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_PCF_INTERPOLATED);
-			this->car->getChildren().at(6)->getComponent<SpotLight>()->
+			this->car->getChildren().at(6)->getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_PCF_INTERPOLATED);
-			this->suzanne.getChild("Spot Light").getComponent<SpotLight>()->
+			this->suzanne.getChild("Spot Light").getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_PCF_INTERPOLATED);
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_9)) {
-			this->car->getChildren().at(5)->getComponent<SpotLight>()->
+			this->car->getChildren().at(5)->getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_VARIANCE);
-			this->car->getChildren().at(6)->getComponent<SpotLight>()->
+			this->car->getChildren().at(6)->getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_VARIANCE);
-			this->suzanne.getChild("Spot Light").getComponent<SpotLight>()->
+			this->suzanne.getChild("Spot Light").getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_VARIANCE);
 		}
 		if (GameInput::getGameInput()->getKeyDown(GameInput::KEY_CODE_0)) {
-			this->car->getChildren().at(5)->getComponent<SpotLight>()->
+			this->car->getChildren().at(5)->getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_VARIANCE_AA);
-			this->car->getChildren().at(6)->getComponent<SpotLight>()->
+			this->car->getChildren().at(6)->getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_VARIANCE_AA);
-			this->suzanne.getChild("Spot Light").getComponent<SpotLight>()->
+			this->suzanne.getChild("Spot Light").getComponent<SpotLight>().
 				getShadow().setShadowType(ShadowType::SHADOW_VARIANCE_AA);
 		}
 	}
@@ -150,7 +150,7 @@ namespace HoneycombTest {
 
 		// Create the Emerald Material for the Sphere (not really emerald...)
 		Material *emeraldMaterial = new Material(this->emeraldSph.
-			getComponent<MeshRenderer>()->getMaterial());
+			getComponent<MeshRenderer>().getMaterial());
 		emeraldMaterial->glVector3fs.setValue("ambientColor",
 			Vector3f(0.9215F, 0.1745F, 0.0215F));
 		emeraldMaterial->glVector3fs.setValue("albedoColor",
@@ -160,12 +160,12 @@ namespace HoneycombTest {
 		emeraldMaterial->glVector3fs.setValue("specularColor",
 			Vector3f(0.633F, 0.727811F, 0.633F));
 		emeraldMaterial->glFloats.setValue("shininess", 32.0F);
-		this->emeraldSph.getComponent<MeshRenderer>()->setMaterial(
+		this->emeraldSph.getComponent<MeshRenderer>().setMaterial(
 			*emeraldMaterial);
 
 		// Give the plane a textured material
 		Material *colorMaterial = new Material(
-			this->plane.getComponent<MeshRenderer>()->getMaterial());
+			this->plane.getComponent<MeshRenderer>().getMaterial());
 		Texture2D *colorTexture = new Texture2D();
 		colorTexture->initialize();
 		colorTexture-> // vvvvvv this is a leak here but whatever for now...
@@ -177,33 +177,33 @@ namespace HoneycombTest {
 		colorMaterial->glVector2fs.setValue("globalTiling",
 			Vector2f(10.0F, 10.0F));
 		colorMaterial->glVector3fs.setValue("diffuseColor", Vector3f(1, 1, 0));
-		this->plane.getComponent<MeshRenderer>()->
+		this->plane.getComponent<MeshRenderer>().
 			setMaterial(*colorMaterial);
 
 		// Add a displacement map to the second cube. (NOTE: Blender won't
 		// export the displacement map for some reason... possible bug?)
 		Material *cube2Material = new Material(
-			this->cube2->getChild("Cube").getComponent<MeshRenderer>()->getMaterial());
+			this->cube2->getChild("Cube").getComponent<MeshRenderer>().getMaterial());
 		Texture2D *displacementTexture = new Texture2D();
 		displacementTexture->initialize();
 		displacementTexture->setImageDataIO(ImageIO("../Test Game/res/textures/brick-cube2/displace.bmp"));
 		cube2Material->glSampler2Ds.setValue("displacementTexture.sampler", *displacementTexture);
 		cube2Material->glVector2fs.setValue("globalTiling", Vector2f(2.0F, 2.0F));
-		this->cube2->getChild("Cube").getComponent<MeshRenderer>()->setMaterial(*cube2Material);
+		this->cube2->getChild("Cube").getComponent<MeshRenderer>().setMaterial(*cube2Material);
 
 		// Give the sphere and suzanne a special reflective material (skybox)
 		Material *reflectiveMaterial = new Material(
-			this->sphere.getComponent<MeshRenderer>()->getMaterial());
+			this->sphere.getComponent<MeshRenderer>().getMaterial());
 		reflectiveMaterial->glFloats.setValue("refractiveIndex", 1.55F);
 		reflectiveMaterial->glFloats.setValue("reflectionStrength", 1.0F);
 		reflectiveMaterial->glVector3fs.setValue("specularColor", 
 			Vector3f(1.0F, 1.0F, 1.0F));
 		reflectiveMaterial->glFloats.setValue("shininess", 64.0F);
-		this->suzanne.getComponent<MeshRenderer>()->setMaterial(
+		this->suzanne.getComponent<MeshRenderer>().setMaterial(
 			*reflectiveMaterial);
-		this->sphere.getComponent<MeshRenderer>()->setMaterial(
+		this->sphere.getComponent<MeshRenderer>().setMaterial(
 			*reflectiveMaterial);
-		this->car->getChild("Body").getComponent<MeshRenderer>()->setMaterial(
+		this->car->getChild("Body").getComponent<MeshRenderer>().setMaterial(
 			*reflectiveMaterial);
 
 		// Give Suzanne an Input Transformable Component
@@ -223,30 +223,30 @@ namespace HoneycombTest {
 		// Give Suzanne a Spot Light and a Point Light
 		GameObject *suzSpLight = Builder::getBuilder()->newSpotLight();
 		GameObject *suzPtLight = Builder::getBuilder()->newPointLight();
-		suzSpLight->getComponent<SpotLight>()->setColor(
+		suzSpLight->getComponent<SpotLight>().setColor(
 			Vector3f(1.0F, 1.0F, 1.0F));
-		suzSpLight->getComponent<SpotLight>()->setIntensity(2.5F);
-		suzSpLight->getComponent<SpotLight>()->getRange() = 10.0F;
-		suzSpLight->getComponent<SpotLight>()->getAngle() = PI / 2.0F;
-		suzPtLight->getComponent<PointLight>()->setColor(
+		suzSpLight->getComponent<SpotLight>().setIntensity(2.5F);
+		suzSpLight->getComponent<SpotLight>().getRange() = 10.0F;
+		suzSpLight->getComponent<SpotLight>().getAngle() = PI / 2.0F;
+		suzPtLight->getComponent<PointLight>().setColor(
 			Vector3f(1.0F, 1.0F, 1.0F));
-		suzPtLight->getComponent<PointLight>()->setIntensity(2.5F);
-		suzPtLight->getComponent<PointLight>()->setRange(10.0F);
+		suzPtLight->getComponent<PointLight>().setIntensity(2.5F);
+		suzPtLight->getComponent<PointLight>().setRange(10.0F);
 		suzanne.addChild(*suzSpLight);
 		suzanne.addChild(*suzPtLight);
-		suzSpLight->getComponent<Transform>()->translate(
+		suzSpLight->getComponent<Transform>().translate(
 			Vector3f::getGlobalForward());
 
 		// Construct a default Ambient and Directional Light; decrease the
 		// intensity of the lights so they don't overwhelm the scene
 		this->ambient = Builder::getBuilder()->newAmbientLight();
 		this->directional = Builder::getBuilder()->newDirectionalLight();
-		this->ambient->getComponent<AmbientLight>()->setIntensity(0.01F);
-		this->directional->getComponent<DirectionalLight>()->
+		this->ambient->getComponent<AmbientLight>().setIntensity(0.01F);
+		this->directional->getComponent<DirectionalLight>().
 			setIntensity(0.05F);
-		this->directional->getComponent<DirectionalLight>()->
+		this->directional->getComponent<DirectionalLight>().
 			getShadow().setShadowType(ShadowType::SHADOW_VARIANCE_AA);
-		this->directional->getComponent<DirectionalLight>()->
+		this->directional->getComponent<DirectionalLight>().
 			getShadow().setIntensity(1.0F);
 		this->directional->addComponent(*suzInputTranfs->clone());
 
@@ -256,31 +256,31 @@ namespace HoneycombTest {
 		this->camera->addComponent(*camTransf);
 		
 		// Scale and position the Game Objects
-		this->plane.getComponent<Transform>()->setScale(
+		this->plane.getComponent<Transform>().setScale(
 			Vector3f(15.0F, 1.0F, 25.0F));
-		this->cube->getComponent<Transform>()->setTranslation(
+		this->cube->getComponent<Transform>().setTranslation(
 			Vector3f(-2.5F, 1.0F, -5.0F));
-		this->cube2->getComponent<Transform>()->setTranslation(
+		this->cube2->getComponent<Transform>().setTranslation(
 			Vector3f(0.0F, 1.0F, -3.5F));
-		this->cube2->getComponent<Transform>()->rotate(
+		this->cube2->getComponent<Transform>().rotate(
 			Vector3f::getGlobalUp(), PI / 4.0F);
-		this->sphere.getComponent<Transform>()->setScale(
+		this->sphere.getComponent<Transform>().setScale(
 			Vector3f(PI, PI, PI));
-		this->sphere.getComponent<Transform>()->setTranslation(
+		this->sphere.getComponent<Transform>().setTranslation(
 			Vector3f(3.0F, 0.0F, -7.5F));
-		this->car->getComponent<Transform>()->setTranslation(
+		this->car->getComponent<Transform>().setTranslation(
 			Vector3f(-3.0F, 1.36F, 8.0F));
-		this->car->getComponent<Transform>()->setScale(
+		this->car->getComponent<Transform>().setScale(
 			Vector3f(2.0F, 2.0F, 2.0F));
-		this->suzanne.getComponent<Transform>()->setTranslation(
+		this->suzanne.getComponent<Transform>().setTranslation(
 			Vector3f(2.0F, 2.5F, 3.0F));
-		this->directional->getComponent<Transform>()->rotate(
+		this->directional->getComponent<Transform>().rotate(
 			Vector3f::getGlobalRight(), -PI / 4);
-		this->earth->getComponent<Transform>()->setScale(
+		this->earth->getComponent<Transform>().setScale(
 			Vector3f(5.0F, 5.0F, 5.0F));
-		this->earth->getComponent<Transform>()->setTranslation(
+		this->earth->getComponent<Transform>().setTranslation(
 			Vector3f(7.5F, 5.0F, 5.0F));
-		this->emeraldSph.getComponent<Transform>()->setTranslation(
+		this->emeraldSph.getComponent<Transform>().setTranslation(
 			Vector3f(-5.0F, 1.0F, -5.0F));
 
 		this->cube->addComponent(*suzInputTranfs->clone());
@@ -292,26 +292,26 @@ namespace HoneycombTest {
 		GameObject *carHeadlightR = Builder::getBuilder()->newSpotLight();
 		this->car->addChild(*carHeadlightL);
 		this->car->addChild(*carHeadlightR);
-		carHeadlightL->getComponent<SpotLight>()->setAttenuation(
+		carHeadlightL->getComponent<SpotLight>().setAttenuation(
 			Attenuation(1.0F, 0.0F, 0.05F));
-		carHeadlightL->getComponent<SpotLight>()->getRange() = 15.0F;
-		carHeadlightL->getComponent<SpotLight>()->getAngle() = PI / 2;
-		carHeadlightL->getComponent<SpotLight>()->setIntensity(8.0F);
-		carHeadlightL->getComponent<SpotLight>()->getShadow().setIntensity(1.0F);
-		carHeadlightL->getComponent<Transform>()->setTranslation(
+		carHeadlightL->getComponent<SpotLight>().getRange() = 15.0F;
+		carHeadlightL->getComponent<SpotLight>().getAngle() = PI / 2;
+		carHeadlightL->getComponent<SpotLight>().setIntensity(8.0F);
+		carHeadlightL->getComponent<SpotLight>().getShadow().setIntensity(1.0F);
+		carHeadlightL->getComponent<Transform>().setTranslation(
 			Vector3f(-4.391F, 0.709F, 3.321F));
-		carHeadlightR->getComponent<SpotLight>()->setAttenuation(
+		carHeadlightR->getComponent<SpotLight>().setAttenuation(
 			Attenuation(1.0F, 0.0F, 0.05F));
-		carHeadlightR->getComponent<SpotLight>()->getRange() = 15.0F;
-		carHeadlightR->getComponent<SpotLight>()->getAngle() = PI / 2;
-		carHeadlightR->getComponent<SpotLight>()->setIntensity(8.0F);
-		carHeadlightR->getComponent<SpotLight>()->getShadow().setIntensity(1.0F);
-		carHeadlightR->getComponent<Transform>()->setTranslation(
+		carHeadlightR->getComponent<SpotLight>().getRange() = 15.0F;
+		carHeadlightR->getComponent<SpotLight>().getAngle() = PI / 2;
+		carHeadlightR->getComponent<SpotLight>().setIntensity(8.0F);
+		carHeadlightR->getComponent<SpotLight>().getShadow().setIntensity(1.0F);
+		carHeadlightR->getComponent<Transform>().setTranslation(
 			Vector3f( -1.391F, 0.709F, 3.321F));
 
-		suzSpLight->getComponent<SpotLight>()->getShadow().setShadowType(ShadowType::SHADOW_HARD);
-		carHeadlightL->getComponent<SpotLight>()->getShadow().setShadowType(ShadowType::SHADOW_HARD);
-		carHeadlightR->getComponent<SpotLight>()->getShadow().setShadowType(ShadowType::SHADOW_HARD);
+		suzSpLight->getComponent<SpotLight>().getShadow().setShadowType(ShadowType::SHADOW_HARD);
+		carHeadlightL->getComponent<SpotLight>().getShadow().setShadowType(ShadowType::SHADOW_HARD);
+		carHeadlightR->getComponent<SpotLight>().getShadow().setShadowType(ShadowType::SHADOW_HARD);
 
 		// Add all of the initialized objects to the Game Scene hierarchy
 		this->gameScene.addChild(*this->car);

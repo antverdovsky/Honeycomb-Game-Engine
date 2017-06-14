@@ -58,7 +58,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 	}
 
 	void DirectionalLight::start() {
-		this->transform = this->getAttached()->getComponent<Transform>();
+		this->transform = &this->getAttached()->getComponent<Transform>();
 
 		// Add event handler to the Transform
 		this->transformChangeHandler.addAction(

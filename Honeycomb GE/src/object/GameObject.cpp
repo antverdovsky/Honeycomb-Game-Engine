@@ -61,10 +61,13 @@ namespace Honeycomb { namespace Object {
 		if (o.parent != nullptr) o.parent->removeChild(&o);
 		o.parent = this;
 
-		// Parent the Transform of the child to this Transform
-		Transform *childTransf = o.getComponent<Transform>();
-		if (childTransf != nullptr)
-			childTransf->setParent(this->getComponent<Transform>());
+		// Parent the Transform of the child to this Transform, if it has one
+		try {
+			Transform &childTransf = o.getComponent<Transform>();
+			childTransf.setParent(&this->getComponent<Transform>());
+		} catch (GameEntityNotAttachedException e) {
+		
+		}
 	}
 
 	void GameObject::addComponent(GameComponent &c) {
@@ -85,9 +88,8 @@ namespace Honeycomb { namespace Object {
 		}
 
 		// Unparent the Transform of this
-		Transform *thisTransf = this->getComponent<Transform>();
-		if (thisTransf != nullptr)
-			thisTransf->setParent(nullptr);
+		Transform &thisTransf = this->getComponent<Transform>();
+		thisTransf.setParent(nullptr);
 	}
 
 	GameObject& GameObject::getChild(const std::string &name) {
@@ -113,23 +115,21 @@ namespace Honeycomb { namespace Object {
 		return this->children;
 	}
 
-	GameComponent* GameObject::getComponent(const std::string &name) {
-		return const_cast<GameComponent*>(static_cast<const GameObject*>
+	GameComponent& GameObject::getComponent(const std::string &name) {
+		return const_cast<GameComponent&>(static_cast<const GameObject*>
 			(this)->getComponent(name));
 	}
 
-	const GameComponent* GameObject::getComponent(const std::string &name)
+	const GameComponent& GameObject::getComponent(const std::string &name)
 			const {
 		// Go through all components and try to find one whose name matches
-		for (const GameComponent* comp : this->components)
-			if (comp->getName() == name)
-				return comp;
+		for (const GameComponent* comp : this->components) {
+			if (comp->getName() == name) {
+				return *comp;
+			}
+		}
 
-		Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
-			"Object " + this->name + " does not contain component " + name);
-
-		// If unable to find a matching component -> Return NULL
-		return NULL;
+		throw GameEntityNotAttachedException(this, name);
 	}
 
 	std::vector<GameComponent*>& GameObject::getComponents() {
@@ -191,8 +191,8 @@ namespace Honeycomb { namespace Object {
 		o->parent = nullptr;
 
 		// Notify child's transform it no longer has a parent
-		Transform *childTransf = o->getComponent<Transform>();
-		if (childTransf) childTransf->setParent(nullptr);
+		Transform &childTransf = o->getComponent<Transform>();
+		childTransf.setParent(nullptr);
 	}
 
 	void GameObject::removeComponent(GameComponent *c) {

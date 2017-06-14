@@ -77,8 +77,7 @@ namespace HoneycombTest { namespace Components {
 		if (!this->isActive) return; // If not active, don't do anything!
 
 		// Get the Transform which will be modified, and a pointer to the Input
-		Transform *transform = 
-			this->attached->getComponent<Transform>();
+		Transform &transform = this->attached->getComponent<Transform>();
 		GameInput *input = GameInput::getGameInput();
 
 		// Get the forward, up and right vectors
@@ -92,45 +91,45 @@ namespace HoneycombTest { namespace Components {
 		float sS = this->speedS * GameTime::getGameTime()->getDeltaTimeS();
 
 		if (input->getKeyDown(this->movForward))
-			transform->translate( forward * sM, this->space);
+			transform.translate( forward * sM, this->space);
 		else if (input->getKeyDown(this->movBackward))
-			transform->translate(-forward * sM, this->space);
+			transform.translate(-forward * sM, this->space);
 		if (input->getKeyDown(this->movRight))
-			transform->translate( right * sM, this->space);
+			transform.translate( right * sM, this->space);
 		else if (input->getKeyDown(this->movLeft))
-			transform->translate(-right * sM, this->space);
+			transform.translate(-right * sM, this->space);
 		if (input->getKeyDown(this->movUp))
-			transform->translate( up * sM, this->space);
+			transform.translate( up * sM, this->space);
 		else if (input->getKeyDown(this->movDown))
-			transform->translate(-up * sM, this->space);
+			transform.translate(-up * sM, this->space);
 
 		if (input->getKeyDown(this->pitchUp))
-			transform->rotate( right, sR, this->space);
+			transform.rotate( right, sR, this->space);
 		else if (input->getKeyDown(this->pitchDown))
-			transform->rotate(-right, sR, this->space);
+			transform.rotate(-right, sR, this->space);
 		if (input->getKeyDown(this->rollLeft))
-			transform->rotate(-forward, sR, this->space);
+			transform.rotate(-forward, sR, this->space);
 		else if (input->getKeyDown(this->rollRight))
-			transform->rotate( forward, sR, this->space);
+			transform.rotate( forward, sR, this->space);
 		if (input->getKeyDown(this->yawLeft))
-			transform->rotate( up, sR, this->space);
+			transform.rotate( up, sR, this->space);
 		else if (input->getKeyDown(this->yawRight))
-			transform->rotate(-up, sR, this->space);
+			transform.rotate(-up, sR, this->space);
 
 		Vector3f scale = this->space == Space::GLOBAL ?
-			transform->getGlobalScale() : transform->getLocalScale();
+			transform.getGlobalScale() : transform.getLocalScale();
 
 		if (input->getKeyDown(this->scaleUpR))
-			transform->setScale(scale + (right * sS), this->space);
+			transform.setScale(scale + (right * sS), this->space);
 		else if (input->getKeyDown(this->scaleDownR))
-			transform->setScale(scale - (right * sS), this->space);
+			transform.setScale(scale - (right * sS), this->space);
 		if (input->getKeyDown(this->scaleUpU))
-			transform->setScale(scale + (up * sS), this->space);
+			transform.setScale(scale + (up * sS), this->space);
 		else if (input->getKeyDown(this->scaleDownU))
-			transform->setScale(scale - (up * sS), this->space);
+			transform.setScale(scale - (up * sS), this->space);
 		if (input->getKeyDown(this->scaleUpF))
-			transform->setScale(scale + (forward * sS), this->space);
+			transform.setScale(scale + (forward * sS), this->space);
 		else if (input->getKeyDown(this->scaleDownF))
-			transform->setScale(scale - (forward * sS), this->space);
+			transform.setScale(scale - (forward * sS), this->space);
 	}
 } }

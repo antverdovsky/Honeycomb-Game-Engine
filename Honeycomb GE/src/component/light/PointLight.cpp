@@ -81,7 +81,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 	
 	void PointLight::start() {
 		// Get the position from the Transform.
-		this->position = &this->getAttached()->getComponent<Transform>()->
+		this->position = &this->getAttached()->getComponent<Transform>().
 			getGlobalTranslation();
 
 		BaseLight::start();

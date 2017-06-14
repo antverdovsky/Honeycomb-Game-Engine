@@ -107,7 +107,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 	}
 
 	void SpotLight::start() {
-		this->transform = this->getAttached()->getComponent<Transform>();
+		this->transform = &this->getAttached()->getComponent<Transform>();
 
 		// Add event handler to the Transform
 		this->transformChangeHandler.addAction(

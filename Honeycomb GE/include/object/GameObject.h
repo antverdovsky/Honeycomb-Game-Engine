@@ -12,6 +12,41 @@ namespace Honeycomb { namespace Component { class GameComponent; } }
 namespace Honeycomb { namespace Scene { class GameScene; } }
 
 namespace Honeycomb { namespace Object {
+	/// <summary>
+	/// Exception which is to be thrown when a Game Object does not have a
+	/// component or child which the user is trying to access.
+	/// </summary>
+	class GameEntityNotAttachedException : public std::runtime_error {
+	public:
+		/// <summary>
+		/// Creates a new Game Entity Not Attached Exception for the object
+		/// of the specified name.
+		/// </summary>
+		/// <param name="g">
+		/// The game object which does not contain the Game Entity of the
+		/// given name.
+		/// </param>
+		/// <param name="name">
+		/// The name of the Game Entity which is not attached.
+		/// </param>
+		GameEntityNotAttachedException(const GameObject *g,
+			const std::string &name);
+
+		/// <summary>
+		/// Returns a constant character string containing the description of
+		/// the exception.
+		/// </summary>
+		/// <returns>
+		/// The constant character string exception info containing the name
+		/// of the Game Object and the name of the entity which could not be
+		/// fetched from the Game Object.
+		/// </returns>
+		virtual const char* what() const throw();
+	private:
+		const GameObject *gameObject;   // Game Object for which exc. is thrown
+		std::string entityName;         // Name of entity which D.N.E.
+	};
+
 	class GameObject {
 		friend class Honeycomb::Scene::GameScene;
 	public:
@@ -46,10 +81,12 @@ namespace Honeycomb { namespace Object {
 		void deparent();
 
 		/// <summary>
-		/// Gets the child of this Game Object which has the specified name.
+		/// Gets the child of this Game Object which has the specified name. If
+		/// the object has multiple children of the specified name, the first
+		/// child found in the children vector is returned.
 		/// </summary>
 		/// <param name="name">
-		/// The name of the Game Object.
+		/// The name of the Game Object child.
 		/// </param>
 		/// <returns>
 		/// The reference to the child Game Object.
@@ -60,13 +97,15 @@ namespace Honeycomb { namespace Object {
 		GameObject& getChild(const std::string &name);
 
 		/// <summary>
-		/// Gets the child of this Game Object which has the specified name.
+		/// Gets the child of this Game Object which has the specified name. If
+		/// the object has multiple children of the specified name, the first
+		/// child found in the children vector is returned.
 		/// </summary>
 		/// <param name="name">
-		/// The name of the Game Object.
+		/// The name of the Game Object child.
 		/// </param>
 		/// <returns>
-		/// The reference to the child Game Object.
+		/// The constant reference to the child Game Object.
 		/// </returns>
 		/// <exception cref="GameEntityNotAttachedException">
 		/// Thrown if the game object has no child of the specified name.
@@ -81,78 +120,131 @@ namespace Honeycomb { namespace Object {
 		/// return : The constant list containing the children game objects.
 		const std::vector<GameObject*>& getChildren() const;
 
-		/// Gets the component with the specified name, or NULL if no such
-		/// component exists.
-		/// const string &name : The name of the component.
-		/// return : The component object.
-		Honeycomb::Component::GameComponent*
+		/// <summary>
+		/// Gets the component of this Game Object which has the specified
+		/// name. If the object has multiple game components of the specified
+		/// name, the first component found in the components vector is
+		/// returned.
+		/// </summary>
+		/// <param name="name">
+		/// The name of the Game Component attached to this Game Object.
+		/// </param>
+		/// <returns>
+		/// The reference to the attached Game Component.
+		/// </returns>
+		/// <exception cref="GameEntityNotAttachedException">
+		/// Thrown if the game object has no component of the specified name.
+		/// </exception>
+		Honeycomb::Component::GameComponent&
 			getComponent(const std::string &name);
 
-		/// Gets the component with the specified name, or NULL if no such
-		/// component exists.
-		/// const string &name : The name of the component.
-		/// return : The component object.
-		const Honeycomb::Component::GameComponent*
+		/// <summary>
+		/// Gets the component of this Game Object which has the specified
+		/// name. If the object has multiple game components of the specified
+		/// name, the first component found in the components vector is
+		/// returned.
+		/// </summary>
+		/// <param name="name">
+		/// The name of the Game Component attached to this Game Object.
+		/// </param>
+		/// <returns>
+		/// The constant reference to the attached Game Component.
+		/// </returns>
+		/// <exception cref="GameEntityNotAttachedException">
+		/// Thrown if the game object has no component of the specified name.
+		/// </exception>
+		const Honeycomb::Component::GameComponent&
 				getComponent(const std::string &name) const;
 
-		/// Returns the first component in the components list of this Game
-		/// Object which has the same type as specified. If the object does not
-		/// have said component, a nullptr is returned instead.
-		/// return : The component object constant pointer.
-		template<class Type>
-		const inline Type* getComponent() const {
-			for (Honeycomb::Component::GameComponent *comp : this->components)
-				if (dynamic_cast<Type*>(comp) != nullptr)
-					return dynamic_cast<const Type*>(comp);
-
-			// If unable to find a matching component -> Print Warning & Return
-			// a nullptr
-			Honeycomb::Debug::Logger::getLogger().logWarning(
-				__FUNCTION__, __LINE__, "Object " + this->name + " does not "
-				"contain component " + typeid(Type).name());
-			return nullptr;
-		}
-
-		/// Returns the first component in the components list of this Game
-		/// Object which has the same type as specified. If the object does not
-		/// have said component, a nullptr is returned instead.
-		/// return : The component object pointer.
-		template<class Type>
-		inline Type* getComponent() {
-			return const_cast<Type*>(static_cast<const GameObject*>
+		/// <summary>
+		/// Gets the component of this Game Object which has the specified Type
+		/// and downcasts it to that type. If the game object has multiple game
+		/// components of the specified type, the first component found in the
+		/// components vector is returned.
+		/// </summary>
+		/// <typeparam name="Type">
+		/// The type of the game component which is attached to this Game 
+		/// Object.
+		/// </typeparam>
+		/// <returns>
+		/// The reference to the game component found.
+		/// </returns>
+		/// <exception cref="GameEntityNotAttachedException">
+		/// Thrown if the game object has no component of the specified name.
+		/// </exception>
+		template<class Type> 
+		Type& getComponent() {
+			return const_cast<Type&>(static_cast<const GameObject*>
 				(this)->getComponent<Type>());
 		}
 
-		/// Gets the component with the specified name, downcast to the
-		/// specific type of component.
-		/// class Type : The type of the component.
-		/// const string &name : The name of the component.
-		/// return : The constant pointer to the component object.
-		template<class Type>
-		const inline Type* getComponent(const std::string &name) const {
-			const Honeycomb::Component::GameComponent *comp =
-				this->getComponent(name); // Get component
+		/// <summary>
+		/// Gets the component of this Game Object which has the specified Type
+		/// and downcasts it to that type. If the game object has multiple game
+		/// components of the specified type, the first component found in the
+		/// components vector is returned.
+		/// <summary>
+		/// <typeparam name="Type">
+		/// The type of the game component which is attached to this Game 
+		/// Object.
+		/// </typeparam>
+		/// <returns>
+		/// The constant reference to the game component found.
+		/// </returns>
+		/// <exception cref="GameEntityNotAttachedException">
+		/// Thrown if the game object has no component of the specified name.
+		/// </exception>
+		template<class Type> 
+		const Type& getComponent() const {
+			for (auto *comp : this->components) {
+				if (dynamic_cast<Type*>(comp) != nullptr) {
+					return dynamic_cast<const Type&>(*comp);
+				}
+			}
 
-			// If the component does not exist -> Print Warning & Return NULL.
-			// Otherwise, return the component, cast down to its specific type.
-			if (comp == nullptr) {
-				Honeycomb::Debug::Logger::getLogger().logWarning(
-					__FUNCTION__, __LINE__, "Object " + this->name + " does "
-					"not contain component " + name);
-				
-				return nullptr;
-			} else return dynamic_cast<const Type*>(this->getComponent(name));
+			throw GameEntityNotAttachedException(this, typeid(Type).name());
 		}
-		
+
 		/// Gets the component with the specified name, downcast to the
 		/// specific type of component.
 		/// class Type : The type of the component.
 		/// const string &name : The name of the component.
 		/// return : The pointer to the component object.
-		template<class Type>
-		inline Type* getComponent(const std::string &name) {
-			return const_cast<Type*>(static_cast<const GameObject*>
+		template<class Type> 
+		Type& getComponent(const std::string &name) {
+			return const_cast<Type&>(static_cast<const GameObject*>
 				(this)->getComponent<Type>(name));
+		}
+
+		/// <summary>
+		/// Gets the component of this Game Object which has the specified Type
+		/// and name and downcasts it to that type. If the game object has 
+		/// multiple game components of the specified type, the first component
+		/// found in the components vector is returned.
+		/// <summary>
+		/// <param name="name">
+		/// The name of the game component to be found.
+		/// </param>
+		/// <typeparam name="Type">
+		/// The type of the game component which is attached to this Game 
+		/// Object.
+		/// </typeparam>
+		/// <returns>
+		/// The constant reference to the game component found.
+		/// </returns>
+		/// <exception cref="GameEntityNotAttachedException">
+		/// Thrown if the game object has no component of the specified name.
+		/// </exception>
+		template<class Type> 
+		const Type& getComponent(const std::string &name) const {
+			for (auto comp : this->components) {
+				if (dynamic_cast<Type*>(comp) != nullptr &&
+					comp->getName() == name) {
+					return dynamic_cast<const Type&>(*comp);
+				}
+			}
+
+			throw GameEntityNotAttachedException(this, typeid(Type).name);
 		}
 
 		/// Gets all the components of this game object.
@@ -250,41 +342,6 @@ namespace Honeycomb { namespace Object {
 		// The children and components of this Game Object
 		std::vector<GameObject*> children;
 		std::vector<Honeycomb::Component::GameComponent*> components;
-	};
-
-	/// <summary>
-	/// Exception which is to be thrown when a Game Object does not have a
-	/// component or child which the user is trying to access.
-	/// </summary>
-	class GameEntityNotAttachedException : public std::runtime_error {
-	public:
-		/// <summary>
-		/// Creates a new Game Entity Not Attached Exception for the object
-		/// of the specified name.
-		/// </summary>
-		/// <param name="g">
-		/// The game object which does not contain the Game Entity of the
-		/// given name.
-		/// </param>
-		/// <param name="name">
-		/// The name of the Game Entity which is not attached.
-		/// </param>
-		GameEntityNotAttachedException(const GameObject *g, 
-				const std::string &name);
-
-		/// <summary>
-		/// Returns a constant character string containing the description of
-		/// the exception.
-		/// </summary>
-		/// <returns>
-		/// The constant character string exception info containing the name
-		/// of the Game Object and the name of the entity which could not be
-		/// fetched from the Game Object.
-		/// </returns>
-		virtual const char* what() const throw();
-	private:
-		const GameObject *gameObject;   // Game Object for which exc. is thrown
-		std::string entityName;         // Name of entity which D.N.E.
 	};
 } }
 
