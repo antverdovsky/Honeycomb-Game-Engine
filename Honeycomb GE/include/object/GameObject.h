@@ -45,17 +45,33 @@ namespace Honeycomb { namespace Object {
 		/// so that its new parent becomes NULL.
 		void deparent();
 
-		/// Gets the child with the specified name, or NULL if no such child
-		/// exists.
-		/// const string &name : The name of the child.
-		/// return : The pointer to the child object.
-		GameObject* getChild(const std::string &name);
+		/// <summary>
+		/// Gets the child of this Game Object which has the specified name.
+		/// </summary>
+		/// <param name="name">
+		/// The name of the Game Object.
+		/// </param>
+		/// <returns>
+		/// The reference to the child Game Object.
+		/// </returns>
+		/// <exception cref="GameEntityNotAttachedException">
+		/// Thrown if the game object has no child of the specified name.
+		/// </exception>
+		GameObject& getChild(const std::string &name);
 
-		/// Gets the child with the specified name, or NULL if no such child
-		/// exists.
-		/// const string &name : The name of the child.
-		/// return : The constant pointer to the child object.
-		const GameObject* getChild(const std::string &name) const;
+		/// <summary>
+		/// Gets the child of this Game Object which has the specified name.
+		/// </summary>
+		/// <param name="name">
+		/// The name of the Game Object.
+		/// </param>
+		/// <returns>
+		/// The reference to the child Game Object.
+		/// </returns>
+		/// <exception cref="GameEntityNotAttachedException">
+		/// Thrown if the game object has no child of the specified name.
+		/// </exception>
+		const GameObject& getChild(const std::string &name) const;
 
 		/// Gets all the children game objects of this game object.
 		/// return : The list containing the children game objects.

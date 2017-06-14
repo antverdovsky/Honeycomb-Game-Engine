@@ -34,7 +34,7 @@ namespace Honeycomb { namespace Object {
 		/// it. The Mesh and Material data will come from the file from which 
 		/// the Builder imports the cube.
 		/// return : The new Cone Game Object.
-		GameObject* newCone();
+		GameObject newCone();
 
 		/// Builds a new Directional Light GameObject. The game object will
 		/// be the object named "Directional Light", with Transform and 
@@ -48,14 +48,14 @@ namespace Honeycomb { namespace Object {
 		/// it. The Mesh and Material data will come from the file from which 
 		/// the Builder imports the cube.
 		/// return : The new Cube Game Object.
-		GameObject* newCube();
+		GameObject newCube();
 
 		/// Binds a new Icosphere GameObject. The game object will simply be
 		/// the object named "Icosphere", with MeshRenderer and Transform
 		/// attached to it. The Mesh and Material data will come from the file 
 		/// from which the Builder imports the cube.
 		/// return : The new Icosphere Game Object.
-		GameObject* newIcosphere();
+		GameObject newIcosphere();
 
 		/// Imports a new model from the specified path and constructs a game
 		/// object from it. The game object will be the the root node of the
@@ -81,7 +81,7 @@ namespace Honeycomb { namespace Object {
 		/// it. The Mesh and Material data will come from the file from which 
 		/// the Builder imports the plane
 		/// return : The new Plane Game Object.
-		GameObject* newPlane();
+		GameObject newPlane();
 
 		/// Builds a new Point Light GameObject. The game object will be the
 		/// object named "Point Light", with the PointLight and Transform 
@@ -95,7 +95,7 @@ namespace Honeycomb { namespace Object {
 		/// to it. The Mesh and Material data will come from the file from 
 		/// which the Builder imports the sphere.
 		/// return : The new Sphere Game Object.
-		GameObject* newSphere();
+		GameObject newSphere();
 
 		/// Builds a new Spot Light GameObject. The game object will be the
 		/// object named "Spot Light", with the SpotLight and Transform 
@@ -109,7 +109,7 @@ namespace Honeycomb { namespace Object {
 		/// Transform attached to it.  The Mesh and Material data will come 
 		/// from the file from which the Builder imports the sphere.
 		/// return : The new Suzanne Game Object. 
-		GameObject* newSuzanne();
+		GameObject newSuzanne();
 	private:
 		static Builder *instance; // The Builder Singleton instance
 
@@ -133,7 +133,7 @@ namespace Honeycomb { namespace Object {
 		///							  geometry is being imported.
 		/// return : The child object, with the specified name, of the model
 		///			 with the specified path.
-		GameObject* newDefaultImport(const std::string &name, 
+		GameObject newDefaultImport(const std::string &name, 
 				const std::string &path);
 
 		/// Constructs a new Builder instance.

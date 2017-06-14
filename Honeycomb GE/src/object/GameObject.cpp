@@ -27,13 +27,13 @@ namespace Honeycomb { namespace Object {
 
 	GameObject::~GameObject() {
 		// Delete all of the children and components
-		while (this->children.size() != 0)
-			delete this->children.at(0);
-		while (this->components.size() != 0)
-			delete this->components.at(0);
+//		while (this->children.size() != 0)
+//			delete this->children.at(0);s
+//		while (this->components.size() != 0)
+//			delete this->components.at(0);
 
 		// Notify parent that I am no longer a child
-		this->deparent();
+//		this->deparent();
 	}
 
 	GameObject* GameObject::clone() const {
@@ -90,22 +90,19 @@ namespace Honeycomb { namespace Object {
 			thisTransf->setParent(nullptr);
 	}
 
-	GameObject* GameObject::getChild(const std::string &name) {
-		return const_cast<GameObject*>(static_cast<const GameObject*>
+	GameObject& GameObject::getChild(const std::string &name) {
+		return const_cast<GameObject&>(static_cast<const GameObject*>
 			(this)->getChild(name));
 	}
 
-	const GameObject* GameObject::getChild(const std::string &name) const {
-		// Go through all components and try to find one whose name matches
-		for (const GameObject* child : this->children)
-			if (child->getName() == name)
-				return child;
-		
-		Logger::getLogger().logWarning(__FUNCTION__, __LINE__,
-			"Object " + this->name + " does not contain child " + name);
+	const GameObject& GameObject::getChild(const std::string &name) const {
+		for (const GameObject* child : this->children) {
+			if (child->getName() == name) {
+				return *child;
+			}
+		}
 
-		// If unable to find a matching child -> Return NULL
-		return nullptr;
+		throw GameEntityNotAttachedException(this, name);
 	}
 
 	std::vector<GameObject*>& GameObject::getChildren() {

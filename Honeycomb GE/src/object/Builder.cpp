@@ -94,15 +94,15 @@ namespace Honeycomb { namespace Object {
 		return dirLight; // Return the Directional Light Game Object
 	}
 
-	GameObject* Builder::newCone() {
+	GameObject Builder::newCone() {
 		return newDefaultImport("Cone", CONE_LOCATION);
 	}
 
-	GameObject* Builder::newCube() {
+	GameObject Builder::newCube() {
 		return newDefaultImport("Cube", CUBE_LOCATION);
 	}
 
-	GameObject* Builder::newIcosphere() {
+	GameObject Builder::newIcosphere() {
 		return newDefaultImport("Icosphere", ICOSPHERE_LOCATION);
 	}
 
@@ -113,7 +113,7 @@ namespace Honeycomb { namespace Object {
 		return Model::loadModel(path, settings).getGameObjectClone();
 	}
 
-	GameObject* Builder::newPlane() {
+	GameObject Builder::newPlane() {
 		return newDefaultImport("Plane", PLANE_LOCATION);
 	}
 
@@ -132,7 +132,7 @@ namespace Honeycomb { namespace Object {
 		return pntLight; // Return the Point Light Game Object
 	}
 
-	GameObject* Builder::newSphere() {
+	GameObject Builder::newSphere() {
 		return newDefaultImport("Sphere", SPHERE_LOCATION);
 	}
 
@@ -151,7 +151,7 @@ namespace Honeycomb { namespace Object {
 		return sptLight; // Return the Spot Light Game Object
 	}
 
-	GameObject* Builder::newSuzanne() {
+	GameObject Builder::newSuzanne() {
 		return newDefaultImport("Suzanne", SUZANNE_LOCATION);
 	}
 
@@ -159,13 +159,13 @@ namespace Honeycomb { namespace Object {
 
 	}
 
-	GameObject* Builder::newDefaultImport(const std::string &name, 
+	GameObject Builder::newDefaultImport(const std::string &name, 
 			const std::string &path) {
 		// Get the parent model and extract the child with the given name from
 		// it.
 		GameObject *parent = Model::loadModel(path).getGameObjectClone();
-		GameObject *child = parent->getChild(name);
-		parent->removeChild(child);
+		GameObject &child = parent->getChild(name);
+		child.deparent();
 
 		// Recycle the parent and return the child (keep the Model since the
 		// Model class will use it to avoid re-importation of models).

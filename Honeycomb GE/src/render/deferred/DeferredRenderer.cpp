@@ -105,9 +105,9 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			SPOT_LIGHT_VOLUME_MODEL);
 
 		// Extract the actual light volume meshes from the Model
-		this->lightVolumePoint = pLModel->getChild("Icosphere")->
+		this->lightVolumePoint = pLModel->getChild("Icosphere").
 			getComponent<MeshRenderer>()->getMesh();
-		this->lightVolumeSpot = sLModel->getChild("Cube")->
+		this->lightVolumeSpot = sLModel->getChild("Cube").
 			getComponent<MeshRenderer>()->getMesh();
 
 		// Delete the Light Volume Models

@@ -26,14 +26,14 @@ namespace HoneycombTest {
 
 		Honeycomb::Scene::GameScene gameScene;	 // The main scene
 
-		Honeycomb::Object::GameObject *plane;		// The plane Game Object
+		Honeycomb::Object::GameObject plane;		// The plane Game Object
 		Honeycomb::Object::GameObject *cube;		// The cube Game Object
 		Honeycomb::Object::GameObject *cube2;		// The 2nd cube Game Object
-		Honeycomb::Object::GameObject *sphere;		// The sphere Game Object
+		Honeycomb::Object::GameObject sphere;		// The sphere Game Object
 		Honeycomb::Object::GameObject *car;			// The car Game Object
-		Honeycomb::Object::GameObject *suzanne;		// The suzanne Game Object
+		Honeycomb::Object::GameObject suzanne;		// The suzanne Game Object
 		Honeycomb::Object::GameObject *earth;		// The Earth Game Object
-		Honeycomb::Object::GameObject *emeraldSph;	// Emerald Sphere Object
+		Honeycomb::Object::GameObject emeraldSph;	// Emerald Sphere Object
 
 		Honeycomb::Object::GameObject *camera;		// The scene Camera
 		Honeycomb::Object::GameObject *ambient;		// The ambient lighting
