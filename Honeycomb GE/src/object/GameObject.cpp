@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <sstream>
 
 #include "../../include/shader/ShaderProgram.h"
 #include "../../include/component/physics/Transform.h"
@@ -253,4 +254,18 @@ namespace Honeycomb { namespace Object {
 		for (GameComponent *comp : this->components)
 			comp->update();
 	}
+
+	GameEntityNotAttachedException::GameEntityNotAttachedException(
+			const GameObject *g, const std::string &name) :
+			std::runtime_error("Unable to fetch Game Entity") {
+		this->gameObject = g;
+		this->entityName = name;
+	}
+
+	const char* GameEntityNotAttachedException::what() const throw() {
+		std::ostringstream oss("");
+		oss << std::runtime_error::what() << " of name " <<
+			this->entityName << " from object " << this->gameObject->getName();
+		return oss.str().c_str();
+	 }
 } }

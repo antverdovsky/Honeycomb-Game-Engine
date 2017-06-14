@@ -14,7 +14,6 @@ namespace Honeycomb { namespace Scene { class GameScene; } }
 namespace Honeycomb { namespace Object {
 	class GameObject {
 		friend class Honeycomb::Scene::GameScene;
-		
 	public:
 		/// Initializes a Game Object with the "GameObject" name and root as
 		/// parent.
@@ -235,6 +234,41 @@ namespace Honeycomb { namespace Object {
 		// The children and components of this Game Object
 		std::vector<GameObject*> children;
 		std::vector<Honeycomb::Component::GameComponent*> components;
+	};
+
+	/// <summary>
+	/// Exception which is to be thrown when a Game Object does not have a
+	/// component or child which the user is trying to access.
+	/// </summary>
+	class GameEntityNotAttachedException : public std::runtime_error {
+	public:
+		/// <summary>
+		/// Creates a new Game Entity Not Attached Exception for the object
+		/// of the specified name.
+		/// </summary>
+		/// <param name="g">
+		/// The game object which does not contain the Game Entity of the
+		/// given name.
+		/// </param>
+		/// <param name="name">
+		/// The name of the Game Entity which is not attached.
+		/// </param>
+		GameEntityNotAttachedException(const GameObject *g, 
+				const std::string &name);
+
+		/// <summary>
+		/// Returns a constant character string containing the description of
+		/// the exception.
+		/// </summary>
+		/// <returns>
+		/// The constant character string exception info containing the name
+		/// of the Game Object and the name of the entity which could not be
+		/// fetched from the Game Object.
+		/// </returns>
+		virtual const char* what() const throw();
+	private:
+		const GameObject *gameObject;   // Game Object for which exc. is thrown
+		std::string entityName;         // Name of entity which D.N.E.
 	};
 } }
 
