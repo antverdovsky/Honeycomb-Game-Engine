@@ -114,7 +114,7 @@ namespace Honeycomb { namespace Object {
 	const std::vector<GameObject*>& GameObject::getChildren() const {
 		return this->children;
 	}
-
+/*
 	GameComponent& GameObject::getComponent(const std::string &name) {
 		return const_cast<GameComponent&>(static_cast<const GameObject*>
 			(this)->getComponent(name));
@@ -131,7 +131,7 @@ namespace Honeycomb { namespace Object {
 
 		throw GameEntityNotAttachedException(this, name);
 	}
-
+*/
 	std::vector<GameComponent*>& GameObject::getComponents() {
 		return this->components;
 	}

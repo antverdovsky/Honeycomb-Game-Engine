@@ -20,7 +20,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 	BaseLight::BaseLight(const Honeycomb::Shader::ShaderSource &src, const
 			std::string &name, const LightType &type) : 
-			GenericStruct(src, name), GameComponent(name) {
+			GenericStruct(src, name) {
 		this->type = type;
 	}
 

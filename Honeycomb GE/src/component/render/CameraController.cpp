@@ -41,8 +41,8 @@ namespace Honeycomb { namespace Component { namespace Render {
 	CameraController::CameraController(const CameraType &cT, const float &cTP,
 			const float &clF, const float &clN, const float &projH,
 			const float &projW) : 
-			GameComponent("CameraController"), GenericStruct(*ShaderSource::
-				getShaderSource(STRUCT_FILE), STRUCT_NAME) {
+			GenericStruct(*ShaderSource::getShaderSource(STRUCT_FILE),
+				STRUCT_NAME) {
 		this->type = cT;
 		this->typeParameter = cTP;
 

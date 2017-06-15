@@ -9,17 +9,36 @@
 namespace Honeycomb { namespace Object { class GameObject; } }
 
 namespace Honeycomb { namespace Component {
+	typedef unsigned int GameComponentID;
+
 	class GameComponent {
 		friend class Honeycomb::Object::GameObject;
-
 	public:
+		/// <summary>
+		/// Returns the Game Component Type ID of the specified type.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of the Game Component for which the type is to be fetched.
+		/// This should be a type which has inherited from the Game Component,
+		/// but this is not enforced.
+		/// </typeparam>
+		/// <returns>
+		/// The unsigned integer representing the Game Component ID of the 
+		/// type.
+		/// </returns>
+		template <typename T>
+		static GameComponentID getGameComponentTypeID() noexcept {
+			// Every time this function is called with a unique type parameter,
+			// the type variable is instantiated to the current game component
+			// ID value and then the game component ID value is incremented.
+			// This allows for unique Component IDs for each different type.
+			static GameComponentID type = GameComponent::getGameComponentID();
+			return type;
+		}
+
 		/// Creates a Component instance with the "Component" name.
 		GameComponent();
-
-		/// Creates a Component instance with the specified name.
-		/// const string &name : The name of this Component.
-		GameComponent(const std::string &name);
-
+		
 		/// Deletes this Component.
 		virtual ~GameComponent();
 
@@ -53,11 +72,6 @@ namespace Honeycomb { namespace Component {
 		///			 object is active.
 		const bool& getIsActive() const;
 
-		/// Returns the name of this component.
-		/// return : A constant string reference containing the name of this
-		///			 Game Component.
-		virtual const std::string& getName() const;
-
 		/// Handles any input events for this component, if necessary. This 
 		/// method will only do something if the object is active.
 		virtual void input();
@@ -82,11 +96,22 @@ namespace Honeycomb { namespace Component {
 		/// method will only do something if the object is active.
 		virtual void update();
 	protected:
-		// Object to which the component is attached to
+		// The pointer to the Game Object to which this Component is attached.
+		// If the Game Component is floating (not attached to anything), this
+		// is a nullptr.
 		Honeycomb::Object::GameObject* attached;
 
-		bool isActive; // Is this game component active?
-		std::string name; // The name of this component
+		bool isActive;             // Is this game component active in general?
+		bool isSelfActive;         // Is this game component itself active?
+	private:
+		/// <summary>
+		/// Returns the static Game Component ID variable and increments it
+		/// after returning.
+		/// </summary>
+		/// <returns>
+		/// The Game Component ID variable.
+		/// </returns>
+		static GameComponentID getGameComponentID() noexcept;
 	};
 } }
 

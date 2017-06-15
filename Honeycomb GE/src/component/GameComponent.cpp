@@ -6,13 +6,7 @@ using Honeycomb::Object::GameObject;
 using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb { namespace Component {
-	GameComponent::GameComponent() : GameComponent("GameComponent") {
-
-	}
-
-	GameComponent::GameComponent(const std::string &name) {
-		this->name = name;
-
+	GameComponent::GameComponent() {
 		this->isActive = false;
 		this->attached = nullptr;
 	}
@@ -23,7 +17,7 @@ namespace Honeycomb { namespace Component {
 	}
 
 	GameComponent* GameComponent::clone() const {
-		return new GameComponent(this->name);
+		return new GameComponent();
 	}
 
 	void GameComponent::detach() {
@@ -48,10 +42,6 @@ namespace Honeycomb { namespace Component {
 		return this->isActive;
 	}
 
-	const std::string& GameComponent::getName() const {
-		return this->name;
-	}
-
 	void GameComponent::input() {
 
 	}
@@ -70,5 +60,10 @@ namespace Honeycomb { namespace Component {
 	
 	void GameComponent::update() {
 
+	}
+
+	GameComponentID GameComponent::getGameComponentID() noexcept {
+		static GameComponentID type = 0U;
+		return type++;
 	}
 } }

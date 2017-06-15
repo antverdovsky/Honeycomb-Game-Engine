@@ -119,7 +119,7 @@ namespace Honeycomb { namespace Object {
 		/// Gets all the children game objects of this game object.
 		/// return : The constant list containing the children game objects.
 		const std::vector<GameObject*>& getChildren() const;
-
+/*
 		/// <summary>
 		/// Gets the component of this Game Object which has the specified
 		/// name. If the object has multiple game components of the specified
@@ -155,7 +155,7 @@ namespace Honeycomb { namespace Object {
 		/// </exception>
 		const Honeycomb::Component::GameComponent&
 				getComponent(const std::string &name) const;
-
+*/
 		/// <summary>
 		/// Gets the component of this Game Object which has the specified Type
 		/// and downcasts it to that type. If the game object has multiple game

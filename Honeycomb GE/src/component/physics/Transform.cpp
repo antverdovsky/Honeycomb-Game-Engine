@@ -20,7 +20,7 @@ namespace Honeycomb { namespace Component { namespace Physics {
 	}
 
 	Transform::Transform(const Vector3f &pos, const Quaternion &rot, 
-			const Vector3f &scl) : GameComponent("Transform") {
+			const Vector3f &scl) {
 		this->parent = nullptr;
 
 		this->setTranslation(pos);

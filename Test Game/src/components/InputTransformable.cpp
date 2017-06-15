@@ -27,8 +27,7 @@ namespace HoneycombTest { namespace Components {
 			int mF, int mB, int mL, int mR, int mU, int mD,
 			int pU, int pD, int rL, int rR, int yL, int yR,
 			int sUR, int sDR, int sUF, int sDF, int sUU, int sDU,
-			float sM, float sR, float sS, Space space) :
-			GameComponent("InputTransformable") {
+			float sM, float sR, float sS, Space space) {
 		/// Keys for Movement
 		this->movForward = mF;
 		this->movBackward = mB;

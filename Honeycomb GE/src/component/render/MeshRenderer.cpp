@@ -22,7 +22,7 @@ using namespace Honeycomb::File;
 
 namespace Honeycomb { namespace Component { namespace Render {
 	MeshRenderer::MeshRenderer(const Material &mat, const Mesh &mes) : 
-			GameComponent("MeshRenderer"), material(&mat), mesh(&mes) {
+			material(&mat), mesh(&mes) {
 
 	}
 
