@@ -53,6 +53,8 @@ namespace Honeycomb { namespace Graphics {
 			return Texture2D::getTextureRed();
 		case Texture2DCommonFillColor::COLOR_WHITE:
 			return Texture2D::getTextureWhite();
+		default:
+			return Texture2D::getTextureBlack();
 		}
 	}
 
@@ -107,7 +109,7 @@ namespace Honeycomb { namespace Graphics {
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
-	const int& Texture2D::getHeight() const {
+	int Texture2D::getHeight() const {
 		int height;
 		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &height);
 		return height;
@@ -117,7 +119,7 @@ namespace Honeycomb { namespace Graphics {
 		return this->textureID;
 	}
 
-	const int& Texture2D::getWidth() const {
+	int Texture2D::getWidth() const {
 		int width;
 		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
 		return width;
@@ -222,7 +224,7 @@ namespace Honeycomb { namespace Graphics {
 
 		// Set the default Texture2D Settings
 		this->setWrap(WRAP_REPEAT);
-		this->setAnisotropicFiltering(1.0F);
+		this->setAnisotropicFiltering(1);
 		if (mipmap) {
 			this->setFiltering(FILTER_MIN_LINEAR_MIPMAP_LINEAR, 
 				FILTER_MAG_LINEAR);

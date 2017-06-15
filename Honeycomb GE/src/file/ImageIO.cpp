@@ -4,26 +4,13 @@
 #include <sstream>
 
 namespace Honeycomb { namespace File {
-	ImageIO::ImageIO(const std::string &dir) {
-		// Read in the image from the file directory
-		this->directory = dir;
-		this->data = SOIL_load_image(
-			dir.c_str(), &(this->width), &(this->height), 0, SOIL_LOAD_AUTO);
-
-		// If the data is null, an error occured, throw an ImageIOLoadException
-		if (this->data == nullptr) 
-			throw ImageIOLoadException(this->directory, SOIL_last_result());
-	}
-
-	void ImageIO::cleanup() {
-		if (this->data == nullptr) return;
-
-		SOIL_free_image_data(this->data);
-		this->data = nullptr;
+	ImageIO::ImageIO(const std::string &dir) : 
+			data(loadImage(dir, this->width, this->height), deleteImage) {
+		
 	}
 
 	const unsigned char* ImageIO::getData() const {
-		return this->data;
+		return this->data.get();
 	}
 
 	const std::string& ImageIO::getDirectory() const {
@@ -36,6 +23,23 @@ namespace Honeycomb { namespace File {
 
 	const int& ImageIO::getHeight() const {
 		return this->height;
+	}
+
+	void ImageIO::deleteImage(unsigned char *data) {
+		if (data == nullptr) return;
+
+		SOIL_free_image_data(data);
+	}
+
+	unsigned char* ImageIO::loadImage(const std::string &dir, 
+			int &width, int &height) {
+		unsigned char *raw = SOIL_load_image(
+			dir.c_str(), &width, &height, 0, SOIL_LOAD_AUTO);
+
+		if (raw == nullptr)
+			throw ImageIOLoadException(dir, SOIL_last_result());
+
+		return raw;
 	}
 
 	ImageIOLoadException::ImageIOLoadException(const std::string &dir, 

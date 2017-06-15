@@ -128,13 +128,12 @@ namespace Honeycomb { namespace Graphics {
 		void bind(const int &loc) const;
 
 		/// <summary>
-		/// Returns the height of the texture, in pixels. If the texture has
-		/// not yet been initialized, the height will be negative.
+		/// Returns the height of the texture, in pixels.
 		/// </summary>
 		/// <returns>
 		/// The height of the texture.
 		/// </returns>
-		const int& getHeight() const;
+		int getHeight() const;
 
 		/// <summary>
 		/// Returns the raw OpenGL pointer of the texture. If the texture has
@@ -146,13 +145,12 @@ namespace Honeycomb { namespace Graphics {
 		const int& getTextureID() const;
 
 		/// <summary>
-		/// Returns the width of texture, in pixels. If the texture has
-		/// not yet been initialized, the width will be negative.
+		/// Returns the width of texture, in pixels.
 		/// </summary>
 		/// <returns>
 		/// The width of the texture.
 		/// </returns>
-		const int& getWidth() const;
+		int getWidth() const;
 
 		/// <summary>
 		/// Initializes the Texture to a new OpenGL texture. If the texture has

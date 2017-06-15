@@ -4,6 +4,7 @@
 
 #include <string>
 #include <stdexcept>
+#include <memory>
 
 namespace Honeycomb { namespace File {
 	/// <summary>
@@ -21,14 +22,6 @@ namespace Honeycomb { namespace File {
 		/// The directory from which the image is to be loaded.
 		/// </param>
 		ImageIO(const std::string &dir);
-
-		/// <summary>
-		/// Removes the data stored for this IO Image. After this method is
-		/// called, the <see cref="getData"/> method will always return a null
-		/// pointer. If this Image has already been cleaned up, no changes will
-		/// occur.
-		/// </summary>
-		void cleanup();
 
 		/// <summary>
 		/// Returns the data of the image, loaded in through the SOIL library.
@@ -62,12 +55,41 @@ namespace Honeycomb { namespace File {
 		/// </returns>
 		const int& getHeight() const;
 	private:
-		std::string directory;              // The file directory of the image
+		/// <summary>
+		/// Deletes the specified image data from memory.
+		/// </summary>
+		static void deleteImage(unsigned char *data);
 
-		int width;                          // The width of the image
-		int height;                         // The height of the image
+		/// <summary>
+		/// Loads the image from the specified directory and returns its raw
+		/// unsigned char pixel data. The width and height parameters also have
+		/// the width and height of the image written to them. If the image
+		/// could not be loaded, an ImageIOLoadException is thrown.
+		/// </summary>
+		/// <param name="dir">
+		/// The directory of the image on the disk.
+		/// </param>
+		/// <param name="width">
+		/// The integer reference to which the width of the image is to be
+		/// written.
+		/// </param>
+		/// <param name="height">
+		/// The integer reference to which the height of the image is to be
+		/// written.
+		/// </param>
+		/// <exception cref="ImageIOLoadException">
+		/// Thrown if the Image could not be loaded to due to some SOIL error.
+		/// </exception>
+		static unsigned char* loadImage(const std::string &dir,
+				int &width, int &height);
+
+		std::string directory;               // The file directory of the image
+
+		int width;                           // The width of the image
+		int height;                          // The height of the image
 		
-		unsigned char *data;                // The data of the image
+		std::unique_ptr<unsigned char, 
+			decltype(&deleteImage)> data;    // The data of the image
 	};
 
 	/// <summary>

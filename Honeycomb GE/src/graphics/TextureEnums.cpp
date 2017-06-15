@@ -23,6 +23,8 @@ namespace Honeycomb { namespace Graphics {
 			return GL_NEAREST_MIPMAP_LINEAR;
 		case FILTER_MIN_NEAREST_MIPMAP_NEAREST:
 			return GL_NEAREST_MIPMAP_NEAREST;
+		
+		default:                                     return GL_LINEAR;
 		}
 	}
 

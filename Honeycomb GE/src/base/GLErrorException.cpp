@@ -61,7 +61,7 @@ namespace Honeycomb { namespace Base {
 		case TYPE_OUT_OF_MEMORY: return "out of memory";
 		case TYPE_INVALID_FRAMEBUFFER_OPERATION: 
 			return "invalid framebuffer operation";
-		default: "unknown";
+		default: return "unknown";
 		}
 	}
 } }
