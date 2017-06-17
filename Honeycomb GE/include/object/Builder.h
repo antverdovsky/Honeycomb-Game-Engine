@@ -6,57 +6,80 @@
 #include "../geometry/Model.h"
 
 namespace Honeycomb { namespace Object {
-	class Builder {
+	class GameObjectFactory {
 	public:
-		/// Destructs this Builder instance.
-		~Builder();
+		/// <summary>
+		/// Gets the singleton instance of the Game Object Factory.
+		/// </summary>
+		/// <returns>
+		/// The reference to the instance of the Game Object Factory.
+		/// </returns>
+		static GameObjectFactory& getFactory();
 
-		/// Gets the Builder Singleton instance.
-		/// return : The Builder instance.
-		static Builder* getBuilder();
+		/// <summary>
+		/// Builds a new Ambient Light Game Object. The Game Object will have
+		/// the name "Ambient Light" and will have Transform and Ambient Light
+		/// components attached to it.
+		/// </summary>
+		/// <returns>
+		/// The pointer to the new Ambient Light Object.
+		/// </returns>
+		std::unique_ptr<GameObject> newAmbientLight();
 
-		/// Builds a new Ambient Light GameObject. The game object will simply
-		/// be the object named "Ambient Light", with Transform and Ambient
-		/// Light components attached to it. Both components will use their
-		/// default initializations.
-		/// return : The new Ambient Light Object.
-		GameObject* newAmbientLight();
+		/// <summary>
+		/// Builds a new Camera Game Object. The Game Object will have the name
+		/// "Camera" and will have Transform and Camera Controller components
+		/// attached to it.
+		/// </summary>
+		/// <returns>
+		/// The pointer to the new Camera Object.
+		/// </returns>
+		std::unique_ptr<GameObject> newCamera();
 
-		/// Builds a new Camera GameObject. The game object will simply be the
-		/// object named "Camera", with Transform and Camera Controller
-		/// components attached to it. Both components will use their
-		/// default initializations.
-		/// return : The new Camera object.
-		GameObject* newCamera();
+		/// <summary>
+		/// Builds a new Cone Game Object. The Game Object will have the name
+		/// "Cone" and will have the Transform and Mesh Renderer components
+		/// attached to it. The mesh and material data for the Cone will come
+		/// from the cone model file.
+		/// </summary>
+		/// <returns>
+		/// The pointer to the Cone Object.
+		/// </returns>
+		std::unique_ptr<GameObject> newCone();
 
-		/// Builds a new Cone GameObject. The game object will simply be the
-		/// object named "Cone", with MeshRenderer and Transform attached to
-		/// it. The Mesh and Material data will come from the file from which 
-		/// the Builder imports the cube.
-		/// return : The new Cone Game Object.
-		GameObject newCone();
+		/// <summary>
+		/// Builds a new Directional Light Game Object. The Game Object will
+		/// have the name "Directional Light" and will have the Transform and
+		/// Directional Light components attached to it.
+		/// </summary>
+		/// <returns>
+		/// The pointer to the Directional Light Object.
+		/// </returns>
+		std::unique_ptr<GameObject> newDirectionalLight();
 
-		/// Builds a new Directional Light GameObject. The game object will
-		/// be the object named "Directional Light", with Transform and 
-		/// Directional Light components attached to it. Both components will 
-		/// use their default initializations.
-		/// return : The new Directional Light Object.
-		GameObject* newDirectionalLight();
+		/// <summary>
+		/// Builds a new Cube Game Object. The Game Object will have the name
+		/// "Cube" and will have the Transform and Mesh Renderer components
+		/// attached to it. The mesh and material data for the Cube will come
+		/// from the cube model file.
+		/// </summary>
+		/// <returns>
+		/// The pointer to the Cube Object.
+		/// </returns>
+		std::unique_ptr<GameObject> newCube();
 
-		/// Builds a new Cube GameObject. The game object will simply be the
-		/// object named "Cube", with MeshRenderer and Transform attached to
-		/// it. The Mesh and Material data will come from the file from which 
-		/// the Builder imports the cube.
-		/// return : The new Cube Game Object.
-		GameObject newCube();
+		/// <summary>
+		/// Builds a new Icosphere Game Object. The Game Object will have the 
+		/// name "Icosphere" and will have the Transform and Mesh Renderer 
+		/// components attached to it. The mesh and material data for the 
+		/// Icosphere will come from the icosphere model file.
+		/// </summary>
+		/// <returns>
+		/// The pointer to the Icosphere Object.
+		/// </returns>
+		std::unique_ptr<GameObject> newIcosphere();
 
-		/// Binds a new Icosphere GameObject. The game object will simply be
-		/// the object named "Icosphere", with MeshRenderer and Transform
-		/// attached to it. The Mesh and Material data will come from the file 
-		/// from which the Builder imports the cube.
-		/// return : The new Icosphere Game Object.
-		GameObject newIcosphere();
-
+//TODO
 		/// Imports a new model from the specified path and constructs a game
 		/// object from it. The game object will be the the root node of the
 		/// model, with all the individual objects parented to the root node.
@@ -72,47 +95,64 @@ namespace Honeycomb { namespace Object {
 		/// const ModelSettings &settings : The settings to be used for
 		///								    importing the model.
 		/// return : The constructed Game Object.
-		GameObject* newModel(const std::string &path, 
+		std::unique_ptr<GameObject> newModel(const std::string &path,
 			const Honeycomb::Geometry::ModelSettings &settings = 
 			Honeycomb::Geometry::ModelSettings());
+//TODO
 
-		/// Builds a new Plane GameObject. The game object will simply be the
-		/// object named "Plane", with a MeshRenderer and Transform attached to
-		/// it. The Mesh and Material data will come from the file from which 
-		/// the Builder imports the plane
-		/// return : The new Plane Game Object.
-		GameObject newPlane();
+		/// <summary>
+		/// Builds a new Plane Game Object. The Game Object will have the 
+		/// name "Plane" and will have the Transform and Mesh Renderer 
+		/// components attached to it. The mesh and material data for the 
+		/// Plane will come from the plane model file.
+		/// </summary>
+		/// <returns>
+		/// The pointer to the Plane Object.
+		/// </returns>
+		std::unique_ptr<GameObject> newPlane();
 
-		/// Builds a new Point Light GameObject. The game object will be the
-		/// object named "Point Light", with the PointLight and Transform 
-		/// components attached to it. The PointLight and Transform will be the
-		/// default instances of their respective components.
-		/// return : The new Point Light Game Object.
-		GameObject* newPointLight();
+		/// <summary>
+		/// Builds a new Point Light Game Object. The Game Object will have the
+		/// name "Point Light" and will have the Transform and Point Light 
+		/// components attached to it.
+		/// </summary>
+		/// <returns>
+		/// The pointer to the Point Light Object.
+		/// </returns>
+		std::unique_ptr<GameObject> newPointLight();
 
-		/// Builds a new Sphere GameObject. The game object will simply be the
-		/// object named "Sphere", with a MeshRenderer and Transform attached 
-		/// to it. The Mesh and Material data will come from the file from 
-		/// which the Builder imports the sphere.
-		/// return : The new Sphere Game Object.
-		GameObject newSphere();
+		/// <summary>
+		/// Builds a new Sphere Game Object. The Game Object will have the 
+		/// name "Sphere" and will have the Transform and Mesh Renderer 
+		/// components attached to it. The mesh and material data for the 
+		/// Sphere will come from the sphere model file.
+		/// </summary>
+		/// <returns>
+		/// The pointer to the Sphere Object.
+		/// </returns>
+		std::unique_ptr<GameObject> newSphere();
 
-		/// Builds a new Spot Light GameObject. The game object will be the
-		/// object named "Spot Light", with the SpotLight and Transform 
-		/// components attached to it. The SpotLight and Transform will be the
-		/// default instances of their respective components.
-		/// return : The new Spot Light Game Object.
-		GameObject* newSpotLight();
+		/// <summary>
+		/// Builds a new Spot Light Game Object. The Game Object will have the
+		/// name "Spot Light" and will have the Transform and Spot Light 
+		/// components attached to it.
+		/// </summary>
+		/// <returns>
+		/// The pointer to the Spot Light Object.
+		/// </returns>
+		std::unique_ptr<GameObject> newSpotLight();
 
-		/// Builds a new Suzanne (Blender Monkey) Game Object. The game object
-		/// will simply be the object named "Suzanne", with a MeshRenderer and
-		/// Transform attached to it.  The Mesh and Material data will come 
-		/// from the file from which the Builder imports the sphere.
-		/// return : The new Suzanne Game Object. 
-		GameObject newSuzanne();
+		/// <summary>
+		/// Builds a new Suzanne Game Object. The Game Object will have the 
+		/// name "Suzanne" and will have the Transform and Mesh Renderer 
+		/// components attached to it. The mesh and material data for the 
+		/// Suzanne will come from the suzanne model file.
+		/// </summary>
+		/// <returns>
+		/// The pointer to the Sphere Object.
+		/// </returns>
+		std::unique_ptr<GameObject> newSuzanne();
 	private:
-		static Builder *instance; // The Builder Singleton instance
-
 		// File Location of all of the Default Models
 		const static std::string CONE_LOCATION;
 		const static std::string CUBE_LOCATION;
@@ -120,24 +160,23 @@ namespace Honeycomb { namespace Object {
 		const static std::string PLANE_LOCATION;
 		const static std::string SPHERE_LOCATION;
 		const static std::string SUZANNE_LOCATION;
-
-		/// Helper method for loading in the default models (cube, plane, etc).
-		/// A new object will be instantiated from the model imported from the
-		/// path specified, and then a new object composed of the child of the
-		/// imported object with the specified name will be returned.
-		/// const std::string &name : The name of the child of the game object
-		///							  returned by the Model. This should match
-		///							  the name of the geometry shape being
-		///							  imported.
-		/// const std::string &path : The path to the file from which the
-		///							  geometry is being imported.
-		/// return : The child object, with the specified name, of the model
-		///			 with the specified path.
-		GameObject newDefaultImport(const std::string &name, 
+		
+		/// <summary>
+		/// Helper method for loading in default models. For the model path and
+		/// name specified, this method will clone the model's game object and
+		/// return a copy of the child game object containing the default model
+		/// (i.e. stripping the root and returning only the child).
+		/// </summary>
+		/// <param name="name">
+		/// The name of the model (this must be equivalent to the name of the
+		/// child of the Game Object).
+		/// </param>
+		/// <param name="path">
+		/// The path from which the model should be loaded.
+		/// </param>
+		/// <returns></returns>
+		std::unique_ptr<GameObject> newDefaultImport(const std::string &name,
 				const std::string &path);
-
-		/// Constructs a new Builder instance.
-		Builder();
 	};
 } }
 

@@ -14,7 +14,7 @@ using Honeycomb::Graphics::TextureDataFormat;
 using Honeycomb::Graphics::TextureDataInternalFormat;
 using Honeycomb::Graphics::TextureDataType;
 using Honeycomb::Graphics::TextureWrapMode;
-using Honeycomb::Object::Builder;
+using Honeycomb::Object::GameObjectFactory;
 using Honeycomb::Math::Vector4f;
 using Honeycomb::Scene::GameScene;
 using Honeycomb::Shader::ShaderProgram;
@@ -155,8 +155,8 @@ namespace Honeycomb { namespace Render {
 
 	void Renderer::initializeCubemapDependencies() {
 		// Initialize Skybox Mesh (steal it from a Cube)
-		auto cube = Builder::getBuilder()->newCube();
-		this->cubemapMesh = cube.getComponent<MeshRenderer>().getMesh();
+		auto cube = GameObjectFactory::getFactory().newCube();
+		this->cubemapMesh = cube->getComponent<MeshRenderer>().getMesh();
 	
 		// Initialize Skybox Shader
 		this->skyboxShader.initialize();

@@ -37,7 +37,7 @@ using Honeycomb::Math::Vector2f;
 using Honeycomb::Math::Vector3f;
 using Honeycomb::Math::Vector4f;
 using Honeycomb::Math::Utils::PI;
-using Honeycomb::Object::Builder;
+using Honeycomb::Object::GameObjectFactory;
 using Honeycomb::Object::GameObject;
 using Honeycomb::Scene::GameScene;
 using Honeycomb::Shader::ShaderType;
@@ -99,9 +99,9 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 	void DeferredRenderer::initializeLightVolumes() {
 		// Get the models containing the Light Volumes
-		GameObject *pLModel = Builder::getBuilder()->newModel(
+		auto pLModel = GameObjectFactory::getFactory().newModel(
 			POINT_LIGHT_VOLUME_MODEL);
-		GameObject *sLModel = Builder::getBuilder()->newModel(
+		auto sLModel = GameObjectFactory::getFactory().newModel(
 			SPOT_LIGHT_VOLUME_MODEL);
 
 		// Extract the actual light volume meshes from the Model
@@ -109,10 +109,6 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			getComponent<MeshRenderer>().getMesh();
 		this->lightVolumeSpot = sLModel->getChild("Cube").
 			getComponent<MeshRenderer>().getMesh();
-
-		// Delete the Light Volume Models
-		delete pLModel;
-		delete sLModel;
 	}
 
 	void DeferredRenderer::initializeShaders() {

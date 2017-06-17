@@ -47,15 +47,15 @@ namespace HoneycombTest {
 		Renderer::getRenderer()->setSkybox(skybox);
 
 		// Import all of the mesh game objects and construct them
-		this->car = Builder::getBuilder()->
+		this->car = GameObjectFactory::getFactory().
 			newModel("../Test Game/res/models/car.fbx");
-		this->cube = Builder::getBuilder()->
+		this->cube = GameObjectFactory::getFactory().
 			newModel("../Test Game/res/models/brick-cube/cube.fbx");
-		this->plane = Builder::getBuilder()->newPlane();
+		this->plane = GameObjectFactory::getFactory().newPlane();
 	
 		// Give the plane a textured material
 		Material *colorMaterial = new Material(
-			this->plane.getComponent<MeshRenderer>().getMaterial());
+			this->plane->getComponent<MeshRenderer>().getMaterial());
 		Texture2D *colorTexture = new Texture2D();
 		colorTexture->initialize();
 		colorTexture-> // vvvvvv this is a leak here but whatever for now...
@@ -67,7 +67,7 @@ namespace HoneycombTest {
 		colorMaterial->glVector2fs.setValue("globalTiling",
 			Vector2f(10.0F, 10.0F));
 		colorMaterial->glVector3fs.setValue("diffuseColor", Vector3f(1, 1, 0));
-		this->plane.getComponent<MeshRenderer>().
+		this->plane->getComponent<MeshRenderer>().
 			setMaterial(*colorMaterial);
 
 		// Give Suzanne an Input Transformable Component
@@ -86,8 +86,8 @@ namespace HoneycombTest {
 
 		// Construct a default Ambient and Directional Light; decrease the
 		// intensity of the lights so they don't overwhelm the scene
-		this->ambient = Builder::getBuilder()->newAmbientLight();
-		this->directional = Builder::getBuilder()->newDirectionalLight();
+		this->ambient = GameObjectFactory::getFactory().newAmbientLight();
+		this->directional = GameObjectFactory::getFactory().newDirectionalLight();
 		this->ambient->getComponent<AmbientLight>().setIntensity(0.01F);
 		this->directional->getComponent<DirectionalLight>().
 			setIntensity(0.05F);
@@ -98,12 +98,12 @@ namespace HoneycombTest {
 		this->directional->addComponent(*suzInputTranfs->clone());
 
 		// Construct a default Camera and give it a default Input Transformable
-		this->camera = Builder::getBuilder()->newCamera();
+		this->camera = GameObjectFactory::getFactory().newCamera();
 		InputTransformable *camTransf = new InputTransformable();
 		this->camera->addComponent(*camTransf);
 		
 		// Scale and position the Game Objects
-		this->plane.getComponent<Transform>().setScale(
+		this->plane->getComponent<Transform>().setScale(
 			Vector3f(15.0F, 1.0F, 25.0F));
 		this->cube->getComponent<Transform>().setTranslation(
 			Vector3f(-2.5F, 1.0F, -5.0F));
@@ -118,10 +118,10 @@ namespace HoneycombTest {
 
 		// Construct a left and right spotlight for the front of the car and
 		// add to the car (similar to headlights).
-		GameObject *carHeadlightL = Builder::getBuilder()->newSpotLight();
-		GameObject *carHeadlightR = Builder::getBuilder()->newSpotLight();
-		this->car->addChild(*carHeadlightL);
-		this->car->addChild(*carHeadlightR);
+		auto carHeadlightL = GameObjectFactory::getFactory().newSpotLight();
+		auto carHeadlightR = GameObjectFactory::getFactory().newSpotLight();
+//		this->car->addChild(*carHeadlightL);
+//		this->car->addChild(*carHeadlightR);
 		carHeadlightL->getComponent<SpotLight>().setAttenuation(
 			Attenuation(1.0F, 0.0F, 0.05F));
 		carHeadlightL->getComponent<SpotLight>().getRange() = 15.0F;
@@ -142,7 +142,7 @@ namespace HoneycombTest {
 		// Add all of the initialized objects to the Game Scene hierarchy
 		this->gameScene.addChild(*this->car);
 		this->gameScene.addChild(*this->cube);
-		this->gameScene.addChild(this->plane);
+		this->gameScene.addChild(*this->plane);
 		this->gameScene.addChild(*this->ambient);
 		this->gameScene.addChild(*this->directional);
 		this->gameScene.addChild(*this->camera);

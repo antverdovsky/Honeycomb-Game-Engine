@@ -23,144 +23,103 @@ using Honeycomb::Geometry::ModelSettings;
 using Honeycomb::Math::Vector4f;
 
 namespace Honeycomb { namespace Object {
-	Builder* Builder::instance = nullptr; // Nullptr before being initialized
-
-	const std::string Builder::CONE_LOCATION =
+	const std::string GameObjectFactory::CONE_LOCATION =
 		"../Honeycomb GE/res/models/default/cone.fbx";
-	const std::string Builder::CUBE_LOCATION = 
+	const std::string GameObjectFactory::CUBE_LOCATION = 
 		"../Honeycomb GE/res/models/default/cube.fbx";
-	const std::string Builder::ICOSPHERE_LOCATION =
+	const std::string GameObjectFactory::ICOSPHERE_LOCATION =
 		"../Honeycomb GE/res/models/default/icosphere.fbx";
-	const std::string Builder::PLANE_LOCATION =
+	const std::string GameObjectFactory::PLANE_LOCATION =
 		"../Honeycomb GE/res/models/default/plane.fbx";
-	const std::string Builder::SPHERE_LOCATION =
+	const std::string GameObjectFactory::SPHERE_LOCATION =
 		"../Honeycomb GE/res/models/default/sphere.fbx";
-	const std::string Builder::SUZANNE_LOCATION =
+	const std::string GameObjectFactory::SUZANNE_LOCATION =
 		"../Honeycomb GE/res/models/default/suzanne.fbx";
 
-	Builder::~Builder() {
-
+	GameObjectFactory& GameObjectFactory::getFactory() {
+		static GameObjectFactory factory;
+		return factory;
 	}
 
-	Builder* Builder::getBuilder() {
-		if (instance == nullptr)
-			instance = new Builder();
+	std::unique_ptr<GameObject> GameObjectFactory::newAmbientLight() {
+		auto obj = std::make_unique<GameObject>("Ambient Light");
 
-		return instance;
+		obj->addComponent(*new AmbientLight());
+		obj->addComponent(*new Transform());
+
+		return obj;
 	}
 
-	GameObject* Builder::newAmbientLight() {
-		// Initialize the Ambient Light Game Object
-		GameObject *ambLight = new GameObject("Ambient Light");
+	std::unique_ptr<GameObject> GameObjectFactory::newCamera() {
+		auto obj = std::make_unique<GameObject>("Camera");
 
-		// Initialize the Ambient Light Game Components
-		AmbientLight *aL = new AmbientLight();
-		Transform *trans = new Transform();
+		obj->addComponent(*new CameraController());
+		obj->addComponent(*new Transform());
 
-		// Add the initialized components to the Ambient Light Game Object
-		ambLight->addComponent(*aL);
-		ambLight->addComponent(*trans);
-
-		return ambLight; // Return the Ambient Light Game Object
+		return obj;
 	}
 
-	GameObject* Builder::newCamera() {
-		// Initialize the Camera Game Object
-		GameObject *camera = new GameObject("Camera");
+	std::unique_ptr<GameObject> GameObjectFactory::newDirectionalLight() {
+		auto obj = std::make_unique<GameObject>("Directional Light");
 
-		// Initialize the Camera Game Component
-		CameraController *cam = new CameraController();
-		Transform *trans = new Transform();
+		obj->addComponent(*new DirectionalLight());
+		obj->addComponent(*new Transform());
 
-		// Add the initialized components to the Camera Game Object
-		camera->addComponent(*cam);
-		camera->addComponent(*trans);
-
-		return camera; // Return the Camera Game Object
+		return obj;
 	}
 
-	GameObject* Builder::newDirectionalLight() {
-		// Initialize the Directional Light Game Object
-		GameObject *dirLight = new GameObject("Directional Light");
-
-		// Initialize the Directional Light Game Components
-		DirectionalLight *dL = new DirectionalLight();
-		Transform *trans = new Transform();
-
-		// Add the initialized components to the Directional Light Game Object
-		dirLight->addComponent(*dL);
-		dirLight->addComponent(*trans);
-
-		return dirLight; // Return the Directional Light Game Object
-	}
-
-	GameObject Builder::newCone() {
+	std::unique_ptr<GameObject> GameObjectFactory::newCone() {
 		return newDefaultImport("Cone", CONE_LOCATION);
 	}
 
-	GameObject Builder::newCube() {
+	std::unique_ptr<GameObject> GameObjectFactory::newCube() {
 		return newDefaultImport("Cube", CUBE_LOCATION);
 	}
 
-	GameObject Builder::newIcosphere() {
+	std::unique_ptr<GameObject> GameObjectFactory::newIcosphere() {
 		return newDefaultImport("Icosphere", ICOSPHERE_LOCATION);
 	}
 
-	GameObject* Builder::newModel(const std::string &path, 
-			const ModelSettings &settings) {
-		// Create a Model and return the clone of it (again, do not delete the
-		// model so that the Model class may later reuse this model if needed).
-		return Model::loadModel(path, settings).getGameObjectClone();
+	std::unique_ptr<GameObject> GameObjectFactory::newModel(
+			const std::string &path, const ModelSettings &settings) {
+		auto clone = Model::loadModel(path, settings).getGameObjectClone();
+		auto clonePtr = std::unique_ptr<GameObject>(std::move(clone));
+
+		return clonePtr;
 	}
 
-	GameObject Builder::newPlane() {
+	std::unique_ptr<GameObject> GameObjectFactory::newPlane() {
 		return newDefaultImport("Plane", PLANE_LOCATION);
 	}
 
-	GameObject* Builder::newPointLight() {
-		// Initialize the Point Light Game Object
-		GameObject *pntLight = new GameObject("Point Light");
+	std::unique_ptr<GameObject> GameObjectFactory::newPointLight() {
+		auto obj = std::make_unique<GameObject>("Point Light");
 
-		// Initialize the Point Light Game Components
-		PointLight *pL = new PointLight();
-		Transform *trans = new Transform();
+		obj->addComponent(*new PointLight());
+		obj->addComponent(*new Transform());
 
-		// Add the initialized components to the Point Light Game Object
-		pntLight->addComponent(*pL);
-		pntLight->addComponent(*trans);
-
-		return pntLight; // Return the Point Light Game Object
+		return obj;
 	}
 
-	GameObject Builder::newSphere() {
+	std::unique_ptr<GameObject> GameObjectFactory::newSphere() {
 		return newDefaultImport("Sphere", SPHERE_LOCATION);
 	}
 
-	GameObject* Builder::newSpotLight() {
-		// Initialize the Spot Light Game Object
-		GameObject *sptLight = new GameObject("Spot Light");
+	std::unique_ptr<GameObject> GameObjectFactory::newSpotLight() {
+		auto obj = std::make_unique<GameObject>("Spot Light");
 
-		// Initialize the Spot Light Game Components
-		SpotLight *sL = new SpotLight();
-		Transform *trans = new Transform();
+		obj->addComponent(*new SpotLight());
+		obj->addComponent(*new Transform());
 
-		// Add the initialized components to the Spot Light Game Object
-		sptLight->addComponent(*sL);
-		sptLight->addComponent(*trans);
-
-		return sptLight; // Return the Spot Light Game Object
+		return obj;
 	}
 
-	GameObject Builder::newSuzanne() {
+	std::unique_ptr<GameObject> GameObjectFactory::newSuzanne() {
 		return newDefaultImport("Suzanne", SUZANNE_LOCATION);
 	}
 
-	Builder::Builder() {
-
-	}
-
-	GameObject Builder::newDefaultImport(const std::string &name, 
-			const std::string &path) {
+	std::unique_ptr<GameObject> GameObjectFactory::newDefaultImport(
+			const std::string &name, const std::string &path) {
 		// Get the parent model and extract the child with the given name from
 		// it.
 		GameObject *parent = Model::loadModel(path).getGameObjectClone();
@@ -170,6 +129,6 @@ namespace Honeycomb { namespace Object {
 		// Recycle the parent and return the child (keep the Model since the
 		// Model class will use it to avoid re-importation of models).
 		delete parent;
-		return child;
+		return std::unique_ptr<GameObject>(std::move(&child));
 	}
 } }
