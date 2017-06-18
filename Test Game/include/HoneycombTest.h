@@ -2,6 +2,9 @@
 #ifndef TEST_GAME_H
 #define TEST_GAME_H
 
+#include <memory>
+#include "../../Honeycomb GE/include/HoneycombEngine.h"
+
 #include "../../Honeycomb GE/include/base/BaseGame.h"
 
 #include "../../Honeycomb GE/include/object/GameObject.h"
@@ -22,13 +25,13 @@ namespace HoneycombTest {
 	private:
 		Honeycomb::Scene::GameScene gameScene;	 // The main scene
 
-		Honeycomb::Object::GameObject plane;		// The plane Game Object
-		Honeycomb::Object::GameObject *cube;		// The cube Game Object
-		Honeycomb::Object::GameObject *car;			// The car Game Object
+		std::unique_ptr<Honeycomb::Object::GameObject> plane;		// The plane Game Object
+		std::unique_ptr<Honeycomb::Object::GameObject> cube;		// The cube Game Object
+		std::unique_ptr<Honeycomb::Object::GameObject> car;			// The car Game Object
 
-		Honeycomb::Object::GameObject *camera;		// The scene Camera
-		Honeycomb::Object::GameObject *ambient;		// The ambient lighting
-		Honeycomb::Object::GameObject *directional; // The directional lighting
+		std::unique_ptr<Honeycomb::Object::GameObject> camera;		// The scene Camera
+		std::unique_ptr<Honeycomb::Object::GameObject> ambient;		// The ambient lighting
+		std::unique_ptr<Honeycomb::Object::GameObject> directional; // The directional lighting
 	};
 }
 
