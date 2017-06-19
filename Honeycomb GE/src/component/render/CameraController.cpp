@@ -57,8 +57,8 @@ namespace Honeycomb { namespace Component { namespace Render {
 
 	}
 
-	CameraController* CameraController::clone() const {
-		return new CameraController(*this);
+	std::unique_ptr<CameraController> CameraController::clone() const {
+		return std::unique_ptr<CameraController>(this->cloneInternal());
 	}
 
 	CameraController* CameraController::getActiveCamera() {
@@ -244,5 +244,12 @@ namespace Honeycomb { namespace Component { namespace Render {
 		}
 
 		return this->projectionView;
+	}
+
+	CameraController* CameraController::cloneInternal() const {
+		return new CameraController(
+			this->type, this->typeParameter,
+			this->clipFar, this->clipNear, 
+			this->projectionHeight, this->projectionWidth);
 	}
 } } }

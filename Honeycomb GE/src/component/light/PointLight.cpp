@@ -39,16 +39,8 @@ namespace Honeycomb { namespace Component { namespace Light {
 		this->attenuation = atten;
 	}
 
-	PointLight* PointLight::clone() const {
-		PointLight *pL = new PointLight();
-
-		pL->setIntensity(this->getIntensity());
-		pL->setColor(this->getColor());
-		pL->attenuation = this->attenuation;
-		pL->glFloats.setValue(PointLight::RANGE_F, 
-			this->glFloats.getValue(PointLight::RANGE_F));
-
-		return pL;
+	std::unique_ptr<PointLight> PointLight::clone() const {
+		return std::unique_ptr<PointLight>(this->cloneInternal());
 	}
 
 	Attenuation& PointLight::getAttenuation() {
@@ -96,5 +88,17 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 	void PointLight::update() {
 		this->glVector3fs.setValue(PointLight::POSITION_VEC3, *this->position);
+	}
+
+	PointLight* PointLight::cloneInternal() const {
+		PointLight *pL = new PointLight();
+
+		pL->setIntensity(this->getIntensity());
+		pL->setColor(this->getColor());
+		pL->attenuation = this->attenuation;
+		pL->glFloats.setValue(PointLight::RANGE_F,
+			this->glFloats.getValue(PointLight::RANGE_F));
+
+		return pL;
 	}
 } } }

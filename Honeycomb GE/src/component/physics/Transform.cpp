@@ -37,20 +37,8 @@ namespace Honeycomb { namespace Component { namespace Physics {
 			std::bind(&Transform::onParentChange, this));
 	}
 
-	Transform* Transform::clone() const {
-		Transform *transf = new Transform(*this);
-
-		// Cloned transform becomes an independent component, and thus must
-		// lose its parent and its children.
-		transf->changedEvent.clearEventHandlers();
-		transf->parent = nullptr;
-
-		// We must also rebind the cloned Transform's parent changed event
-		transf->parentChanged.clearActions();
-		transf->parentChanged.addAction(
-			std::bind(&Transform::onParentChange, transf));
-
-		return transf;
+	std::unique_ptr<Transform> Transform::clone() const {
+		return std::unique_ptr<Transform>(this->cloneInternal());
 	}
 
 	Event& Transform::getChangedEvent() {
@@ -386,5 +374,29 @@ namespace Honeycomb { namespace Component { namespace Physics {
 
 		// Transform is technically changed anytime its parent is changed
 		this->changedEvent.onEvent();
+	}
+
+	Transform* Transform::cloneInternal() const {
+		Transform *transf = new Transform();
+
+		transf->lclTranslation = this->lclTranslation;
+		transf->lclRotation = this->lclRotation;
+		transf->lclScale = this->lclScale;
+
+		transf->gblTranslation = this->gblTranslation;
+		transf->gblRotation = this->gblRotation;
+		transf->gblScale = this->gblScale;
+
+		transf->transformationMatrix = this->transformationMatrix;
+		transf->translationMatrix = this->translationMatrix;
+		transf->rotationMatrix = this->rotationMatrix;
+		transf->scaleMatrix = this->scaleMatrix;
+		transf->orientationMatrix = this->orientationMatrix;
+
+		//TODO: Issue with event handlers...
+		transf->changedEvent = this->changedEvent;
+		
+
+		return transf;
 	}
 } } }

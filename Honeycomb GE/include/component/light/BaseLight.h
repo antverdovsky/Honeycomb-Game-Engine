@@ -52,7 +52,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// Base Light. This function should be used instead of the copy 
 		/// constructor to prevent object slicing.
 		/// return : The cloned Base Light.
-		BaseLight* clone() const;
+		std::unique_ptr<BaseLight> clone() const;
 		
 		/// Downcasts this light depending on the type of the light. The
 		/// type passed to the template function must match the type of this
@@ -109,6 +109,8 @@ namespace Honeycomb { namespace Component { namespace Light {
 		virtual void stop();
 	protected:
 		LightType type; // The type of this Light
+	private:
+		virtual BaseLight* cloneInternal() const override;
 	};
 
 	class Attenuation :

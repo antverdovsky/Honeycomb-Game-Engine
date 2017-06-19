@@ -24,9 +24,8 @@ namespace Honeycomb { namespace Component { namespace Light {
 		this->type = type;
 	}
 
-	BaseLight* BaseLight::clone() const {
-		return new BaseLight(*GenericStruct::SHADER_SOURCE, 
-			GenericStruct::structName, this->type);
+	std::unique_ptr<BaseLight> BaseLight::clone() const {
+		return std::unique_ptr<BaseLight>(this->cloneInternal());
 	}
 
 	Vector3f& BaseLight::getColor() {
@@ -67,6 +66,11 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 		lights.erase(std::remove(lights.begin(), lights.end(), this),
 			lights.end());
+	}
+
+	BaseLight* BaseLight::cloneInternal() const {
+		return new BaseLight(*GenericStruct::SHADER_SOURCE,
+			GenericStruct::structName, this->type);
 	}
 
 	const std::string Attenuation::STRUCT_FILE = "../Honeycomb GE/res/"

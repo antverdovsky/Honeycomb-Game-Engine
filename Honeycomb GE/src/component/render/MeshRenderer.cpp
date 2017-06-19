@@ -30,8 +30,8 @@ namespace Honeycomb { namespace Component { namespace Render {
 
 	}
 
-	MeshRenderer* MeshRenderer::clone() const {
-		return new MeshRenderer(*this->material, *this->mesh);
+	std::unique_ptr<MeshRenderer> MeshRenderer::clone() const {
+		return std::unique_ptr<MeshRenderer>(this->cloneInternal());
 	}
 
 	const Mesh& MeshRenderer::getMesh() const {
@@ -80,5 +80,9 @@ namespace Honeycomb { namespace Component { namespace Render {
 
 	void MeshRenderer::start() {
 		this->transform = &this->getAttached()->getComponent<Transform>();
+	}
+
+	MeshRenderer* MeshRenderer::cloneInternal() const {
+		return new MeshRenderer(*this->material, *this->mesh);
 	}
 } } }

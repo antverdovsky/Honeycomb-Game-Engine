@@ -2,6 +2,7 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
+#include <memory>
 #include <string>
 
 #include "../shader/ShaderProgram.h"
@@ -39,14 +40,25 @@ namespace Honeycomb { namespace Component {
 		/// Creates a Component instance with the "Component" name.
 		GameComponent();
 		
-		/// Deletes this Component.
+		/// <summary>
+		/// No copy constructor exists for the Game Component class.
+		/// </summary>
+		GameComponent(const GameComponent &comp) = delete;
+
+		/// <summary>
+		/// Destroys this Game Component.
+		/// </summary>
 		virtual ~GameComponent();
 
-		/// Clones this Component into a new, dynamically allocated, component.
-		/// Do note that the object to which this component is attached will
-		/// not add the cloned component as a component.
-		/// return : The pointer to the newly cloned Component.
-		virtual GameComponent* clone() const;
+		/// <summary>
+		/// Clones this Game Component into a new, independent Game Component.
+		/// The Game Component will not be attached to any Game Object, nor
+		/// will it be started/active.
+		/// </summary>
+		/// <returns>
+		/// The unique pointer to the Game Component clone.
+		/// </returns>
+		std::unique_ptr<GameComponent> clone() const;
 
 		/// Detaches this Component from its current object, and sets the
 		/// current object to which it is attached to pointer to nullptr.
@@ -95,6 +107,11 @@ namespace Honeycomb { namespace Component {
 		/// Handles any update events for this component, if necessary. This 
 		/// method will only do something if the object is active.
 		virtual void update();
+
+		/// <summary>
+		/// No assignment operator exists for the Game Component class.
+		/// </summary>
+		GameComponent& operator=(const GameComponent &object) = delete;
 	protected:
 		// The pointer to the Game Object to which this Component is attached.
 		// If the Game Component is floating (not attached to anything), this
@@ -112,6 +129,14 @@ namespace Honeycomb { namespace Component {
 		/// The Game Component ID variable.
 		/// </returns>
 		static GameComponentID getGameComponentID() noexcept;
+
+		/// <summary>
+		/// Internal helper function for cloning this Game Component.
+		/// </summary>
+		/// <returns>
+		/// The pointer to the new Game Component clone.
+		/// </returns>
+		virtual GameComponent* cloneInternal() const;
 	};
 } }
 

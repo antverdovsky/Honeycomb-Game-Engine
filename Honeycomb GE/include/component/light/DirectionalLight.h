@@ -35,7 +35,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// Directional Light. This function should be used instead of the copy 
 		/// constructor to prevent object slicing.
 		/// return : The cloned Directional Light.
-		DirectionalLight* clone() const;
+		std::unique_ptr<DirectionalLight> clone() const;
 
 		/// Returns the direction of this Directional Light.
 		/// return : The constant reference to the direction vector.
@@ -77,6 +77,8 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// changes. Writes the direction data to the Generic Struct and 
 		/// recalculates and writes the shadow matrix.
 		void onTransformChange();
+
+		virtual DirectionalLight* cloneInternal() const override;
 	};
 } } }
 

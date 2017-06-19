@@ -45,13 +45,13 @@ namespace Honeycomb { namespace Component { namespace Render {
 			const float &projW);
 
 		/// Destroys this Camera instance.
-		~CameraController();
+		~CameraController() override;
 
 		/// Clones this Camera Controller into a new, dynamically allocated 
 		/// Camera Controller. This function should be used instead of the copy
 		/// constructor to prevent object slicing.
 		/// return : The cloned Transform.
-		CameraController* clone() const;
+		std::unique_ptr<CameraController> clone() const;
 
 		/// Gets the current active camera instance.
 		static CameraController* getActiveCamera();
@@ -198,6 +198,8 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// is configured.
 		/// return : The constant reference to the view projection matrix.
 		const Honeycomb::Math::Matrix4f& calcProjectionView();
+
+		virtual CameraController* cloneInternal() const override;
 	};
 } } }
 

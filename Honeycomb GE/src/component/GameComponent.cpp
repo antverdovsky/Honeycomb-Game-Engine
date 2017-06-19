@@ -16,8 +16,8 @@ namespace Honeycomb { namespace Component {
 		this->detach();
 	}
 
-	GameComponent* GameComponent::clone() const {
-		return new GameComponent();
+	std::unique_ptr<GameComponent> GameComponent::clone() const {
+		return std::unique_ptr<GameComponent>(this->cloneInternal());
 	}
 
 	void GameComponent::detach() {
@@ -65,5 +65,9 @@ namespace Honeycomb { namespace Component {
 	GameComponentID GameComponent::getGameComponentID() noexcept {
 		static GameComponentID type = 0U;
 		return type++;
+	}
+
+	GameComponent* GameComponent::cloneInternal() const {
+		return new GameComponent();
 	}
 } }

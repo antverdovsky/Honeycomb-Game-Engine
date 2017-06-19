@@ -37,7 +37,7 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		/// prevent object slicing. The cloned transform is an independent
 		/// component and will lose any parent or children!
 		/// return : The pointer to the newly cloned Transform.
-		Transform* clone() const;
+		std::unique_ptr<Transform> clone() const;
 
 		/// Gets the event which will be triggered once the transform is 
 		/// changed in any way (scaled, translated or rotated).
@@ -286,6 +286,8 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		/// local coordinates will be modified.
 		/// Transform *parent : The pointer to the new Transform (may be null).
 		void setParent(Transform *parent);
+
+		virtual Transform* cloneInternal() const override;
 	};
 } } }
 

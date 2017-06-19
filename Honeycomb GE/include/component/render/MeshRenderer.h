@@ -23,7 +23,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 			const Honeycomb::Geometry::Mesh &mesh);
 
 		/// Deletes this Mesh Renderer component.
-		~MeshRenderer();
+		~MeshRenderer() override;
 
 		/// Clones this Mesh Renderer into a new, dynamically allocated 
 		/// Mesh Renderer. This function should be used instead of the copy 
@@ -31,7 +31,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// Renderer will still reference the material, mesh and shader of this
 		/// instance.
 		/// return : The cloned Mesh Renderer.
-		MeshRenderer* clone() const;
+		std::unique_ptr<MeshRenderer> clone() const;
 
 		/// Returns the constant reference to the mesh of this Mesh Renderer.
 		/// return : The constant reference to the mesh.
@@ -68,6 +68,8 @@ namespace Honeycomb { namespace Component { namespace Render {
 
 		// Reference to the transform of the mesh
 		Honeycomb::Component::Physics::Transform *transform;
+
+		virtual MeshRenderer* cloneInternal() const override;
 	};
 } } }
 

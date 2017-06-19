@@ -48,18 +48,8 @@ namespace Honeycomb { namespace Component { namespace Light {
 		this->attenuation = atten;
 	}
 
-	SpotLight* SpotLight::clone() const {
-		SpotLight *sL = new SpotLight();
-
-		sL->setIntensity(this->getIntensity());
-		sL->setColor(this->getColor());
-		sL->attenuation = this->attenuation;
-		sL->glFloats.setValue(PointLight::RANGE_F,
-			this->glFloats.getValue(PointLight::RANGE_F));
-		sL->glFloats.setValue(SpotLight::ANGLE_F,
-			this->glFloats.getValue(SpotLight::ANGLE_F));
-
-		return sL;
+	std::unique_ptr<SpotLight> SpotLight::clone() const {
+		return std::unique_ptr<SpotLight>(this->cloneInternal());
 	}
 
 	float& SpotLight::getAngle() {
@@ -160,5 +150,19 @@ namespace Honeycomb { namespace Component { namespace Light {
 			this->transform->getLocalForward());
 		this->glVector3fs.setValue(SpotLight::POSITION_VEC3,
 			this->transform->getGlobalTranslation());
+	}
+
+	SpotLight* SpotLight::cloneInternal() const {
+		SpotLight *sL = new SpotLight();
+
+		sL->setIntensity(this->getIntensity());
+		sL->setColor(this->getColor());
+		sL->attenuation = this->attenuation;
+		sL->glFloats.setValue(PointLight::RANGE_F,
+			this->glFloats.getValue(PointLight::RANGE_F));
+		sL->glFloats.setValue(SpotLight::ANGLE_F,
+			this->glFloats.getValue(SpotLight::ANGLE_F));
+
+		return sL;
 	}
 } } }

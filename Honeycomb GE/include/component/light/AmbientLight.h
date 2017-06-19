@@ -25,7 +25,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// Ambient Light. This function should be used instead of the copy 
 		/// constructor to prevent object slicing.
 		/// return : The cloned Ambient Light.
-		AmbientLight* clone() const;
+		std::unique_ptr<AmbientLight> clone() const;
 
 		/// Starts this Ambient Light.
 		void start();
@@ -33,6 +33,8 @@ namespace Honeycomb { namespace Component { namespace Light {
 		// The struct definition for the Ambient Light.
 		const static std::string structFile;
 		const static std::string structName;
+
+		virtual AmbientLight* cloneInternal() const override;
 	};
 } } }
 

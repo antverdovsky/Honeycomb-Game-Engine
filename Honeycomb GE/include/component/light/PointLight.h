@@ -37,7 +37,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// Light. This function should be used instead of the copy constructor
 		/// to prevent object slicing.
 		/// return : The cloned Point Light.
-		PointLight* clone() const;
+		std::unique_ptr<PointLight> clone() const;
 
 		/// Returns the attenuation of this Point Light.
 		/// return : The reference to the Attenuation.
@@ -89,6 +89,8 @@ namespace Honeycomb { namespace Component { namespace Light {
 		Honeycomb::Component::Light::Attenuation attenuation;
 
 		const Honeycomb::Math::Vector3f *position; // Transform Position
+
+		virtual PointLight* cloneInternal() const override;
 	};
 } } }
 

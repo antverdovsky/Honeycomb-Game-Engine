@@ -37,12 +37,8 @@ namespace Honeycomb { namespace Component { namespace Light {
 		this->shadow.setShadowType(shdw);
 	}
 
-	DirectionalLight* DirectionalLight::clone() const {
-		return new DirectionalLight(
-			this->glFloats.getValue(DirectionalLight::INTENSITY_F),
-			this->glVector3fs.getValue(DirectionalLight::COLOR_VEC3),
-			this->shadow.getShadowType()
-		);
+	std::unique_ptr<DirectionalLight> DirectionalLight::clone() const {
+		
 	}
 
 	const Vector3f& DirectionalLight::getDirection() const {
@@ -98,5 +94,12 @@ namespace Honeycomb { namespace Component { namespace Light {
 		this->calculateLightProjection();
 		this->glVector3fs.setValue(DirectionalLight::DIRECTION_VEC3,
 			this->transform->getLocalForward());
+	}
+
+	DirectionalLight* DirectionalLight::cloneInternal() const {
+		return new DirectionalLight(
+			this->glFloats.getValue(DirectionalLight::INTENSITY_F),
+			this->glVector3fs.getValue(DirectionalLight::COLOR_VEC3),
+			this->shadow.getShadowType());
 	}
 } } }

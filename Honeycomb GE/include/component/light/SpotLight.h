@@ -42,7 +42,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// Light. This function should be used instead of the copy constructor
 		/// to prevent object slicing.
 		/// return : The cloned Spot Light.
-		SpotLight* clone() const;
+		std::unique_ptr<SpotLight> clone() const;
 
 		/// Returns the angle of this Spot Light.
 		/// return : The reference to the angle.
@@ -117,6 +117,8 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// changes. Writes the direction and position data to the Generic 
 		/// Struct and recalculates and writes the shadow matrix.
 		void onTransformChange();
+
+		virtual SpotLight* cloneInternal() const override;
 	};
 } } }
 

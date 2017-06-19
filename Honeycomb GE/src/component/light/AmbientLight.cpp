@@ -24,13 +24,17 @@ namespace Honeycomb { namespace Component { namespace Light {
 		this->glVector3fs.setValue(AmbientLight::COLOR_VEC3, col);
 	}
 
-	AmbientLight* AmbientLight::clone() const {
-		return new AmbientLight(
-			this->glFloats.getValue(AmbientLight::INTENSITY_F),
-			this->glVector3fs.getValue(AmbientLight::COLOR_VEC3));
+	std::unique_ptr<AmbientLight> AmbientLight::clone() const {
+		return std::unique_ptr<AmbientLight>(this->cloneInternal());
 	}
 
 	void AmbientLight::start() {
 		BaseLight::start();
+	}
+
+	AmbientLight* AmbientLight::cloneInternal() const {
+		return new AmbientLight(
+			this->glFloats.getValue(AmbientLight::INTENSITY_F),
+			this->glVector3fs.getValue(AmbientLight::COLOR_VEC3));
 	}
 } } }
