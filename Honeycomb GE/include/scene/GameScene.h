@@ -33,7 +33,7 @@ namespace Honeycomb { namespace Scene {
 
 		/// Adds the specified object as a child to this game object.
 		/// Object &o : The object to be parented to this game object.
-		void addChild(Honeycomb::Object::GameObject &o);
+		void addChild(std::unique_ptr<Honeycomb::Object::GameObject> o);
 
 		/// Clones this Game Scene into a new, dynamically allocated, 
 		/// independent game scene. All game objects and game components will

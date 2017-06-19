@@ -103,12 +103,12 @@ namespace Honeycomb { namespace Geometry {
 
 		return *(new Model(path, settings));
 	}
-
-	GameObject* Model::getGameObject() {
+/*
+	std::unique_ptr<GameObject> Model::getGameObject() {
 		return this->gameObject;
 	}
-
-	GameObject* Model::getGameObjectClone() const {
+*/
+	std::unique_ptr<GameObject> Model::getGameObjectClone() const {
 		return this->gameObject->clone();
 	}
 
@@ -316,7 +316,7 @@ namespace Honeycomb { namespace Geometry {
 		return mesh;
 	}
 
-	GameObject* Model::processAiNode(aiNode *aNode) {
+	std::unique_ptr<GameObject> Model::processAiNode(aiNode *aNode) {
 		// If this is a child of the scene's RootNode, then scale it according
 		// to the settings' scaling factor since its position is global. Else,
 		// the position is local and should not be scaled by anything!
@@ -325,7 +325,8 @@ namespace Honeycomb { namespace Geometry {
 
 		// Create the GameObject representing this node, and give it a
 		// Transform, since all Objects get one.
-		GameObject* object = new GameObject(aNode->mName.C_Str());
+		std::unique_ptr<GameObject> object = std::make_unique<GameObject>(
+				aNode->mName.C_Str());
 		Transform* transf = new Transform();
 
 		// Fetch the Transformation of the Object and write to the Transform
@@ -366,10 +367,11 @@ namespace Honeycomb { namespace Geometry {
 		for (unsigned int i = 0; i < aNode->mNumChildren; i++) {
 			// Convert each child into a new Game Object.
 			aiNode *childNode = aNode->mChildren[i];
-			GameObject *childObj = this->processAiNode(childNode);
+			std::unique_ptr<GameObject> childObj = 
+					this->processAiNode(childNode);
 
 			// Add each fetched child as a child to this Game Object.
-			object->addChild(*childObj);
+			object->addChild(std::move(childObj));
 		}
 
 		return object; // Return the instantiated object

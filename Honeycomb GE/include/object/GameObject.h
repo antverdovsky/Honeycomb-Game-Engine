@@ -2,8 +2,9 @@
 #ifndef OBJECT_H
 #define OBJECT_H
 
-#include <vector>
+#include <memory>
 #include <string>
+#include <vector>
 
 #include "../component/GameComponent.h"
 #include "../debug/Logger.h"
@@ -54,6 +55,11 @@ namespace Honeycomb { namespace Object {
 		/// parent.
 		GameObject();
 
+		/// <summary>
+		/// No copy constructor exists for the Game Object class.
+		/// </summary>
+		GameObject(const GameObject &object) = delete;
+
 		/// Instantializes a Game Object with the specified name.
 		/// const string &n : The name of this Game Object.
 		GameObject(const std::string &n);
@@ -61,24 +67,46 @@ namespace Honeycomb { namespace Object {
 		/// Deletes this Game Object, its children and its components.
 		virtual ~GameObject();
 
-		/// Clones this Game Object into a new, dynamically allocated, Game
-		/// Object.
-		/// return : The cloned Game Object.
-		GameObject* clone() const;
-
-		/// Adds the specified object as a child to this game object, if it is
-		/// not already a child of this game object.
-		/// Object &o : The object to be parented to this game object.
-		void addChild(GameObject &o);
+		/// <summary>
+		/// Adds the specified Game Object as a child of this Game Object. If
+		/// the specified Game Object is already a child of this Game Object,
+		/// no further action is taken. If the specified Game Object is already
+		/// a child of some other Game Object, the child is detached from its
+		/// current parent and reattached to this Game Object. Since the child
+		/// is passed as a unique pointer, this Game Object instance will take
+		/// ownership of the pointer.
+		/// </summary>
+		/// <param name="object">
+		/// The object to be parented to this Game Object.
+		/// </param>
+		/// <returns>
+		/// The reference to the new child Game Object.
+		/// </returns>
+		GameObject& addChild(std::unique_ptr<GameObject> object);
 
 		/// Adds the specified component to this game object, if it is not
 		/// already a child of this game object.
 		/// Component &c : The component to be parented to this game object.
 		void addComponent(Honeycomb::Component::GameComponent &c);
 
-		/// Deparents this object from whatever parent it may currently have
-		/// so that its new parent becomes NULL.
-		void deparent();
+		/// <summary>
+		/// Clones this Game Object into a new, independent Game Object. The
+		/// Game Object will have all of the same properties, components and
+		/// children of this Game Object, but they will all be cloned and 
+		/// independent of this Game Object. The cloned Game Object will not be
+		/// parented to any Scene or Game Object, nor will it be active by
+		/// default.
+		/// </summary>
+		/// <returns>
+		/// The unique pointer to the Game Object clone instance.
+		/// </returns>
+		std::unique_ptr<GameObject> clone() const;
+
+		/// <summary>
+		/// Deparents this Game Object from its parent, if it has one. If the
+		/// Game Object has no parent, no action is taken.
+		/// </summary>
+//		void deparent();
 
 		/// <summary>
 		/// Gets the child of this Game Object which has the specified name. If
@@ -112,13 +140,13 @@ namespace Honeycomb { namespace Object {
 		/// </exception>
 		const GameObject& getChild(const std::string &name) const;
 
-		/// Gets all the children game objects of this game object.
-		/// return : The list containing the children game objects.
-		std::vector<GameObject*>& getChildren();
-
-		/// Gets all the children game objects of this game object.
-		/// return : The constant list containing the children game objects.
-		const std::vector<GameObject*>& getChildren() const;
+		/// <summary>
+		/// Returns a list of all of the children of this Game Object.
+		/// </summary>
+		/// <returns>
+		/// The list of the children, returned by constant reference.
+		/// </returns>
+		const std::vector<std::unique_ptr<GameObject>>& getChildren() const;
 /*
 		/// <summary>
 		/// Gets the component of this Game Object which has the specified
@@ -196,7 +224,7 @@ namespace Honeycomb { namespace Object {
 		/// </exception>
 		template<class Type> 
 		const Type& getComponent() const {
-			for (auto *comp : this->components) {
+			for (Honeycomb::Component::GameComponent *comp : this->components) {
 				if (dynamic_cast<Type*>(comp) != nullptr) {
 					return dynamic_cast<const Type&>(*comp);
 				}
@@ -279,13 +307,13 @@ namespace Honeycomb { namespace Object {
 		/// Returns the scene of this Game Object.
 		/// return : The constant pointer to the Game Scene.
 		const Honeycomb::Scene::GameScene* getScene() const;
-
+/*
 		/// Checks if this Game Object has the specified child.
 		/// const GameObject &child : The game object which is to be checked.
 		/// return : True if the specified game object is a child of this.
 		///			 False otherwise.
 		bool hasChild(const GameObject &child) const;
-
+*/
 		/// Checks if this Game Object has the specified component.
 		/// const GameComponent &comp : The component which is to be checked.
 		/// return : True if the specified game component is a child of this.
@@ -297,17 +325,24 @@ namespace Honeycomb { namespace Object {
 		/// method will only do something if the object is active.
 		virtual void input();
 
-		/// Removes the specified child from the children of this object, if
-		/// it exists as a child. Once the child is removed, its new parent
-		/// will be the root object.
-		/// Object *o : The object to be removed.
-		void removeChild(GameObject *o);
-
 		/// Removes the component from the components of this object, if it
 		/// exists as an attached component. Once the component is removed, it
 		/// will be "attached" to NULL.
 		/// Component *c : The component to be removed.
 		void removeComponent(Honeycomb::Component::GameComponent *c);
+
+		/// <summary>
+		/// Removes the specified child from this Game Object and returns a
+		/// unique pointer to it.
+		/// </summary>
+		/// <param name="child">
+		/// The pointer to the child which is to be removed.
+		/// </param>
+		/// <returns>
+		/// The unique pointer to the child after it has been removed from this
+		/// Game Object.
+		/// </returns>
+		std::unique_ptr<GameObject> removeChild(GameObject *child);
 
 		/// Handles any render events for this component, if necessary. This 
 		/// method will only do something if the object is active.
@@ -332,6 +367,11 @@ namespace Honeycomb { namespace Object {
 		/// Handles any update events for this component, if necessary. This 
 		/// method will only do something if the object is active.
 		virtual void update();
+
+		/// <summary>
+		/// No assignment operator exists for the Game Object class.
+		/// </summary>
+		GameObject& operator=(const GameObject &object) = delete;
 	protected:
 		bool isActive; // Is this object active?
 		std::string name; // Name of this Game Object
@@ -340,7 +380,7 @@ namespace Honeycomb { namespace Object {
 		Honeycomb::Scene::GameScene *scene; // Scene to which this belongs to
 
 		// The children and components of this Game Object
-		std::vector<GameObject*> children;
+		std::vector<std::unique_ptr<GameObject>> children;
 		std::vector<Honeycomb::Component::GameComponent*> components;
 	};
 } }

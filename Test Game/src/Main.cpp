@@ -11,7 +11,7 @@ using Honeycomb::Base::BaseGame;
 using HoneycombTest::TestGame;
 
 int main(int argc, char** argv) {
-	TestGame game = TestGame(); // Initialize a test game to run
+	TestGame game; // Initialize a test game to run
 
 	Honeycomb::Base::BaseMain::getBaseMain().runGame(game);
 

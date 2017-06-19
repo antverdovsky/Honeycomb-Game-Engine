@@ -140,12 +140,12 @@ namespace HoneycombTest {
 			Vector3f( -1.391F, 0.709F, 3.321F));
 
 		// Add all of the initialized objects to the Game Scene hierarchy
-		this->gameScene.addChild(*this->car);
-		this->gameScene.addChild(*this->cube);
-		this->gameScene.addChild(*this->plane);
-		this->gameScene.addChild(*this->ambient);
-		this->gameScene.addChild(*this->directional);
-		this->gameScene.addChild(*this->camera);
+		this->gameScene.addChild(std::move(this->car));
+		this->gameScene.addChild(std::move(this->cube));
+		this->gameScene.addChild(std::move(this->plane));
+		this->gameScene.addChild(std::move(this->ambient));
+		this->gameScene.addChild(std::move(this->directional));
+		this->gameScene.addChild(std::move(this->camera));
 		
 		// Start the Game Scene and set it as the active scene
 		this->gameScene.start();

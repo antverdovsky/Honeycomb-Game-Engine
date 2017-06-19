@@ -88,19 +88,19 @@ namespace Honeycomb { namespace Geometry {
 		/// const std::string &path : The path to the model.
 		static const Model& loadModel(const std::string &path,
 			const ModelSettings &settings = ModelSettings());
-
+/*
 		/// Returns the Game Object loaded in from the Model. This game object
 		/// is directly linked to the Model and IS NOT independent of the
 		/// Model. Modifying this object will result in the modification of all
 		/// future clones of this Game Object.
 		/// return : The loaded Game Object.
 		Honeycomb::Object::GameObject* getGameObject();
-
+*/
 		/// Returns a Clone of the loaded Game Object. The game object will be
 		/// completely independent, with its own unique children and 
 		/// components, and it does not depend on the Model in any way.
 		/// return : A clone of the loaded Game Object.
-		Honeycomb::Object::GameObject* getGameObjectClone() const;
+		std::unique_ptr<Honeycomb::Object::GameObject> getGameObjectClone() const;
 
 		/// Gets the system path to the file from which the Model was loaded.
 		/// return : The string containing the system path.
@@ -113,7 +113,7 @@ namespace Honeycomb { namespace Geometry {
 
 		const aiScene* scene; // The ASSIMP Scene for this model
 		std::string path; // The system path to the model
-		Honeycomb::Object::GameObject *gameObject; // The built model object
+		std::unique_ptr<Honeycomb::Object::GameObject> gameObject; // The built model object
 
 		// These refer to the initialized components from the imported data.
 		// All game objects built from this model will reference these in some
@@ -206,7 +206,7 @@ namespace Honeycomb { namespace Geometry {
 		///					GameObject.
 		/// return : The dynamically allocated Honeycomb GameObject instance,
 		///			 containing the information extracted from the ASSIMP node.
-		Honeycomb::Object::GameObject* processAiNode(aiNode *aNode);
+		std::unique_ptr<Honeycomb::Object::GameObject> processAiNode(aiNode *aNode);
 
 		/// Converts the ASSIMP Material into a Honeycomb Material, and returns
 		/// the Material instance.

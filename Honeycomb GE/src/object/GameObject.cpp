@@ -36,38 +36,41 @@ namespace Honeycomb { namespace Object {
 //		this->deparent();
 	}
 
-	GameObject* GameObject::clone() const {
-		GameObject *clone = new GameObject();
-
-		clone->name = this->name;
-		clone->isActive = this->isActive;
+	std::unique_ptr<GameObject> GameObject::clone() const {
+		std::unique_ptr<GameObject> clone = 
+				std::make_unique<GameObject>(this->name);
 
 		// Copy over all of the children and the components, once duplicated
 		// (Components must be copied over first since the Transform hierarchy
 		// only gets copied for the child if the Transform component exists).
 		for (const GameComponent *comp : this->components)
 			clone->addComponent(*comp->clone());
-		for (const GameObject *child : this->children)
-			clone->addChild(*child->clone());
+		for (auto &child : this->children)
+			clone->addChild(child->clone());
 		
 		return clone;
 	}
 
-	void GameObject::addChild(GameObject &o) {
-		if (this->hasChild(o)) return;
+	GameObject& GameObject::addChild(std::unique_ptr<GameObject> o) {
+//		if (this->hasChild(o)) return;
 
-		this->children.push_back(&o);
+		// If the object already has a parent, lose the parent
+		if (o->parent != nullptr) o->parent->removeChild(o.get());
 
-		if (o.parent != nullptr) o.parent->removeChild(&o);
-		o.parent = this;
+		// Make this the new parent of the Object
+		this->children.push_back(std::move(o));
+		this->children.back()->parent = this;
 
 		// Parent the Transform of the child to this Transform, if it has one
 		try {
-			Transform &childTransf = o.getComponent<Transform>();
+			Transform &childTransf = this->children.back()->
+				getComponent<Transform>();
 			childTransf.setParent(&this->getComponent<Transform>());
 		} catch (GameEntityNotAttachedException e) {
 		
 		}
+
+		return *this->children.back();
 	}
 
 	void GameObject::addComponent(GameComponent &c) {
@@ -79,18 +82,25 @@ namespace Honeycomb { namespace Object {
 		c.attached = this;
 	}
 
+	/*
 	void GameObject::deparent() {
-		// Remove this object from its parents' children and set the parent of
-		// this object to nothing.
 		if (this->parent != nullptr) {
-			this->parent->removeChild(this);
+			// Remove this object from its parents' children and set the parent
+			// of this to null.
+			auto it = std::remove_if(this->parent->children.begin(), 
+				this->parent->children.end(),
+				[&](const std::unique_ptr<GameObject>& child) {
+				return child.get() == this;
+			});
+			this->parent->children.erase(it, this->parent->children.end());
 			this->parent = nullptr;
+		
+			// Unparent the Transform of this
+			Transform &thisTransf = this->getComponent<Transform>();
+			thisTransf.setParent(nullptr);
 		}
-
-		// Unparent the Transform of this
-		Transform &thisTransf = this->getComponent<Transform>();
-		thisTransf.setParent(nullptr);
 	}
+	*/
 
 	GameObject& GameObject::getChild(const std::string &name) {
 		return const_cast<GameObject&>(static_cast<const GameObject*>
@@ -98,7 +108,7 @@ namespace Honeycomb { namespace Object {
 	}
 
 	const GameObject& GameObject::getChild(const std::string &name) const {
-		for (const GameObject* child : this->children) {
+		for (auto &child : this->children) {
 			if (child->getName() == name) {
 				return *child;
 			}
@@ -107,11 +117,8 @@ namespace Honeycomb { namespace Object {
 		throw GameEntityNotAttachedException(this, name);
 	}
 
-	std::vector<GameObject*>& GameObject::getChildren() {
-		return this->children;
-	}
-
-	const std::vector<GameObject*>& GameObject::getChildren() const {
+	const std::vector<std::unique_ptr<GameObject>>& GameObject::getChildren()
+			const {
 		return this->children;
 	}
 /*
@@ -163,12 +170,12 @@ namespace Honeycomb { namespace Object {
 	const GameScene* GameObject::getScene() const {
 		return this->scene;
 	}
-
+/*
 	bool GameObject::hasChild(const GameObject &child) const {
 		return std::find(this->children.begin(), this->children.end(), &child)
 			!= this->children.end();
 	}
-
+*/
 	bool GameObject::hasComponent(const GameComponent &comp) const {
 		return std::find(this->components.begin(), this->components.end(),
 			&comp) != this->components.end();
@@ -178,21 +185,28 @@ namespace Honeycomb { namespace Object {
 		if (!this->isActive) return; // If not active -> It should not update!
 
 		// Handle input for all children and components
-		for (GameObject *child : this->children)
+		for (auto &child : this->children)
 			child->input();
 		for (GameComponent *comp : this->components)
 			comp->input();
 	}
 
-	void GameObject::removeChild(GameObject *o) {
-		children.erase( // Erase object from my children
-			std::remove(children.begin(), children.end(), o), children.end());
+	std::unique_ptr<GameObject> GameObject::removeChild(GameObject *o) {
+		auto child = std::find_if(this->children.begin(), this->children.end(),
+			[&](const std::unique_ptr<GameObject>& child) {
+			return o == child.get();
+		});
+		std::unique_ptr<GameObject> childPtr = std::move(*child);
+
+		this->children.erase(child);
 
 		o->parent = nullptr;
 
 		// Notify child's transform it no longer has a parent
 		Transform &childTransf = o->getComponent<Transform>();
 		childTransf.setParent(nullptr);
+
+		return std::move(childPtr);
 	}
 
 	void GameObject::removeComponent(GameComponent *c) {
@@ -207,7 +221,7 @@ namespace Honeycomb { namespace Object {
 		if (!this->isActive) return;
 
 		// Handle rendering for all children and components
-		for (GameObject *child : this->children)
+		for (auto &child : this->children)
 			child->render(shader);
 		for (GameComponent *comp : this->components)
 			comp->render(shader);
@@ -216,7 +230,7 @@ namespace Honeycomb { namespace Object {
 	void GameObject::setScene(GameScene *scene) {
 		this->scene = scene;
 
-		for (GameObject *child : this->children)
+		for (auto &child : this->children)
 			child->setScene(scene);
 	}
 
@@ -225,7 +239,7 @@ namespace Honeycomb { namespace Object {
 		this->isActive = true;
 
 		// Handle starting for all children and components
-		for (GameObject *child : this->children)
+		for (auto &child : this->children)
 			child->start();
 		for (GameComponent *comp : this->components)
 			comp->start();
@@ -236,7 +250,7 @@ namespace Honeycomb { namespace Object {
 		this->isActive = false;
 
 		// Handle starting for all children and components
-		for (GameObject *child : this->children)
+		for (auto &child : this->children)
 			child->stop();
 		for (GameComponent *comp : this->components)
 			comp->stop();
@@ -246,7 +260,7 @@ namespace Honeycomb { namespace Object {
 		if (!this->isActive) return;
 
 		// Handle updating for all children and components
-		for (GameObject *child : this->children)
+		for (auto &child : this->children)
 			child->update();
 		for (GameComponent *comp : this->components)
 			comp->update();

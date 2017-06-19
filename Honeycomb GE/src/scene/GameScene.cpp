@@ -15,10 +15,10 @@ namespace Honeycomb { namespace Scene {
 
 	}
 
-	void GameScene::addChild(GameObject &obj) {
-		obj.setScene(this);
+	void GameScene::addChild(std::unique_ptr<GameObject> obj) {
+		obj->setScene(this);
 
-		GameObject::addChild(obj);
+		GameObject::addChild(std::move(obj));
 	}
 
 	GameScene* GameScene::clone() const {
@@ -28,8 +28,8 @@ namespace Honeycomb { namespace Scene {
 		clone->isActive = this->isActive;
 
 		// Copy over all of the children and the components, once duplicated
-		for (const GameObject *child : this->children)
-			clone->addChild(*child->clone());
+		for (auto &child : this->children)
+			clone->addChild(child->clone());
 		for (const GameComponent *comp : this->components)
 			clone->addComponent(*comp->clone());
 

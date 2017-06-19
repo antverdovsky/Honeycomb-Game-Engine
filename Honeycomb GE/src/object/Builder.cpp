@@ -122,13 +122,14 @@ namespace Honeycomb { namespace Object {
 			const std::string &name, const std::string &path) {
 		// Get the parent model and extract the child with the given name from
 		// it.
-		GameObject *parent = Model::loadModel(path).getGameObjectClone();
-		GameObject &child = parent->getChild(name);
-		child.deparent();
+		auto parent = Model::loadModel(path).getGameObjectClone();
+		//GameObject &child = parent->getChild(name);
+		//child.deparent();
+		std::unique_ptr<GameObject> child = 
+				parent->removeChild(&parent->getChild(name));
 
 		// Recycle the parent and return the child (keep the Model since the
 		// Model class will use it to avoid re-importation of models).
-		delete parent;
-		return std::unique_ptr<GameObject>(std::move(&child));
+		return std::move(child);
 	}
 } }
