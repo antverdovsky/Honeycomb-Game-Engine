@@ -64,8 +64,8 @@ namespace HoneycombTest { namespace Components {
 
 	}
 
-	InputTransformable* InputTransformable::clone() const {
-		return new InputTransformable(*this);
+	std::unique_ptr<InputTransformable> InputTransformable::clone() const {
+		return std::unique_ptr<InputTransformable>(this->cloneInternal());
 	}
 
 	Space& InputTransformable::getSpace() {
@@ -130,5 +130,17 @@ namespace HoneycombTest { namespace Components {
 			transform.setScale(scale + (forward * sS), this->space);
 		else if (input->getKeyDown(this->scaleDownF))
 			transform.setScale(scale - (forward * sS), this->space);
+	}
+
+	InputTransformable* InputTransformable::cloneInternal() const {
+		return new InputTransformable(
+			this->movForward, this->movBackward, this->movLeft,
+			this->movRight, this->movUp, this->movDown,
+			this->pitchUp, this->pitchDown, this->rollLeft, 
+			this->rollRight, this->yawLeft, this->yawRight,
+			this->scaleUpR, this->scaleDownR, this->scaleUpF,
+			this->scaleDownF, this->scaleUpU, this->scaleDownU,
+			this->speedM, this->speedR, this->speedS,
+			this->space);
 	}
 } }

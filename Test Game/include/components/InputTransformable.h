@@ -59,7 +59,7 @@ namespace HoneycombTest { namespace Components {
 		/// Input Transformable. This function should be used instead of the 
 		/// copy constructor to  prevent object slicing.
 		/// return : The cloned Input Transformable.
-		InputTransformable* clone() const;
+		std::unique_ptr<InputTransformable> clone() const;
 
 		/// Returns the space relative to which the translations occur.
 		/// return : A reference to the space.
@@ -99,6 +99,8 @@ namespace HoneycombTest { namespace Components {
 
 		// The space relative to which the translation is to occur
 		Honeycomb::Component::Physics::Space space;
+
+		virtual InputTransformable* cloneInternal() const override;
 	};
 } }
 

@@ -663,7 +663,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	}
 
 	void DeferredRenderer::writePointLightTransform(const PointLight &pL) {
-		Transform pLT = pL.getAttached()->getComponent<Transform>();
+		const Transform &pLT = pL.getAttached()->getComponent<Transform>();
 		Matrix4f transformM = pLT.getTransformationMatrix();
 		float pLRange = pL.getRange();
 
@@ -677,7 +677,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	}
 
 	void DeferredRenderer::writeSpotLightTransform(const SpotLight &sL) {
-		Transform sLT = sL.getAttached()->getComponent<Transform>();
+		const Transform &sLT = sL.getAttached()->getComponent<Transform>();
 		Matrix4f transformM = sLT.getTransformationMatrix();
 		float sLRange = sL.getRange();
 		float sLAngle = sL.getAngle();
