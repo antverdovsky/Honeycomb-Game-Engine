@@ -1,6 +1,6 @@
 #pragma once
-#ifndef COMPONENT_H
-#define COMPONENT_H
+#ifndef GAME_COMPONENT_H
+#define GAME_COMPONENT_H
 
 #include <memory>
 #include <string>
@@ -37,7 +37,11 @@ namespace Honeycomb { namespace Component {
 			return type;
 		}
 
-		/// Creates a Component instance with the "Component" name.
+		/// <summary>
+		/// Creates a new, empty Game Component. The Game Component will not be
+		/// attached to anything, nor will it be active or self active. The ID
+		/// of the Component is initialized by this.
+		/// </summary>
 		GameComponent();
 		
 		/// <summary>
@@ -60,53 +64,96 @@ namespace Honeycomb { namespace Component {
 		/// </returns>
 		std::unique_ptr<GameComponent> clone() const;
 
-		/// Detaches this Component from its current object, and sets the
-		/// current object to which it is attached to pointer to nullptr.
-		void detach();
-
-		/// Returns the object to which this component is attached to.
-		/// return : The pointer to the object.
+		/// <summary>
+		/// Gets the pointer to the Game Object to which this Game Component is
+		/// attached to. If the Game Component is not attached to anything,
+		/// this will return a nullptr.
+		/// </summary>
+		/// <returns>
+		/// The pointer to the Game Object this is attached to, or a nullptr if
+		/// this is not attached to anything.
+		/// </returns>
 		Honeycomb::Object::GameObject* getAttached();
 
-		/// Returns the object to which this component is attached to.
-		/// return : The constant pointer to the object.
+		/// <summary>
+		/// Gets the pointer to the Game Object to which this Game Component is
+		/// attached to. If the Game Component is not attached to anything,
+		/// this will return a nullptr.
+		/// </summary>
+		/// <returns>
+		/// The constant pointer to the Game Object this is attached to, or a 
+		/// nullptr if this is not attached to anything.
+		/// </returns>
 		const Honeycomb::Object::GameObject* getAttached() const;
 
-		/// Gets a boolean representing whether this game object is active
-		/// or not.
-		/// return : A boolean reference representing whether the game object 
-		///			 is active.
-		bool& getIsActive();
+		/// <summary>
+		/// Gets a boolean representation of whether or not the Game Component
+		/// is currently active. A component is to be considered active if it
+		/// is both self active and its parent is active.
+		/// </summary>
+		/// <returns>
+		/// True if the component is active.
+		/// </returns>
+		bool getIsActive() const;
 
-		/// Gets a boolean representing whether this game object is active
-		/// or not.
-		/// return : A constant boolean reference representing whether the game
-		///			 object is active.
-		const bool& getIsActive() const;
+		/// <summary>
+		/// Gets a boolean representation of whether or not the Game Component
+		/// is currently self active. A component's self activeness does not
+		/// depent on the activeness of its parent.
+		/// </summary>
+		/// <returns>
+		/// True if the component is self active.
+		/// </returns>
+		const bool& getIsSelfActive() const;
 
-		/// Handles any input events for this component, if necessary. This 
-		/// method will only do something if the object is active.
-		virtual void input();
+		/// <summary>
+		/// Handles any events when this component is attached to a Game
+		/// Object, if necessary.
+		/// </summary>
+		virtual void onAttach();
 
-		/// Handles any render events for this component, if necessary. This 
-		/// method will only do something if the object is active.
-		/// ShaderProgram &shader : The shader to be used when rendering
-		///							this game component.
-		virtual void render(Honeycomb::Shader::ShaderProgram &shader);
+		/// <summary>
+		/// Handles any events when this component is detached from a Game
+		/// Object, if necessary.
+		/// </summary>
+		virtual void onDetach();
+
+		/// <summary>
+		/// Handles any input events for this component, if necessary. This
+		/// method should only perform its task when the object is active.
+		/// </summary>
+		virtual void onInput();
+
+		/// <summary>
+		/// Handles any rendering events for this component, if necessary.
+		/// This method should only perform its task when the object is active.
+		/// </summary>
+		/// <param name="shader">
+		/// The shader using which the object is to be rendered.
+		/// </param>
+		virtual void onRender(Honeycomb::Shader::ShaderProgram &shader);
 		
-		/// Handles any starting events for this component, if necessary.
-		/// Additionally, this method will make this component active when
-		/// called.
-		virtual void start();
+		/// <summary>
+		/// Handles any starting events for this component, if necessary. This
+		/// method should only be called once and it should only initialize the
+		/// component. The Game Component is not enabled by this method, use
+		/// <see cref="onEnable"/> to enable the component.
+		/// </summary>
+		virtual void onStart();
 
-		/// Handles any stopping events for this component, if necessary.
-		/// Additionally, this method will make this component inactive when
-		/// called.
-		virtual void stop();
+		/// <summary>
+		/// Handles any stopping events for this component, if necessary. This
+		/// method should only be called once and it should only deinitialize
+		/// the component. The Game Component is not disabled by this method,
+		/// use <see cref="onDisable"/> to disable the component.
+		/// </summary>
+		virtual void onStop();
 
-		/// Handles any update events for this component, if necessary. This 
-		/// method will only do something if the object is active.
-		virtual void update();
+		/// <summary>
+		/// Handles any update events for this component, if necessary. This
+		/// method should only perform its task when the object is active.
+		/// </summary>
+		virtual void onUpdate();
 
 		/// <summary>
 		/// No assignment operator exists for the Game Component class.
@@ -115,11 +162,13 @@ namespace Honeycomb { namespace Component {
 	protected:
 		// The pointer to the Game Object to which this Component is attached.
 		// If the Game Component is floating (not attached to anything), this
-		// is a nullptr.
+		// is a nullptr. If the Game Component is attached to something, its
+		// lifetime is managed by the specified Game Object.
 		Honeycomb::Object::GameObject* attached;
 
-		bool isActive;             // Is this game component active in general?
 		bool isSelfActive;         // Is this game component itself active?
+
+		int componentID;           // The Component ID of this Component
 	private:
 		/// <summary>
 		/// Returns the static Game Component ID variable and increments it

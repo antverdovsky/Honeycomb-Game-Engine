@@ -7,23 +7,18 @@ using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb { namespace Component {
 	GameComponent::GameComponent() {
-		this->isActive = false;
+		this->isSelfActive = false;
 		this->attached = nullptr;
+
+		this->componentID = getGameComponentTypeID<GameComponent>();
 	}
 
 	GameComponent::~GameComponent() {
-		// Notify object that I am no longer attached
-//		this->detach();
+
 	}
 
 	std::unique_ptr<GameComponent> GameComponent::clone() const {
 		return std::unique_ptr<GameComponent>(this->cloneInternal());
-	}
-
-	void GameComponent::detach() {
-		if (this->attached != nullptr) this->attached->removeComponent(this);
-		
-		this->attached = nullptr;
 	}
 
 	GameObject* GameComponent::getAttached() {
@@ -34,31 +29,41 @@ namespace Honeycomb { namespace Component {
 		return this->attached;
 	}
 
-	bool& GameComponent::getIsActive() {
-		return this->isActive;
+	bool GameComponent::getIsActive() const {
+		if (!this->attached) return false;
+
+		return this->getIsSelfActive() && this->attached->getIsActive();
 	}
 
-	const bool& GameComponent::getIsActive() const {
-		return this->isActive;
+	const bool& GameComponent::getIsSelfActive() const {
+		return this->isSelfActive;
 	}
 
-	void GameComponent::input() {
+	void GameComponent::onAttach() {
 
 	}
 
-	void GameComponent::render(ShaderProgram &shader) {
+	void GameComponent::onDetach() {
+
+	}
+
+	void GameComponent::onInput() {
 		
 	}
 
-	void GameComponent::start() {
-		this->isActive = true;
+	void GameComponent::onRender(ShaderProgram &shader) {
+
 	}
 
-	void GameComponent::stop() {
-		this->isActive = false;
+	void GameComponent::onStart() {
+
 	}
-	
-	void GameComponent::update() {
+
+	void GameComponent::onStop() {
+
+	}
+
+	void GameComponent::onUpdate() {
 
 	}
 
