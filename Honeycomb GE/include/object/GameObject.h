@@ -87,7 +87,8 @@ namespace Honeycomb { namespace Object {
 		/// Adds the specified component to this game object, if it is not
 		/// already a child of this game object.
 		/// Component &c : The component to be parented to this game object.
-		void addComponent(Honeycomb::Component::GameComponent &c);
+		Honeycomb::Component::GameComponent& addComponent(std::unique_ptr<
+				Honeycomb::Component::GameComponent> c);
 
 		/// <summary>
 		/// Clones this Game Object into a new, independent Game Object. The
@@ -224,9 +225,9 @@ namespace Honeycomb { namespace Object {
 		/// </exception>
 		template<class Type> 
 		const Type& getComponent() const {
-			for (Honeycomb::Component::GameComponent *comp : this->components) {
-				if (dynamic_cast<Type*>(comp) != nullptr) {
-					return dynamic_cast<const Type&>(*comp);
+			for (auto &comp : this->components) {
+				if (dynamic_cast<Type*>(comp.get()) != nullptr) {
+					return dynamic_cast<const Type&>(*comp.get());
 				}
 			}
 
@@ -266,9 +267,9 @@ namespace Honeycomb { namespace Object {
 		template<class Type> 
 		const Type& getComponent(const std::string &name) const {
 			for (auto comp : this->components) {
-				if (dynamic_cast<Type*>(comp) != nullptr &&
+				if (dynamic_cast<Type*>(comp.get()) != nullptr &&
 					comp->getName() == name) {
-					return dynamic_cast<const Type&>(*comp);
+					return dynamic_cast<const Type&>(*comp.get());
 				}
 			}
 
@@ -276,13 +277,9 @@ namespace Honeycomb { namespace Object {
 		}
 
 		/// Gets all the components of this game object.
-		/// return : The list containing the components.
-		std::vector<Honeycomb::Component::GameComponent*>& getComponents();
-
-		/// Gets all the components of this game object.
 		/// return : The constant list containing the components.
-		const std::vector<Honeycomb::Component::GameComponent*>& 
-				getComponents() const;
+		const std::vector<std::unique_ptr<
+				Honeycomb::Component::GameComponent>>& getComponents() const;
 
 		/// Gets a boolean representing whether this game object is active
 		/// or not.
@@ -314,13 +311,14 @@ namespace Honeycomb { namespace Object {
 		///			 False otherwise.
 		bool hasChild(const GameObject &child) const;
 */
+/*
 		/// Checks if this Game Object has the specified component.
 		/// const GameComponent &comp : The component which is to be checked.
 		/// return : True if the specified game component is a child of this.
 		///			 False otherwise.
 		bool hasComponent(const Honeycomb::Component::GameComponent &comp) 
 				const;
-
+*/
 		/// Handles any input events for this component, if necessary. This 
 		/// method will only do something if the object is active.
 		virtual void input();
@@ -329,7 +327,8 @@ namespace Honeycomb { namespace Object {
 		/// exists as an attached component. Once the component is removed, it
 		/// will be "attached" to NULL.
 		/// Component *c : The component to be removed.
-		void removeComponent(Honeycomb::Component::GameComponent *c);
+		std::unique_ptr<Honeycomb::Component::GameComponent> 
+				removeComponent(Honeycomb::Component::GameComponent *c);
 
 		/// <summary>
 		/// Removes the specified child from this Game Object and returns a
@@ -381,7 +380,8 @@ namespace Honeycomb { namespace Object {
 
 		// The children and components of this Game Object
 		std::vector<std::unique_ptr<GameObject>> children;
-		std::vector<Honeycomb::Component::GameComponent*> components;
+		std::vector<std::unique_ptr<Honeycomb::Component::GameComponent>>
+				components;
 	};
 } }
 

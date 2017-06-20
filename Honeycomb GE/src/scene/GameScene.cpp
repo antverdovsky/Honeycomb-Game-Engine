@@ -30,8 +30,8 @@ namespace Honeycomb { namespace Scene {
 		// Copy over all of the children and the components, once duplicated
 		for (auto &child : this->children)
 			clone->addChild(child->clone());
-		for (const GameComponent *comp : this->components)
-			clone->addComponent(*comp->clone());
+		for (auto &comp : this->components)
+			clone->addComponent(comp->clone());
 
 		return clone;
 	}

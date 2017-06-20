@@ -13,7 +13,7 @@ namespace Honeycomb { namespace Component {
 
 	GameComponent::~GameComponent() {
 		// Notify object that I am no longer attached
-		this->detach();
+//		this->detach();
 	}
 
 	std::unique_ptr<GameComponent> GameComponent::clone() const {

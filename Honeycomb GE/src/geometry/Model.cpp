@@ -327,7 +327,7 @@ namespace Honeycomb { namespace Geometry {
 		// Transform, since all Objects get one.
 		std::unique_ptr<GameObject> object = std::make_unique<GameObject>(
 				aNode->mName.C_Str());
-		Transform* transf = new Transform();
+		std::unique_ptr<Transform> transf = std::make_unique<Transform>();
 
 		// Fetch the Transformation of the Object and write to the Transform
 		// (Scaling may be ignored since the position vector itself is scaled
@@ -340,7 +340,7 @@ namespace Honeycomb { namespace Geometry {
 			rotation.w));
 		transf->setTranslation(Vector3f(position.x, position.y, position.z) *
 			lclSclFactor, Space::LOCAL);
-		object->addComponent(*transf);
+		object->addComponent(std::move(transf));
 
 		// Process all of the Meshes of the Object
 		for (unsigned int i = 0; i < aNode->mNumMeshes; i++) {
@@ -359,8 +359,9 @@ namespace Honeycomb { namespace Geometry {
 			}
 
 			// Create a Mesh Renderer with the mesh and material extracted.
-			MeshRenderer *meshRen = new MeshRenderer(*mat, *mesh);
-			object->addComponent(*meshRen);
+			std::unique_ptr<MeshRenderer> meshRen = 
+				std::make_unique<MeshRenderer>(*mat, *mesh);
+			object->addComponent(std::move(meshRen));
 		}
 
 		// Process all of the Children of the Object

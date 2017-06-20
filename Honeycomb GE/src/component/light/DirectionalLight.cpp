@@ -38,7 +38,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 	}
 
 	std::unique_ptr<DirectionalLight> DirectionalLight::clone() const {
-		
+		return std::unique_ptr<DirectionalLight>(this->cloneInternal());
 	}
 
 	const Vector3f& DirectionalLight::getDirection() const {

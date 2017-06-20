@@ -71,7 +71,7 @@ namespace HoneycombTest {
 			setMaterial(*colorMaterial);
 
 		// Give Suzanne an Input Transformable Component
-		InputTransformable *suzInputTranfs = new InputTransformable(
+		std::unique_ptr<InputTransformable> suzInputTranfs = std::make_unique<InputTransformable>(
 			GameInput::KEY_CODE_UP, GameInput::KEY_CODE_DOWN,
 			GameInput::KEY_CODE_LEFT, GameInput::KEY_CODE_RIGHT,
 			GameInput::KEY_CODE_COMMA, GameInput::KEY_CODE_PERIOD,
@@ -82,7 +82,8 @@ namespace HoneycombTest {
 			GameInput::KEY_CODE_C, GameInput::KEY_CODE_V,
 			GameInput::KEY_CODE_B, GameInput::KEY_CODE_N,
 			3.5F, 3.5F, 3.5F, Space::GLOBAL);
-		this->car->addComponent(*suzInputTranfs);
+		std::unique_ptr<InputTransformable> suzInputTransf2 = suzInputTranfs->clone();
+		this->car->addComponent(std::move(suzInputTranfs));
 
 		// Construct a default Ambient and Directional Light; decrease the
 		// intensity of the lights so they don't overwhelm the scene
@@ -95,12 +96,12 @@ namespace HoneycombTest {
 			getShadow().setShadowType(ShadowType::SHADOW_VARIANCE_AA);
 		this->directional->getComponent<DirectionalLight>().
 			getShadow().setIntensity(1.0F);
-		this->directional->addComponent(*suzInputTranfs->clone());
+		this->directional->addComponent(std::move(suzInputTransf2));
 
 		// Construct a default Camera and give it a default Input Transformable
 		this->camera = GameObjectFactory::getFactory().newCamera();
-		InputTransformable *camTransf = new InputTransformable();
-		this->camera->addComponent(*camTransf);
+		auto camTransf = std::make_unique<InputTransformable>();
+		this->camera->addComponent(std::move(camTransf));
 		
 		// Scale and position the Game Objects
 		this->plane->getComponent<Transform>().setScale(
@@ -113,8 +114,6 @@ namespace HoneycombTest {
 			Vector3f(2.0F, 2.0F, 2.0F));
 		this->directional->getComponent<Transform>().rotate(
 			Vector3f::getGlobalRight(), -PI / 4);
-
-		this->cube->addComponent(*suzInputTranfs->clone());
 
 		// Construct a left and right spotlight for the front of the car and
 		// add to the car (similar to headlights).
