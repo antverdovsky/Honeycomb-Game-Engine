@@ -65,6 +65,18 @@ namespace Honeycomb { namespace Component {
 		std::unique_ptr<GameComponent> clone() const;
 
 		/// <summary>
+		/// Disables this Game Component. This has no effect if the Game 
+		/// Component is already disabled.
+		/// </summary>
+		void doDisable();
+		
+		/// <summary>
+		/// Enables this Game Component. This has no effect if the Game 
+		/// Component is already enabled.
+		/// </summary>
+		void doEnable();
+
+		/// <summary>
 		/// Gets the pointer to the Game Object to which this Game Component is
 		/// attached to. If the Game Component is not attached to anything,
 		/// this will return a nullptr.
@@ -119,11 +131,21 @@ namespace Honeycomb { namespace Component {
 		virtual void onDetach();
 
 		/// <summary>
+		/// Handles any events when this component is disabled.
+		/// </summary>
+		virtual void onDisable();
+
+		/// <summary>
+		/// Handles any events when this component is enabled.
+		/// </summary>
+		virtual void onEnable();
+
+		/// <summary>
 		/// Handles any input events for this component, if necessary. This
 		/// method should only perform its task when the object is active.
 		/// </summary>
 		virtual void onInput();
-
+		
 		/// <summary>
 		/// Handles any rendering events for this component, if necessary.
 		/// This method should only perform its task when the object is active.
@@ -136,16 +158,16 @@ namespace Honeycomb { namespace Component {
 		/// <summary>
 		/// Handles any starting events for this component, if necessary. This
 		/// method should only be called once and it should only initialize the
-		/// component. The Game Component is not enabled by this method, use
-		/// <see cref="onEnable"/> to enable the component.
+		/// component. The Game Component is enabled at the end of this
+		/// method.
 		/// </summary>
 		virtual void onStart();
 
 		/// <summary>
 		/// Handles any stopping events for this component, if necessary. This
 		/// method should only be called once and it should only deinitialize
-		/// the component. The Game Component is not disabled by this method,
-		/// use <see cref="onDisable"/> to disable the component.
+		/// the component. The Game Component is disabled at the end of this
+		/// method.
 		/// </summary>
 		virtual void onStop();
 

@@ -56,11 +56,13 @@ namespace Honeycomb { namespace Component { namespace Light {
 		this->getIntensity() = inten;
 	}
 
-	void BaseLight::start() {
+	void BaseLight::onStart() {
 		this->getAttached()->getScene()->activeLights.push_back(this);
+
+		this->doEnable();
 	}
 
-	void BaseLight::stop() {
+	void BaseLight::onStop() {
 		std::vector<BaseLight*> &lights =
 			this->getAttached()->getScene()->activeLights;
 

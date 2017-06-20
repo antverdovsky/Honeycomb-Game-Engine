@@ -89,7 +89,9 @@ namespace Honeycomb { namespace Component { namespace Light {
 		void setAttenuation(const Attenuation &atten);
 
 		/// Starts this Spot Light.
-		void start();
+		void onAttach() override;
+
+		void onDetach() override;
 
 		/// Writes the light and attenuation values of this Spot Light to the
 		/// specified Shader.

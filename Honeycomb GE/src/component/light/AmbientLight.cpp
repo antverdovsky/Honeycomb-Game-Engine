@@ -28,10 +28,6 @@ namespace Honeycomb { namespace Component { namespace Light {
 		return std::unique_ptr<AmbientLight>(this->cloneInternal());
 	}
 
-	void AmbientLight::start() {
-		BaseLight::start();
-	}
-
 	AmbientLight* AmbientLight::cloneInternal() const {
 		return new AmbientLight(
 			this->glFloats.getValue(AmbientLight::INTENSITY_F),

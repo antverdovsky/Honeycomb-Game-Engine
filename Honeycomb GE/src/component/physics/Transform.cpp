@@ -124,7 +124,7 @@ namespace Honeycomb { namespace Component { namespace Physics {
 			this->gblScale.getZ();
 	}
 
-	void Transform::start() {
+	void Transform::onStart() {
 		this->calculateOrientationMatrix();
 		this->calculateTranslationMatrix();
 		this->calculateRotationMatrix();
@@ -132,6 +132,8 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		this->calculateTransformationMatrix();
 		
 		this->changedEvent.onEvent();
+
+		this->doEnable();
 	}
 
 	void Transform::setRotation(const Quaternion &quat, const Space &space) {

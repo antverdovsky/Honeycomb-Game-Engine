@@ -50,7 +50,9 @@ namespace Honeycomb { namespace Component { namespace Light {
 		const Shadow& getShadow() const;
 
 		/// Starts this Directional Light.
-		void start();
+		void onAttach() override;
+
+		void onDetach() override;
 
 		/// Writes the light and shadow values of this Directional Light to the
 		/// specified Shader.

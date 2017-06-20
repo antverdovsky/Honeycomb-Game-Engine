@@ -69,7 +69,9 @@ namespace Honeycomb { namespace Component { namespace Light {
 		void setRange(const float &range);
 
 		/// Starts this Point Light.
-		void start();
+		void onAttach() override;
+
+		void onDetach() override;
 
 		/// Writes the light and attenuation values of this Point Light to the
 		/// specified Shader.
@@ -80,7 +82,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 				const std::string &uni) const;
 
 		/// Updates this Point Light.
-		void update();
+		void onUpdate() override;
 	private:
 		// The struct definition for the Point Light.
 		const static std::string structFile;

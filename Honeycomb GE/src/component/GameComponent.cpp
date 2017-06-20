@@ -21,6 +21,16 @@ namespace Honeycomb { namespace Component {
 		return std::unique_ptr<GameComponent>(this->cloneInternal());
 	}
 
+	void GameComponent::doDisable() {
+		this->isSelfActive = false;
+		this->onDisable();
+	}
+
+	void GameComponent::doEnable() {
+		this->isSelfActive = true;
+		this->onEnable();
+	}
+
 	GameObject* GameComponent::getAttached() {
 		return this->attached;
 	}
@@ -47,6 +57,14 @@ namespace Honeycomb { namespace Component {
 
 	}
 
+	void GameComponent::onDisable() {
+	
+	}
+
+	void GameComponent::onEnable() {
+
+	}
+
 	void GameComponent::onInput() {
 		
 	}
@@ -56,11 +74,11 @@ namespace Honeycomb { namespace Component {
 	}
 
 	void GameComponent::onStart() {
-
+		this->doEnable();
 	}
 
 	void GameComponent::onStop() {
-
+		this->doDisable();
 	}
 
 	void GameComponent::onUpdate() {

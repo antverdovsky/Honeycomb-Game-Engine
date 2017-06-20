@@ -103,10 +103,10 @@ namespace Honeycomb { namespace Component { namespace Light {
 		void setIntensity(const float &inten);
 
 		/// Starts this base light.
-		virtual void start();
+		virtual void onStart() override;
 
 		/// Stops this base light.
-		virtual void stop();
+		virtual void onStop() override;
 	protected:
 		LightType type; // The type of this Light
 	private:

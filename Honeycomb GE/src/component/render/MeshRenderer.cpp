@@ -42,7 +42,15 @@ namespace Honeycomb { namespace Component { namespace Render {
 		return *this->material;
 	}
 
-	void MeshRenderer::render(ShaderProgram &shader) {
+	void MeshRenderer::onAttach() {
+		this->transform = &this->getAttached()->getComponent<Transform>();
+	}
+
+	void MeshRenderer::onDetach() {
+		this->transform = nullptr;
+	}
+
+	void MeshRenderer::onRender(ShaderProgram &shader) {
 		shader.setUniform_mat4("objTransform",
 			this->transform->getTransformationMatrix());
 
@@ -76,10 +84,6 @@ namespace Honeycomb { namespace Component { namespace Render {
 
 	void MeshRenderer::setMesh(const Honeycomb::Geometry::Mesh &mes) {
 		this->mesh = &mes;
-	}
-
-	void MeshRenderer::start() {
-		this->transform = &this->getAttached()->getComponent<Transform>();
 	}
 
 	MeshRenderer* MeshRenderer::cloneInternal() const {

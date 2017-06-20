@@ -71,12 +71,14 @@ namespace Honeycomb { namespace Component { namespace Light {
 		this->getRange() = range;
 	}
 	
-	void PointLight::start() {
+	void PointLight::onAttach() {
 		// Get the position from the Transform.
 		this->position = &this->getAttached()->getComponent<Transform>().
 			getGlobalTranslation();
+	}
 
-		BaseLight::start();
+	void PointLight::onDetach() {
+		this->position = nullptr;
 	}
 
 	void PointLight::toShader(ShaderProgram &shader, const std::string &uni)
@@ -86,7 +88,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		this->attenuation.toShader(shader, uni + ".attenuation");
 	}
 
-	void PointLight::update() {
+	void PointLight::onUpdate() {
 		this->glVector3fs.setValue(PointLight::POSITION_VEC3, *this->position);
 	}
 

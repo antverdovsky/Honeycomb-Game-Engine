@@ -107,10 +107,17 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// return : The constant reference to the projection width.
 		const float& getProjectionWidth() const;
 
-		/// Sets this camera as the active world camera. There can only be one
-		/// active world camera, so this camera will replace the existing
-		/// active camera as the new active camera.
-		void setActive();
+		/// <summary>
+		/// When the Camera Controller is attached to a Game Object, it creates
+		/// a reference to the Transform of the Game Object.
+		/// </summary>
+		void onAttach() override;
+
+		/// <summary>
+		/// When the Camera Controller is detached from a Game Object, it loses
+		/// the reference to the Transform of the Game Object.
+		/// </summary>
+		void onDetach() override;
 
 		/// Sets the projection width and height for the Camera. The projection
 		/// matrix will be automatically updated.
@@ -122,13 +129,6 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// game window width and height. The projection matrix will be 
 		/// automatically updated.
 		void setProjectionSizeToWindow();
-
-		/// Starts this camera component. When started, this camera will become
-		/// the active world camera.
-		void start();
-
-		/// Updates this camera instance.
-		void update();
 	private:
 		static CameraController *activeCamera; // The active camera
 

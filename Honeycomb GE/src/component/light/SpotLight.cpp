@@ -96,7 +96,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		this->attenuation = atten;
 	}
 
-	void SpotLight::start() {
+	void SpotLight::onAttach() {
 		this->transform = &this->getAttached()->getComponent<Transform>();
 
 		// Add event handler to the Transform
@@ -104,8 +104,12 @@ namespace Honeycomb { namespace Component { namespace Light {
 			std::bind(&SpotLight::onTransformChange, this));
 		this->transform->getChangedEvent().addEventHandler(
 			this->transformChangeHandler);
+	}
 
-		BaseLight::start();
+	void SpotLight::onDetach() {
+		this->transform->getChangedEvent().removeEventHandler(
+			this->transformChangeHandler);
+		this->transform = nullptr;
 	}
 
 	void SpotLight::toShader(ShaderProgram &shader, const std::string &uni)

@@ -131,7 +131,7 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		bool isOddNegativelyScaled() const;
 
 		/// Starts this Transform instance.
-		void start();
+		void onStart() override;
 
 		/// Sets the rotation of this transform in the local or world
 		/// coordinate system space. By default, the Rotation is set in the

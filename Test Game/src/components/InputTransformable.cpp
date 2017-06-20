@@ -72,9 +72,7 @@ namespace HoneycombTest { namespace Components {
 		return this->space;
 	}
 
-	void InputTransformable::input() {
-		if (!this->isActive) return; // If not active, don't do anything!
-
+	void InputTransformable::onInput() {
 		// Get the Transform which will be modified, and a pointer to the Input
 		Transform &transform = this->attached->getComponent<Transform>();
 		GameInput *input = GameInput::getGameInput();

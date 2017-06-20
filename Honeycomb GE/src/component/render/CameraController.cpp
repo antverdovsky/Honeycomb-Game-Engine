@@ -35,7 +35,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 			CameraController(CameraType::PERSPECTIVE, 1.31F, 1000.0F, 0.30F,
 			(float)GameWindow::getGameWindow()->getWindowHeight(),
 			(float)GameWindow::getGameWindow()->getWindowWidth()) {
-
+		CameraController::activeCamera = this; // TEMP
 	}
 
 	CameraController::CameraController(const CameraType &cT, const float &cTP,
@@ -106,29 +106,8 @@ namespace Honeycomb { namespace Component { namespace Render {
 		return this->projectionWidth;
 	}
 
-	void CameraController::setActive() {
-		this->isActive = true;
-
-		if (CameraController::activeCamera != nullptr)
-			CameraController::activeCamera->stop();
-		CameraController::activeCamera = this;
-	}
-
-	void CameraController::setProjectionSize(float h, float w) {
-		// Write the new values into the Camera instance
-		this->projectionHeight = h;
-		this->projectionWidth = w;
-
-		this->calcProjection(); // Recalculate the Projection
-	}
-
-	void CameraController::setProjectionSizeToWindow() {
-		this->setProjectionSize(
-			(float)GameWindow::getGameWindow()->getWindowHeight(),
-			(float)GameWindow::getGameWindow()->getWindowWidth());
-	}
-
-	void CameraController::start() {
+	void CameraController::onAttach() {
+		// Fetch the Transform of the Game Object to which we are now attached
 		this->transform = &this->getAttached()->getComponent<Transform>();
 
 		// Calculate the initial projection orientation, translation and view
@@ -159,12 +138,28 @@ namespace Honeycomb { namespace Component { namespace Render {
 			std::bind(&CameraController::calcProjection, this));
 		this->transform->getChangedEvent().addEventHandler(
 			this->transformChangeHandler);
-
-		this->setActive();
 	}
 
-	void CameraController::update() {
-		
+	void CameraController::onDetach() {
+		// Remove the changed event handler from the Transform and set this
+		// Transform pointer to NULL since we are not attached to anything.
+		this->transform->getChangedEvent().removeEventHandler(
+			this->transformChangeHandler);
+		this->transform = nullptr;
+	}
+
+	void CameraController::setProjectionSize(float h, float w) {
+		// Write the new values into the Camera instance
+		this->projectionHeight = h;
+		this->projectionWidth = w;
+
+		this->calcProjection(); // Recalculate the Projection
+	}
+
+	void CameraController::setProjectionSizeToWindow() {
+		this->setProjectionSize(
+			(float)GameWindow::getGameWindow()->getWindowHeight(),
+			(float)GameWindow::getGameWindow()->getWindowWidth());
 	}
 
 	const Matrix4f& CameraController::calcProjection() {

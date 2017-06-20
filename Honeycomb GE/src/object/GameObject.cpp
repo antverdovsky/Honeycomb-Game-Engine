@@ -82,6 +82,7 @@ namespace Honeycomb { namespace Object {
 			this->components.back()->getAttached()->removeComponent(c.get());
 
 		this->components.back()->attached = this;
+		this->components.back()->onAttach();
 		return *this->components.back();
 	}
 
@@ -190,7 +191,7 @@ namespace Honeycomb { namespace Object {
 		for (auto &child : this->children)
 			child->input();
 		for (auto &comp : this->components)
-			comp->input();
+			comp->onInput();
 	}
 
 	std::unique_ptr<GameObject> GameObject::removeChild(GameObject *o) {
@@ -221,6 +222,7 @@ namespace Honeycomb { namespace Object {
 		this->components.erase(comp);
 
 		compPtr->attached = nullptr;
+		compPtr->onDetach();
 
 		return std::move(compPtr);
 	}
@@ -232,7 +234,7 @@ namespace Honeycomb { namespace Object {
 		for (auto &child : this->children)
 			child->render(shader);
 		for (auto &comp : this->components)
-			comp->render(shader);
+			comp->onRender(shader);
 	}
 
 	void GameObject::setScene(GameScene *scene) {
@@ -250,7 +252,7 @@ namespace Honeycomb { namespace Object {
 		for (auto &child : this->children)
 			child->start();
 		for (auto &comp : this->components)
-			comp->start();
+			comp->onStart();
 	}
 
 	void GameObject::stop() {
@@ -261,7 +263,7 @@ namespace Honeycomb { namespace Object {
 		for (auto &child : this->children)
 			child->stop();
 		for (auto &comp : this->components)
-			comp->stop();
+			comp->onStop();
 	}
 
 	void GameObject::update() {
@@ -271,7 +273,7 @@ namespace Honeycomb { namespace Object {
 		for (auto &child : this->children)
 			child->update();
 		for (auto &comp : this->components)
-			comp->update();
+			comp->onUpdate();
 	}
 
 	GameEntityNotAttachedException::GameEntityNotAttachedException(

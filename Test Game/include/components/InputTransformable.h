@@ -67,7 +67,7 @@ namespace HoneycombTest { namespace Components {
 
 		/// Takes in the input and transforms the transform according to the
 		/// input.
-		void input();
+		void onInput() override;
 	private:
 		float speedM; // The speed with which the transform is moved
 		float speedR; // The speed with which the transform is rotated

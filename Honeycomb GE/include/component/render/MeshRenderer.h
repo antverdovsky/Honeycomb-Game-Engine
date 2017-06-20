@@ -42,10 +42,25 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// return : The constant reference to the material.
 		const Honeycomb::Graphics::Material& getMaterial() const;
 
-		/// Renders the referenced mesh to the game screen using the referenced
-		/// material and shader.
-		/// ShaderProgram &shader : The shader to be used to render the mesh.
-		void render(Honeycomb::Shader::ShaderProgram &shader);
+		/// <summary>
+		/// When attached, the Mesh Renderer gets a reference to the transform
+		/// to which this is attached to.
+		/// </summary>
+		void onAttach() override;
+
+		/// <summary>
+		/// When detached, the Mesh Renderer loses a reference to the transform
+		/// to which it was attached to.
+		/// </summary>
+		void onDetach() override;
+
+		/// <summary>
+		/// Renders the Mesh using the specified Shader.
+		/// </summary>
+		/// <param name="shader">
+		/// The Shader to be used when rendering the Mesh.
+		/// </param>
+		void onRender(Honeycomb::Shader::ShaderProgram &shader) override;
 
 		/// Sets the material of this Mesh Renderer.
 		/// const Material *mat : The material.
@@ -58,9 +73,6 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// Sets the mesh of this Mesh Renderer.
 		/// const Mesh &mes : The mesh.
 		void setMesh(const Honeycomb::Geometry::Mesh &mes);
-
-		/// Starts this Mesh Renderer instance.
-		void start();
 	private:
 		// The referenced material and mesh.
 		const Honeycomb::Graphics::Material *material;

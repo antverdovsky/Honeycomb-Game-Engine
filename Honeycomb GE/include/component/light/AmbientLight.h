@@ -26,9 +26,6 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// constructor to prevent object slicing.
 		/// return : The cloned Ambient Light.
 		std::unique_ptr<AmbientLight> clone() const;
-
-		/// Starts this Ambient Light.
-		void start();
 	private:
 		// The struct definition for the Ambient Light.
 		const static std::string structFile;

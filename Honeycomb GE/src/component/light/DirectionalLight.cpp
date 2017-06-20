@@ -53,7 +53,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		return this->shadow;
 	}
 
-	void DirectionalLight::start() {
+	void DirectionalLight::onAttach() {
 		this->transform = &this->getAttached()->getComponent<Transform>();
 
 		// Add event handler to the Transform
@@ -61,8 +61,12 @@ namespace Honeycomb { namespace Component { namespace Light {
 			std::bind(&DirectionalLight::onTransformChange, this));
 		this->transform->getChangedEvent().addEventHandler(
 			this->transformChangeHandler);
+	}
 
-		BaseLight::start();
+	void DirectionalLight::onDetach() {
+		this->transform->getChangedEvent().removeEventHandler(
+			this->transformChangeHandler);
+		this->transform = nullptr;
 	}
 
 	void DirectionalLight::toShader(
