@@ -135,7 +135,7 @@ namespace Honeycomb { namespace Component {
 		/// <returns>
 		/// The integer representation of the Component ID of this Component.
 		/// </returns>
-		virtual int getGameComponentID() const noexcept = 0;
+		virtual GameComponentID getGameComponentID() const noexcept = 0;
 
 		/// <summary>
 		/// Gets a boolean representation of whether or not the Game Component

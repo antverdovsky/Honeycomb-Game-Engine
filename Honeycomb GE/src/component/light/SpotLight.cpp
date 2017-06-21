@@ -68,7 +68,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		return this->attenuation;
 	}
 
-	int SpotLight::getGameComponentID() const noexcept {
+	GameComponentID SpotLight::getGameComponentID() const noexcept {
 		return GameComponent::getGameComponentTypeID<SpotLight>();
 	}
 

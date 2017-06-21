@@ -34,7 +34,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 		return std::unique_ptr<MeshRenderer>(this->cloneInternal());
 	}
 
-	int MeshRenderer::getGameComponentID() const noexcept {
+	GameComponentID MeshRenderer::getGameComponentID() const noexcept {
 		return GameComponent::getGameComponentTypeID<MeshRenderer>();
 	}
 

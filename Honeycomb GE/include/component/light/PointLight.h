@@ -53,7 +53,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// <returns>
 		/// The Component ID of the Point Light Component.
 		/// </returns>
-		virtual int getGameComponentID() const noexcept override;
+		virtual GameComponentID getGameComponentID() const noexcept override;
 
 		/// Returns the position of this Point Light.
 		/// return : The constant reference to the Position.

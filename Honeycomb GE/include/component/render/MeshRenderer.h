@@ -40,7 +40,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// <returns>
 		/// The Component ID of the Mesh Renderer Component.
 		/// </returns>
-		virtual int getGameComponentID() const noexcept override;
+		virtual GameComponentID getGameComponentID() const noexcept override;
 
 		/// Returns the constant reference to the mesh of this Mesh Renderer.
 		/// return : The constant reference to the mesh.

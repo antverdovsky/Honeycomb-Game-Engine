@@ -225,7 +225,7 @@ namespace Honeycomb { namespace Object {
 		/// </exception>
 		template<class Type> 
 		const Type& getComponent() const {
-			int id = Honeycomb::Component::GameComponent::getGameComponentTypeID<Type>();
+			unsigned int id = Honeycomb::Component::GameComponent::getGameComponentTypeID<Type>();
 			const std::vector<std::unique_ptr<Honeycomb::Component::GameComponent>>&
 				componentsOfType = this->components.at(id);
 
@@ -348,7 +348,7 @@ namespace Honeycomb { namespace Object {
 		template<typename T>
 		bool hasComponent() const {
 			// Get the list of components of the specified type
-			int id = Honeycomb::Component::GameComponent::
+			unsigned int id = Honeycomb::Component::GameComponent::
 				getGameComponentTypeID<T>();
 			std::vector<std::unique_ptr<Honeycomb::Component::GameComponent>>&
 				componentsOfType = this->components.at(id);

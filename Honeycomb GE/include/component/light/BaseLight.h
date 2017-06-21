@@ -88,7 +88,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// <returns>
 		/// The Component ID of the Base Light Component.
 		/// </returns>
-		virtual int getGameComponentID() const noexcept override;
+		virtual GameComponentID getGameComponentID() const noexcept override;
 
 		/// Returns a reference to the intensity of this Base Light.
 		/// return : The intensity reference.

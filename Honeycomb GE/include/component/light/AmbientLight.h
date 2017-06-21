@@ -34,7 +34,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// <returns>
 		/// The Component ID of the Ambient Light Component.
 		/// </returns>
-		virtual int getGameComponentID() const noexcept override;
+		virtual GameComponentID getGameComponentID() const noexcept override;
 	private:
 		// The struct definition for the Ambient Light.
 		const static std::string structFile;

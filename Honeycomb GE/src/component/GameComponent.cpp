@@ -44,10 +44,6 @@ namespace Honeycomb { namespace Component {
 		this->onEnable();
 	}
 
-	bool GameComponent::getProperty_AllowsMultiple() const noexcept {
-		return true;
-	}
-
 	GameObject* GameComponent::getAttached() {
 		return this->attached;
 	}
@@ -105,5 +101,9 @@ namespace Honeycomb { namespace Component {
 	GameComponentID GameComponent::getGameComponentIDCounter() noexcept {
 		static GameComponentID type = 0U;
 		return type++;
+	}
+
+	bool GameComponent::getProperty_AllowsMultiple() const noexcept {
+		return true;
 	}
 } }

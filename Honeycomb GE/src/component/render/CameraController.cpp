@@ -78,7 +78,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 		return this->clipNear;
 	}
 
-	int CameraController::getGameComponentID() const noexcept {
+	GameComponentID CameraController::getGameComponentID() const noexcept {
 		return GameComponent::getGameComponentTypeID<CameraController>();
 	}
 

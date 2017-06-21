@@ -49,7 +49,7 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		return this->changedEvent;
 	}
 
-	int Transform::getGameComponentID() const noexcept {
+	GameComponentID Transform::getGameComponentID() const noexcept {
 		return GameComponent::getGameComponentTypeID<Transform>();
 	}
 

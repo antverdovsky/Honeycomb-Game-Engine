@@ -5,6 +5,7 @@
 #include "../../../Honeycomb GE/include/math/Vector3f.h"
 
 using Honeycomb::Base::GameInput;
+using Honeycomb::Component::GameComponentID;
 using Honeycomb::Component::Physics::Space;
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Math::Vector3f;
@@ -68,7 +69,7 @@ namespace HoneycombTest { namespace Components {
 		return std::unique_ptr<InputTransformable>(this->cloneInternal());
 	}
 
-	int InputTransformable::getGameComponentID() const noexcept {
+	GameComponentID InputTransformable::getGameComponentID() const noexcept {
 		return GameComponent::getGameComponentTypeID<InputTransformable>();
 	}
 

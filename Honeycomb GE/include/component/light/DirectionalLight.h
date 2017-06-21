@@ -44,7 +44,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// <returns>
 		/// The Component ID of the Directional Light Component.
 		/// </returns>
-		virtual int getGameComponentID() const noexcept override;
+		virtual GameComponentID getGameComponentID() const noexcept override;
 
 		/// Returns the direction of this Directional Light.
 		/// return : The constant reference to the direction vector.

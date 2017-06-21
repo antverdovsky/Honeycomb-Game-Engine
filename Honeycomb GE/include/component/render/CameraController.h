@@ -75,7 +75,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// <returns>
 		/// The Component ID of the Camera Controller Component.
 		/// </returns>
-		virtual int getGameComponentID() const noexcept override;
+		virtual GameComponentID getGameComponentID() const noexcept override;
 
 		/// Gets the type parameter for the camera. If this is a perspective
 		/// camera, the parameter is equal to the FOV (in degrees). Otherwise,

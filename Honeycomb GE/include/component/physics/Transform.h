@@ -55,7 +55,7 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		/// <returns>
 		/// The Component ID of the Transform Component.
 		/// </returns>
-		virtual int getGameComponentID() const noexcept override;
+		virtual GameComponentID getGameComponentID() const noexcept override;
 
 		/// Gets the quaternion representing the global rotation of this
 		/// transform.

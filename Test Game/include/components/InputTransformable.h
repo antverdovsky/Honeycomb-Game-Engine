@@ -68,7 +68,8 @@ namespace HoneycombTest { namespace Components {
 		/// <returns>
 		/// The Component ID of the Input Transformable Component.
 		/// </returns>
-		virtual int getGameComponentID() const noexcept override;
+		virtual Honeycomb::Component::GameComponentID 
+				getGameComponentID() const noexcept override;
 
 		/// Returns the space relative to which the translations occur.
 		/// return : A reference to the space.
