@@ -41,6 +41,7 @@ namespace Honeycomb { namespace Object {
 		// todo, while 256 should be 10x more components than needed, this will
 		// still cause issues if there are more than 256...
 		this->components.resize(256);
+		this->numComponents = 0;
 	}
 
 	GameObject::~GameObject() {
@@ -102,6 +103,8 @@ namespace Honeycomb { namespace Object {
 
 		if (componentsOfType.back()->getAttached() != nullptr)
 			componentsOfType.back()->getAttached()->removeComponent(c.get());
+
+		++this->numComponents;
 
 		componentsOfType.back()->attached = this;
 		componentsOfType.back()->onAttach();
@@ -178,6 +181,10 @@ namespace Honeycomb { namespace Object {
 		return this->name;
 	}
 
+	const unsigned int& GameObject::getNumberOfComponents() const {
+		return this->numComponents;
+	}
+
 	GameObject* GameObject::getParent() {
 		return this->parent;
 	}
@@ -245,6 +252,8 @@ namespace Honeycomb { namespace Object {
 		});
 		std::unique_ptr<GameComponent> compPtr = std::move(*comp);
 		componentsOfType.erase(comp);
+
+		--this->numComponents;
 
 		compPtr->attached = nullptr;
 		compPtr->onDetach();

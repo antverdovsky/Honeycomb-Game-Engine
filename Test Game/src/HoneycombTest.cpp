@@ -146,7 +146,12 @@ namespace HoneycombTest {
 		this->gameScene.addChild(std::move(this->directional));
 		this->gameScene.addChild(std::move(this->camera));
 
-		auto& test = this->gameScene.getChild("RootNode");
+		auto& test = this->gameScene.getChild("RootNode").getChild("Body");
+
+		std::cout << test.hasComponent<Transform>() << std::endl;
+		std::cout << test.hasComponent<MeshRenderer>() << std::endl;
+		std::cout << test.getNumberOfComponents<MeshRenderer>() << std::endl;
+		std::cout << test.getNumberOfComponents() << std::endl;
 		
 		// Start the Game Scene and set it as the active scene
 		this->gameScene.start();

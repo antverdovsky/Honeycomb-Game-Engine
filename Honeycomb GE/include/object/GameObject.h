@@ -299,6 +299,40 @@ namespace Honeycomb { namespace Object {
 		/// Gets the name of this game object.
 		const std::string& getName() const;
 
+		/// <summary>
+		/// Returns the total number of components attached to this Game 
+		/// Object. Since the Game Object structure uses a hash table to store
+		/// its components, this should be used to find the number of 
+		/// components, rather than checking the size of the vector returned by
+		/// the <see cref="getComponents"/> method.
+		/// </summary>
+		/// <returns>
+		/// The number of components attached to this Game Object.
+		/// </returns>
+		const unsigned int& getNumberOfComponents() const;
+
+		/// <summary>
+		/// Returns the total number of components of the specified type which
+		/// are attached to this Game Object.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of the component.
+		/// </typeparam>
+		/// <returns>
+		/// The number of components of type T attached to this Game Object.
+		/// </returns>
+		template<typename T>
+		unsigned int getNumberOfComponents() const {
+			// Get the list of components of the specified type
+			unsigned int id = Honeycomb::Component::GameComponent::
+				getGameComponentTypeID<T>();
+			const std::vector<std::unique_ptr<
+				Honeycomb::Component::GameComponent>>& componentsOfType = 
+				this->components.at(id);
+
+			return componentsOfType.size();
+		}
+
 		/// Returns the parent of this Game Object.
 		/// return : The pointer to the parent.
 		GameObject* getParent();
@@ -347,15 +381,7 @@ namespace Honeycomb { namespace Object {
 		/// </returns>
 		template<typename T>
 		bool hasComponent() const {
-			// Get the list of components of the specified type
-			unsigned int id = Honeycomb::Component::GameComponent::
-				getGameComponentTypeID<T>();
-			std::vector<std::unique_ptr<Honeycomb::Component::GameComponent>>&
-				componentsOfType = this->components.at(id);
-
-			// If at least one component of that type is owned by this, return
-			// true.
-			return componentsOfType.size() > 0;
+			return this->getNumberOfComponents<T>() > 0;
 		}
 
 		/// Handles any input events for this component, if necessary. This 
@@ -426,6 +452,7 @@ namespace Honeycomb { namespace Object {
 		// type which are attached to this Game Object.
 		std::vector<std::vector<std::unique_ptr<
 				Honeycomb::Component::GameComponent>>> components;
+		unsigned int numComponents;
 	};
 } }
 
