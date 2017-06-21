@@ -51,44 +51,77 @@ namespace Honeycomb { namespace Object {
 	class GameObject {
 		friend class Honeycomb::Scene::GameScene;
 	public:
-		/// Initializes a Game Object with the "GameObject" name and root as
-		/// parent.
+		/// <summary>
+		/// Initializes a new Game Object with the name "Game Object" and no
+		/// parent or scene. The Game Object is not active by default and comes
+		/// with no added components.
+		/// </summary>
 		GameObject();
+
+		/// <summary>
+		/// Initializes a new Game Object with the specified name, and no
+		/// parent or scene. The Game Object is not active by default and comes
+		/// with no added components.
+		/// </summary>
+		/// <param name="n">
+		/// The name of the Game Object.
+		/// </param>
+		GameObject(const std::string &n);
 
 		/// <summary>
 		/// No copy constructor exists for the Game Object class.
 		/// </summary>
 		GameObject(const GameObject &object) = delete;
 
-		/// Instantializes a Game Object with the specified name.
-		/// const string &n : The name of this Game Object.
-		GameObject(const std::string &n);
-
-		/// Deletes this Game Object, its children and its components.
+		/// <summary>
+		/// Virtual Destructor for the Game Object class.
+		/// </summary>
 		virtual ~GameObject();
 
 		/// <summary>
-		/// Adds the specified Game Object as a child of this Game Object. If
+		/// Adds the specified Game Object as a child of this Game Object. If 
 		/// the specified Game Object is already a child of this Game Object,
-		/// no further action is taken. If the specified Game Object is already
-		/// a child of some other Game Object, the child is detached from its
-		/// current parent and reattached to this Game Object. Since the child
-		/// is passed as a unique pointer, this Game Object instance will take
-		/// ownership of the pointer.
+		/// no further action is taken and the reference to the child is 
+		/// returned. If the specified Game Object is already a child of some 
+		/// other Game Object, the child is detached from its current parent 
+		/// and reattached to this Game Object. Since the child is passed as a 
+		/// unique pointer, this Game Object instance will take ownership of 
+		/// the pointer.
 		/// </summary>
 		/// <param name="object">
-		/// The object to be parented to this Game Object.
+		/// The object to be parented to this Game Object. This should be moved
+		/// to the Game Object using the <see cref="std::move"/> function.
 		/// </param>
 		/// <returns>
 		/// The reference to the new child Game Object.
 		/// </returns>
 		GameObject& addChild(std::unique_ptr<GameObject> object);
 
-		/// Adds the specified component to this game object, if it is not
-		/// already a child of this game object.
-		/// Component &c : The component to be parented to this game object.
+		/// <summary>
+		/// Adds the specified Game Component to this Game Object. If the
+		/// specified Game Component is already attached to this Game Object,
+		/// no further action is taken and the reference to the component is
+		/// returned. If the specified Game Component is already attached to
+		/// some other Game Object, the component is detached from its current
+		/// parent and reattached to this Game Object. Since the component is
+		/// passed as a unique pointer, this Game Object instance will take
+		/// ownership of the pointer.
+		/// 
+		/// If the component has the DisallowMultiple property and there is
+		/// already a Game Component of the same type attached to this, a
+		/// GameComponentDisallowsMultipleException will be thrown.
+		/// </summary>
+		/// <param name="component">
+		/// The component to be parented to this Game Object. This should be
+		/// moved to the Game Component using the <see cref="std::move"/>
+		/// function.
+		/// </param>
+		/// <exception cref="GameComponentDisallowsMultipleException">
+		/// Thrown if a Game Component of the same type as the argument is
+		/// already attached to this Game Component.
+		/// </exception>
 		Honeycomb::Component::GameComponent& addComponent(std::unique_ptr<
-				Honeycomb::Component::GameComponent> c);
+				Honeycomb::Component::GameComponent> component);
 
 		/// <summary>
 		/// Clones this Game Object into a new, independent Game Object. The
@@ -102,12 +135,6 @@ namespace Honeycomb { namespace Object {
 		/// The unique pointer to the Game Object clone instance.
 		/// </returns>
 		std::unique_ptr<GameObject> clone() const;
-
-		/// <summary>
-		/// Deparents this Game Object from its parent, if it has one. If the
-		/// Game Object has no parent, no action is taken.
-		/// </summary>
-//		void deparent();
 
 		/// <summary>
 		/// Gets the child of this Game Object which has the specified name. If
@@ -148,43 +175,7 @@ namespace Honeycomb { namespace Object {
 		/// The list of the children, returned by constant reference.
 		/// </returns>
 		const std::vector<std::unique_ptr<GameObject>>& getChildren() const;
-/*
-		/// <summary>
-		/// Gets the component of this Game Object which has the specified
-		/// name. If the object has multiple game components of the specified
-		/// name, the first component found in the components vector is
-		/// returned.
-		/// </summary>
-		/// <param name="name">
-		/// The name of the Game Component attached to this Game Object.
-		/// </param>
-		/// <returns>
-		/// The reference to the attached Game Component.
-		/// </returns>
-		/// <exception cref="GameEntityNotAttachedException">
-		/// Thrown if the game object has no component of the specified name.
-		/// </exception>
-		Honeycomb::Component::GameComponent&
-			getComponent(const std::string &name);
 
-		/// <summary>
-		/// Gets the component of this Game Object which has the specified
-		/// name. If the object has multiple game components of the specified
-		/// name, the first component found in the components vector is
-		/// returned.
-		/// </summary>
-		/// <param name="name">
-		/// The name of the Game Component attached to this Game Object.
-		/// </param>
-		/// <returns>
-		/// The constant reference to the attached Game Component.
-		/// </returns>
-		/// <exception cref="GameEntityNotAttachedException">
-		/// Thrown if the game object has no component of the specified name.
-		/// </exception>
-		const Honeycomb::Component::GameComponent&
-				getComponent(const std::string &name) const;
-*/
 		/// <summary>
 		/// Gets the component of this Game Object which has the specified Type
 		/// and downcasts it to that type. If the game object has multiple game
@@ -233,49 +224,7 @@ namespace Honeycomb { namespace Object {
 
 			throw GameEntityNotAttachedException(this, typeid(T).name());
 		}
-/*
-		/// Gets the component with the specified name, downcast to the
-		/// specific type of component.
-		/// class Type : The type of the component.
-		/// const string &name : The name of the component.
-		/// return : The pointer to the component object.
-		template<class Type> 
-		Type& getComponent(const std::string &name) {
-			return const_cast<Type&>(static_cast<const GameObject*>
-				(this)->getComponent<Type>(name));
-		}
 
-		/// <summary>
-		/// Gets the component of this Game Object which has the specified Type
-		/// and name and downcasts it to that type. If the game object has 
-		/// multiple game components of the specified type, the first component
-		/// found in the components vector is returned.
-		/// <summary>
-		/// <param name="name">
-		/// The name of the game component to be found.
-		/// </param>
-		/// <typeparam name="Type">
-		/// The type of the game component which is attached to this Game 
-		/// Object.
-		/// </typeparam>
-		/// <returns>
-		/// The constant reference to the game component found.
-		/// </returns>
-		/// <exception cref="GameEntityNotAttachedException">
-		/// Thrown if the game object has no component of the specified name.
-		/// </exception>
-		template<class Type> 
-		const Type& getComponent(const std::string &name) const {
-			for (auto comp : this->components) {
-				if (dynamic_cast<Type*>(comp.get()) != nullptr &&
-					comp->getName() == name) {
-					return dynamic_cast<const Type&>(*comp.get());
-				}
-			}
-
-			throw GameEntityNotAttachedException(this, typeid(Type).name);
-		}
-*/
 		/// <summary>
 		/// Gets a 2D representation of the Game Components attached to this
 		/// Game Object. For each Game Component, there exists a 1D array 
@@ -325,25 +274,33 @@ namespace Honeycomb { namespace Object {
 		}
 
 		/// <summary>
-		/// Returns the list of components of the specified type which are
-		/// attached to this Game Object.
+		/// Returns the number of components attached to this Game Object which
+		/// have the same Component ID as the specified parameter.
 		/// </summary>
-		/// <typeparam name="T">
-		/// The type of the component.
-		/// </typeparam>
+		/// <param name="id">
+		/// The Component ID of the Component Type.
+		/// </param>
 		/// <returns>
-		/// The list of components of type T attached to this Game Object, by
-		/// means of a reference.
+		/// The number of components attached to this Game Object which share
+		/// the Component ID with the parameter.
 		/// </returns>
-		template<typename T>
-		std::vector<std::unique_ptr<Honeycomb::Component::GameComponent>>&
-				getComponentsOfType() {
-			// Get the list of components of the specified type and return it
-			unsigned int id = Honeycomb::Component::GameComponent::
-				getGameComponentTypeID<T>();
-			auto& list = this->components.at(id);
-			return list;
-		}
+		unsigned int getNumberOfComponents(const unsigned int &id) const;
+
+		/// <summary>
+		/// Returns the list of components attached to this Game Object which
+		/// share the same Component ID as the specified parameter.
+		/// </summary>
+		/// <param name="id">
+		/// The Component ID.
+		/// </param>
+		/// <returns>
+		/// The list of components attached to this Game Object which have the
+		/// same Component ID as the parameter, by means of a constant 
+		/// reference.
+		/// </returns>
+		const std::vector<std::unique_ptr<
+				Honeycomb::Component::GameComponent>>&getComponentsOfType(
+				const unsigned int &id) const;
 
 		/// <summary>
 		/// Returns the list of components of the specified type which are
@@ -382,13 +339,19 @@ namespace Honeycomb { namespace Object {
 		/// Returns the scene of this Game Object.
 		/// return : The constant pointer to the Game Scene.
 		const Honeycomb::Scene::GameScene* getScene() const;
-/*
-		/// Checks if this Game Object has the specified child.
-		/// const GameObject &child : The game object which is to be checked.
-		/// return : True if the specified game object is a child of this.
-		///			 False otherwise.
-		bool hasChild(const GameObject &child) const;
-*/
+
+		/// <summary>
+		/// Checks if the specified child is attached to this Game Object.
+		/// </summary>
+		/// <param name="child">
+		/// The game object which is to be checked.
+		/// </param>
+		/// <returns>
+		/// True if that specified child instance is attached to this Game
+		/// Object.
+		/// </returns>
+		bool hasChild(const GameObject *child) const;
+
 		/// <summary>
 		/// Checks if the specified component is attached to this Game Object.
 		/// </summary>
@@ -401,6 +364,19 @@ namespace Honeycomb { namespace Object {
 		/// </returns>
 		bool hasComponent(const Honeycomb::Component::GameComponent 
 				*component) const;
+
+		/// <summary>
+		/// Checks if the Game Object has a Game Component of the specified ID
+		/// attached to it.
+		/// </summary>
+		/// <param name="id">
+		/// The Game Component ID.
+		/// </param>
+		/// <returns>
+		/// True if the Game Object has at least one component with the 
+		/// specified ID attached to it, false otherwise.
+		/// </returns>
+		bool hasComponent(const unsigned int &id) const;
 
 		/// <summary>
 		/// Checks if this Game Object has at least one component of the
@@ -417,6 +393,22 @@ namespace Honeycomb { namespace Object {
 		bool hasComponent() const {
 			return this->getNumberOfComponents<T>() > 0;
 		}
+
+		/// <summary>
+		/// Checks if this Game Object has a parent.
+		/// </summary>
+		/// <returns>
+		/// True if this Game Object has a parent, false otherwise.
+		/// </returns>
+		bool hasParent() const;
+
+		/// <summary>
+		/// Checks if this Game Object has a scene.
+		/// </summary>
+		/// <returns>
+		/// True if the Game Object is attached to a scene, false otherwise.
+		/// </returns>
+		bool hasScene() const;
 
 		/// Handles any input events for this component, if necessary. This 
 		/// method will only do something if the object is active.
@@ -487,6 +479,41 @@ namespace Honeycomb { namespace Object {
 		std::vector<std::vector<std::unique_ptr<
 				Honeycomb::Component::GameComponent>>> components;
 		unsigned int numComponents;
+
+		/// <summary>
+		/// Returns the list of components attached to this Game Object which
+		/// share the same Component ID as the specified parameter.
+		/// </summary>
+		/// <param name="id">
+		/// The Component ID.
+		/// </param>
+		/// <returns>
+		/// The list of components attached to this Game Object which have the
+		/// same Component ID as the parameter, by means of a reference.
+		/// </returns>
+		std::vector<std::unique_ptr<Honeycomb::Component::GameComponent>>&
+				getComponentsOfType(const unsigned int &id);
+
+		/// <summary>
+		/// Returns the list of components of the specified type which are
+		/// attached to this Game Object.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of the component.
+		/// </typeparam>
+		/// <returns>
+		/// The list of components of type T attached to this Game Object, by
+		/// means of a reference.
+		/// </returns>
+		template<typename T>
+		std::vector<std::unique_ptr<Honeycomb::Component::GameComponent>>&
+				getComponentsOfType() {
+			// Get the list of components of the specified type and return it
+			unsigned int id = Honeycomb::Component::GameComponent::
+				getGameComponentTypeID<T>();
+			auto& list = this->components.at(id);
+			return list;
+		}
 	};
 } }
 

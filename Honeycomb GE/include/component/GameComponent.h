@@ -49,8 +49,8 @@ namespace Honeycomb { namespace Component {
 		/// </summary>
 		/// <typeparam name="T">
 		/// The type of the Game Component for which the type is to be fetched.
-		/// This should be a type which has inherited from the Game Component,
-		/// but this is not enforced.
+		/// This must be a type which has inherited from the Game Component,
+		/// and this is enforced by an assertion.
 		/// </typeparam>
 		/// <returns>
 		/// The unsigned integer representing the Game Component ID of the 
@@ -58,6 +58,9 @@ namespace Honeycomb { namespace Component {
 		/// </returns>
 		template <typename T>
 		static GameComponentID getGameComponentTypeID() noexcept {
+			static_assert(std::is_base_of<GameComponent, T>::value,
+					"Type \"T\" must inherit from the GameComponent class.");
+
 			// Every time this function is called with a unique type parameter,
 			// the type variable is instantiated to the current game component
 			// ID value and then the game component ID value is incremented.
@@ -156,6 +159,15 @@ namespace Honeycomb { namespace Component {
 		/// True if the component is self active.
 		/// </returns>
 		const bool& getIsSelfActive() const;
+
+		/// <summary>
+		/// Checks if this Game Component is attached to any Game Object.
+		/// </summary>
+		/// <returns>
+		/// True if the Game Component is attached to something, false 
+		/// otherwise.
+		/// </returns>
+		bool isAttached() const;
 
 		/// <summary>
 		/// Handles any events when this component is attached to a Game

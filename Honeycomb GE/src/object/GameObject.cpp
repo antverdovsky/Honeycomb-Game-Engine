@@ -4,10 +4,12 @@
 #include <iostream>
 #include <sstream>
 
+#include "../../include/scene/GameScene.h"
 #include "../../include/shader/ShaderProgram.h"
 #include "../../include/component/physics/Transform.h"
 
 using Honeycomb::Component::GameComponent;
+using Honeycomb::Component::GameComponentDisallowsMultipleException;
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Debug::Logger;
 using Honeycomb::Shader::ShaderProgram;
@@ -15,7 +17,7 @@ using Honeycomb::Scene::GameScene;
 
 namespace Honeycomb { namespace Object {
 	GameEntityNotAttachedException::GameEntityNotAttachedException(
-		const GameObject *g, const std::string &name) :
+			const GameObject *g, const std::string &name) :
 		std::runtime_error("Unable to fetch Game Entity") {
 		this->gameObject = g;
 		this->entityName = name;
@@ -45,17 +47,11 @@ namespace Honeycomb { namespace Object {
 	}
 
 	GameObject::~GameObject() {
-		// Delete all of the children and components
-//		while (this->children.size() != 0)
-//			delete this->children.at(0);s
-//		while (this->components.size() != 0)
-//			delete this->components.at(0);
 
-		// Notify parent that I am no longer a child
-//		this->deparent();
 	}
 
 	std::unique_ptr<GameObject> GameObject::clone() const {
+		// Create a new Game Object with the same name
 		std::unique_ptr<GameObject> clone = 
 				std::make_unique<GameObject>(this->name);
 
@@ -67,69 +63,66 @@ namespace Honeycomb { namespace Object {
 				clone->addComponent(component->clone());
 			}
 		}
-		for (auto &child : this->children)
+		for (auto &child : this->children) {
 			clone->addChild(child->clone());
+		}
 		
 		return clone;
 	}
 
-	GameObject& GameObject::addChild(std::unique_ptr<GameObject> o) {
-//		if (this->hasChild(o)) return;
+	GameObject& GameObject::addChild(std::unique_ptr<GameObject> object) {
+		// These should never happen because how would an external class steal
+		// the unique pointer from a GameObject instance?
+		if (this->hasChild(object.get())) return *object;
+		if (object->hasParent()) object->parent->removeChild(object.get());
 
-		// If the object already has a parent, lose the parent
-		if (o->parent != nullptr) o->parent->removeChild(o.get());
-
-		// Make this the new parent of the Object
-		this->children.push_back(std::move(o));
-		this->children.back()->parent = this;
-
+		// Since the unique pointer to the object gets moved to the back of the
+		// vector, create a reference to the new unique pointer so that we may
+		// continue to modify it.
+		this->children.push_back(std::move(object));
+		GameObject &childRef = *this->children.back();
+		
 		// Parent the Transform of the child to this Transform, if it has one
+		childRef.parent = this;
 		try {
-			Transform &childTransf = this->children.back()->
-				getComponent<Transform>();
+			Transform &childTransf = childRef.getComponent<Transform>();
 			childTransf.setParent(&this->getComponent<Transform>());
 		} catch (GameEntityNotAttachedException e) {
 		
 		}
 
-		return *this->children.back();
+		return childRef;
 	}
 
-	GameComponent& GameObject::addComponent(std::unique_ptr<GameComponent> c) {
-//		if (this->hasComponent(c)) return;
-		auto& componentsOfType =
-			this->components.at(c->getGameComponentID());
-		componentsOfType.push_back(std::move(c));
+	GameComponent& GameObject::addComponent(std::unique_ptr<GameComponent> 
+			component) {
+		// These should never happen as well (refer to addChild).
+		if (this->hasComponent(component.get())) return *component;
+		if (component->isAttached()) 
+			component->attached->removeComponent(component.get());
 
-		if (componentsOfType.back()->getAttached() != nullptr)
-			componentsOfType.back()->getAttached()->removeComponent(c.get());
-
-		++this->numComponents;
-
-		componentsOfType.back()->attached = this;
-		componentsOfType.back()->onAttach();
-		return *componentsOfType.back();
-	}
-
-	/*
-	void GameObject::deparent() {
-		if (this->parent != nullptr) {
-			// Remove this object from its parents' children and set the parent
-			// of this to null.
-			auto it = std::remove_if(this->parent->children.begin(), 
-				this->parent->children.end(),
-				[&](const std::unique_ptr<GameObject>& child) {
-				return child.get() == this;
-			});
-			this->parent->children.erase(it, this->parent->children.end());
-			this->parent = nullptr;
-		
-			// Unparent the Transform of this
-			Transform &thisTransf = this->getComponent<Transform>();
-			thisTransf.setParent(nullptr);
+		// Check if the component DisallowsMultiple and if there already exists
+		// a component of the same type. If so, throw exception.
+		if (!component->getProperty_AllowsMultiple() &&
+				this->hasComponent(component->getGameComponentID())) {
+			throw GameComponentDisallowsMultipleException(this);
 		}
+
+		// Get the components of the same type as the Game Component passed in
+		// and move the Game Component into the list. Get a reference to the
+		// back of the list since that is where the Component was moved to.
+		auto& componentsOfType = this->getComponentsOfType(
+			component->getGameComponentID());
+		componentsOfType.push_back(std::move(component));
+		GameComponent &componentRef = *componentsOfType.back();
+
+		// Increment the number of components, and notify the component that it
+		// has been attached to a new Game Object.
+		++this->numComponents;
+		componentRef.attached = this;
+		componentRef.onAttach();
+		return componentRef;
 	}
-	*/
 
 	GameObject& GameObject::getChild(const std::string &name) {
 		return const_cast<GameObject&>(static_cast<const GameObject*>
@@ -150,27 +143,15 @@ namespace Honeycomb { namespace Object {
 			const {
 		return this->children;
 	}
-/*
-	GameComponent& GameObject::getComponent(const std::string &name) {
-		return const_cast<GameComponent&>(static_cast<const GameObject*>
-			(this)->getComponent(name));
-	}
 
-	const GameComponent& GameObject::getComponent(const std::string &name)
-			const {
-		// Go through all components and try to find one whose name matches
-		for (const GameComponent* comp : this->components) {
-			if (comp->getName() == name) {
-				return *comp;
-			}
-		}
-
-		throw GameEntityNotAttachedException(this, name);
-	}
-*/
 	const std::vector<std::vector<std::unique_ptr<GameComponent>>>& 
 			GameObject::getComponents() const {
 		return this->components;
+	}
+
+	const std::vector<std::unique_ptr<GameComponent>>& 
+			GameObject::getComponentsOfType(const unsigned int &id) const {
+		return this->components.at(id);
 	}
 
 	const bool& GameObject::getIsActive() const {
@@ -183,6 +164,11 @@ namespace Honeycomb { namespace Object {
 
 	const unsigned int& GameObject::getNumberOfComponents() const {
 		return this->numComponents;
+	}
+
+	unsigned int GameObject::getNumberOfComponents(const unsigned int &id) 
+			const {
+		return this->components.at(id).size();
 	}
 
 	GameObject* GameObject::getParent() {
@@ -200,15 +186,25 @@ namespace Honeycomb { namespace Object {
 	const GameScene* GameObject::getScene() const {
 		return this->scene;
 	}
-/*
-	bool GameObject::hasChild(const GameObject &child) const {
-		return std::find(this->children.begin(), this->children.end(), &child)
-			!= this->children.end();
+
+	bool GameObject::hasChild(const GameObject *child) const {
+		return child->parent == this;
 	}
-*/
 
 	bool GameObject::hasComponent(const GameComponent *component) const {
 		return component->attached == this;
+	}
+
+	bool GameObject::hasComponent(const unsigned int &id) const {
+		return this->getNumberOfComponents(id) > 0;
+	}
+
+	bool GameObject::hasParent() const {
+		return this->parent != nullptr;
+	}
+
+	bool GameObject::hasScene() const {
+		return this->scene != nullptr;
 	}
 
 	void GameObject::input() {
@@ -320,5 +316,10 @@ namespace Honeycomb { namespace Object {
 				component->onUpdate();
 			}
 		}
+	}
+
+	std::vector<std::unique_ptr<GameComponent>>& 
+			GameObject::getComponentsOfType(const unsigned int &id) {
+		return this->components.at(id);
 	}
 } }

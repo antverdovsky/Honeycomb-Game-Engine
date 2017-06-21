@@ -62,6 +62,10 @@ namespace Honeycomb { namespace Component {
 		return this->isSelfActive;
 	}
 
+	bool GameComponent::isAttached() const {
+		return this->attached != nullptr;
+	}
+
 	void GameComponent::onAttach() {
 
 	}
