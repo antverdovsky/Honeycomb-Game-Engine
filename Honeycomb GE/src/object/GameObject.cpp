@@ -97,7 +97,7 @@ namespace Honeycomb { namespace Object {
 
 	GameComponent& GameObject::addComponent(std::unique_ptr<GameComponent> c) {
 //		if (this->hasComponent(c)) return;
-		std::vector<std::unique_ptr<GameComponent>>& componentsOfType =
+		auto& componentsOfType =
 			this->components.at(c->getGameComponentID());
 		componentsOfType.push_back(std::move(c));
 

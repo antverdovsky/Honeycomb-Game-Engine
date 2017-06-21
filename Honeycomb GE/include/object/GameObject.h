@@ -213,7 +213,7 @@ namespace Honeycomb { namespace Object {
 		/// components of the specified type, the first component found in the
 		/// components vector is returned.
 		/// <summary>
-		/// <typeparam name="Type">
+		/// <typeparam name="T">
 		/// The type of the game component which is attached to this Game 
 		/// Object.
 		/// </typeparam>
@@ -223,17 +223,15 @@ namespace Honeycomb { namespace Object {
 		/// <exception cref="GameEntityNotAttachedException">
 		/// Thrown if the game object has no component of the specified name.
 		/// </exception>
-		template<class Type> 
-		const Type& getComponent() const {
-			unsigned int id = Honeycomb::Component::GameComponent::getGameComponentTypeID<Type>();
-			const std::vector<std::unique_ptr<Honeycomb::Component::GameComponent>>&
-				componentsOfType = this->components.at(id);
+		template<class T> 
+		const T& getComponent() const {
+			auto &componentsOfType = this->getComponentsOfType<T>();
 
 			for (auto &comp : componentsOfType) {
-				return dynamic_cast<const Type&>(*comp.get());
+				return dynamic_cast<const T&>(*comp.get());
 			}
 
-			throw GameEntityNotAttachedException(this, typeid(Type).name());
+			throw GameEntityNotAttachedException(this, typeid(T).name());
 		}
 /*
 		/// Gets the component with the specified name, downcast to the
@@ -323,14 +321,50 @@ namespace Honeycomb { namespace Object {
 		/// </returns>
 		template<typename T>
 		unsigned int getNumberOfComponents() const {
-			// Get the list of components of the specified type
+			return this->getComponentsOfType<T>().size();
+		}
+
+		/// <summary>
+		/// Returns the list of components of the specified type which are
+		/// attached to this Game Object.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of the component.
+		/// </typeparam>
+		/// <returns>
+		/// The list of components of type T attached to this Game Object, by
+		/// means of a reference.
+		/// </returns>
+		template<typename T>
+		std::vector<std::unique_ptr<Honeycomb::Component::GameComponent>>&
+				getComponentsOfType() {
+			// Get the list of components of the specified type and return it
 			unsigned int id = Honeycomb::Component::GameComponent::
 				getGameComponentTypeID<T>();
-			const std::vector<std::unique_ptr<
-				Honeycomb::Component::GameComponent>>& componentsOfType = 
-				this->components.at(id);
+			auto& list = this->components.at(id);
+			return list;
+		}
 
-			return componentsOfType.size();
+		/// <summary>
+		/// Returns the list of components of the specified type which are
+		/// attached to this Game Object.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of the component.
+		/// </typeparam>
+		/// <returns>
+		/// The list of components of type T attached to this Game Object, by
+		/// means of a constant reference.
+		/// </returns>
+		template<typename T>
+		const std::vector<std::unique_ptr<
+				Honeycomb::Component::GameComponent>>& getComponentsOfType() 
+				const {
+			// Get the list of components of the specified type and return it
+			unsigned int id = Honeycomb::Component::GameComponent::
+				getGameComponentTypeID<T>();
+			auto& list = this->components.at(id);
+			return list;
 		}
 
 		/// Returns the parent of this Game Object.
