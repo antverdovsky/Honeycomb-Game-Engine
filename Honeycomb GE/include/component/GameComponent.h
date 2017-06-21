@@ -33,7 +33,8 @@ namespace Honeycomb { namespace Component {
 			// the type variable is instantiated to the current game component
 			// ID value and then the game component ID value is incremented.
 			// This allows for unique Component IDs for each different type.
-			static GameComponentID type = GameComponent::getGameComponentIDCounter();
+			static GameComponentID type = 
+					GameComponent::getGameComponentIDCounter();
 			return type;
 		}
 
@@ -99,7 +100,8 @@ namespace Honeycomb { namespace Component {
 
 		/// <summary>
 		/// Returns the Component ID integer representation of this Game
-		/// Component.
+		/// Component. This must be overriden by any derived class to return 
+		/// its own, unique Game Component ID.
 		/// </summary>
 		/// <returns>
 		/// The integer representation of the Component ID of this Component.
@@ -215,6 +217,18 @@ namespace Honeycomb { namespace Component {
 		/// The pointer to the new Game Component clone.
 		/// </returns>
 		virtual GameComponent* cloneInternal() const = 0;
+
+		/// <summary>
+		/// Returns a boolean representation of whether or not this Game
+		/// Component allows multiple instances of itself per Game Object. If
+		/// not overriden, this will return true by default.
+		/// </summary>
+		/// <returns>
+		/// False if only one instance of the component may be added to a single
+		/// Game Object. True if more than one instance of the component may
+		/// be added to a single Game Object.
+		/// </returns>
+		virtual bool getProperty_AllowsMultiple() const noexcept;
 	};
 } }
 

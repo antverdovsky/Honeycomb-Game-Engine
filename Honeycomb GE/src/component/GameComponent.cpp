@@ -29,6 +29,10 @@ namespace Honeycomb { namespace Component {
 		this->onEnable();
 	}
 
+	bool GameComponent::getProperty_AllowsMultiple() const noexcept {
+		return true;
+	}
+
 	GameObject* GameComponent::getAttached() {
 		return this->attached;
 	}

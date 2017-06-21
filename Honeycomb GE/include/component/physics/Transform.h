@@ -296,6 +296,16 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		void setParent(Transform *parent);
 
 		virtual Transform* cloneInternal() const override;
+
+		/// <summary>
+		/// Overrides the [AllowsMultiple] property to always return false, 
+		/// since at most one Transform may be attached to a Game Object at one
+		/// time.
+		/// </summary>
+		/// <returns>
+		/// False.
+		/// </returns>
+		virtual bool getProperty_AllowsMultiple() const noexcept override;
 	};
 } } }
 
