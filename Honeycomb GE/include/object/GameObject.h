@@ -225,15 +225,17 @@ namespace Honeycomb { namespace Object {
 		/// </exception>
 		template<class Type> 
 		const Type& getComponent() const {
-			for (auto &comp : this->components) {
-				if (dynamic_cast<Type*>(comp.get()) != nullptr) {
-					return dynamic_cast<const Type&>(*comp.get());
-				}
+			int id = Honeycomb::Component::GameComponent::getGameComponentTypeID<Type>();
+			const std::vector<std::unique_ptr<Honeycomb::Component::GameComponent>>&
+				componentsOfType = this->components.at(id);
+
+			for (auto &comp : componentsOfType) {
+				return dynamic_cast<const Type&>(*comp.get());
 			}
 
 			throw GameEntityNotAttachedException(this, typeid(Type).name());
 		}
-
+/*
 		/// Gets the component with the specified name, downcast to the
 		/// specific type of component.
 		/// class Type : The type of the component.
@@ -275,11 +277,19 @@ namespace Honeycomb { namespace Object {
 
 			throw GameEntityNotAttachedException(this, typeid(Type).name);
 		}
-
-		/// Gets all the components of this game object.
-		/// return : The constant list containing the components.
-		const std::vector<std::unique_ptr<
-				Honeycomb::Component::GameComponent>>& getComponents() const;
+*/
+		/// <summary>
+		/// Gets a 2D representation of the Game Components attached to this
+		/// Game Object. For each Game Component, there exists a 1D array 
+		/// inside the 2D array, at the index of the Game Component ID, such
+		/// that the 1D array contains pointers to all of the Game Components
+		/// of that type that are attached to this Game Object.
+		/// </summary>
+		/// <returns>
+		/// The 2D representation of the Game Components.
+		/// </returns>
+		const std::vector<std::vector<std::unique_ptr<
+				Honeycomb::Component::GameComponent>>>& getComponents() const;
 
 		/// Gets a boolean representing whether this game object is active
 		/// or not.
@@ -311,14 +321,43 @@ namespace Honeycomb { namespace Object {
 		///			 False otherwise.
 		bool hasChild(const GameObject &child) const;
 */
-/*
-		/// Checks if this Game Object has the specified component.
-		/// const GameComponent &comp : The component which is to be checked.
-		/// return : True if the specified game component is a child of this.
-		///			 False otherwise.
-		bool hasComponent(const Honeycomb::Component::GameComponent &comp) 
-				const;
-*/
+		/// <summary>
+		/// Checks if the specified component is attached to this Game Object.
+		/// </summary>
+		/// <param name="component">
+		/// The component which is to be checked.
+		/// </param>
+		/// <returns>
+		/// True if that specific component instance is attached to this Game
+		/// Object.
+		/// </returns>
+		bool hasComponent(const Honeycomb::Component::GameComponent 
+				*component) const;
+
+		/// <summary>
+		/// Checks if this Game Object has at least one component of the
+		/// specified type.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of the Game Component.
+		/// </typeparam>
+		/// <returns>
+		/// True if this Game Object has at least one component of the 
+		/// specified type. False otherwise.
+		/// </returns>
+		template<typename T>
+		bool hasComponent() const {
+			// Get the list of components of the specified type
+			int id = Honeycomb::Component::GameComponent::
+				getGameComponentTypeID<T>();
+			std::vector<std::unique_ptr<Honeycomb::Component::GameComponent>>&
+				componentsOfType = this->components.at(id);
+
+			// If at least one component of that type is owned by this, return
+			// true.
+			return componentsOfType.size() > 0;
+		}
+
 		/// Handles any input events for this component, if necessary. This 
 		/// method will only do something if the object is active.
 		virtual void input();
@@ -380,8 +419,13 @@ namespace Honeycomb { namespace Object {
 
 		// The children and components of this Game Object
 		std::vector<std::unique_ptr<GameObject>> children;
-		std::vector<std::unique_ptr<Honeycomb::Component::GameComponent>>
-				components;
+
+		// The 2D array of all of the components of the Game Object. For each
+		// Game Component, there exists an array, at the index of the Game
+		// Component ID, which contains all of the Game Components of that
+		// type which are attached to this Game Object.
+		std::vector<std::vector<std::unique_ptr<
+				Honeycomb::Component::GameComponent>>> components;
 	};
 } }
 

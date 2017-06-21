@@ -145,6 +145,8 @@ namespace HoneycombTest {
 		this->gameScene.addChild(std::move(this->ambient));
 		this->gameScene.addChild(std::move(this->directional));
 		this->gameScene.addChild(std::move(this->camera));
+
+		auto& test = this->gameScene.getChild("RootNode");
 		
 		// Start the Game Scene and set it as the active scene
 		this->gameScene.start();
