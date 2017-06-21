@@ -36,6 +36,10 @@ namespace Honeycomb { namespace Component { namespace Light {
 		return this->glVector3fs.getValue(BaseLight::COLOR_VEC3);
 	}
 
+	int BaseLight::getGameComponentID() const noexcept {
+		return GameComponent::getGameComponentTypeID<BaseLight>();
+	}
+
 	float& BaseLight::getIntensity() {
 		return this->glFloats.getValue(BaseLight::INTENSITY_F);
 	}

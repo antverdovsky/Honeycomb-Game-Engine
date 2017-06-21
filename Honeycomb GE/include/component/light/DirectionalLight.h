@@ -37,6 +37,15 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// return : The cloned Directional Light.
 		std::unique_ptr<DirectionalLight> clone() const;
 
+		/// <summary>
+		/// Returns the Component ID integer representation of the Directional
+		/// Light.
+		/// </summary>
+		/// <returns>
+		/// The Component ID of the Directional Light Component.
+		/// </returns>
+		virtual int getGameComponentID() const noexcept override;
+
 		/// Returns the direction of this Directional Light.
 		/// return : The constant reference to the direction vector.
 		const Honeycomb::Math::Vector3f& getDirection() const;

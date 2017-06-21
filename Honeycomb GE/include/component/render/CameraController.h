@@ -68,6 +68,15 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// return : The constant reference to the near clipping plane.
 		const float& getClipNear() const;
 
+		/// <summary>
+		/// Returns the Component ID integer representation of the Camera
+		/// Controller.
+		/// </summary>
+		/// <returns>
+		/// The Component ID of the Camera Controller Component.
+		/// </returns>
+		virtual int getGameComponentID() const noexcept override;
+
 		/// Gets the type parameter for the camera. If this is a perspective
 		/// camera, the parameter is equal to the FOV (in degrees). Otherwise,
 		/// the parameter is equal to the orthographic size.

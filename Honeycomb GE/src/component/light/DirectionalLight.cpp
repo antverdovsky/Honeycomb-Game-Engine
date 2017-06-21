@@ -41,6 +41,10 @@ namespace Honeycomb { namespace Component { namespace Light {
 		return std::unique_ptr<DirectionalLight>(this->cloneInternal());
 	}
 
+	int DirectionalLight::getGameComponentID() const noexcept {
+		return GameComponent::getGameComponentTypeID<DirectionalLight>();
+	}
+
 	const Vector3f& DirectionalLight::getDirection() const {
 		return this->transform->getLocalForward();
 	}

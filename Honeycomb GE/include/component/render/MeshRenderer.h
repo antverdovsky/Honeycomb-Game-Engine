@@ -33,6 +33,15 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// return : The cloned Mesh Renderer.
 		std::unique_ptr<MeshRenderer> clone() const;
 
+		/// <summary>
+		/// Returns the Component ID integer representation of the Mesh
+		/// Renderer.
+		/// </summary>
+		/// <returns>
+		/// The Component ID of the Mesh Renderer Component.
+		/// </returns>
+		virtual int getGameComponentID() const noexcept override;
+
 		/// Returns the constant reference to the mesh of this Mesh Renderer.
 		/// return : The constant reference to the mesh.
 		const Honeycomb::Geometry::Mesh& getMesh() const;

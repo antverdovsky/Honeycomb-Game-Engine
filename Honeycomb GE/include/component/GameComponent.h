@@ -33,14 +33,13 @@ namespace Honeycomb { namespace Component {
 			// the type variable is instantiated to the current game component
 			// ID value and then the game component ID value is incremented.
 			// This allows for unique Component IDs for each different type.
-			static GameComponentID type = GameComponent::getGameComponentID();
+			static GameComponentID type = GameComponent::getGameComponentIDCounter();
 			return type;
 		}
 
 		/// <summary>
 		/// Creates a new, empty Game Component. The Game Component will not be
-		/// attached to anything, nor will it be active or self active. The ID
-		/// of the Component is initialized by this.
+		/// attached to anything, nor will it be active or self active.
 		/// </summary>
 		GameComponent();
 		
@@ -97,6 +96,15 @@ namespace Honeycomb { namespace Component {
 		/// nullptr if this is not attached to anything.
 		/// </returns>
 		const Honeycomb::Object::GameObject* getAttached() const;
+
+		/// <summary>
+		/// Returns the Component ID integer representation of this Game
+		/// Component.
+		/// </summary>
+		/// <returns>
+		/// The integer representation of the Component ID of this Component.
+		/// </returns>
+		virtual int getGameComponentID() const noexcept = 0;
 
 		/// <summary>
 		/// Gets a boolean representation of whether or not the Game Component
@@ -189,8 +197,6 @@ namespace Honeycomb { namespace Component {
 		Honeycomb::Object::GameObject* attached;
 
 		bool isSelfActive;         // Is this game component itself active?
-
-		int componentID;           // The Component ID of this Component
 	private:
 		/// <summary>
 		/// Returns the static Game Component ID variable and increments it
@@ -199,15 +205,16 @@ namespace Honeycomb { namespace Component {
 		/// <returns>
 		/// The Game Component ID variable.
 		/// </returns>
-		static GameComponentID getGameComponentID() noexcept;
+		static GameComponentID getGameComponentIDCounter() noexcept;
 
 		/// <summary>
-		/// Internal helper function for cloning this Game Component.
+		/// Internal helper function for cloning this Game Component. This must
+		/// be overriden and implemented by any derived class.
 		/// </summary>
 		/// <returns>
 		/// The pointer to the new Game Component clone.
 		/// </returns>
-		virtual GameComponent* cloneInternal() const;
+		virtual GameComponent* cloneInternal() const = 0;
 	};
 } }
 

@@ -68,6 +68,10 @@ namespace HoneycombTest { namespace Components {
 		return std::unique_ptr<InputTransformable>(this->cloneInternal());
 	}
 
+	int InputTransformable::getGameComponentID() const noexcept {
+		return GameComponent::getGameComponentTypeID<InputTransformable>();
+	}
+
 	Space& InputTransformable::getSpace() {
 		return this->space;
 	}

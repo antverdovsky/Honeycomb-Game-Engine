@@ -49,6 +49,14 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		/// return : The constant reference to the event.
 		const Honeycomb::Conjuncture::Event& getChangedEvent() const;
 
+		/// <summary>
+		/// Returns the Component ID integer representation of the Transform.
+		/// </summary>
+		/// <returns>
+		/// The Component ID of the Transform Component.
+		/// </returns>
+		virtual int getGameComponentID() const noexcept override;
+
 		/// Gets the quaternion representing the global rotation of this
 		/// transform.
 		/// return : The global rotation quaternion.

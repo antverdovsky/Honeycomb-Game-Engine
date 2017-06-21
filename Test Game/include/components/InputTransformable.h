@@ -61,6 +61,15 @@ namespace HoneycombTest { namespace Components {
 		/// return : The cloned Input Transformable.
 		std::unique_ptr<InputTransformable> clone() const;
 
+		/// <summary>
+		/// Returns the Component ID integer representation of the Input
+		/// Transformable.
+		/// </summary>
+		/// <returns>
+		/// The Component ID of the Input Transformable Component.
+		/// </returns>
+		virtual int getGameComponentID() const noexcept override;
+
 		/// Returns the space relative to which the translations occur.
 		/// return : A reference to the space.
 		Honeycomb::Component::Physics::Space& getSpace();

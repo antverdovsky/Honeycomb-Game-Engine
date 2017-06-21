@@ -60,6 +60,14 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// return : The constant reference to the Attenuation.
 		const Attenuation& getAttenuation() const;
 
+		/// <summary>
+		/// Returns the Component ID integer representation of the Spot Light.
+		/// </summary>
+		/// <returns>
+		/// The Component ID of the Spot Light Component.
+		/// </returns>
+		virtual int getGameComponentID() const noexcept override;
+
 		/// Returns the direction of this Spot Light.
 		/// return : The constant reference to the Direction.
 		const Honeycomb::Math::Vector3f& getDirection() const;

@@ -68,6 +68,10 @@ namespace Honeycomb { namespace Component { namespace Light {
 		return this->attenuation;
 	}
 
+	int SpotLight::getGameComponentID() const noexcept {
+		return GameComponent::getGameComponentTypeID<SpotLight>();
+	}
+
 	const Vector3f& SpotLight::getDirection() const {
 		return this->transform->getLocalForward();
 	}

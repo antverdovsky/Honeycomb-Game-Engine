@@ -47,6 +47,14 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// return : The constant reference to the Attenuation.
 		const Honeycomb::Component::Light::Attenuation& getAttenuation() const;
 
+		/// <summary>
+		/// Returns the Component ID integer representation of the Point Light.
+		/// </summary>
+		/// <returns>
+		/// The Component ID of the Point Light Component.
+		/// </returns>
+		virtual int getGameComponentID() const noexcept override;
+
 		/// Returns the position of this Point Light.
 		/// return : The constant reference to the Position.
 		const Honeycomb::Math::Vector3f& getPosition() const;

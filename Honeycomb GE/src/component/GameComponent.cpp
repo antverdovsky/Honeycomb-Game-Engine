@@ -9,8 +9,6 @@ namespace Honeycomb { namespace Component {
 	GameComponent::GameComponent() {
 		this->isSelfActive = false;
 		this->attached = nullptr;
-
-		this->componentID = getGameComponentTypeID<GameComponent>();
 	}
 
 	GameComponent::~GameComponent() {
@@ -85,12 +83,8 @@ namespace Honeycomb { namespace Component {
 
 	}
 
-	GameComponentID GameComponent::getGameComponentID() noexcept {
+	GameComponentID GameComponent::getGameComponentIDCounter() noexcept {
 		static GameComponentID type = 0U;
 		return type++;
-	}
-
-	GameComponent* GameComponent::cloneInternal() const {
-		return new GameComponent();
 	}
 } }

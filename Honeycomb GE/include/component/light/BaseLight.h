@@ -82,6 +82,14 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// return : The constant color reference.
 		const Honeycomb::Math::Vector3f& getColor() const;
 
+		/// <summary>
+		/// Returns the Component ID integer representation of the Base Light.
+		/// </summary>
+		/// <returns>
+		/// The Component ID of the Base Light Component.
+		/// </returns>
+		virtual int getGameComponentID() const noexcept override;
+
 		/// Returns a reference to the intensity of this Base Light.
 		/// return : The intensity reference.
 		float& getIntensity();
