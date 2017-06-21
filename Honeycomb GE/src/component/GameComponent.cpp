@@ -1,11 +1,26 @@
 #include "../../include/component/GameComponent.h"
 
+#include <sstream>
+
 #include "../../include/object/GameObject.h"
 
 using Honeycomb::Object::GameObject;
 using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb { namespace Component {
+	GameComponentDisallowsMultipleException::
+			GameComponentDisallowsMultipleException(const GameObject *g) :
+			std::runtime_error("Game Component Disallows Multiple Instances") {
+		this->object = g;
+	}
+
+	const char* GameComponentDisallowsMultipleException::what() const throw() {
+		std::ostringstream oss("");
+		oss << std::runtime_error::what() << " but it is being doubly added"
+			<< " to the Game Object, " << this->object->getName();
+		return oss.str().c_str();
+	}
+
 	GameComponent::GameComponent() {
 		this->isSelfActive = false;
 		this->attached = nullptr;

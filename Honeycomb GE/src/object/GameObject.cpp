@@ -14,6 +14,20 @@ using Honeycomb::Shader::ShaderProgram;
 using Honeycomb::Scene::GameScene;
 
 namespace Honeycomb { namespace Object {
+	GameEntityNotAttachedException::GameEntityNotAttachedException(
+		const GameObject *g, const std::string &name) :
+		std::runtime_error("Unable to fetch Game Entity") {
+		this->gameObject = g;
+		this->entityName = name;
+	}
+
+	const char* GameEntityNotAttachedException::what() const throw() {
+		std::ostringstream oss("");
+		oss << std::runtime_error::what() << " of name " <<
+			this->entityName << " from object " << this->gameObject->getName();
+		return oss.str().c_str();
+	}
+
 	GameObject::GameObject() : GameObject("GameObject") {
 
 	}
@@ -275,18 +289,4 @@ namespace Honeycomb { namespace Object {
 		for (auto &comp : this->components)
 			comp->onUpdate();
 	}
-
-	GameEntityNotAttachedException::GameEntityNotAttachedException(
-			const GameObject *g, const std::string &name) :
-			std::runtime_error("Unable to fetch Game Entity") {
-		this->gameObject = g;
-		this->entityName = name;
-	}
-
-	const char* GameEntityNotAttachedException::what() const throw() {
-		std::ostringstream oss("");
-		oss << std::runtime_error::what() << " of name " <<
-			this->entityName << " from object " << this->gameObject->getName();
-		return oss.str().c_str();
-	 }
 } }

@@ -12,6 +12,35 @@ namespace Honeycomb { namespace Object { class GameObject; } }
 namespace Honeycomb { namespace Component {
 	typedef unsigned int GameComponentID;
 
+	/// <summary>
+	/// Class which contains the exception to be thrown when the user attempts
+	/// to add multiple instances of a component to the same object if that
+	/// component has the allows multiple property turned off.
+	/// </summary>
+	class GameComponentDisallowsMultipleException : std::runtime_error {
+	public:
+		/// <summary>
+		/// Creates a new Game Component Disallows Multiple Exception.
+		/// </summary>
+		/// <param name="g">
+		/// The game object to which the game component was to be added to.
+		/// </param>
+		GameComponentDisallowsMultipleException(
+				const Honeycomb::Object::GameObject *g);
+
+		/// <summary>
+		/// Returns a constant character string containing the description of
+		/// the exception.
+		/// </summary>
+		/// <returns>
+		/// The constant character string exception info containing the name
+		/// of the Game Object for which the Game Component could not be added.
+		/// </returns>
+		virtual const char* what() const throw();
+	private:
+		const Honeycomb::Object::GameObject *object;
+	};
+
 	class GameComponent {
 		friend class Honeycomb::Object::GameObject;
 	public:
