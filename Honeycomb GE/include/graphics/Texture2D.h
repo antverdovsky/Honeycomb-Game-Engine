@@ -2,6 +2,7 @@
 #ifndef TEXTURE_2D
 #define TEXTURE_2D
 
+#include <memory>
 #include <string>
 
 #include "TextureEnums.h"
@@ -128,12 +129,14 @@ namespace Honeycomb { namespace Graphics {
 		void bind(const int &loc) const;
 
 		/// <summary>
-		/// Returns the height of the texture, in pixels.
+		/// Returns the height of the texture, in pixels. Note that as long as
+		/// the raw <see cref="glTexture2D"/> function is not used, this is
+		/// guaranteed to be equal across copies of this texture.
 		/// </summary>
 		/// <returns>
 		/// The height of the texture.
 		/// </returns>
-		int getHeight() const;
+		const int& getHeight() const;
 
 		/// <summary>
 		/// Returns the raw OpenGL pointer of the texture. If the texture has
@@ -145,12 +148,14 @@ namespace Honeycomb { namespace Graphics {
 		const int& getTextureID() const;
 
 		/// <summary>
-		/// Returns the width of texture, in pixels.
+		/// Returns the width of texture, in pixels. Note that as long as
+		/// the raw <see cref="glTexture2D"/> function is not used, this is
+		/// guaranteed to be equal across copies of this texture.
 		/// </summary>
 		/// <returns>
 		/// The width of the texture.
 		/// </returns>
-		int getWidth() const;
+		const int& getWidth() const;
 
 		/// <summary>
 		/// Initializes the Texture to a new OpenGL texture. If the texture has
@@ -368,9 +373,15 @@ namespace Honeycomb { namespace Graphics {
 		/// </returns>
 		bool operator!=(const Texture2D &that) const;
 	private:
-		static int textureCount; // The number of GL initialized textures
+		static int textureCount;       // The number of GL initialized textures
 		
-		int textureID;           // The texture "pointer"
+		int textureID;                 // The texture "pointer"
+
+		// These are pointers so that they may be shared among any copy of this
+		// Texture. If any copy modifies its width and height, all copies 
+		// modify theirs accordingly.
+		std::shared_ptr<int> width;    // The width of the texture
+		std::shared_ptr<int> height;   // The height of the texture
 	};
 } }
 

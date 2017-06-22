@@ -94,6 +94,9 @@ namespace Honeycomb { namespace Graphics {
 	Texture2D::Texture2D() {
 		this->isInitialized = false;
 		this->textureID = -1;
+
+		this->width = std::make_shared<int>(0);
+		this->height = std::make_shared<int>(0);
 	}
 
 	void Texture2D::bind() const {
@@ -109,20 +112,16 @@ namespace Honeycomb { namespace Graphics {
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
-	int Texture2D::getHeight() const {
-		int height;
-		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &height);
-		return height;
+	const int& Texture2D::getHeight() const {
+		return *this->height;
 	}
 
 	const int& Texture2D::getTextureID() const {
 		return this->textureID;
 	}
 
-	int Texture2D::getWidth() const {
-		int width;
-		glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
-		return width;
+	const int& Texture2D::getWidth() const {
+		return *this->width;
 	}
 
 	void Texture2D::initialize() {
@@ -215,6 +214,8 @@ namespace Honeycomb { namespace Graphics {
 		this->bind();
 
 		// Write the data to the texture
+		*this->width = width;
+		*this->height = height;
 		glTexImage2D(GL_TEXTURE_2D, 0,
 			getGLintInternalDataFormat(iformat),
 			width, height, 0,
