@@ -25,7 +25,7 @@ namespace Honeycomb { namespace Scene {
 		GameScene *clone = new GameScene();
 
 		clone->name = this->name;
-		clone->isActive = this->isActive;
+		clone->isSelfActive = this->isSelfActive;
 
 		// Copy over all of the children and the components, once duplicated
 		for (auto &child : this->children)
