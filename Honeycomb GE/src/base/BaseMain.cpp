@@ -116,24 +116,24 @@ namespace Honeycomb { namespace Base {
 
 		// Initialize the Game & Start!
 		this->game->start();
-		if (GameScene::getActiveScene()) GameScene::getActiveScene()->start();
+		if (GameScene::getActiveScene()) GameScene::getActiveScene()->onStart();
 	}
 
 	void BaseMain::stop() {
 		if (!isGameRunning) return; // If already stopped -> No need to stop!
 
 		this->game->stop();
-		if (GameScene::getActiveScene()) GameScene::getActiveScene()->stop();
+		if (GameScene::getActiveScene()) GameScene::getActiveScene()->onStop();
 		
 		glfwTerminate(); // Terminate GLFW
 	}
 
 	void BaseMain::update() {
 		this->game->input();
-		if (GameScene::getActiveScene()) GameScene::getActiveScene()->input();
+		if (GameScene::getActiveScene()) GameScene::getActiveScene()->onInput();
 
 		this->game->update();
-		if (GameScene::getActiveScene()) GameScene::getActiveScene()->update();
+		if (GameScene::getActiveScene()) GameScene::getActiveScene()->onUpdate();
 
 		GameInput::getGameInput()->clear(); // Clear input in between frames
 	}

@@ -125,6 +125,16 @@ namespace Honeycomb { namespace Object {
 		return clone;
 	}
 
+	void GameObject::doDisable() {
+		this->isSelfActive = false;
+		this->onDisable();
+	}
+
+	void GameObject::doEnable() {
+		this->isSelfActive = true;
+		this->onEnable();
+	}
+
 	GameObject& GameObject::getChild(const std::string &name) {
 		return const_cast<GameObject&>(static_cast<const GameObject*>
 			(this)->getChild(name));
@@ -214,15 +224,83 @@ namespace Honeycomb { namespace Object {
 		return this->scene != nullptr;
 	}
 
-	void GameObject::input() {
-		// Handle input for all children and components
-		for (auto &child : this->children) {
-			child->input();
-		}
+	void GameObject::onAttach() {
+
+	}
+
+	void GameObject::onDetach() {
+
+	}
+
+	void GameObject::onDisable() {
+		
+	}
+
+	void GameObject::onEnable() {
+
+	}
+
+	void GameObject::onInput() {
 		for (auto &componentsOfType : this->components) {
 			for (auto &component : componentsOfType) {
-				component->onInput();
+				if (component->getIsActive()) component->onInput();
 			}
+		}
+
+		for (auto &child : this->children) {
+			if (child->getIsActive()) child->onInput();
+		}
+	}
+
+	void GameObject::onRender(ShaderProgram &shader) {
+		for (auto &componentsOfType : this->components) {
+			for (auto &component : componentsOfType) {
+				if (component->getIsActive()) component->onRender(shader);
+			}
+		}
+
+		for (auto &child : this->children) {
+			if (child->getIsActive()) child->onRender(shader);
+		}
+	}
+
+	void GameObject::onStart() {
+		for (auto &componentsOfType : this->components) {
+			for (auto &component : componentsOfType) {
+				component->onStart();
+			}
+		}
+
+		for (auto &child : this->children) {
+			child->onStart();
+		}
+
+		this->doEnable();
+	}
+
+	void GameObject::onStop() {
+		for (auto &componentsOfType : this->components) {
+			for (auto &component : componentsOfType) {
+				component->onStop();
+			}
+		}
+
+		for (auto &child : this->children) {
+			child->onStop();
+		}
+
+		this->doDisable();
+	}
+
+	void GameObject::onUpdate() {
+		for (auto &componentsOfType : this->components) {
+			for (auto &component : componentsOfType) {
+				if (component->getIsActive()) component->onUpdate();
+			}
+		}
+
+		for (auto &child : this->children) {
+			if (child->getIsActive()) child->onUpdate();
 		}
 	}
 
@@ -287,15 +365,9 @@ namespace Honeycomb { namespace Object {
 		return std::move(compPtr);
 	}
 
-	void GameObject::render(ShaderProgram &shader) {
-		// Handle rendering for all children and components
-		for (auto &child : this->children)
-			child->render(shader);
-		for (auto &componentsOfType : this->components) {
-			for (auto &component : componentsOfType) {
-				component->onRender(shader);
-			}
-		}
+	std::vector<std::unique_ptr<GameComponent>>& 
+			GameObject::getComponentsOfType(const unsigned int &id) {
+		return this->components.at(id);
 	}
 
 	void GameObject::setScene(GameScene *scene) {
@@ -303,43 +375,5 @@ namespace Honeycomb { namespace Object {
 
 		for (auto &child : this->children)
 			child->setScene(scene);
-	}
-
-	void GameObject::start() {
-		// Handle starting for all children and components
-		for (auto &child : this->children)
-			child->start();
-		for (auto &componentsOfType : this->components) {
-			for (auto &component : componentsOfType) {
-				component->onStart();
-			}
-		}
-	}
-
-	void GameObject::stop() {
-		// Handle starting for all children and components
-		for (auto &child : this->children)
-			child->stop();
-		for (auto &componentsOfType : this->components) {
-			for (auto &component : componentsOfType) {
-				component->onInput();
-			}
-		}
-	}
-
-	void GameObject::update() {
-		// Handle updating for all children and components
-		for (auto &child : this->children)
-			child->update();
-		for (auto &componentsOfType : this->components) {
-			for (auto &component : componentsOfType) {
-				component->onUpdate();
-			}
-		}
-	}
-
-	std::vector<std::unique_ptr<GameComponent>>& 
-			GameObject::getComponentsOfType(const unsigned int &id) {
-		return this->components.at(id);
 	}
 } }

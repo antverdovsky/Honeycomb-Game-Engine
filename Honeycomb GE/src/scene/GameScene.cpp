@@ -12,13 +12,18 @@ namespace Honeycomb { namespace Scene {
 	}
 
 	GameScene::GameScene(const std::string &nam) : GameObject(nam) {
-
+		this->scene = this; //todo
+		this->isSelfActive = true;
 	}
 
 	void GameScene::addChild(std::unique_ptr<GameObject> obj) {
 		obj->setScene(this);
 
 		GameObject::addChild(std::move(obj));
+	}
+
+	bool GameScene::getIsActive() const {
+		return true; //tmp
 	}
 
 	GameScene* GameScene::clone() const {

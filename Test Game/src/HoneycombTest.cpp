@@ -114,29 +114,32 @@ namespace HoneycombTest {
 			Vector3f(2.0F, 2.0F, 2.0F));
 		this->directional->getComponent<Transform>().rotate(
 			Vector3f::getGlobalRight(), -PI / 4);
+		this->directional->getComponent<DirectionalLight>().getShadow().setShadowType(ShadowType::SHADOW_NONE);
 
 		// Construct a left and right spotlight for the front of the car and
 		// add to the car (similar to headlights).
-		auto carHeadlightL = GameObjectFactory::getFactory().newSpotLight();
-		auto carHeadlightR = GameObjectFactory::getFactory().newSpotLight();
-//		this->car->addChild(*carHeadlightL);
-//		this->car->addChild(*carHeadlightR);
-		carHeadlightL->getComponent<SpotLight>().setAttenuation(
+		auto carHeadlightLPtr = GameObjectFactory::getFactory().newSpotLight();
+		auto carHeadlightRPtr = GameObjectFactory::getFactory().newSpotLight();
+		auto &carHeadlightL = this->car->addChild(std::move(carHeadlightLPtr));
+		auto &carHeadlightR = this->car->addChild(std::move(carHeadlightRPtr));
+		carHeadlightL.getComponent<SpotLight>().setAttenuation(
 			Attenuation(1.0F, 0.0F, 0.05F));
-		carHeadlightL->getComponent<SpotLight>().getRange() = 15.0F;
-		carHeadlightL->getComponent<SpotLight>().getAngle() = PI / 2;
-		carHeadlightL->getComponent<SpotLight>().setIntensity(8.0F);
-		carHeadlightL->getComponent<SpotLight>().getShadow().setIntensity(1.0F);
-		carHeadlightL->getComponent<Transform>().setTranslation(
+		carHeadlightL.getComponent<SpotLight>().getRange() = 15.0F;
+		carHeadlightL.getComponent<SpotLight>().getAngle() = PI / 2;
+		carHeadlightL.getComponent<SpotLight>().setIntensity(8.0F);
+		carHeadlightL.getComponent<SpotLight>().getShadow().setIntensity(1.0F);
+		carHeadlightL.getComponent<Transform>().setTranslation(
 			Vector3f(-4.391F, 0.709F, 3.321F));
-		carHeadlightR->getComponent<SpotLight>().setAttenuation(
+		carHeadlightR.getComponent<SpotLight>().setAttenuation(
 			Attenuation(1.0F, 0.0F, 0.05F));
-		carHeadlightR->getComponent<SpotLight>().getRange() = 15.0F;
-		carHeadlightR->getComponent<SpotLight>().getAngle() = PI / 2;
-		carHeadlightR->getComponent<SpotLight>().setIntensity(8.0F);
-		carHeadlightR->getComponent<SpotLight>().getShadow().setIntensity(1.0F);
-		carHeadlightR->getComponent<Transform>().setTranslation(
+		carHeadlightR.getComponent<SpotLight>().getRange() = 15.0F;
+		carHeadlightR.getComponent<SpotLight>().getAngle() = PI / 2;
+		carHeadlightR.getComponent<SpotLight>().setIntensity(8.0F);
+		carHeadlightR.getComponent<SpotLight>().getShadow().setIntensity(1.0F);
+		carHeadlightR.getComponent<Transform>().setTranslation(
 			Vector3f( -1.391F, 0.709F, 3.321F));
+		carHeadlightL.getComponent<SpotLight>().getShadow().setShadowType(ShadowType::SHADOW_NONE);
+		carHeadlightR.getComponent<SpotLight>().getShadow().setShadowType(ShadowType::SHADOW_NONE);
 
 		// Add all of the initialized objects to the Game Scene hierarchy
 		this->gameScene.addChild(std::move(this->car));
@@ -146,22 +149,15 @@ namespace HoneycombTest {
 		this->gameScene.addChild(std::move(this->directional));
 		this->gameScene.addChild(std::move(this->camera));
 
-		auto& test = this->gameScene.getChild("RootNode").getChild("Body");
-
-		std::cout << test.hasComponent<Transform>() << std::endl;
-		std::cout << test.hasComponent<MeshRenderer>() << std::endl;
-		std::cout << test.getNumberOfComponents<MeshRenderer>() << std::endl;
-		std::cout << test.getNumberOfComponents() << std::endl;
-		
 		// Start the Game Scene and set it as the active scene
-		this->gameScene.start();
+		this->gameScene.onStart();
 		GameScene::setActiveScene(this->gameScene);
 
 		GameWindow::getGameWindow()->setWindowTitle("Honeycomb Test Game"); 
 	}
 
 	void TestGame::stop() {
-		this->gameScene.stop();
+		this->gameScene.onStop();
 	}
 
 	void TestGame::update() {

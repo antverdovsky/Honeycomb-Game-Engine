@@ -377,7 +377,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		this->geometryShader.setUniform_i("skybox", 31);
 		this->skybox.bind(31);
 
-		scene.render(this->geometryShader); // Render the Game Scene Meshes
+		scene.onRender(this->geometryShader); // Render the Game Scene Meshes
 
 		glDepthMask(GL_FALSE); // Only Geometry Render writes to the Depth
 	}
@@ -532,7 +532,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			if (!linear) { // Use standard CSM depth shader for non linear
 				this->cShadowMapShader.setUniform_mat4("lightProjection", lP);
 				
-				scene.render(this->cShadowMapShader);
+				scene.onRender(this->cShadowMapShader);
 			} else {       // Use linear CSM depth shader for linear
 				this->cShadowMapLinearShader.setUniform_mat4("lightProjection",
 					lP);
@@ -540,13 +540,13 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 					pos);
 				this->cShadowMapLinearShader.setUniform_f("zFar", zFar);
 
-				scene.render(this->cShadowMapLinearShader);
+				scene.onRender(this->cShadowMapLinearShader);
 			}
 		} else if (Shadow::isVarianceShadow(shadowType)) {
 			if (!linear) { // Use standard VSM depth shader for non linear
 				this->vShadowMapShader.setUniform_mat4("lightProjection", lP);
 
-				scene.render(this->vShadowMapShader);
+				scene.onRender(this->vShadowMapShader);
 			} else {       // Use linear VSM depth shader for linear
 				this->vShadowMapLinearShader.setUniform_mat4("lightProjection",
 					lP);
@@ -554,7 +554,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 					pos);
 				this->vShadowMapLinearShader.setUniform_f("zFar", zFar);
 
-				scene.render(this->vShadowMapLinearShader);
+				scene.onRender(this->vShadowMapLinearShader);
 			}
 		}
 

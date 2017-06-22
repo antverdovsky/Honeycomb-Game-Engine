@@ -41,6 +41,8 @@ namespace Honeycomb { namespace Scene {
 		/// return : The pointer to the cloned Game Scene.
 		GameScene* clone() const;
 
+		bool getIsActive() const;
+
 		/// Returns the list of the active lights of this game scene.
 		/// return : The list of pointers to all the light components of this 
 		///			 scene.

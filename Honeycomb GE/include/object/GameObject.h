@@ -166,6 +166,20 @@ namespace Honeycomb { namespace Object {
 		std::unique_ptr<GameObject> clone() const;
 
 		/// <summary>
+		/// Disables this Game Object. This has no effect if the Game Object is
+		/// already disabled. Note that this only disables the self-activeness
+		/// property of the Game Object.
+		/// </summary>
+		virtual void doDisable();
+
+		/// <summary>
+		/// Enables this Game Object. This has no effect if the Game Object is
+		/// already enabled. Note that this only enables the self-activeness
+		/// property of the Game Object.
+		/// </summary>
+		virtual void doEnable();
+
+		/// <summary>
 		/// Gets the child of this Game Object which has the specified name. If
 		/// the object has multiple children of the specified name, the first
 		/// child found in the children vector is returned.
@@ -274,7 +288,7 @@ namespace Honeycomb { namespace Object {
 		/// <returns>
 		/// True if the object is active, false otherwise.
 		/// </returns>
-		bool getIsActive() const;
+		virtual bool getIsActive() const;
 
 		/// <summary>
 		/// Gets a boolean representing whether or not the Game Object is self
@@ -478,11 +492,68 @@ namespace Honeycomb { namespace Object {
 		bool hasScene() const;
 
 		/// <summary>
-		/// Handles any input events for the Game Object. This method calls the
-		/// input method of all children and components attached to this Game
-		/// Object.
+		/// This function is called after the Game Object is attached to a
+		/// parent game object or scene, and should handle any attach events.
 		/// </summary>
-		virtual void input();
+		virtual void onAttach();
+
+		/// <summary>
+		/// This function is called after the Game Object is detached from a
+		/// parent game object or scene, and should handle any detach events.
+		/// </summary>
+		virtual void onDetach();
+
+		/// <summary>
+		/// This function is called after the Game Object is disabled, and
+		/// should handle any (re)disabiling events for the object.
+		/// </summary>
+		virtual void onDisable();
+
+		/// <summary>
+		/// This function is called after the Game Object is enabled, and
+		/// should handle any (re)enabling events for the object.
+		/// </summary>
+		virtual void onEnable();
+
+		/// <summary>
+		/// This function is called once per frame if the Game Object is 
+		/// active, and should handle any input events for the object.
+		/// This function is recursively called for each child.
+		/// </summary>
+		virtual void onInput();
+
+		/// <summary>
+		/// This function is called once per frame if the Game Object is 
+		/// active, and should handle any rendering events for the object.
+		/// This function is recursively called for each child.
+		/// </summary>
+		/// <param name="shader">
+		/// The shader, using which, the Game Object is to be rendered.
+		/// </param>
+		virtual void onRender(Honeycomb::Shader::ShaderProgram &shader);
+
+		/// <summary>
+		/// Called when the Game Object first starts. This function should only
+		/// be called once and should initialize all of the properties of this
+		/// Object. This automatically enables the Game Object. This function 
+		/// is recursively called for each child.
+		/// </summary>
+		virtual void onStart();
+
+		/// <summary>
+		/// Called when the Game Object ends. This function should only
+		/// be called once and should de-initialize all of the properties of 
+		/// this Object. This automatically disables the Game Object. This 
+		///	function is recursively called for each child.
+		/// </summary>
+		virtual void onStop();
+
+		/// <summary>
+		/// This function is called once per frame if the Game Object is 
+		/// active, and should handle any updating events for the object.
+		/// This function is recursively called for each child.
+		/// </summary>
+		virtual void onUpdate();
 
 		/// <summary>
 		/// Removes the specified child from this Game Object and returns a
@@ -521,31 +592,6 @@ namespace Honeycomb { namespace Object {
 		std::unique_ptr<Honeycomb::Component::GameComponent> 
 				removeComponent(Honeycomb::Component::GameComponent 
 				*component);
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="shader"></param>
-		virtual void render(Honeycomb::Shader::ShaderProgram &shader);
-
-		/// Sets the Game Scene of this Game Object and all of the children of
-		/// this Game Object.
-		/// GameScene *scene : The new scene of this Game Object.
-		void setScene(Honeycomb::Scene::GameScene *scene);
-
-		/// Handles any starting events for this component, if necessary.
-		/// Additionally, this method will make this object active when
-		/// called.
-		virtual void start();
-
-		/// Handles any stopping events for this component, if necessary.
-		/// Additionally, this method will make this object inactive when
-		/// called.
-		virtual void stop();
-
-		/// Handles any update events for this component, if necessary. This 
-		/// method will only do something if the object is active.
-		virtual void update();
 
 		/// <summary>
 		/// No assignment operator exists for the Game Object class.
@@ -603,6 +649,14 @@ namespace Honeycomb { namespace Object {
 
 			return this->components.at(id);
 		}
+
+		/// <summary>
+		/// Sets the scene of this Game Object and all of its children.
+		/// </summary>
+		/// <param name="scene">
+		/// The new scene of the Game Object hierarchy.
+		/// </param>
+		void setScene(Honeycomb::Scene::GameScene *scene);
 	};
 } }
 
