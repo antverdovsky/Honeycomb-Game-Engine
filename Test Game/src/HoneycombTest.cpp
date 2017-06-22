@@ -149,6 +149,10 @@ namespace HoneycombTest {
 		this->gameScene.addChild(std::move(this->directional));
 		this->gameScene.addChild(std::move(this->camera));
 
+		// these must throw exceptions:
+		//carHeadlightL.addComponent<Transform>();									// disallow multiple
+		//carHeadlightL.removeComponent(&carHeadlightL.getComponent<Transform>());  // permanent component
+
 		// Start the Game Scene and set it as the active scene
 		this->gameScene.onStart();
 		GameScene::setActiveScene(this->gameScene);

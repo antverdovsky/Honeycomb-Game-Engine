@@ -9,15 +9,33 @@ using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb { namespace Component {
 	GameComponentDisallowsMultipleException::
-			GameComponentDisallowsMultipleException(const GameObject *g) :
+			GameComponentDisallowsMultipleException(
+				const GameObject *object, const GameComponent *component) :
 			std::runtime_error("Game Component Disallows Multiple Instances") {
-		this->object = g;
+		this->object = object;
+		this->component = component;
 	}
 
 	const char* GameComponentDisallowsMultipleException::what() const throw() {
 		std::ostringstream oss("");
 		oss << std::runtime_error::what() << " but it is being doubly added"
-			<< " to the Game Object, " << this->object->getName();
+			<< " to the Game Object, " << this->object->getName() <<
+			"; Game Component ID: " << this->component->getGameComponentID();
+		return oss.str().c_str();
+	}
+
+	GameComponentPermanentException::GameComponentPermanentException(
+			const GameObject *object, const GameComponent *component) :
+			std::runtime_error("Game Component Permanent") {
+		this->object = object;
+		this->component = component;
+	}
+
+	const char* GameComponentPermanentException::what() const throw() {
+		std::ostringstream oss("");
+		oss << std::runtime_error::what() << " but it is being removed"
+			<< " from the Game Object, " << this->object->getName() <<
+			"; Game Component ID: " << this->component->getGameComponentID();
 		return oss.str().c_str();
 	}
 
@@ -109,5 +127,9 @@ namespace Honeycomb { namespace Component {
 
 	bool GameComponent::getProperty_AllowsMultiple() const noexcept {
 		return true;
+	}
+
+	bool GameComponent::getProperty_Permanent() const noexcept {
+		return false;
 	}
 } }

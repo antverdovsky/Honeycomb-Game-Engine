@@ -306,6 +306,16 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		/// False.
 		/// </returns>
 		virtual bool getProperty_AllowsMultiple() const noexcept override;
+
+		/// <summary>
+		/// Overrides the [Permanent] property to always return true, 
+		/// since a Transform is a required component and should not be 
+		/// removed.
+		/// </summary>
+		/// <returns>
+		/// True.
+		/// </returns>
+		virtual bool getProperty_Permanent() const noexcept override;
 	};
 } } }
 

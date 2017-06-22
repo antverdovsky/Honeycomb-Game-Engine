@@ -327,7 +327,7 @@ namespace Honeycomb { namespace Geometry {
 		// Transform, since all Objects get one.
 		std::unique_ptr<GameObject> object = std::make_unique<GameObject>(
 				aNode->mName.C_Str());
-		std::unique_ptr<Transform> transf = std::make_unique<Transform>();
+		auto &transf = object->getComponent<Transform>();
 
 		// Fetch the Transformation of the Object and write to the Transform
 		// (Scaling may be ignored since the position vector itself is scaled
@@ -336,11 +336,10 @@ namespace Honeycomb { namespace Geometry {
 		aiVector3D position;
 		aiVector3D scale;
 		aNode->mTransformation.Decompose(scale, rotation, position);
-		transf->setRotation(Quaternion(rotation.x, rotation.y, rotation.z,
+		transf.setRotation(Quaternion(rotation.x, rotation.y, rotation.z,
 			rotation.w));
-		transf->setTranslation(Vector3f(position.x, position.y, position.z) *
+		transf.setTranslation(Vector3f(position.x, position.y, position.z) *
 			lclSclFactor, Space::LOCAL);
-		object->addComponent(std::move(transf));
 
 		// Process all of the Meshes of the Object
 		for (unsigned int i = 0; i < aNode->mNumMeshes; i++) {

@@ -1,6 +1,6 @@
 #pragma once
-#ifndef OBJECT_H
-#define OBJECT_H
+#ifndef GAME_OBJECT_H
+#define GAME_OBJECT_H
 
 #include <memory>
 #include <string>
@@ -53,20 +53,20 @@ namespace Honeycomb { namespace Object {
 	public:
 		/// <summary>
 		/// Initializes a new Game Object with the name "Game Object" and no
-		/// parent or scene. The Game Object is not active by default and comes
-		/// with no added components.
+		/// parent or scene. The Game Object is not active by default and it
+		/// comes with a Transform component.
 		/// </summary>
 		GameObject();
 
 		/// <summary>
 		/// Initializes a new Game Object with the specified name, and no
-		/// parent or scene. The Game Object is not active by default and comes
-		/// with no added components.
+		/// parent or scene. The Game Object is not active by default and it
+		/// comes with a Transform component.
 		/// </summary>
-		/// <param name="n">
+		/// <param name="name">
 		/// The name of the Game Object.
 		/// </param>
-		GameObject(const std::string &n);
+		GameObject(const std::string &name);
 
 		/// <summary>
 		/// No copy constructor exists for the Game Object class.
@@ -361,7 +361,7 @@ namespace Honeycomb { namespace Object {
 		/// reference.
 		/// </returns>
 		const std::vector<std::unique_ptr<
-				Honeycomb::Component::GameComponent>>&getComponentsOfType(
+				Honeycomb::Component::GameComponent>>& getComponentsOfType(
 				const unsigned int &id) const;
 
 		/// <summary>
@@ -589,6 +589,10 @@ namespace Honeycomb { namespace Object {
 		/// <exception cref="GameEntityNotAttachedException">
 		/// Thrown if the Game Component specified is not attached to this.
 		/// </exception>
+		/// <exception cref="GameComponentPermanentException">
+		/// Thrown if the Game Component specified is permanent and cannot be
+		/// removed.
+		/// </exception>
 		std::unique_ptr<Honeycomb::Component::GameComponent> 
 				removeComponent(Honeycomb::Component::GameComponent 
 				*component);
@@ -614,6 +618,20 @@ namespace Honeycomb { namespace Object {
 		std::vector<std::vector<std::unique_ptr<
 				Honeycomb::Component::GameComponent>>> components;
 		unsigned int numComponents;
+
+		/// <summary>
+		/// Initializes a new Game Object with the specified name, and no
+		/// parent or scene. The Game Object is not active by default. The
+		/// <paramref name="attachTransform"/> parameter specifies whether or
+		/// not a Transform component should be attached.
+		/// </summary>
+		/// <param name="name">
+		/// The name of the Game Object.
+		/// </param>
+		/// <param name="attachTransform">
+		/// Should a Transform component be attached?
+		/// </param>
+		GameObject(const std::string &name, const bool &attachTransform);
 
 		/// <summary>
 		/// Returns the list of components attached to this Game Object which

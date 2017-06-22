@@ -10,6 +10,7 @@
 
 using Honeycomb::Component::GameComponent;
 using Honeycomb::Component::GameComponentDisallowsMultipleException;
+using Honeycomb::Component::GameComponentPermanentException;
 using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Debug::Logger;
 using Honeycomb::Shader::ShaderProgram;
@@ -34,16 +35,8 @@ namespace Honeycomb { namespace Object {
 
 	}
 
-	GameObject::GameObject(const std::string &n) {
-		this->name = n;
-		this->isSelfActive = false;
-		this->parent = nullptr;
-		this->scene = nullptr;
-
-		// todo, while 256 should be 10x more components than needed, this will
-		// still cause issues if there are more than 256...
-		this->components.resize(256);
-		this->numComponents = 0;
+	GameObject::GameObject(const std::string &name) : GameObject(name, true) {
+		
 	}
 
 	GameObject::~GameObject() {
@@ -62,16 +55,14 @@ namespace Honeycomb { namespace Object {
 		this->children.push_back(std::move(object));
 		GameObject &childRef = *this->children.back();
 		
-		// Parent the Transform of the child to this Transform, if it has one
+		// Notify the child that its parent and scene have changed
 		childRef.parent = this;
-		childRef.scene = this->scene;
-		try {
-			Transform &childTransf = childRef.getComponent<Transform>();
-			childTransf.setParent(&this->getComponent<Transform>());
-		} catch (GameEntityNotAttachedException e) {
+		childRef.setScene(this->scene);
 		
-		}
-
+		// Notify the Transform of the child that its parent has changed
+		Transform &childTransf = childRef.getComponent<Transform>();
+		childTransf.setParent(&this->getComponent<Transform>());
+		
 		return childRef;
 	}
 
@@ -86,7 +77,8 @@ namespace Honeycomb { namespace Object {
 		// a component of the same type. If so, throw exception.
 		if (!component->getProperty_AllowsMultiple() &&
 				this->hasComponent(component->getGameComponentID())) {
-			throw GameComponentDisallowsMultipleException(this);
+			throw GameComponentDisallowsMultipleException(
+				this, component.get());
 		}
 
 		// Get the components of the same type as the Game Component passed in
@@ -106,9 +98,10 @@ namespace Honeycomb { namespace Object {
 	}
 
 	std::unique_ptr<GameObject> GameObject::clone() const {
-		// Create a new Game Object with the same name
+		// Create a new Game Object with the same name, but without a Transform
+		// component since we will copy the Transform of this.
 		std::unique_ptr<GameObject> clone =
-			std::make_unique<GameObject>(this->name);
+			std::unique_ptr<GameObject>(new GameObject(this->name, false));
 
 		// Copy over all of the children and the components, once duplicated
 		// (Components must be copied over first since the Transform hierarchy
@@ -332,6 +325,10 @@ namespace Honeycomb { namespace Object {
 
 	std::unique_ptr<GameComponent> GameObject::removeComponent(
 			GameComponent *component) {
+		// Assert Game Component is not permanent. If it is, throw.
+		if (component->getProperty_Permanent())
+			throw GameComponentPermanentException(this, component);
+
 		// Get the list of components which have the same type as the component
 		// paramter specified.
 		auto& componentsOfType = 
@@ -363,6 +360,21 @@ namespace Honeycomb { namespace Object {
 		--this->numComponents;
 		componentsOfType.erase(comp);
 		return std::move(compPtr);
+	}
+
+	GameObject::GameObject(const std::string &name, 
+			const bool &attachTransform) {
+		this->name = name;
+		this->isSelfActive = false;
+		this->parent = nullptr;
+		this->scene = nullptr;
+
+		// todo, while 256 should be 10x more components than needed, this will
+		// still cause issues if there are more than 256...
+		this->components.resize(256);
+		this->numComponents = 0;
+
+		if (attachTransform) this->addComponent<Transform>();
 	}
 
 	std::vector<std::unique_ptr<GameComponent>>& 

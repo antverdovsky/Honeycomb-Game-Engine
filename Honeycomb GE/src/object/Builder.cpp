@@ -43,8 +43,6 @@ namespace Honeycomb { namespace Object {
 
 	std::unique_ptr<GameObject> GameObjectFactory::newAmbientLight() {
 		auto obj = std::make_unique<GameObject>("Ambient Light");
-
-		obj->addComponent<Transform>();
 		obj->addComponent<AmbientLight>();
 
 		return obj;
@@ -52,8 +50,6 @@ namespace Honeycomb { namespace Object {
 
 	std::unique_ptr<GameObject> GameObjectFactory::newCamera() {
 		auto obj = std::make_unique<GameObject>("Camera");
-
-		obj->addComponent<Transform>();
 		obj->addComponent<CameraController>();
 
 		return obj;
@@ -61,8 +57,6 @@ namespace Honeycomb { namespace Object {
 
 	std::unique_ptr<GameObject> GameObjectFactory::newDirectionalLight() {
 		auto obj = std::make_unique<GameObject>("Directional Light");
-
-		obj->addComponent<Transform>();
 		obj->addComponent<DirectionalLight>();
 
 		return obj;
@@ -94,8 +88,6 @@ namespace Honeycomb { namespace Object {
 
 	std::unique_ptr<GameObject> GameObjectFactory::newPointLight() {
 		auto obj = std::make_unique<GameObject>("Point Light");
-
-		obj->addComponent<Transform>();
 		obj->addComponent<PointLight>();
 
 		return obj;
@@ -107,8 +99,6 @@ namespace Honeycomb { namespace Object {
 
 	std::unique_ptr<GameObject> GameObjectFactory::newSpotLight() {
 		auto obj = std::make_unique<GameObject>("Spot Light");
-
-		obj->addComponent<Transform>();
 		obj->addComponent<SpotLight>();
 
 		return obj;

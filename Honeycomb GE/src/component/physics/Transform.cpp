@@ -409,4 +409,8 @@ namespace Honeycomb { namespace Component { namespace Physics {
 	bool Transform::getProperty_AllowsMultiple() const noexcept {
 		return false;
 	}
+
+	bool Transform::getProperty_Permanent() const noexcept {
+		return true;
+	}
 } } }

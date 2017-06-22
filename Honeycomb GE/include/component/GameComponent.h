@@ -12,35 +12,6 @@ namespace Honeycomb { namespace Object { class GameObject; } }
 namespace Honeycomb { namespace Component {
 	typedef unsigned int GameComponentID;
 
-	/// <summary>
-	/// Class which contains the exception to be thrown when the user attempts
-	/// to add multiple instances of a component to the same object if that
-	/// component has the allows multiple property turned off.
-	/// </summary>
-	class GameComponentDisallowsMultipleException : std::runtime_error {
-	public:
-		/// <summary>
-		/// Creates a new Game Component Disallows Multiple Exception.
-		/// </summary>
-		/// <param name="g">
-		/// The game object to which the game component was to be added to.
-		/// </param>
-		GameComponentDisallowsMultipleException(
-				const Honeycomb::Object::GameObject *g);
-
-		/// <summary>
-		/// Returns a constant character string containing the description of
-		/// the exception.
-		/// </summary>
-		/// <returns>
-		/// The constant character string exception info containing the name
-		/// of the Game Object for which the Game Component could not be added.
-		/// </returns>
-		virtual const char* what() const throw();
-	private:
-		const Honeycomb::Object::GameObject *object;
-	};
-
 	class GameComponent {
 		friend class Honeycomb::Object::GameObject;
 	public:
@@ -265,11 +236,93 @@ namespace Honeycomb { namespace Component {
 		/// not overriden, this will return true by default.
 		/// </summary>
 		/// <returns>
-		/// False if only one instance of the component may be added to a single
-		/// Game Object. True if more than one instance of the component may
-		/// be added to a single Game Object.
+		/// False if only one instance of the component may be added to a 
+		/// single Game Object. True if more than one instance of the component
+		/// may be added to a single Game Object.
 		/// </returns>
 		virtual bool getProperty_AllowsMultiple() const noexcept;
+
+		/// <summary>
+		/// Returns a boolean representation of whether or not this Game
+		/// Component is permanent (i.e. once added can the Game Component be
+		/// detached?). If not overriden, this will return false by default.
+		/// </summary>
+		/// <returns>
+		/// False if the Game Component can be removed once it is added to a
+		/// Game Object. True if the Game Component cannot be removed once
+		/// attached.
+		/// </returns>
+		virtual bool getProperty_Permanent() const noexcept;
+	};
+
+	/// <summary>
+	/// Class which contains the exception to be thrown when the user attempts
+	/// to add multiple instances of a component to the same object if that
+	/// component has the allows multiple property turned off.
+	/// </summary>
+	class GameComponentDisallowsMultipleException : std::runtime_error {
+	public:
+		/// <summary>
+		/// Creates a new Game Component Disallows Multiple Exception.
+		/// </summary>
+		/// <param name="object">
+		/// The game object to which the game component was to be added to.
+		/// </param>
+		/// <param name="component">
+		/// The component which the user tried to add to the object.
+		/// </param>
+		GameComponentDisallowsMultipleException(
+			const Honeycomb::Object::GameObject *object,
+			const GameComponent *component);
+
+		/// <summary>
+		/// Returns a constant character string containing the description of
+		/// the exception.
+		/// </summary>
+		/// <returns>
+		/// The constant character string exception info containing the name
+		/// of the Game Object for which the Game Component could not be added
+		/// and the ID of the Game Component.
+		/// </returns>
+		virtual const char* what() const throw();
+	private:
+		const Honeycomb::Object::GameObject *object;
+		const GameComponent *component;
+	};
+
+	/// <summary>
+	/// Class which contains the exception to be thrown when the user attempts
+	/// to remove a permanent Game Component.
+	/// </summary>
+	class GameComponentPermanentException : std::runtime_error {
+	public:
+		/// <summary>
+		/// Creates a new Game Component Permanent Exception.
+		/// </summary>
+		/// <param name="object">
+		/// The game object from which the game component was to be removed 
+		/// from.
+		/// </param>
+		/// <param name="component">
+		/// The component which the user tried to remove from the object.
+		/// </param>
+		GameComponentPermanentException(
+			const Honeycomb::Object::GameObject *object,
+			const GameComponent *component);
+
+		/// <summary>
+		/// Returns a constant character string containing the description of
+		/// the exception.
+		/// </summary>
+		/// <returns>
+		/// The constant character string exception info containing the name
+		/// of the Game Object for which the Game Component could not be 
+		/// removed and the ID of the Game Component.
+		/// </returns>
+		virtual const char* what() const throw();
+	private:
+		const Honeycomb::Object::GameObject *object;
+		const GameComponent *component;
 	};
 } }
 
