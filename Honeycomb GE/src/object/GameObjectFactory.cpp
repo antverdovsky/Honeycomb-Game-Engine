@@ -1,4 +1,4 @@
-#include "../../include/object/Builder.h"
+#include "../../include/object/GameObjectFactory.h"
 
 #include <string>
 

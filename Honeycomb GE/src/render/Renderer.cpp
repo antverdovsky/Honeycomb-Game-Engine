@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 
 #include "../../include/component/render/MeshRenderer.h"
-#include "../../include/object/Builder.h"
+#include "../../include/object/GameObjectFactory.h"
 #include "../../include/object/GameObject.h"
 #include "../../include/render/RenderingEngine.h"
 

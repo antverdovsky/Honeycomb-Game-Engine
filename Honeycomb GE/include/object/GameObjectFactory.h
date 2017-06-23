@@ -1,6 +1,6 @@
 #pragma once
-#ifndef BUILDER_H
-#define BUILDER_H
+#ifndef GAME_OBJECT_FACTORY_H
+#define GAME_OBJECT_FACTORY_H
 
 #include "GameObject.h"
 #include "../geometry/Model.h"

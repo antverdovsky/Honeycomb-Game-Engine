@@ -50,7 +50,7 @@
 #include "math/Vector3f.h"
 #include "math/Vector4f.h"
 
-#include "object/Builder.h"
+#include "object/GameObjectFactory.h"
 #include "object/GameObject.h"
 
 #include "render/Renderer.h"

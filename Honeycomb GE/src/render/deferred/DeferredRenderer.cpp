@@ -15,7 +15,7 @@
 
 #include "../../../include/geometry/Vertex.h"
 #include "../../../include/math/MathUtils.h"
-#include "../../../include/object/Builder.h"
+#include "../../../include/object/GameObjectFactory.h"
 
 using Honeycomb::Base::GameWindow;
 using Honeycomb::Component::Light::BaseLight;
