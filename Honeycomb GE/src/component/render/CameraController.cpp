@@ -205,7 +205,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 		float top = projectionHeight / projectionWidth * typeParameter;
 		float right = projectionWidth / projectionHeight * typeParameter;
 
-		this->projectionView = Matrix4f::orthographic(right, top,
+		this->projectionView = Matrix4f::getMatrixOrthographic(right, top,
 				this->clipNear, this->clipFar);
 		return this->projectionView;
 	}
@@ -213,7 +213,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 	const Matrix4f& CameraController::calcProjectionViewPerspective() {
 		float aR = this->projectionWidth / this->projectionHeight;
 
-		this->projectionView = Matrix4f::perspective(this->typeParameter,
+		this->projectionView = Matrix4f::getMatrixPerspective(this->typeParameter,
 				aR, this->clipNear, this->clipFar);
 		return this->projectionView;
 	}

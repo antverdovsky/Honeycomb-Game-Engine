@@ -142,6 +142,18 @@ namespace Honeycomb { namespace Math {
 
 		/// <summary>
 		/// Returns a Matrix which is initialized to the element by element sum
+		/// of this Matrix and the specified constant.
+		/// </summary>
+		/// <param name="constant">
+		/// The constant value.
+		/// </param>
+		/// <returns>
+		/// The sum Matrix.
+		/// </returns>
+		Matrix4f add(const float &constant) const;
+
+		/// <summary>
+		/// Returns a Matrix which is initialized to the element by element sum
 		/// of this Matrix and the specified matrix.
 		/// </summary>
 		/// <param name="m2">
@@ -151,6 +163,17 @@ namespace Honeycomb { namespace Math {
 		/// The sum matrix.
 		/// </returns>
 		Matrix4f add(const Matrix4f &m2) const;
+
+		/// <summary>
+		/// Adds the specified constant element by element to this Matrix.
+		/// </summary>
+		/// <param name="constant">
+		/// The constant to be added to each element of this Matrix.
+		/// </param>
+		/// <returns>
+		/// This Matrix.
+		/// </returns>
+		Matrix4f& addTo(const float &constant);
 
 		/// <summary>
 		/// Adds the specified Matrix element by element to this Matrix.
@@ -173,7 +196,7 @@ namespace Honeycomb { namespace Math {
 
 		/// <summary>
 		/// Gets the element of the Matrix at the specified row and column. An
-		/// assertion checks that row and column are both in range [0, 4].
+		/// assertion checks that row and column are both in range [0, 3].
 		/// </summary>
 		/// <param name="r">
 		/// The row of the Matrix.
@@ -189,7 +212,7 @@ namespace Honeycomb { namespace Math {
 		/// <summary>
 		/// Returns the specified column of the Matrix as a four dimensional
 		/// vector. An assertion checks that column argument is in range
-		/// [0, 4].
+		/// [0, 3].
 		/// </summary>
 		/// <param name="c">
 		/// The column of the Matrix.
@@ -217,7 +240,7 @@ namespace Honeycomb { namespace Math {
 
 		/// <summary>
 		/// Returns the specified row of the Matrix as a four dimensional
-		/// vector. An assertion checks that row argument is in range [0, 4].
+		/// vector. An assertion checks that row argument is in range [0, 3].
 		/// </summary>
 		/// <param name="r">
 		/// The row of the Matrix.
@@ -316,7 +339,7 @@ namespace Honeycomb { namespace Math {
 
 		/// <summary>
 		/// Sets the value at the specified Matrix coordinate. An assert checks
-		/// that the row and column values are both in range [0, 4].
+		/// that the row and column values are both in range [0, 3].
 		/// </summary>
 		/// <param name="r">
 		/// The row value.
@@ -347,7 +370,7 @@ namespace Honeycomb { namespace Math {
 
 		/// <summary>
 		/// Sets the specified column of the Matrix. An assertion checks that
-		/// the column index is in range [0, 4].
+		/// the column index is in range [0, 3].
 		/// </summary>
 		/// <param name="c">
 		/// The column index.
@@ -359,7 +382,7 @@ namespace Honeycomb { namespace Math {
 
 		/// <summary>
 		/// Sets the specified row of the Matrix. An assertion checks that
-		/// the row index is in range [0, 4].
+		/// the row index is in range [0, 3].
 		/// </summary>
 		/// <param name="r">
 		/// The row index.
@@ -492,7 +515,7 @@ namespace Honeycomb { namespace Math {
 		/// <returns>
 		/// The resultant Matrix.
 		/// </returns>
-		Matrix4f operator+(const float &constant);
+		Matrix4f operator+(const float &constant) const;
 
 		/// <summary>
 		/// Overloads the addition operator to add the specified Matrix's
@@ -550,7 +573,7 @@ namespace Honeycomb { namespace Math {
 		/// <returns>
 		/// The resultant matrix.
 		/// </returns>
-		Matrix4f operator-(const float &constant);
+		Matrix4f operator-(const float &constant) const;
 
 		/// <summary>
 		/// Overloads the subtraction operator to subtract the values of the
@@ -591,17 +614,18 @@ namespace Honeycomb { namespace Math {
 		/// </returns>
 		Matrix4f& operator-=(const Matrix4f& m2);
 	private:
-		float matrix[4][4];        // The 4x4 array which represents the matrix
-		float inverse[4][4];       // The 4x4 array containing the inverse
-		float determinant;         // The determinant of this Matrix
-
-		bool isDirty;              // Has this been modified since last recalc?
+		float matrix[4][4];             // 4x4 representation of the Matrix
+		
+		mutable float inverse[4][4];    // The 4x4 array containing the inverse
+		mutable float determinant;      // The determinant of this Matrix
+		mutable bool isDirty;           // Was I modified since last recalc?
 
 		/// <summary>
 		/// Calculates the inverse matrix and determinant values of this 
-		/// Matrix and updates them in this Matrix.
+		/// Matrix and updates them in this Matrix. This also resets the
+		/// <see cref="isDirty"/> flag of the Matrix to false.
 		/// </summary>
-		void recalculateInternals();
+		void recalculateInternals() const;
 	};
 } }
 

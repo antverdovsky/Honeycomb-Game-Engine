@@ -187,7 +187,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 			GenericStruct(*ShaderSource::getShaderSource(STRUCT_FILE),
 			STRUCT_NAME) {
 		this->setShadowType(shdw);
-		this->setProjection(Matrix4f::identity());
+		this->setProjection(Matrix4f::getMatrixIdentity());
 		this->setMinimumBias(0.005F);
 		this->setMaximumBias(0.025F);
 		this->setIntensity(0.75F);

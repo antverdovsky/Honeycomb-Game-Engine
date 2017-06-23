@@ -128,7 +128,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 		// Perspective Projection Matrix based on the angle of the spot light
 		int aR = Renderer::getRenderer()->getShadowMapWidth() / 
 			Renderer::getRenderer()->getShadowMapHeight();
-		Matrix4f persp = Matrix4f::perspective(this->getAngle(), aR, 
+		Matrix4f persp = Matrix4f::getMatrixPerspective(this->getAngle(), aR, 
 				0.1F, this->getRange());
 
 		// Fetch the orientation matrix and reverse its forward components (see

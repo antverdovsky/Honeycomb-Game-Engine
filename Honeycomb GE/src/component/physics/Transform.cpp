@@ -267,7 +267,7 @@ namespace Honeycomb { namespace Component { namespace Physics {
 	}
 
 	const Matrix4f& Transform::calculateOrientationMatrix() {
-		this->orientationMatrix = Matrix4f::identity();
+		this->orientationMatrix = Matrix4f::getMatrixIdentity();
 
 		// Calculate new directions using the rotations
 		this->forward = this->gblRotation.getForwardVector().normalized();
@@ -314,7 +314,7 @@ namespace Honeycomb { namespace Component { namespace Physics {
 	}
 
 	const Matrix4f& Transform::calculateScaleMatrix() {
-		this->scaleMatrix = Matrix4f::identity();
+		this->scaleMatrix = Matrix4f::getMatrixIdentity();
 
 		// A scale matrix is composed as an identity matrix whose diagonal
 		// equals { X, Y, Z, 1 }
@@ -331,7 +331,7 @@ namespace Honeycomb { namespace Component { namespace Physics {
 	}
 
 	const Matrix4f& Transform::calculateTranslationMatrix() {
-		this->translationMatrix = Matrix4f::identity();
+		this->translationMatrix = Matrix4f::getMatrixIdentity();
 
 		// A translation matrix is composed as an identity matrix whose last
 		// column equals { X, Y, Z, 1 }.				

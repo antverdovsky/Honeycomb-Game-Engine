@@ -192,7 +192,7 @@ namespace Honeycomb { namespace Math {
 	}
 
 	Matrix4f Quaternion::toRotationMatrix4f() {
-		Matrix4f rotMat = Matrix4f::identity();
+		Matrix4f rotMat = Matrix4f::getMatrixIdentity();
 		this->normalize();
 
 		rotMat.setAt(0, 0, 1 - 2 * this->y * this->y - 2 * this->z * this->z);
