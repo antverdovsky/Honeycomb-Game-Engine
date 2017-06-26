@@ -342,6 +342,8 @@ namespace Honeycomb { namespace Geometry {
 			lclSclFactor, Space::LOCAL);
 
 		// Process all of the Meshes of the Object
+		std::unique_ptr<MeshRenderer> meshRen =
+			std::make_unique<MeshRenderer>();
 		for (unsigned int i = 0; i < aNode->mNumMeshes; i++) {
 			// Convert the ASSIMP Mesh Geometry into Honeycomb Mesh Geometry
 			aiMesh *aMesh = this->scene->mMeshes[aNode->mMeshes[i]];
@@ -357,11 +359,10 @@ namespace Honeycomb { namespace Geometry {
 				mat = new Material();
 			}
 
-			// Create a Mesh Renderer with the mesh and material extracted.
-			std::unique_ptr<MeshRenderer> meshRen = 
-				std::make_unique<MeshRenderer>(*mat, *mesh);
-			object->addComponent(std::move(meshRen));
+			meshRen->addMaterial(mat);
+			meshRen->addMesh(mesh);
 		}
+		object->addComponent(std::move(meshRen));
 
 		// Process all of the Children of the Object
 		for (unsigned int i = 0; i < aNode->mNumChildren; i++) {

@@ -2,10 +2,6 @@
 #ifndef MESH_RENDERER_H
 #define MESH_RENDERER_H
 
-/// TODO: Maybe have the mesh renderer store an array of shader programs for
-/// multirendering passes instead, though that will probably be more difficult
-/// to understand.
-
 #include "../GameComponent.h"
 #include "../physics/Transform.h"
 #include "../../../include/geometry/Mesh.h"
@@ -15,22 +11,40 @@
 namespace Honeycomb { namespace Component { namespace Render {
 	class MeshRenderer : public GameComponent {
 	public:
-		/// Creates a Mesh Renderer component given the specified mesh and
-		/// material.
-		/// const Material &mat : The material to be used when rendering.
-		/// const Mesh &mesh : The mesh to be rendered.
-		MeshRenderer(const Honeycomb::Graphics::Material &mat,
-			const Honeycomb::Geometry::Mesh &mesh);
+		/// <summary>
+		/// Creates a new Mesh Renderer component. The Mesh Renderer will have
+		/// no mesh or material attached to it.
+		/// </summary>
+		MeshRenderer();
 
-		/// Deletes this Mesh Renderer component.
-		~MeshRenderer() override;
+		/// <summary>
+		/// Adds the specified Material to this Mesh Renderer.
+		/// 
+		/// An assertion makes sure that the material is not null.
+		/// </summary>
+		/// <param name="material">
+		/// The Material to be added.
+		/// </param>
+		void addMaterial(Honeycomb::Graphics::Material *material);
 
-		/// Clones this Mesh Renderer into a new, dynamically allocated 
-		/// Mesh Renderer. This function should be used instead of the copy 
-		/// constructor to prevent object slicing. Note that the new Mesh
-		/// Renderer will still reference the material, mesh and shader of this
-		/// instance.
-		/// return : The cloned Mesh Renderer.
+		/// <summary>
+		/// Adds the specified Mesh to this Mesh Renderer. 
+		/// 
+		/// An assertion makes sure that the mesh is not null.
+		/// </summary>
+		/// <param name="mesh">
+		/// The Mesh to be added.
+		/// </param>
+		void addMesh(Honeycomb::Geometry::Mesh *mesh);
+
+		/// <summary>
+		/// Clones this Mesh Renderer into a new Mesh Renderer. Each mesh and
+		/// material of this Mesh Renderer will be re-added to the cloned
+		/// Mesh Renderer.
+		/// </summary>
+		/// <returns>
+		/// The unique pointer to the clone of this.
+		/// </returns>
 		std::unique_ptr<MeshRenderer> clone() const;
 
 		/// <summary>
@@ -42,14 +56,38 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// </returns>
 		virtual GameComponentID getGameComponentID() const noexcept override;
 
-		/// Returns the constant reference to the mesh of this Mesh Renderer.
-		/// return : The constant reference to the mesh.
-		const Honeycomb::Geometry::Mesh& getMesh() const;
+		/// <summary>
+		/// Returns the materials of this Mesh Renderer.
+		/// </summary>
+		/// <returns>
+		/// The materials list, returned by reference.
+		/// </returns>
+		std::vector<Honeycomb::Graphics::Material*>& getMaterials();
 
-		/// Returns the constant reference to the material of this Mesh 
-		///	Renderer.
-		/// return : The constant reference to the material.
-		const Honeycomb::Graphics::Material& getMaterial() const;
+		/// <summary>
+		/// Returns the materials of this Mesh Renderer.
+		/// </summary>
+		/// <returns>
+		/// The materials list, returned by constant reference.
+		/// </returns>
+		const std::vector<Honeycomb::Graphics::Material*>& getMaterials() 
+				const;
+
+		/// <summary>
+		/// Returns the meshes of this Mesh Renderer.
+		/// </summary>
+		/// <returns>
+		/// The meshes list, returned by reference.
+		/// </returns>
+		std::vector<Honeycomb::Geometry::Mesh*>& getMeshes();
+
+		/// <summary>
+		/// Returns the meshes of this Mesh Renderer.
+		/// </summary>
+		/// <returns>
+		/// The meshes list, returned by constant reference.
+		/// </returns>
+		const std::vector<Honeycomb::Geometry::Mesh*>& getMeshes() const;
 
 		/// <summary>
 		/// When attached, the Mesh Renderer gets a reference to the transform
@@ -65,31 +103,57 @@ namespace Honeycomb { namespace Component { namespace Render {
 
 		/// <summary>
 		/// Renders the Mesh using the specified Shader.
+		/// 
+		/// If there is only one mesh and one material attached, the mesh is
+		/// rendered using that material.
+		/// 
+		/// If there are multiple meshes and one material attached, the meshes
+		/// are rendered using that material.
+		/// 
+		/// If there are multiple meshes and multiple materials attached: if
+		/// the number of meshes equals the number of materials, each mesh is
+		/// rendered with its corresponding material; else a runtime assertion
+		/// will be raised.
 		/// </summary>
 		/// <param name="shader">
-		/// The Shader to be used when rendering the Mesh.
+		/// The Shader to be used when rendering the Mesh. The material data
+		/// of the shader will be overwritten with the material data of this
+		/// Mesh Renderer.
 		/// </param>
 		void onRender(Honeycomb::Shader::ShaderProgram &shader) override;
 
-		/// Sets the material of this Mesh Renderer.
-		/// const Material *mat : The material.
-		void setMaterial(const Honeycomb::Graphics::Material *mat);
+		/// <summary>
+		/// Removes the specified Material from this Mesh Renderer. If the
+		/// material is not attached to this Mesh Renderer, no further action
+		/// is taken.
+		/// </summary>
+		/// <param name="material">
+		/// The Material to be removed.
+		/// </param>
+		void removeMaterial(Honeycomb::Graphics::Material *material);
 
-		/// Sets the material of this Mesh Renderer.
-		/// const Material &mat : The material.
-		void setMaterial(const Honeycomb::Graphics::Material &mat);
-
-		/// Sets the mesh of this Mesh Renderer.
-		/// const Mesh &mes : The mesh.
-		void setMesh(const Honeycomb::Geometry::Mesh &mes);
+		/// <summary>
+		/// Removes the specified Mesh from this Mesh Renderer. If the mesh is
+		/// not attached to this Mesh Renderer, no further action is taken.
+		/// </summary>
+		/// <param name="mesh">
+		/// The Mesh to be removed.
+		/// </param>
+		void removeMesh(Honeycomb::Geometry::Mesh *mesh);
 	private:
-		// The referenced material and mesh.
-		const Honeycomb::Graphics::Material *material;
-		const Honeycomb::Geometry::Mesh *mesh;
+		// The list of meshes and materials of this Mesh Renderer.
+		std::vector<Honeycomb::Geometry::Mesh*> meshes;
+		std::vector<Honeycomb::Graphics::Material*> materials;
 
 		// Reference to the transform of the mesh
 		Honeycomb::Component::Physics::Transform *transform;
 
+		/// <summary>
+		/// Clones this Mesh Renderer component.
+		/// </summary>
+		/// <returns>
+		/// The new Mesh Renderer component.
+		/// </returns>
 		virtual MeshRenderer* cloneInternal() const override;
 	};
 } } }

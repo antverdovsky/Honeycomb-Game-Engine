@@ -105,10 +105,10 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			SPOT_LIGHT_VOLUME_MODEL);
 
 		// Extract the actual light volume meshes from the Model
-		this->lightVolumePoint = pLModel->getChild("Icosphere").
-			getComponent<MeshRenderer>().getMesh();
-		this->lightVolumeSpot = sLModel->getChild("Cube").
-			getComponent<MeshRenderer>().getMesh();
+		this->lightVolumePoint = *pLModel->getChild("Icosphere").
+			getComponent<MeshRenderer>().getMeshes()[0];
+		this->lightVolumeSpot = *sLModel->getChild("Cube").
+			getComponent<MeshRenderer>().getMeshes()[0];
 	}
 
 	void DeferredRenderer::initializeShaders() {

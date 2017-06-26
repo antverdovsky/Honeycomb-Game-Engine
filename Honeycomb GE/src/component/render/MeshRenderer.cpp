@@ -3,6 +3,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <cassert>
 #include <iostream>
 
 #include "../../../include/file/FileIO.h"
@@ -21,13 +22,20 @@ using Honeycomb::Render::Renderer;
 using namespace Honeycomb::File;
 
 namespace Honeycomb { namespace Component { namespace Render {
-	MeshRenderer::MeshRenderer(const Material &mat, const Mesh &mes) : 
-			material(&mat), mesh(&mes) {
+	MeshRenderer::MeshRenderer() {
 
 	}
 
-	MeshRenderer::~MeshRenderer() {
+	void MeshRenderer::addMaterial(Material *material) {
+		assert(material != nullptr);
 
+		this->materials.push_back(material);
+	}
+
+	void MeshRenderer::addMesh(Mesh *mesh) {
+		assert(mesh != nullptr);
+
+		this->meshes.push_back(mesh);
 	}
 
 	std::unique_ptr<MeshRenderer> MeshRenderer::clone() const {
@@ -38,12 +46,22 @@ namespace Honeycomb { namespace Component { namespace Render {
 		return GameComponent::getGameComponentTypeID<MeshRenderer>();
 	}
 
-	const Mesh& MeshRenderer::getMesh() const {
-		return *this->mesh;
+	std::vector<Honeycomb::Graphics::Material*>& MeshRenderer::getMaterials() {
+		return this->materials;
 	}
 
-	const Material& MeshRenderer::getMaterial() const {
-		return *this->material;
+	const std::vector<Honeycomb::Graphics::Material*>& 
+			MeshRenderer::getMaterials() const {
+		return this->materials;
+	}
+
+	std::vector<Honeycomb::Geometry::Mesh*>& MeshRenderer::getMeshes() {
+		return this->meshes;
+	}
+
+	const std::vector<Honeycomb::Geometry::Mesh*>& MeshRenderer::getMeshes() 
+			const{
+		return this->meshes;
 	}
 
 	void MeshRenderer::onAttach() {
@@ -55,6 +73,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 	}
 
 	void MeshRenderer::onRender(ShaderProgram &shader) {
+		// Write the Transformation Matrix to the Shader
 		shader.setUniform_mat4("objTransform",
 			this->transform->getTransformationMatrix());
 
@@ -68,9 +87,27 @@ namespace Honeycomb { namespace Component { namespace Render {
 				glFrontFace(Renderer::WindingOrder::CLOCKWISE);
 		}
 
-		// Render the mesh using the shader and material provided.
-		if (this->material != nullptr) this->material->toShader(shader, "material"); // todo
-		if (this->mesh != nullptr) this->mesh->render(shader);
+		// Assert meshes == materials if materials > 1
+		if (this->materials.size() > 1)
+			assert(this->meshes.size() == this->materials.size());
+
+		// If meshes == materials == 1 -> Render the Mesh using the Material
+		if (this->meshes.size() == 1 && this->materials.size() == 1) {
+			this->materials[0]->toShader(shader, "material");
+			this->meshes[0]->render(shader);
+		} 
+		// If meshes > 1, materials == 1 -> Render each Mesh using the Material
+		else if (this->meshes.size() > 1 && this->materials.size() == 1) {
+			this->materials[0]->toShader(shader, "material");
+			for (const Mesh *mesh : this->meshes) mesh->render(shader);
+		}
+		// If meshes == materials > 1 -> Render each Mesh using each Material
+		else {
+			for (int i = 0; i < this->meshes.size(); ++i) {
+				this->materials[i]->toShader(shader, "material");
+				this->meshes[i]->render(shader);
+			}
+		}
 
 		// Undo the winding order flip for the front face, if necessary.
 		if (this->transform->isOddNegativelyScaled()) {
@@ -78,19 +115,34 @@ namespace Honeycomb { namespace Component { namespace Render {
 		}
 	}
 
-	void MeshRenderer::setMaterial(const Honeycomb::Graphics::Material *mat) {
-		this->material = mat;
+	void MeshRenderer::removeMaterial(Material *material) {
+		auto materialFind = std::find_if(
+			this->materials.begin(), this->materials.end(),
+			[&](Material *m) {
+				return m == material;
+		});
+		if (materialFind == this->materials.end()) return;
+
+		this->materials.erase(materialFind);
 	}
 
-	void MeshRenderer::setMaterial(const Honeycomb::Graphics::Material &mat) {
-		this->material = &mat;
-	}
+	void MeshRenderer::removeMesh( Mesh *mesh) {
+		auto meshFind = std::find_if(
+			this->meshes.begin(), this->meshes.end(),
+			[&](Mesh *m) {
+				return m == mesh;
+		});
+		if (meshFind == this->meshes.end()) return;
 
-	void MeshRenderer::setMesh(const Honeycomb::Geometry::Mesh &mes) {
-		this->mesh = &mes;
+		this->meshes.erase(meshFind);
 	}
 
 	MeshRenderer* MeshRenderer::cloneInternal() const {
-		return new MeshRenderer(*this->material, *this->mesh);
+		MeshRenderer* mR = new MeshRenderer();
+
+		for (Mesh *m : this->meshes) mR->addMesh(m);
+		for (Material *m : this->materials) mR->addMaterial(m);
+
+		return mR;
 	}
 } } }

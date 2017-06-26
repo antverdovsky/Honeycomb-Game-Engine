@@ -55,7 +55,7 @@ namespace HoneycombTest {
 	
 		// Give the plane a textured material
 		Material *colorMaterial = new Material(
-			this->plane->getComponent<MeshRenderer>().getMaterial());
+			*this->plane->getComponent<MeshRenderer>().getMaterials()[0]);
 		Texture2D *colorTexture = new Texture2D();
 		colorTexture->initialize();
 		colorTexture-> // vvvvvv this is a leak here but whatever for now...
@@ -67,8 +67,8 @@ namespace HoneycombTest {
 		colorMaterial->glVector2fs.setValue("globalTiling",
 			Vector2f(10.0F, 10.0F));
 		colorMaterial->glVector3fs.setValue("diffuseColor", Vector3f(1, 1, 0));
-		this->plane->getComponent<MeshRenderer>().
-			setMaterial(*colorMaterial);
+		this->plane->getComponent<MeshRenderer>().getMaterials().clear();
+		this->plane->getComponent<MeshRenderer>().addMaterial(colorMaterial);
 
 		// Give Suzanne an Input Transformable Component
 		std::unique_ptr<InputTransformable> suzInputTranfs = std::make_unique<InputTransformable>(
@@ -141,8 +141,12 @@ namespace HoneycombTest {
 		carHeadlightL.getComponent<SpotLight>().getShadow().setShadowType(ShadowType::SHADOW_NONE);
 		carHeadlightR.getComponent<SpotLight>().getShadow().setShadowType(ShadowType::SHADOW_NONE);
 
+		this->car->getChild("Body").getComponent<MeshRenderer>().
+			getMaterials()[1]->glVector3fs.setValue(
+			"albedoColor", Vector3f(0.0F, 0.0F, 0.0F));
+
 		// Add all of the initialized objects to the Game Scene hierarchy
-		this->gameScene.addChild(std::move(this->car));
+		this->gameScene.addChild(std::move(this->car));;
 		this->gameScene.addChild(std::move(this->cube));
 		this->gameScene.addChild(std::move(this->plane));
 		this->gameScene.addChild(std::move(this->ambient));
