@@ -2,6 +2,8 @@
 #ifndef MESH_H
 #define MESH_H
 
+#include <memory>
+
 #include "Vertex.h"
 #include "../base/GLItem.h"
 #include "../shader/ShaderProgram.h"
@@ -93,7 +95,7 @@ namespace Honeycomb { namespace Geometry {
 		/// <returns>
 		/// The list of the indices of the Mesh.
 		/// </returns>
-		const std::vector<unsigned int> getIndices() const;
+		const std::vector<unsigned int>& getIndices() const;
 
 		/// <summary>
 		/// Returns the raw pointer of the vertex buffer object of this Mesh.
@@ -112,7 +114,7 @@ namespace Honeycomb { namespace Geometry {
 		/// <returns>
 		/// The list of the vertices of the Mesh.
 		/// </returns>
-		const std::vector<Vertex> getVertices() const;
+		const std::vector<Vertex>& getVertices() const;
 
 		/// <summary>
 		/// Initializes this Mesh item by creating the appropriate mesh buffer.
@@ -166,12 +168,40 @@ namespace Honeycomb { namespace Geometry {
 		/// Thrown if the Texture has already been initialized.
 		/// </exception>
 		void setVertexData(const std::vector<Vertex> &vertices);
-	private:
-		int vertexBufferObject;                  // VBO "Pointer"
-		std::vector<Vertex> vertices;            // Vertices List
 
-		int indexBufferObject;                   // IBO "Pointer"
-		std::vector<unsigned int> indices;       // Indices List
+		/// <summary>
+		/// Checks if the specified Mesh is equal to this mesh.
+		/// </summary>
+		/// <param name="rhs">
+		/// The right hand side of the operator.
+		/// </param>
+		/// <returns>
+		/// True if the vertex buffer object and the index buffer object
+		/// pointers of this instance and the specified instance are the same.
+		/// </returns>
+		bool operator==(const Mesh &rhs) const;
+
+		/// <summary>
+		/// Checks if the specified Mesh is not equal to this mesh.
+		/// </summary>
+		/// <param name="rhs">
+		/// The right hand side of the operator.
+		/// </param>
+		/// <returns>
+		/// True if the vertex buffer object or the index buffer object
+		/// pointers of this instance and the specified instance are not the
+		/// same.
+		/// </returns>
+		bool operator!=(const Mesh &rhs) const;
+	private:
+		int vertexBufferObject;                                // VBO "Pointer"
+		int indexBufferObject;                                 // IBO "Pointer"
+		
+		// These are shared pointers so that the data may be shared among
+		// different copies of a Mesh, if the vertex and index buffers are the
+		// same.
+		std::shared_ptr<std::vector<Vertex>> vertices;         // Vertices List
+		std::shared_ptr<std::vector<unsigned int>> indices;    // Indices List
 	};
 } }
 
