@@ -147,7 +147,8 @@ namespace Honeycomb { namespace Render {
 		/// Sets the skybox which is to be used when rendering the background
 		/// color of the scene.
 		/// const Cubemap &sky : The skybox cubemap.
-		void setSkybox(const Honeycomb::Graphics::Cubemap &sky);
+		void setSkybox(const std::shared_ptr<Honeycomb::Graphics::Cubemap> 
+				&sky);
 
 		/// Sets the solid color which is to be used when rendering the
 		/// background color of the scene.
@@ -169,7 +170,7 @@ namespace Honeycomb { namespace Render {
 		Honeycomb::Geometry::Mesh cubemapMesh;
 		Honeycomb::Math::Vector4f solidColor;
 		Honeycomb::Shader::ShaderProgram solidColorShader;
-		Honeycomb::Graphics::Cubemap skybox;
+		std::shared_ptr<Honeycomb::Graphics::Cubemap> skybox;
 		Honeycomb::Shader::ShaderProgram skyboxShader;
 		
 		// Shadow Map Variables

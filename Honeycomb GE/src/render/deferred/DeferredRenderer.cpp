@@ -223,7 +223,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			CameraController::getActiveCamera()->toShader(
 				this->skyboxShader, "camera");
 			this->skyboxShader.setUniform_i("cube", 0);
-			this->skybox.bind(0);
+			this->skybox->bind(0);
 
 			this->cubemapMesh.render(this->skyboxShader);
 			break;
@@ -375,7 +375,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// that the material can take the other GL_TEXTURE fields for itself).
 		this->geometryShader.bindShaderProgram();
 		this->geometryShader.setUniform_i("skybox", 31);
-		this->skybox.bind(31);
+		this->skybox->bind(31);
 
 		scene.onRender(this->geometryShader); // Render the Game Scene Meshes
 

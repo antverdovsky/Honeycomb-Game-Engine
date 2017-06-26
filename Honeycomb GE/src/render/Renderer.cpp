@@ -114,7 +114,7 @@ namespace Honeycomb { namespace Render {
 		glPolygonMode((GLenum)f, (GLenum)m);
 	}
 
-	void Renderer::setSkybox(const Honeycomb::Graphics::Cubemap &sky) {
+	void Renderer::setSkybox(const std::shared_ptr<Cubemap> &sky) {
 		this->skybox = sky;
 	}
 
@@ -131,7 +131,7 @@ namespace Honeycomb { namespace Render {
 
 		this->initializeCubemapDependencies();
 		this->setBackgroundMode(BackgroundMode::SKYBOX);
-		this->setSkybox(Cubemap());
+		this->setSkybox(Cubemap::newCubemapShared());
 		this->setSolidColor(Vector4f(0.0F, 0.0F, 0.0F, 0.0F));
 
 		this->initializeShadowMapDependencies();

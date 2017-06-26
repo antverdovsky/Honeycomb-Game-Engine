@@ -12,9 +12,29 @@ using Honeycomb::Base::GLItemNotInitializedException;
 using Honeycomb::File::ImageIO;
 
 namespace Honeycomb { namespace Graphics {
-	Cubemap::Cubemap() {
-		this->isInitialized = false;
-		this->textureID = -1;
+	int Cubemap::cubemapCount = 0;
+
+	const int& Cubemap::getInitializedCubemapCount() {
+		return Cubemap::cubemapCount;
+	}
+
+	std::shared_ptr<Cubemap> Cubemap::newCubemapShared() {
+		auto ptr = std::shared_ptr<Cubemap>(new Cubemap());
+		ptr->initialize();
+
+		return ptr;
+	}
+
+	std::unique_ptr<Cubemap> Cubemap::newCubemapUnique() {
+		auto ptr = std::unique_ptr<Cubemap>(new Cubemap());
+		ptr->initialize();
+
+		return ptr;
+	}
+
+	Cubemap::~Cubemap() {
+		if (this->getIsInitialized())
+			this->destroy();
 	}
 
 	void Cubemap::bind() const {
@@ -39,6 +59,7 @@ namespace Honeycomb { namespace Graphics {
 		glGenTextures(1, &texID);
 		this->textureID = texID;
 		
+		++(Cubemap::cubemapCount);
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
@@ -49,6 +70,7 @@ namespace Honeycomb { namespace Graphics {
 		GLuint texID = this->textureID;
 		glDeleteTextures(1, &texID);
 
+		--(Cubemap::cubemapCount);
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
@@ -221,5 +243,10 @@ namespace Honeycomb { namespace Graphics {
 
 	bool Cubemap::operator!=(const Cubemap &that) const {
 		return this->textureID != that.textureID;
+	}
+
+	Cubemap::Cubemap() {
+		this->isInitialized = false;
+		this->textureID = -1;
 	}
 } }

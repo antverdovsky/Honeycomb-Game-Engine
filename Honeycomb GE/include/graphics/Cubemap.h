@@ -28,9 +28,38 @@ namespace Honeycomb { namespace Graphics {
 	class Cubemap : public Honeycomb::Base::GLItem {
 	public:
 		/// <summary>
-		/// Creates an empty, uninitialized Cubemap instance.
+		/// Returns the number of initialized Cubemaps.
 		/// </summary>
-		Cubemap();
+		/// <returns>
+		/// The number of cubemaps.
+		/// </returns>
+		static const int& getInitializedCubemapCount();
+
+		/// <summary>
+		/// Creates a new, initialized Cubemap.
+		/// </summary>
+		/// <returns>
+		/// The shared pointer to the new cubemap.
+		/// </returns>
+		static std::shared_ptr<Cubemap> newCubemapShared();
+
+		/// <summary>
+		/// Creates a new, initialized Cubemap.
+		/// </summary>
+		/// <returns>
+		/// The unique pointer to the new cubemap.
+		/// </returns>
+		static std::unique_ptr<Cubemap> newCubemapUnique();
+
+		/// <summary>
+		/// De-initializes and destroys this Cubemap.
+		/// </summary>
+		~Cubemap();
+		
+		/// <summary>
+		/// Cubemaps cannot be copied.
+		/// </summary>
+		Cubemap(const Cubemap&) = delete;
 
 		/// <summary>
 		/// Binds this cubemap to OpenGL at GL_TEXTURE0. If the cubemap has not
@@ -473,8 +502,19 @@ namespace Honeycomb { namespace Graphics {
 		/// not equal, false otherwise.
 		/// </returns>
 		bool operator!=(const Cubemap &that) const;
+
+		/// <summary>
+		/// Cubemaps cannot be re-assigned.
+		/// </summary>
+		Cubemap& operator=(const Cubemap&) = delete;
 	private:
+		static int cubemapCount;                 // Number of initialized maps
 		int textureID;                           // The texture "pointer"
+
+		/// <summary>
+		/// Creates an empty, uninitialized Cubemap instance.
+		/// </summary>
+		Cubemap();
 	};
 } }
 

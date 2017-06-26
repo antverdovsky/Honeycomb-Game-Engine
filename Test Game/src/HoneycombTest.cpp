@@ -41,9 +41,8 @@ namespace HoneycombTest {
 			ImageIO(skyboxDir + "back.bmp"),
 			ImageIO(skyboxDir + "front.bmp")
 		};
-		Cubemap skybox;
-		skybox.initialize();
-		skybox.setFacesDataIO(6, targets, skyboxTex);
+		auto skybox = Cubemap::newCubemapShared();
+		skybox->setFacesDataIO(6, targets, skyboxTex);
 		Renderer::getRenderer()->setSkybox(skybox);
 
 		// Import all of the mesh game objects and construct them
