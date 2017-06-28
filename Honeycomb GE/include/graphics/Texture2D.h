@@ -97,9 +97,30 @@ namespace Honeycomb { namespace Graphics {
 		static const Texture2D& getTextureWhite();
 
 		/// <summary>
-		/// Creates an empty, uninitialized texture instance.
+		/// Creates a new, initialized Texture2D instance.
 		/// </summary>
-		Texture2D();
+		/// <returns>
+		/// The shared pointer to the Texture2D instance.
+		/// </returns>
+		static std::shared_ptr<Texture2D> newTexture2DShared();
+
+		/// <summary>
+		/// Creates a new, initialized Texture2D instance.
+		/// </summary>
+		/// <returns>
+		/// The unique pointer to the Texture2D instance.
+		/// </returns>
+		static std::unique_ptr<Texture2D> newTexture2DUnique();
+
+		/// <summary>
+		/// Copying of Texture2D instances is forbidden.
+		/// </summary>
+		Texture2D(const Texture2D &) = delete;
+
+		/// <summary>
+		/// Destroys and de-initializes this Texture2D.
+		/// </summary>
+		~Texture2D();
 
 		/// <summary>
 		/// Binds this texture to OpenGL at GL_TEXTURE0. If the texture has not
@@ -129,9 +150,7 @@ namespace Honeycomb { namespace Graphics {
 		void bind(const int &loc) const;
 
 		/// <summary>
-		/// Returns the height of the texture, in pixels. Note that as long as
-		/// the raw <see cref="glTexture2D"/> function is not used, this is
-		/// guaranteed to be equal across copies of this texture.
+		/// Returns the height of the texture, in pixels.
 		/// </summary>
 		/// <returns>
 		/// The height of the texture.
@@ -148,9 +167,7 @@ namespace Honeycomb { namespace Graphics {
 		const int& getTextureID() const;
 
 		/// <summary>
-		/// Returns the width of texture, in pixels. Note that as long as
-		/// the raw <see cref="glTexture2D"/> function is not used, this is
-		/// guaranteed to be equal across copies of this texture.
+		/// Returns the width of texture, in pixels.
 		/// </summary>
 		/// <returns>
 		/// The width of the texture.
@@ -372,16 +389,23 @@ namespace Honeycomb { namespace Graphics {
 		/// not equal, false otherwise.
 		/// </returns>
 		bool operator!=(const Texture2D &that) const;
+
+		/// <summary>
+		/// Assignment of Texture2D instances is forbidden.
+		/// </summary>
+		Texture2D& operator=(const Texture2D &) = delete;
 	private:
 		static int textureCount;       // The number of GL initialized textures
 		
 		int textureID;                 // The texture "pointer"
 
-		// These are pointers so that they may be shared among any copy of this
-		// Texture. If any copy modifies its width and height, all copies 
-		// modify theirs accordingly.
-		std::shared_ptr<int> width;    // The width of the texture
-		std::shared_ptr<int> height;   // The height of the texture
+		int width;                     // The width of the texture
+		int height;                    // The height of the texture
+
+		/// <summary>
+		/// Creates an empty, uninitialized texture instance.
+		/// </summary>
+		Texture2D();
 	};
 } }
 

@@ -91,12 +91,23 @@ namespace Honeycomb { namespace Graphics {
 		return whiteTexture;
 	}
 
-	Texture2D::Texture2D() {
-		this->isInitialized = false;
-		this->textureID = -1;
+	std::shared_ptr<Texture2D> Texture2D::newTexture2DShared() {
+		auto ptr = std::shared_ptr<Texture2D>(new Texture2D());
+		ptr->initialize();
 
-		this->width = std::make_shared<int>(0);
-		this->height = std::make_shared<int>(0);
+		return ptr;
+	}
+
+	std::unique_ptr<Texture2D> Texture2D::newTexture2DUnique() {
+		auto ptr = std::unique_ptr<Texture2D>(new Texture2D());
+		ptr->initialize();
+
+		return ptr;
+	}
+
+	Texture2D::~Texture2D() {
+		if (this->isInitialized)
+			this->destroy();
 	}
 
 	void Texture2D::bind() const {
@@ -113,7 +124,7 @@ namespace Honeycomb { namespace Graphics {
 	}
 
 	const int& Texture2D::getHeight() const {
-		return *this->height;
+		return this->height;
 	}
 
 	const int& Texture2D::getTextureID() const {
@@ -121,7 +132,7 @@ namespace Honeycomb { namespace Graphics {
 	}
 
 	const int& Texture2D::getWidth() const {
-		return *this->width;
+		return this->width;
 	}
 
 	void Texture2D::initialize() {
@@ -214,8 +225,8 @@ namespace Honeycomb { namespace Graphics {
 		this->bind();
 
 		// Write the data to the texture
-		*this->width = width;
-		*this->height = height;
+		this->width = width;
+		this->height = height;
 		glTexImage2D(GL_TEXTURE_2D, 0,
 			getGLintInternalDataFormat(iformat),
 			width, height, 0,
@@ -271,5 +282,13 @@ namespace Honeycomb { namespace Graphics {
 
 	bool Texture2D::operator!=(const Texture2D &that) const {
 		return this->textureID != that.textureID;
+	}
+
+	Texture2D::Texture2D() {
+		this->isInitialized = false;
+		this->textureID = -1;
+
+		this->width = 0;
+		this->height = 0;
 	}
 } }

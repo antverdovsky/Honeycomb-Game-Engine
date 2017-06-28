@@ -55,13 +55,12 @@ namespace HoneycombTest {
 		// Give the plane a textured material
 		Material *colorMaterial = new Material(
 			*this->plane->getComponent<MeshRenderer>().getMaterials()[0]);
-		Texture2D *colorTexture = new Texture2D();
-		colorTexture->initialize();
-		colorTexture-> // vvvvvv this is a leak here but whatever for now...
+		static auto colorTexture = Texture2D::newTexture2DUnique();
+		colorTexture-> // ^^^ tmp
 			setImageDataIO(ImageIO("../Test Game/res/textures/colors.bmp"));
 		colorTexture->setAnisotropicFiltering(8);
 		colorMaterial->glSampler2Ds.setValue("albedoTexture.sampler", 
-			*colorTexture);
+			colorTexture.get());
 		colorMaterial->glFloats.setValue("shininess", 128.0F);
 		colorMaterial->glVector2fs.setValue("globalTiling",
 			Vector2f(10.0F, 10.0F));

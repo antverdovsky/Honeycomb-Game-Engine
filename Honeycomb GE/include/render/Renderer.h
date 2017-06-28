@@ -178,13 +178,13 @@ namespace Honeycomb { namespace Render {
 		const static int SHADOW_MAP_HEIGHT;
 		// Classic/PCF Shadow Map Buffer, Texture and Shader
 		int cShadowMapBuffer;
-		Honeycomb::Graphics::Texture2D cShadowMapTexture;
+		std::unique_ptr<Honeycomb::Graphics::Texture2D> cShadowMapTexture;
 		Honeycomb::Shader::ShaderProgram cShadowMapShader;
 		Honeycomb::Shader::ShaderProgram cShadowMapLinearShader;
 		// Variance Shadow Map Buffer, Texture and Shader
 		int vShadowMapBuffer;
-		Honeycomb::Graphics::Texture2D vShadowMapTexture;
-		Honeycomb::Graphics::Texture2D vShadowMapTextureAA;
+		std::unique_ptr<Honeycomb::Graphics::Texture2D> vShadowMapTexture;
+		std::unique_ptr<Honeycomb::Graphics::Texture2D> vShadowMapTextureAA;
 		Honeycomb::Shader::ShaderProgram vShadowMapShader;
 		Honeycomb::Shader::ShaderProgram vShadowMapLinearShader;
 		Honeycomb::Shader::ShaderProgram vsmGaussianBlurShader;

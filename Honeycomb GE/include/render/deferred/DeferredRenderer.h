@@ -151,7 +151,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		/// performs post processing on the FINAL_2 buffer. At the end, the
 		/// texture containing the final post processed image is returned.
 		/// return : The texture containing the post processed final image.
-		Honeycomb::Graphics::Texture2D renderPassPostProcess();
+		Honeycomb::Graphics::Texture2D& renderPassPostProcess();
 
 		/// Reads in a texture from the read buffer, post processes it with the
 		/// specified shader, and writes it to the write buffer. The read and

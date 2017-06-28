@@ -9,6 +9,7 @@
 
 using Honeycomb::Component::Render::MeshRenderer;
 using Honeycomb::Graphics::Cubemap;
+using Honeycomb::Graphics::Texture2D;
 using Honeycomb::Graphics::TextureFilterMagMode;
 using Honeycomb::Graphics::TextureDataFormat;
 using Honeycomb::Graphics::TextureDataInternalFormat;
@@ -201,15 +202,15 @@ namespace Honeycomb { namespace Render {
 
 	void Renderer::initializeShadowMapDependencies() {
 		// Initialize the Classic Shadow Map Texture (simple depth texture)
-		this->cShadowMapTexture.initialize();
-		this->cShadowMapTexture.setImageDataManual(
+		this->cShadowMapTexture = Texture2D::newTexture2DUnique();
+		this->cShadowMapTexture->setImageDataManual(
 			nullptr, TextureDataType::DATA_FLOAT,
 			TextureDataInternalFormat::INTERNAL_FORMAT_DEPTH_COMPONENT,
 			TextureDataFormat::FORMAT_DEPTH_COMPONENT,
 			Renderer::SHADOW_MAP_WIDTH, Renderer::SHADOW_MAP_HEIGHT);
-		this->cShadowMapTexture.setFiltering(
+		this->cShadowMapTexture->setFiltering(
 			TextureFilterMagMode::FILTER_MAG_NEAREST);
-		this->cShadowMapTexture.setWrap(TextureWrapMode::WRAP_REPEAT);
+		this->cShadowMapTexture->setWrap(TextureWrapMode::WRAP_REPEAT);
 
 		// Initialize the Classic Shadow Map Buffer
 		GLuint cBF;
@@ -217,7 +218,7 @@ namespace Honeycomb { namespace Render {
 		this->cShadowMapBuffer = cBF;
 		glBindFramebuffer(GL_FRAMEBUFFER, this->cShadowMapBuffer);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-			GL_TEXTURE_2D, this->cShadowMapTexture.getTextureID(), 0);
+			GL_TEXTURE_2D, this->cShadowMapTexture->getTextureID(), 0);
 		glDrawBuffer(GL_NONE);
 		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -245,27 +246,27 @@ namespace Honeycomb { namespace Render {
 
 		// Initialize the Variance Shadow Map Texture (32 bit Red & Green
 		// channels texture).
-		this->vShadowMapTexture.initialize();
-		this->vShadowMapTexture.setImageDataManual(
+		this->vShadowMapTexture = Texture2D::newTexture2DUnique();
+		this->vShadowMapTexture->setImageDataManual(
 			nullptr, TextureDataType::DATA_FLOAT,
 			TextureDataInternalFormat::INTERNAL_FORMAT_RG32F,
 			TextureDataFormat::FORMAT_RG,
 			Renderer::SHADOW_MAP_WIDTH, Renderer::SHADOW_MAP_HEIGHT);
-		this->vShadowMapTexture.setFiltering(
+		this->vShadowMapTexture->setFiltering(
 			TextureFilterMagMode::FILTER_MAG_LINEAR);
-		this->vShadowMapTexture.setWrap(TextureWrapMode::WRAP_REPEAT);
+		this->vShadowMapTexture->setWrap(TextureWrapMode::WRAP_REPEAT);
 
 		// Initialize the Anti Aliased Variance Shadow Map Texture (32 bit Red
 		// & Green channels texture).
-		this->vShadowMapTextureAA.initialize();
-		this->vShadowMapTextureAA.setImageDataManual(
+		this->vShadowMapTextureAA = Texture2D::newTexture2DUnique();
+		this->vShadowMapTextureAA->setImageDataManual(
 			nullptr, TextureDataType::DATA_FLOAT,
 			TextureDataInternalFormat::INTERNAL_FORMAT_RG32F,
 			TextureDataFormat::FORMAT_RG,
 			Renderer::SHADOW_MAP_WIDTH, Renderer::SHADOW_MAP_HEIGHT);
-		this->vShadowMapTextureAA.setFiltering(
+		this->vShadowMapTextureAA->setFiltering(
 			TextureFilterMagMode::FILTER_MAG_NEAREST);
-		this->vShadowMapTextureAA.setWrap(TextureWrapMode::WRAP_REPEAT);
+		this->vShadowMapTextureAA->setWrap(TextureWrapMode::WRAP_REPEAT);
 
 		// Initialize the Variance Shadow Map Buffer (for the depth component,
 		// we borrow the depth buffer from the Classic Shadow Map Buffer). Also
@@ -276,11 +277,11 @@ namespace Honeycomb { namespace Render {
 		this->vShadowMapBuffer = vBF;
 		glBindFramebuffer(GL_FRAMEBUFFER, this->vShadowMapBuffer);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-			GL_TEXTURE_2D, this->vShadowMapTexture.getTextureID(), 0);
+			GL_TEXTURE_2D, this->vShadowMapTexture->getTextureID(), 0);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1,
-			GL_TEXTURE_2D, this->vShadowMapTextureAA.getTextureID(), 0);
+			GL_TEXTURE_2D, this->vShadowMapTextureAA->getTextureID(), 0);
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-			GL_TEXTURE_2D, this->cShadowMapTexture.getTextureID(), 0);
+			GL_TEXTURE_2D, this->cShadowMapTexture->getTextureID(), 0);
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);
 		glReadBuffer(GL_NONE);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);

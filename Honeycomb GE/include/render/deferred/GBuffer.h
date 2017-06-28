@@ -131,8 +131,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	private:
 		int frameBufferObj; // The frame buffer object for this G Buffer
 		
-		Honeycomb::Graphics::Texture2D bufferTextures // All of the Buffer
-			[GBufferTextureType::COUNT];			  // Textures (from Enum)
+		std::unique_ptr<Honeycomb::Graphics::Texture2D> bufferTextures
+			[GBufferTextureType::COUNT];
 
 		// Stores the Shader Uniform names of all of the GBuffer Textures of a
 		// GBuffer.

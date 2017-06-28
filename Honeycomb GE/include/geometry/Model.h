@@ -119,7 +119,7 @@ namespace Honeycomb { namespace Geometry {
 		// All game objects built from this model will reference these in some
 		// form.
 		std::vector<std::unique_ptr<const Honeycomb::Geometry::Mesh>> meshes;
-		std::vector<Honeycomb::Graphics::Texture2D> textures;                  // TODO: for textures it is imperative that textures are CONST since they are now shared
+		std::vector<std::unique_ptr<const Honeycomb::Graphics::Texture2D>> textures;
 		std::vector<const Honeycomb::Graphics::Material*> materials;
 
 		ModelSettings settings; // The settings used to import this model

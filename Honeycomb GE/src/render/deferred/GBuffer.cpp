@@ -8,6 +8,7 @@
 using Honeycomb::Base::GameWindow;
 using Honeycomb::Component::Light::LightType;
 using Honeycomb::Debug::Logger;
+using Honeycomb::Graphics::Texture2D;
 using Honeycomb::Graphics::TextureDataFormat;
 using Honeycomb::Graphics::TextureDataInternalFormat;
 using Honeycomb::Graphics::TextureDataType;
@@ -84,19 +85,19 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	}
 
 	void GBuffer::bindTexture(const GBufferTextureType &type) {
-		this->bufferTextures[type].bind();
+		this->bufferTextures[type]->bind();
 	}
 
 	void GBuffer::bindTexture(const GBufferTextureType &type, ShaderProgram
 			&shader) {
 		shader.setUniform_i(GBuffer::TEXTURE_SHADER_NAMES[type], type);
-		this->bufferTextures[type].bind(type);
+		this->bufferTextures[type]->bind(type);
 	}
 
 	void GBuffer::bindTexture(const GBufferTextureType &type, ShaderProgram
 			&shader, const std::string &uniform) {
 		shader.setUniform_i(uniform, type);
-		this->bufferTextures[type].bind(type);
+		this->bufferTextures[type]->bind(type);
 	}
 
 	void GBuffer::bindColorTextures(ShaderProgram &shader) {
@@ -154,18 +155,18 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		for (; i < GBufferTextureType::MATERIAL; i++) {
 			// Create an empty texture. Use RGB16F, to allow us to store
 			// values in the texture outside of the standard [0, 1] clamp.
-			this->bufferTextures[i].initialize();
-			this->bufferTextures[i].setImageDataManual(
+			this->bufferTextures[i] = Texture2D::newTexture2DUnique();
+			this->bufferTextures[i]->setImageDataManual(
 				nullptr, TextureDataType::DATA_FLOAT,
 				TextureDataInternalFormat::INTERNAL_FORMAT_RGB16F,
 				TextureDataFormat::FORMAT_RGB,
 				this->textureWidth, this->textureHeight);
-			this->bufferTextures[i].setFiltering(
+			this->bufferTextures[i]->setFiltering(
 				TextureFilterMagMode::FILTER_MAG_NEAREST);
 
 			// Bind the texture to the Frame Buffer Object
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i,
-				GL_TEXTURE_2D, this->bufferTextures[i].getTextureID(), 0);
+				GL_TEXTURE_2D, this->bufferTextures[i]->getTextureID(), 0);
 
 			colorBuffers[i] = GL_COLOR_ATTACHMENT0 + i; // Add to Color Buffers
 		}
@@ -174,55 +175,55 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		for (; i < GBufferTextureType::DEPTH; i++) {
 			// Same as above but 32F required since we are encoding the colors
 			// into large floating point numbers.
-			this->bufferTextures[i].initialize();
-			this->bufferTextures[i].setImageDataManual(
+			this->bufferTextures[i] = Texture2D::newTexture2DUnique();
+			this->bufferTextures[i]->setImageDataManual(
 				nullptr, TextureDataType::DATA_UNSIGNED_INT,
 				TextureDataInternalFormat::INTERNAL_FORMAT_RGBA32UI,
 				TextureDataFormat::FORMAT_RGBA_INTEGER,
 				this->textureWidth, this->textureHeight);
-			this->bufferTextures[i].setFiltering(
+			this->bufferTextures[i]->setFiltering(
 				TextureFilterMagMode::FILTER_MAG_NEAREST);
 
 			// Bind the texture to the Frame Buffer Object
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i,
-				GL_TEXTURE_2D, this->bufferTextures[i].getTextureID(), 0);
+				GL_TEXTURE_2D, this->bufferTextures[i]->getTextureID(), 0);
 
 			colorBuffers[i] = GL_COLOR_ATTACHMENT0 + i; // Add to Color Buffers
 		}
 
 		// Create the Depth Buffer Texture
 		for (; i < GBufferTextureType::FINAL_1; i++) {
-			this->bufferTextures[i].initialize();
-			this->bufferTextures[i].bind();
-			this->bufferTextures[i].setImageDataManual(
+			this->bufferTextures[i] = Texture2D::newTexture2DUnique();
+			this->bufferTextures[i]->bind();
+			this->bufferTextures[i]->setImageDataManual(
 				nullptr,
 				TextureDataType::DATA_FLOAT_32_UNSIGNED_INT_24_8_REV,
 				TextureDataInternalFormat::INTERNAL_FORMAT_DEPTH32F_STENCIL8,
 				TextureDataFormat::FORMAT_DEPTH_STENCIL,
 				this->textureWidth, this->textureHeight);
-			this->bufferTextures[i].setFiltering(
+			this->bufferTextures[i]->setFiltering(
 				TextureFilterMagMode::FILTER_MAG_NEAREST);
 
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT,
-				GL_TEXTURE_2D, this->bufferTextures[i].getTextureID(), 0);
+				GL_TEXTURE_2D, this->bufferTextures[i]->getTextureID(), 0);
 		}
 
 		// Create the FINAL_1 and FINAL_2 Image Texture
 		for (; i <= GBufferTextureType::FINAL_2; ++i) {
-			this->bufferTextures[i].initialize();
-			this->bufferTextures[i].bind();
-			this->bufferTextures[i].setImageDataManual(
+			this->bufferTextures[i] = Texture2D::newTexture2DUnique();
+			this->bufferTextures[i]->bind();
+			this->bufferTextures[i]->setImageDataManual(
 				nullptr,
 				TextureDataType::DATA_FLOAT,
 				TextureDataInternalFormat::INTERNAL_FORMAT_RGB,
 				TextureDataFormat::FORMAT_RGB,
 				this->textureWidth, this->textureHeight);
-			this->bufferTextures[i].setFiltering(
+			this->bufferTextures[i]->setFiltering(
 				TextureFilterMagMode::FILTER_MAG_NEAREST);
 
 			glFramebufferTexture2D(GL_FRAMEBUFFER,
 				GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, 
-				this->bufferTextures[i].getTextureID(), 0);
+				this->bufferTextures[i]->getTextureID(), 0);
 		}
 
 		// Bind the 5 buffers as the color buffers which will be used when
@@ -257,47 +258,47 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		// Resize RGB16F textures (POSITION and NORMAL)
 		for (; i < GBufferTextureType::MATERIAL; i++) {
-			this->bufferTextures[i].setImageDataManual(
+			this->bufferTextures[i]->setImageDataManual(
 				nullptr, TextureDataType::DATA_FLOAT,
 				TextureDataInternalFormat::INTERNAL_FORMAT_RGB16F,
 				TextureDataFormat::FORMAT_RGB,
 				this->textureWidth, this->textureHeight);
-			this->bufferTextures[i].setFiltering(
+			this->bufferTextures[i]->setFiltering(
 				TextureFilterMagMode::FILTER_MAG_NEAREST);
 		}
 		
 		// Resize RGBA32F textures (MATERIAL)
 		for (; i < GBufferTextureType::DEPTH; i++) {
-			this->bufferTextures[i].setImageDataManual(
+			this->bufferTextures[i]->setImageDataManual(
 				nullptr, TextureDataType::DATA_UNSIGNED_INT,
 				TextureDataInternalFormat::INTERNAL_FORMAT_RGBA32UI,
 				TextureDataFormat::FORMAT_RGBA_INTEGER,
 				this->textureWidth, this->textureHeight);
-			this->bufferTextures[i].setFiltering(
+			this->bufferTextures[i]->setFiltering(
 				TextureFilterMagMode::FILTER_MAG_NEAREST);
 		}
 
 		// Resize DEPTH32F_STENCIL8 texture (DEPTH)
 		for (; i < GBufferTextureType::FINAL_1; i++) {
-			this->bufferTextures[i].setImageDataManual(
+			this->bufferTextures[i]->setImageDataManual(
 				nullptr,
 				TextureDataType::DATA_FLOAT_32_UNSIGNED_INT_24_8_REV,
 				TextureDataInternalFormat::INTERNAL_FORMAT_DEPTH32F_STENCIL8,
 				TextureDataFormat::FORMAT_DEPTH_STENCIL,
 				this->textureWidth, this->textureHeight);
-			this->bufferTextures[i].setFiltering(
+			this->bufferTextures[i]->setFiltering(
 				TextureFilterMagMode::FILTER_MAG_NEAREST);
 		}
 
 		// Resize the final RGB textures (FINAL_1 and FINAL_2)
 		for (int i = GBufferTextureType::FINAL_1; i <= FINAL_2; ++i) {
-			this->bufferTextures[i].setImageDataManual(
+			this->bufferTextures[i]->setImageDataManual(
 				nullptr,
 				TextureDataType::DATA_FLOAT,
 				TextureDataInternalFormat::INTERNAL_FORMAT_RGB,
 				TextureDataFormat::FORMAT_RGB,
 				this->textureWidth, this->textureHeight);
-			this->bufferTextures[i].setFiltering(
+			this->bufferTextures[i]->setFiltering(
 				TextureFilterMagMode::FILTER_MAG_NEAREST);
 		}
 	}

@@ -167,8 +167,6 @@ namespace Honeycomb { namespace Geometry {
 	void Model::fetchMaterialTexture(const aiMaterial &aMat, const int &tT, 
 			Material &mat, const std::string &matUni, 
 			const Texture2DCommonFillColor &defColor) {
-		Texture2D texture;
-		
 		aiTextureType aTT = (aiTextureType)(tT);
 		if (aMat.GetTextureCount(aTT)) { // If material has the texture we want
 			// Get the texture directory
@@ -179,21 +177,21 @@ namespace Honeycomb { namespace Geometry {
 			// otherwise set the texture to the R, G, B values.
 			try {
 				ImageIO image = ImageIO(dir.C_Str());
-				texture.initialize();
-				texture.setImageDataIO(image);
+				std::unique_ptr<Texture2D> texture = Texture2D::newTexture2DUnique();
+				texture->setImageDataIO(image);
+				mat.glSampler2Ds.setValue(matUni + ".sampler", texture.get());
+				this->textures.push_back(std::move(texture));
 			} catch (ImageIOLoadException e) {
-				texture = Texture2D::getTextureCommonFill(defColor);
-				return;
+				const Texture2D &texture = Texture2D::getTextureCommonFill(defColor);
+				mat.glSampler2Ds.setValue(matUni + ".sampler", &texture);
 			}
 		} else {
 			// Set the previously initialized texture to default value
-			texture = Texture2D::getTextureCommonFill(defColor);
+			const Texture2D &texture = Texture2D::getTextureCommonFill(defColor);
+			mat.glSampler2Ds.setValue(matUni + ".sampler", &texture);
 		}
 
-		mat.glSampler2Ds.setValue(matUni + ".sampler", texture);
 		mat.glFloats.setValue(matUni + ".intensity", 1.0F);
-
-		this->textures.push_back(texture);
 	}
 
 	void Model::loadFromPath() {
@@ -249,8 +247,8 @@ namespace Honeycomb { namespace Geometry {
 			"displacementTexture", Texture2DCommonFillColor::COLOR_BLACK);
 
 		// Special default value for diffuse map (TODO: Method for this?)
-		Texture2D diffuse = Texture2D::getTextureWhite();
-		material->glSampler2Ds.setValue("diffuseTexture.sampler", diffuse);
+		const Texture2D &diffuse = Texture2D::getTextureWhite();
+		material->glSampler2Ds.setValue("diffuseTexture.sampler", &diffuse);
 		material->glFloats.setValue("diffuseTexture.intensity", 1.0F);
 		material->glVector3fs.setValue("diffuseColor",
 			Vector3f(1.0F, 1.0F, 1.0F));

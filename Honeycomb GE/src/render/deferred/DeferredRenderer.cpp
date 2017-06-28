@@ -60,8 +60,6 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 	}
 
 	void DeferredRenderer::render(Honeycomb::Scene::GameScene &scene) {
-		Texture2D target; // Target containing the final image
-
 		CameraController::getActiveCamera()->toShader(this->geometryShader,
 			"camera");
 		this->gBuffer.frameBegin(); 
@@ -70,7 +68,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		this->renderPassLight(scene);			// Render Lights
 		this->renderBackground();				// Render Background Cubebox
 		
-		target = this->renderPassPostProcess(); // Post Process the Final Image
+		Texture2D& target = this->renderPassPostProcess(); // Post Process the Final Image
 		this->renderTexture(target);			// Render the final image
 	}
 
@@ -416,7 +414,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		glDisable(GL_STENCIL_TEST);
 	}
 
-	Texture2D DeferredRenderer::renderPassPostProcess() {
+	Texture2D& DeferredRenderer::renderPassPostProcess() {
 		// Bind the FINAL_2 buffer so that we may write the rendered (geometry
 		// and light) image into it.
 		this->gBuffer.bind();
@@ -429,11 +427,11 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// Bind the texture to the quad shader
 		this->quadShader.setUniform_i("fsTexture", 0);
 		if (this->final <= FinalTexture::FINAL) {
-			this->gBuffer.bufferTextures[this->final].bind(0);
+			this->gBuffer.bufferTextures[this->final]->bind(0);
 		} else if (this->final == FinalTexture::CLASSIC_SHADOW_MAP) {
-			this->cShadowMapTexture.bind(0);
+			this->cShadowMapTexture->bind(0);
 		} else if (this->final == FinalTexture::VARIANCE_SHADOW_MAP) {
-			this->vShadowMapTexture.bind(0);
+			this->vShadowMapTexture->bind(0);
 		}
 
 		// Render the texture using the quad shader into the FINAL_2 buffer
@@ -469,7 +467,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// Now return the texture containing the last texture we wrote into
 		// (which is now the read texture). This contains the final post
 		// processed image.
-		return this->gBuffer.bufferTextures[read];
+		return *this->gBuffer.bufferTextures[read];
 	}
 
 	void DeferredRenderer::renderPostProcessShader(ShaderProgram &shader,
@@ -583,7 +581,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			this->vsmGaussianBlurShader.setUniform_vec2("direction",
 				Vector2f(1.0F, 0.0F));
 			this->renderPostProcessShader(this->vsmGaussianBlurShader, 
-				this->vShadowMapTexture, 1);
+				*this->vShadowMapTexture, 1);
 
 			// Apply a vertical blur and write the result into VSM texture
 			// (VSM is in color attachment 0). Note that here we read from the
@@ -591,7 +589,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			this->vsmGaussianBlurShader.setUniform_vec2("direction",
 				Vector2f(0.0F, 1.0F));
 			this->renderPostProcessShader(this->vsmGaussianBlurShader,
-				this->vShadowMapTextureAA, 0);
+				*this->vShadowMapTextureAA, 0);
 			
 			// Very important, change the color buffer back to 0 since we do
 			// not actually want to write into 1 from here, that's done in
@@ -699,12 +697,12 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// Bind the shadow map texture at the shadow map index for the
 		// light shaders.
 		if (Shadow::isClassicShadow(shadow)) {
-			this->cShadowMapTexture.bind(SHADOW_MAP_INDEX);
+			this->cShadowMapTexture->bind(SHADOW_MAP_INDEX);
 		} else if (Shadow::isVarianceShadow(shadow)) {
 			if (shadow == ShadowType::SHADOW_VARIANCE)
-				this->vShadowMapTexture.bind(SHADOW_MAP_INDEX);
+				this->vShadowMapTexture->bind(SHADOW_MAP_INDEX);
 			else if (shadow == ShadowType::SHADOW_VARIANCE_AA)
-				this->vShadowMapTextureAA.bind(SHADOW_MAP_INDEX);
+				this->vShadowMapTextureAA->bind(SHADOW_MAP_INDEX);
 		}
 	}
 } } }

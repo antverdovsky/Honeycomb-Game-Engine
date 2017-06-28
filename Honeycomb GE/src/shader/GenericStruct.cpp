@@ -35,7 +35,7 @@ namespace Honeycomb { namespace Shader {
 			// Set the texture index which the sampler2D will reference and
 			// bind the texture at that location.
 			shader.setUniform_i(uniDot + var.first, texIndex);
-			var.second.bind(texIndex);
+			var.second->bind(texIndex);
 
 			texIndex++;
 		}
@@ -60,7 +60,7 @@ namespace Honeycomb { namespace Shader {
 			else if (var.type == "vec4")
 				this->glVector4fs.map.insert({ var.name, Vector4f() });
 			else if (var.type == "sampler2D")
-				this->glSampler2Ds.map.insert({ var.name, Texture2D() });
+				this->glSampler2Ds.map.insert({ var.name, nullptr });
 		}
 	}
 } }
