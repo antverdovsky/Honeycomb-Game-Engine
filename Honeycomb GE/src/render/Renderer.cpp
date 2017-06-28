@@ -156,7 +156,7 @@ namespace Honeycomb { namespace Render {
 	void Renderer::initializeCubemapDependencies() {
 		// Initialize Skybox Mesh (steal it from a Cube)
 		auto cube = GameObjectFactory::getFactory().newCube();
-		this->cubemapMesh = *cube->getComponent<MeshRenderer>().getMeshes()[0];
+		this->cubemapMesh = cube->getComponent<MeshRenderer>().getMeshes()[0];
 	
 		// Initialize Skybox Shader
 		this->skyboxShader.initialize();

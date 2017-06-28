@@ -15,9 +15,38 @@ namespace Honeycomb { namespace Geometry {
 	class Mesh : public Honeycomb::Base::GLItem {
 	public:
 		/// <summary>
-		/// Creates a new, empty Mesh item.
+		/// Returns the number of initialized Meshes.
 		/// </summary>
-		Mesh();
+		/// <returns>
+		/// The number of meshes.
+		/// </returns>
+		static const int& getInitializedMeshCount();
+
+		/// <summary>
+		/// Creates a new, initialized Mesh.
+		/// </summary>
+		/// <returns>
+		/// The shared pointer to the Mesh.
+		/// </returns>
+		static std::shared_ptr<Mesh> newMeshShared();
+
+		/// <summary>
+		/// Creates a new, initialized Mesh.
+		/// </summary>
+		/// <returns>
+		/// The unique pointer to the Mesh.
+		/// </returns>
+		static std::unique_ptr<Mesh> newMeshUnique();
+
+		/// <summary>
+		/// Deinitializes and destroys this Mesh.
+		/// </summary>
+		~Mesh();
+
+		/// <summary>
+		/// Copying of Mesh instances is forbidden.
+		/// </summary>
+		Mesh(const Mesh &) = delete;
 
 		/// <summary>
 		/// Binds this Mesh's index buffer to OpenGL. Note that this is a
@@ -193,15 +222,25 @@ namespace Honeycomb { namespace Geometry {
 		/// same.
 		/// </returns>
 		bool operator!=(const Mesh &rhs) const;
+
+		/// <summary>
+		/// Assignment of the Mesh class is forbidden.
+		/// </summary>
+		Mesh& operator=(const Mesh &) = delete;
 	private:
+		// Number of initialized meshes
+		static int meshCount;
+		
 		int vertexBufferObject;                                // VBO "Pointer"
 		int indexBufferObject;                                 // IBO "Pointer"
 		
-		// These are shared pointers so that the data may be shared among
-		// different copies of a Mesh, if the vertex and index buffers are the
-		// same.
-		std::shared_ptr<std::vector<Vertex>> vertices;         // Vertices List
-		std::shared_ptr<std::vector<unsigned int>> indices;    // Indices List
+		std::vector<Vertex> vertices;                          // Vertices List
+		std::vector<unsigned int> indices;                     // Indices List
+
+		/// <summary>
+		/// Creates a new, empty Mesh item.
+		/// </summary>
+		Mesh();
 	};
 } }
 

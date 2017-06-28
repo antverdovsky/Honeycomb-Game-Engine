@@ -105,9 +105,9 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			SPOT_LIGHT_VOLUME_MODEL);
 
 		// Extract the actual light volume meshes from the Model
-		this->lightVolumePoint = *pLModel->getChild("Icosphere").
+		this->lightVolumePoint = pLModel->getChild("Icosphere").
 			getComponent<MeshRenderer>().getMeshes()[0];
-		this->lightVolumeSpot = *sLModel->getChild("Cube").
+		this->lightVolumeSpot = sLModel->getChild("Cube").
 			getComponent<MeshRenderer>().getMeshes()[0];
 	}
 
@@ -193,10 +193,10 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		unsigned int indices[6] = { 0, 3, 2, 2, 1, 0 };
 
 		// Build the Quad Mesh & initialize so that it may be drawn
-		this->quad.initialize();
-		this->quad.setVertexData(
+		this->quad = Mesh::newMeshUnique();
+		this->quad->setVertexData(
 			std::vector<Vertex>(quadVerts, quadVerts + 4));
-		this->quad.setIndexData(
+		this->quad->setIndexData(
 			std::vector<unsigned int>(indices, indices + 6));
 	}
 
@@ -225,7 +225,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			this->skyboxShader.setUniform_i("cube", 0);
 			this->skybox->bind(0);
 
-			this->cubemapMesh.render(this->skyboxShader);
+			this->cubemapMesh->render(this->skyboxShader);
 			break;
 		case BackgroundMode::SOLID_COLOR:
 			this->solidColorShader.bindShaderProgram();
@@ -234,7 +234,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 			this->solidColorShader.setUniform_vec4(
 				"solidColor", this->solidColor);
 
-			this->cubemapMesh.render(this->solidColorShader);
+			this->cubemapMesh->render(this->solidColorShader);
 			break;
 		}
 
@@ -272,8 +272,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		this->writePointLightTransform(pL);
 		
 		glEnable(GL_STENCIL_TEST);
-		this->stencilLightVolume(this->lightVolumePoint);
-		this->renderLightVolume(pL, this->lightVolumePoint,
+		this->stencilLightVolume(*this->lightVolumePoint);
+		this->renderLightVolume(pL, *this->lightVolumePoint,
 			this->pointLightShader, "pointLight");
 		glDisable(GL_STENCIL_TEST);
 	}
@@ -293,8 +293,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		glEnable(GL_STENCIL_TEST);
 		this->writeShadowMapToShader(sL.getShadow().getShadowType(),
 			this->spotLightShader);
-		this->stencilLightVolume(this->lightVolumeSpot);
-		this->renderLightVolume(sL, this->lightVolumeSpot,
+		this->stencilLightVolume(*this->lightVolumeSpot);
+		this->renderLightVolume(sL, *this->lightVolumeSpot,
 			this->spotLightShader, "spotLight");
 		glDisable(GL_STENCIL_TEST);
 	}
@@ -312,7 +312,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		this->gBuffer.bindDrawLight(shader, bL.getType());
 		
-		quad.render(shader);
+		quad->render(shader);
 
 		// Undo the Changes
 		glDisable(GL_CULL_FACE);
@@ -437,7 +437,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		}
 
 		// Render the texture using the quad shader into the FINAL_2 buffer
-		this->quad.render(this->quadShader);
+		this->quad->render(this->quadShader);
 
 		// Now the FINAL_2 buffer contains the geometry + light rendered data.
 		// When post processing, we will read from the read buffer and write to
@@ -479,7 +479,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		glDrawBuffer(GL_COLOR_ATTACHMENT0 + write);
 		this->gBuffer.bindTexture((GBufferTextureType)read, shader, 
 				"gBufferFinal");
-		this->quad.render(shader);
+		this->quad->render(shader);
 
 		// Now read and write the other way (swap read and write)
 		int tmp = read;
@@ -495,7 +495,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		read.bind(0);
 		shader.setUniform_i("gBufferFinal", 0);
 
-		this->quad.render(shader);
+		this->quad->render(shader);
 	}
 
 	void DeferredRenderer::renderTextureShadowMap(const bool &linear,
@@ -621,7 +621,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 		tex.bind(0);
 		this->quadShader.setUniform_i("fsTexture", 0);
-		quad.render(this->quadShader);
+		quad->render(this->quadShader);
 
 		glEnable(GL_DEPTH_TEST);
 	}

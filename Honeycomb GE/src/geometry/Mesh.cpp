@@ -19,12 +19,29 @@ using Honeycomb::Math::Vector3f;
 using Honeycomb::Shader::ShaderProgram;
 
 namespace Honeycomb { namespace Geometry {
-	Mesh::Mesh() {
-		this->vertexBufferObject = -1;
-		this->indexBufferObject = -1;
+	int Mesh::meshCount = 0;
 
-		this->indices = std::make_shared<std::vector<unsigned int>>();
-		this->vertices = std::make_shared<std::vector<Vertex>>();
+	const int& Mesh::getInitializedMeshCount() {
+		return Mesh::meshCount;
+	}
+
+	std::shared_ptr<Mesh> Mesh::newMeshShared() {
+		std::shared_ptr<Mesh> ptr = std::shared_ptr<Mesh>(new Mesh());
+		ptr->initialize();
+
+		return ptr;
+	}
+
+	std::unique_ptr<Mesh> Mesh::newMeshUnique() {
+		std::unique_ptr<Mesh> ptr = std::unique_ptr<Mesh>(new Mesh());
+		ptr->initialize();
+
+		return ptr;
+	}
+
+	Mesh::~Mesh() {
+		if (this->isInitialized)
+			this->destroy();
 	}
 
 	void Mesh::bindIndexBuffer() {
@@ -49,9 +66,9 @@ namespace Honeycomb { namespace Geometry {
 		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 
-		this->indices->clear();
+		this->indices.clear();
 		glBindBuffer(GL_ARRAY_BUFFER, this->indexBufferObject);
-		glBufferData(GL_ARRAY_BUFFER, this->indices->size() * sizeof(int),
+		glBufferData(GL_ARRAY_BUFFER, this->indices.size() * sizeof(int),
 			nullptr, GL_STATIC_DRAW);
 
 		GLErrorException::checkGLError(__FILE__, __LINE__);
@@ -61,10 +78,10 @@ namespace Honeycomb { namespace Geometry {
 		GLErrorException::clear();
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 
-		this->vertices->clear();
+		this->vertices.clear();
 		glBindBuffer(GL_ARRAY_BUFFER, this->vertexBufferObject);
 		glBufferData(GL_ARRAY_BUFFER, 
-			this->vertices->size() * Vertex::ELEMENTS_PER_VERTEX_SIZE,
+			this->vertices.size() * Vertex::ELEMENTS_PER_VERTEX_SIZE,
 			nullptr, GL_STATIC_DRAW);
 
 		GLErrorException::checkGLError(__FILE__, __LINE__);
@@ -82,6 +99,7 @@ namespace Honeycomb { namespace Geometry {
 		glDeleteBuffers(1, &ibo);
 		glDeleteBuffers(1, &vbo);
 
+		--(Mesh::meshCount);
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
@@ -90,7 +108,7 @@ namespace Honeycomb { namespace Geometry {
 	}
 
 	const std::vector<unsigned int>& Mesh::getIndices() const {
-		return *this->indices;
+		return this->indices;
 	}
 
 	const int& Mesh::getVertexBufferObject() const {
@@ -98,7 +116,7 @@ namespace Honeycomb { namespace Geometry {
 	}
 
 	const std::vector<Vertex>& Mesh::getVertices() const {
-		return *this->vertices;
+		return this->vertices;
 	}
 
 	void Mesh::initialize() {
@@ -115,6 +133,7 @@ namespace Honeycomb { namespace Geometry {
 		this->indexBufferObject = ibo;
 		this->vertexBufferObject = vbo;
 
+		++(Mesh::meshCount);
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
 
@@ -146,7 +165,7 @@ namespace Honeycomb { namespace Geometry {
 
 		// Draw the vertex array data as triangles, from the starting vertex to
 		// the final one.
-		glDrawElements(GL_TRIANGLES, this->indices->size(), GL_UNSIGNED_INT,
+		glDrawElements(GL_TRIANGLES, this->indices.size(), GL_UNSIGNED_INT,
 			(void*)0);
 
 		// Disable attribute arrays for each attribute of the vertex
@@ -163,12 +182,12 @@ namespace Honeycomb { namespace Geometry {
 		// Bind the Buffer & invalidate it, in case there is already some data
 		this->bindIndexBuffer();
 		this->clearIndices();
-		*this->indices = indices;
+		this->indices = indices;
 
 		// Send the index data to the buffer (Static Draw indicates that the
 		// data is constant).
-		glBufferData(GL_ARRAY_BUFFER, this->indices->size() * sizeof(int),
-			&this->indices->operator[](0), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, this->indices.size() * sizeof(int),
+			&this->indices[0], GL_STATIC_DRAW);
 
 		GLErrorException::checkGLError(__FILE__, __LINE__);
 	}
@@ -180,7 +199,7 @@ namespace Honeycomb { namespace Geometry {
 		// Bind the Buffer & invalidate it, in case there is already some data
 		this->bindVertexBuffer();
 		this->clearVertices();
-		*this->vertices = verts;
+		this->vertices = verts;
 
 		// Convert the verticies into a float buffer which OpenGL understands
 		std::vector<float> vertFloats = Vertex::toFloatBuffer(verts);
@@ -188,7 +207,7 @@ namespace Honeycomb { namespace Geometry {
 		// Send the vertex data to the buffer (Static Draw indicates that the
 		// data is constant).
 		glBufferData(GL_ARRAY_BUFFER,
-			this->vertices->size() * Vertex::ELEMENTS_PER_VERTEX_SIZE, 
+			this->vertices.size() * Vertex::ELEMENTS_PER_VERTEX_SIZE, 
 			&vertFloats[0], GL_STATIC_DRAW);
 
 		GLErrorException::checkGLError(__FILE__, __LINE__);
@@ -202,5 +221,10 @@ namespace Honeycomb { namespace Geometry {
 	bool Mesh::operator!=(const Mesh &rhs) const {
 		return this->vertexBufferObject != rhs.vertexBufferObject ||
 			this->indexBufferObject != rhs.indexBufferObject;
+	}
+
+	Mesh::Mesh() {
+		this->vertexBufferObject = -1;
+		this->indexBufferObject = -1;
 	}
 } }

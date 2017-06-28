@@ -167,7 +167,7 @@ namespace Honeycomb { namespace Render {
 
 		// Properties for a Background Color & Skybox
 		BackgroundMode backgroundMode;
-		Honeycomb::Geometry::Mesh cubemapMesh;
+		Honeycomb::Geometry::Mesh *cubemapMesh;
 		Honeycomb::Math::Vector4f solidColor;
 		Honeycomb::Shader::ShaderProgram solidColorShader;
 		std::shared_ptr<Honeycomb::Graphics::Cubemap> skybox;

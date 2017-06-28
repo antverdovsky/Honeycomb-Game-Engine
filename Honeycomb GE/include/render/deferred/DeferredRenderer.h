@@ -50,7 +50,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		const static std::string SPOT_LIGHT_VOLUME_MODEL;
 
 		// Full screen quad which is rendered with a GBuffer's texture
-		Honeycomb::Geometry::Mesh quad;
+		std::unique_ptr<Honeycomb::Geometry::Mesh> quad;
 
 		GBuffer gBuffer; // The G Buffer of the Renderer
 		FinalTexture final; // The texture which will be rendered to screen
@@ -67,8 +67,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		Honeycomb::Shader::ShaderProgram spotLightShader;
 
 		// Meshes of the Light Volumes
-		Honeycomb::Geometry::Mesh lightVolumePoint;
-		Honeycomb::Geometry::Mesh lightVolumeSpot;
+		Honeycomb::Geometry::Mesh *lightVolumePoint;
+		Honeycomb::Geometry::Mesh *lightVolumeSpot;
 
 		/// Initializes a new Deferred Renderer.
 		DeferredRenderer();

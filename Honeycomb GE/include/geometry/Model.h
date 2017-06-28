@@ -118,7 +118,7 @@ namespace Honeycomb { namespace Geometry {
 		// These refer to the initialized components from the imported data.
 		// All game objects built from this model will reference these in some
 		// form.
-		std::vector<const Honeycomb::Geometry::Mesh*> meshes;
+		std::vector<std::unique_ptr<const Honeycomb::Geometry::Mesh>> meshes;
 		std::vector<Honeycomb::Graphics::Texture2D> textures;                  // TODO: for textures it is imperative that textures are CONST since they are now shared
 		std::vector<const Honeycomb::Graphics::Material*> materials;
 
@@ -224,7 +224,7 @@ namespace Honeycomb { namespace Geometry {
 		/// return : The dynamically allocated Honeycomb Mesh instance,
 		///			 containing the information extracted from the ASSIMP 
 		///			 Mesh.
-		Honeycomb::Geometry::Mesh* processAiMeshGeometry(aiMesh *aMesh);
+		std::unique_ptr<Honeycomb::Geometry::Mesh> processAiMeshGeometry(aiMesh *aMesh);
 	};
 
 	/// <summary>

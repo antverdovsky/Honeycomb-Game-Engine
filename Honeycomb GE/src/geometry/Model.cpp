@@ -86,8 +86,8 @@ namespace Honeycomb { namespace Geometry {
 	Model::~Model() {
 		for (const Material *mat : this->materials)
 			delete mat;
-		for (const Mesh *mesh : this->meshes)
-			delete mesh;
+//		for (const Mesh *mesh : this->meshes)
+//			delete mesh;
 
 		this->textures.clear();
 		this->materials.clear();
@@ -265,7 +265,7 @@ namespace Honeycomb { namespace Geometry {
 		return material;
 	}
 
-	Honeycomb::Geometry::Mesh* Model::processAiMeshGeometry(aiMesh *aMesh) {
+	std::unique_ptr<Honeycomb::Geometry::Mesh> Model::processAiMeshGeometry(aiMesh *aMesh) {
 		std::vector<Vertex> vertices; // Vertices Data
 		std::vector<unsigned int> indices; // Indices Data
 
@@ -307,12 +307,9 @@ namespace Honeycomb { namespace Geometry {
 		}
 
 		// Create a new Honeycomb Mesh with the fetched vertex and index data.
-		Mesh *mesh = new Mesh();
-		mesh->initialize();
+		std::unique_ptr<Mesh> mesh = Mesh::newMeshUnique();
 		mesh->setIndexData(indices);
 		mesh->setVertexData(vertices);
-		this->meshes.push_back(mesh);
-
 		return mesh;
 	}
 
@@ -347,8 +344,8 @@ namespace Honeycomb { namespace Geometry {
 		for (unsigned int i = 0; i < aNode->mNumMeshes; i++) {
 			// Convert the ASSIMP Mesh Geometry into Honeycomb Mesh Geometry
 			aiMesh *aMesh = this->scene->mMeshes[aNode->mMeshes[i]];
-			Mesh *mesh = this->processAiMeshGeometry(aMesh);
-
+			std::unique_ptr<Mesh> mesh = this->processAiMeshGeometry(aMesh);
+			
 			// Convert the ASSIMP Mesh Material into Honeycomb Mesh Material
 			aiMaterial *aMat;
 			Material *mat;
@@ -360,7 +357,9 @@ namespace Honeycomb { namespace Geometry {
 			}
 
 			meshRen->addMaterial(mat);
-			meshRen->addMesh(mesh);
+			meshRen->addMesh(mesh.get());
+
+			this->meshes.push_back(std::move(mesh));
 		}
 		object->addComponent(std::move(meshRen));
 
