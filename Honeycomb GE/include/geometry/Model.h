@@ -118,9 +118,9 @@ namespace Honeycomb { namespace Geometry {
 		// These refer to the initialized components from the imported data.
 		// All game objects built from this model will reference these in some
 		// form.
-		std::vector<std::unique_ptr<const Honeycomb::Geometry::Mesh>> meshes;
-		std::vector<std::unique_ptr<const Honeycomb::Graphics::Texture2D>> textures;
-		std::vector<const Honeycomb::Graphics::Material*> materials;
+		std::vector<std::shared_ptr<const Honeycomb::Geometry::Mesh>> meshes;
+		std::vector<std::shared_ptr<const Honeycomb::Graphics::Texture2D>> textures;
+		std::vector<std::shared_ptr<const Honeycomb::Graphics::Material>> materials;
 
 		ModelSettings settings; // The settings used to import this model
 
@@ -215,7 +215,7 @@ namespace Honeycomb { namespace Geometry {
 		/// return : The dynamically allocated Honeycomb Material instance,
 		///			 containing the information extracted from the ASSIMP 
 		///			 Material.
-		Honeycomb::Graphics::Material* processAiMeshMaterial(aiMaterial *aMat);
+		std::shared_ptr<Honeycomb::Graphics::Material> processAiMeshMaterial(aiMaterial *aMat);
 
 		/// Converts the ASSIMP Mesh into a Honeycomb Mesh, and returns the 
 		/// Mesh instance.
@@ -224,7 +224,7 @@ namespace Honeycomb { namespace Geometry {
 		/// return : The dynamically allocated Honeycomb Mesh instance,
 		///			 containing the information extracted from the ASSIMP 
 		///			 Mesh.
-		std::unique_ptr<Honeycomb::Geometry::Mesh> processAiMeshGeometry(aiMesh *aMesh);
+		std::shared_ptr<Honeycomb::Geometry::Mesh> processAiMeshGeometry(aiMesh *aMesh);
 	};
 
 	/// <summary>

@@ -26,13 +26,13 @@ namespace Honeycomb { namespace Component { namespace Render {
 
 	}
 
-	void MeshRenderer::addMaterial(Material *material) {
+	void MeshRenderer::addMaterial(const std::shared_ptr<Material> &material) {
 		assert(material != nullptr);
 
 		this->materials.push_back(material);
 	}
 
-	void MeshRenderer::addMesh(Mesh *mesh) {
+	void MeshRenderer::addMesh(const std::shared_ptr<Mesh> &mesh) {
 		assert(mesh != nullptr);
 
 		this->meshes.push_back(mesh);
@@ -46,21 +46,20 @@ namespace Honeycomb { namespace Component { namespace Render {
 		return GameComponent::getGameComponentTypeID<MeshRenderer>();
 	}
 
-	std::vector<Honeycomb::Graphics::Material*>& MeshRenderer::getMaterials() {
+	std::vector<std::shared_ptr<Material>>& MeshRenderer::getMaterials() {
 		return this->materials;
 	}
 
-	const std::vector<Honeycomb::Graphics::Material*>& 
-			MeshRenderer::getMaterials() const {
+	const std::vector<std::shared_ptr<Material>>& MeshRenderer::getMaterials() 
+			const {
 		return this->materials;
 	}
 
-	std::vector<Honeycomb::Geometry::Mesh*>& MeshRenderer::getMeshes() {
+	std::vector<std::shared_ptr<Mesh>>& MeshRenderer::getMeshes() {
 		return this->meshes;
 	}
 
-	const std::vector<Honeycomb::Geometry::Mesh*>& MeshRenderer::getMeshes() 
-			const{
+	const std::vector<std::shared_ptr<Mesh>>& MeshRenderer::getMeshes() const {
 		return this->meshes;
 	}
 
@@ -99,7 +98,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 		// If meshes > 1, materials == 1 -> Render each Mesh using the Material
 		else if (this->meshes.size() > 1 && this->materials.size() == 1) {
 			this->materials[0]->toShader(shader, "material");
-			for (const Mesh *mesh : this->meshes) mesh->render(shader);
+			for (auto &mesh : this->meshes) mesh->render(shader);
 		}
 		// If meshes == materials > 1 -> Render each Mesh using each Material
 		else {
@@ -115,10 +114,11 @@ namespace Honeycomb { namespace Component { namespace Render {
 		}
 	}
 
-	void MeshRenderer::removeMaterial(Material *material) {
+	void MeshRenderer::removeMaterial(const std::shared_ptr<Material> 
+			&material) {
 		auto materialFind = std::find_if(
 			this->materials.begin(), this->materials.end(),
-			[&](Material *m) {
+			[&](auto &m) {
 				return m == material;
 		});
 		if (materialFind == this->materials.end()) return;
@@ -126,10 +126,10 @@ namespace Honeycomb { namespace Component { namespace Render {
 		this->materials.erase(materialFind);
 	}
 
-	void MeshRenderer::removeMesh( Mesh *mesh) {
+	void MeshRenderer::removeMesh(const std::shared_ptr<Mesh> &mesh) {
 		auto meshFind = std::find_if(
 			this->meshes.begin(), this->meshes.end(),
-			[&](Mesh *m) {
+			[&](auto &m) {
 				return m == mesh;
 		});
 		if (meshFind == this->meshes.end()) return;
@@ -140,8 +140,8 @@ namespace Honeycomb { namespace Component { namespace Render {
 	MeshRenderer* MeshRenderer::cloneInternal() const {
 		MeshRenderer* mR = new MeshRenderer();
 
-		for (Mesh *m : this->meshes) mR->addMesh(m);
-		for (Material *m : this->materials) mR->addMaterial(m);
+		for (auto &m : this->meshes) mR->addMesh(m);
+		for (auto &m : this->materials) mR->addMaterial(m);
 
 		return mR;
 	}

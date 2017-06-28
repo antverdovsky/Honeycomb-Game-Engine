@@ -67,8 +67,8 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		Honeycomb::Shader::ShaderProgram spotLightShader;
 
 		// Meshes of the Light Volumes
-		Honeycomb::Geometry::Mesh *lightVolumePoint;
-		Honeycomb::Geometry::Mesh *lightVolumeSpot;
+		std::shared_ptr<Honeycomb::Geometry::Mesh> lightVolumePoint;
+		std::shared_ptr<Honeycomb::Geometry::Mesh> lightVolumeSpot;
 
 		/// Initializes a new Deferred Renderer.
 		DeferredRenderer();

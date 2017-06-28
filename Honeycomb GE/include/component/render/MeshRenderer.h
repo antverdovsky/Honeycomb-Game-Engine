@@ -25,7 +25,8 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// <param name="material">
 		/// The Material to be added.
 		/// </param>
-		void addMaterial(Honeycomb::Graphics::Material *material);
+		void addMaterial(const std::shared_ptr<Honeycomb::Graphics::Material> 
+				&material);
 
 		/// <summary>
 		/// Adds the specified Mesh to this Mesh Renderer. 
@@ -35,7 +36,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// <param name="mesh">
 		/// The Mesh to be added.
 		/// </param>
-		void addMesh(Honeycomb::Geometry::Mesh *mesh);
+		void addMesh(const std::shared_ptr<Honeycomb::Geometry::Mesh> &mesh);
 
 		/// <summary>
 		/// Clones this Mesh Renderer into a new Mesh Renderer. Each mesh and
@@ -62,7 +63,8 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// <returns>
 		/// The materials list, returned by reference.
 		/// </returns>
-		std::vector<Honeycomb::Graphics::Material*>& getMaterials();
+		std::vector<std::shared_ptr<Honeycomb::Graphics::Material>>& 
+				getMaterials();
 
 		/// <summary>
 		/// Returns the materials of this Mesh Renderer.
@@ -70,8 +72,8 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// <returns>
 		/// The materials list, returned by constant reference.
 		/// </returns>
-		const std::vector<Honeycomb::Graphics::Material*>& getMaterials() 
-				const;
+		const std::vector<std::shared_ptr<Honeycomb::Graphics::Material>>& 
+				getMaterials() const;
 
 		/// <summary>
 		/// Returns the meshes of this Mesh Renderer.
@@ -79,7 +81,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// <returns>
 		/// The meshes list, returned by reference.
 		/// </returns>
-		std::vector<Honeycomb::Geometry::Mesh*>& getMeshes();
+		std::vector<std::shared_ptr<Honeycomb::Geometry::Mesh>>& getMeshes();
 
 		/// <summary>
 		/// Returns the meshes of this Mesh Renderer.
@@ -87,7 +89,8 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// <returns>
 		/// The meshes list, returned by constant reference.
 		/// </returns>
-		const std::vector<Honeycomb::Geometry::Mesh*>& getMeshes() const;
+		const std::vector<std::shared_ptr<Honeycomb::Geometry::Mesh>>& 
+				getMeshes() const;
 
 		/// <summary>
 		/// When attached, the Mesh Renderer gets a reference to the transform
@@ -130,7 +133,8 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// <param name="material">
 		/// The Material to be removed.
 		/// </param>
-		void removeMaterial(Honeycomb::Graphics::Material *material);
+		void removeMaterial(const 
+				std::shared_ptr<Honeycomb::Graphics::Material> &material);
 
 		/// <summary>
 		/// Removes the specified Mesh from this Mesh Renderer. If the mesh is
@@ -139,11 +143,12 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// <param name="mesh">
 		/// The Mesh to be removed.
 		/// </param>
-		void removeMesh(Honeycomb::Geometry::Mesh *mesh);
+		void removeMesh(const std::shared_ptr<Honeycomb::Geometry::Mesh> 
+				&mesh);
 	private:
 		// The list of meshes and materials of this Mesh Renderer.
-		std::vector<Honeycomb::Geometry::Mesh*> meshes;
-		std::vector<Honeycomb::Graphics::Material*> materials;
+		std::vector<std::shared_ptr<Honeycomb::Geometry::Mesh>> meshes;
+		std::vector<std::shared_ptr<Honeycomb::Graphics::Material>> materials;
 
 		// Reference to the transform of the mesh
 		Honeycomb::Component::Physics::Transform *transform;

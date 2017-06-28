@@ -18,29 +18,31 @@ namespace Honeycomb { namespace Graphics {
 		return Texture2D::textureCount;
 	}
 
-	const Texture2D& Texture2D::getTextureBlack() {
-		static Texture2D blackTexture;
+	std::shared_ptr<const Texture2D> Texture2D::getTextureBlack() {
+		static std::shared_ptr<Texture2D> blackTexture = 
+			std::shared_ptr<Texture2D>(new Texture2D());
 
-		if (!blackTexture.isInitialized) {
-			blackTexture.initialize();
-			blackTexture.setImageDataFill(0, 0, 0, 255);
+		if (!blackTexture->isInitialized) {
+			blackTexture->initialize();
+			blackTexture->setImageDataFill(0, 0, 0, 255);
 		}
 
 		return blackTexture;
 	}
 
-	const Texture2D& Texture2D::getTextureBlue() {
-		static Texture2D blueTexture;
+	std::shared_ptr<const Texture2D> Texture2D::getTextureBlue() {
+		static std::shared_ptr<Texture2D> blueTexture =
+			std::shared_ptr<Texture2D>(new Texture2D());
 
-		if (!blueTexture.isInitialized) {
-			blueTexture.initialize();
-			blueTexture.setImageDataFill(0, 0, 255, 255);
+		if (!blueTexture->isInitialized) {
+			blueTexture->initialize();
+			blueTexture->setImageDataFill(0, 0, 255, 255);
 		}
 
 		return blueTexture;
 	}
 
-	const Texture2D& Texture2D::getTextureCommonFill(
+	std::shared_ptr<const Texture2D> Texture2D::getTextureCommonFill(
 			const Texture2DCommonFillColor &c) {
 		switch (c) {
 		case Texture2DCommonFillColor::COLOR_BLACK:
@@ -58,34 +60,37 @@ namespace Honeycomb { namespace Graphics {
 		}
 	}
 
-	const Texture2D& Texture2D::getTextureGreen() {
-		static Texture2D greenTexture;
+	std::shared_ptr<const Texture2D> Texture2D::getTextureGreen() {
+		static std::shared_ptr<Texture2D> greenTexture =
+			std::shared_ptr<Texture2D>(new Texture2D());
 
-		if (!greenTexture.isInitialized) {
-			greenTexture.initialize();
-			greenTexture.setImageDataFill(0, 255, 0, 255);
+		if (!greenTexture->isInitialized) {
+			greenTexture->initialize();
+			greenTexture->setImageDataFill(0, 255, 0, 255);
 		}
 
 		return greenTexture;
 	}
 
-	const Texture2D& Texture2D::getTextureRed() {
-		static Texture2D redTexture;
+	std::shared_ptr<const Texture2D> Texture2D::getTextureRed() {
+		static std::shared_ptr<Texture2D> redTexture =
+			std::shared_ptr<Texture2D>(new Texture2D());
 
-		if (!redTexture.isInitialized) {
-			redTexture.initialize();
-			redTexture.setImageDataFill(255, 0, 0, 255);
+		if (!redTexture->isInitialized) {
+			redTexture->initialize();
+			redTexture->setImageDataFill(255, 0, 0, 255);
 		}
 
 		return redTexture;
 	}
 
-	const Texture2D& Texture2D::getTextureWhite() {
-		static Texture2D whiteTexture;
+	std::shared_ptr<const Texture2D> Texture2D::getTextureWhite() {
+		static std::shared_ptr<Texture2D> whiteTexture =
+			std::shared_ptr<Texture2D>(new Texture2D());
 
-		if (!whiteTexture.isInitialized) {
-			whiteTexture.initialize();
-			whiteTexture.setImageDataFill(255, 255, 255, 255);
+		if (!whiteTexture->isInitialized) {
+			whiteTexture->initialize();
+			whiteTexture->setImageDataFill(255, 255, 255, 255);
 		}
 
 		return whiteTexture;
@@ -198,6 +203,8 @@ namespace Honeycomb { namespace Graphics {
 		if (!this->isInitialized) throw GLItemNotInitializedException(this);
 		this->bind();
 
+		this->width = 1;
+		this->height = 1;
 		GLubyte color[] = { (GLubyte)r, (GLubyte)g, (GLubyte)b, (GLubyte)a };
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA,
 			GL_UNSIGNED_BYTE, color);

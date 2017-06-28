@@ -53,14 +53,14 @@ namespace HoneycombTest {
 		this->plane = GameObjectFactory::getFactory().newPlane();
 	
 		// Give the plane a textured material
-		Material *colorMaterial = new Material(
-			*this->plane->getComponent<MeshRenderer>().getMaterials()[0]);
-		static auto colorTexture = Texture2D::newTexture2DUnique();
-		colorTexture-> // ^^^ tmp
+		auto colorMaterial = 
+			this->plane->getComponent<MeshRenderer>().getMaterials()[0];
+		auto colorTexture = Texture2D::newTexture2DShared();
+		colorTexture->
 			setImageDataIO(ImageIO("../Test Game/res/textures/colors.bmp"));
 		colorTexture->setAnisotropicFiltering(8);
 		colorMaterial->glSampler2Ds.setValue("albedoTexture.sampler", 
-			colorTexture.get());
+			colorTexture);
 		colorMaterial->glFloats.setValue("shininess", 128.0F);
 		colorMaterial->glVector2fs.setValue("globalTiling",
 			Vector2f(10.0F, 10.0F));
@@ -167,6 +167,6 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::update() {
-
+		
 	}
 }

@@ -43,18 +43,18 @@ namespace Honeycomb { namespace Graphics {
 		/// color (RGBA = { 0, 0, 0, 255 }).
 		/// </summary>
 		/// <returns>
-		/// The constant reference to the black texture.
+		/// The shared pointer to the black texture.
 		/// </returns>
-		static const Texture2D& getTextureBlack();
+		static std::shared_ptr<const Texture2D> getTextureBlack();
 
 		/// <summary>
 		/// Returns a texture whose image data is a 1x1 pixel with the blue
 		/// color (RGBA = { 0, 0, 255, 255 }).
 		/// </summary>
 		/// <returns>
-		/// The constant reference to the blue texture.
+		/// The shared pointer to the blue texture.
 		/// </returns>
-		static const Texture2D& getTextureBlue();
+		static std::shared_ptr<const Texture2D> getTextureBlue();
 
 		/// <summary>
 		/// Returns a texture whose image data is a 1x1 pixel and is of the
@@ -64,37 +64,37 @@ namespace Honeycomb { namespace Graphics {
 		/// The fill color of the texture.
 		/// </param>
 		/// <returns>
-		/// The constant reference to the texture of the specified fill color.
+		/// The shared pointer to the texture of the specified fill color.
 		/// </returns>
-		static const Texture2D& getTextureCommonFill(const 
-				Texture2DCommonFillColor &c);
+		static std::shared_ptr<const Texture2D> getTextureCommonFill(
+				const Texture2DCommonFillColor &c);
 
 		/// <summary>
 		/// Returns a texture whose image data is a 1x1 pixel with the green
 		/// color (RGBA = { 0, 255, 0, 255 }).
 		/// </summary>
 		/// <returns>
-		/// The constant reference to the green texture.
+		/// The shared pointer to the green texture.
 		/// </returns>
-		static const Texture2D& getTextureGreen();
+		static std::shared_ptr<const Texture2D> getTextureGreen();
 
 		/// <summary>
 		/// Returns a texture whose image data is a 1x1 pixel with the red
 		/// color (RGBA = { 255, 0, 0, 255 }).
 		/// </summary>
 		/// <returns>
-		/// The constant reference to the red texture.
+		/// The shared pointer to the red texture.
 		/// </returns>
-		static const Texture2D& getTextureRed();
+		static std::shared_ptr<const Texture2D> getTextureRed();
 
 		/// <summary>
 		/// Returns a texture whose image data is a 1x1 pixel with the white
 		/// color (RGBA = { 255, 255, 255, 255 }).
 		/// </summary>
 		/// <returns>
-		/// The constant reference to the white texture.
+		/// The shared pointer to the white texture.
 		/// </returns>
-		static const Texture2D& getTextureWhite();
+		static std::shared_ptr<const Texture2D> getTextureWhite();
 
 		/// <summary>
 		/// Creates a new, initialized Texture2D instance.

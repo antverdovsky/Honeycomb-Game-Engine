@@ -84,8 +84,8 @@ namespace Honeycomb { namespace Geometry {
 	}
 
 	Model::~Model() {
-		for (const Material *mat : this->materials)
-			delete mat;
+		//for (const Material *mat : this->materials)
+			//delete mat;
 //		for (const Mesh *mesh : this->meshes)
 //			delete mesh;
 
@@ -177,18 +177,18 @@ namespace Honeycomb { namespace Geometry {
 			// otherwise set the texture to the R, G, B values.
 			try {
 				ImageIO image = ImageIO(dir.C_Str());
-				std::unique_ptr<Texture2D> texture = Texture2D::newTexture2DUnique();
+				std::shared_ptr<Texture2D> texture = Texture2D::newTexture2DShared();
 				texture->setImageDataIO(image);
-				mat.glSampler2Ds.setValue(matUni + ".sampler", texture.get());
+				mat.glSampler2Ds.setValue(matUni + ".sampler", texture);
 				this->textures.push_back(std::move(texture));
 			} catch (ImageIOLoadException e) {
-				const Texture2D &texture = Texture2D::getTextureCommonFill(defColor);
-				mat.glSampler2Ds.setValue(matUni + ".sampler", &texture);
+				auto texture = Texture2D::getTextureCommonFill(defColor);
+				mat.glSampler2Ds.setValue(matUni + ".sampler", texture);
 			}
 		} else {
 			// Set the previously initialized texture to default value
-			const Texture2D &texture = Texture2D::getTextureCommonFill(defColor);
-			mat.glSampler2Ds.setValue(matUni + ".sampler", &texture);
+			auto texture = Texture2D::getTextureCommonFill(defColor);
+			mat.glSampler2Ds.setValue(matUni + ".sampler", texture);
 		}
 
 		mat.glFloats.setValue(matUni + ".intensity", 1.0F);
@@ -212,8 +212,8 @@ namespace Honeycomb { namespace Geometry {
 		this->gameObject = this->processAiNode(this->scene->mRootNode);
 	}
 
-	Material* Model::processAiMeshMaterial(aiMaterial* aMat) {
-		Material *material = new Material();
+	std::shared_ptr<Material> Model::processAiMeshMaterial(aiMaterial* aMat) {
+		std::shared_ptr<Material> material = std::make_shared<Material>();
 
 		// Retrieve all of the Material properties from ASSIMP
 		this->fetchMaterialProperty(*aMat, AI_MATKEY_COLOR_DIFFUSE, *material,
@@ -247,8 +247,8 @@ namespace Honeycomb { namespace Geometry {
 			"displacementTexture", Texture2DCommonFillColor::COLOR_BLACK);
 
 		// Special default value for diffuse map (TODO: Method for this?)
-		const Texture2D &diffuse = Texture2D::getTextureWhite();
-		material->glSampler2Ds.setValue("diffuseTexture.sampler", &diffuse);
+		auto diffuse = Texture2D::getTextureWhite();
+		material->glSampler2Ds.setValue("diffuseTexture.sampler", diffuse);
 		material->glFloats.setValue("diffuseTexture.intensity", 1.0F);
 		material->glVector3fs.setValue("diffuseColor",
 			Vector3f(1.0F, 1.0F, 1.0F));
@@ -263,7 +263,7 @@ namespace Honeycomb { namespace Geometry {
 		return material;
 	}
 
-	std::unique_ptr<Honeycomb::Geometry::Mesh> Model::processAiMeshGeometry(aiMesh *aMesh) {
+	std::shared_ptr<Honeycomb::Geometry::Mesh> Model::processAiMeshGeometry(aiMesh *aMesh) {
 		std::vector<Vertex> vertices; // Vertices Data
 		std::vector<unsigned int> indices; // Indices Data
 
@@ -342,20 +342,20 @@ namespace Honeycomb { namespace Geometry {
 		for (unsigned int i = 0; i < aNode->mNumMeshes; i++) {
 			// Convert the ASSIMP Mesh Geometry into Honeycomb Mesh Geometry
 			aiMesh *aMesh = this->scene->mMeshes[aNode->mMeshes[i]];
-			std::unique_ptr<Mesh> mesh = this->processAiMeshGeometry(aMesh);
+			std::shared_ptr<Mesh> mesh = this->processAiMeshGeometry(aMesh);
 			
 			// Convert the ASSIMP Mesh Material into Honeycomb Mesh Material
 			aiMaterial *aMat;
-			Material *mat;
+			std::shared_ptr<Material> mat;
 			if (aMesh->mMaterialIndex >= 0) { // Get Material, if it exists
 				aMat = this->scene->mMaterials[aMesh->mMaterialIndex];
 				mat = this->processAiMeshMaterial(aMat);
 			} else { // Otherwise, create a default Material
-				mat = new Material();
+				mat = std::shared_ptr<Material>(new Material());
 			}
 
 			meshRen->addMaterial(mat);
-			meshRen->addMesh(mesh.get());
+			meshRen->addMesh(mesh);
 
 			this->meshes.push_back(std::move(mesh));
 		}
