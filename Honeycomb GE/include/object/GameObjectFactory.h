@@ -24,7 +24,7 @@ namespace Honeycomb { namespace Object {
 		/// <returns>
 		/// The pointer to the new Ambient Light Object.
 		/// </returns>
-		std::unique_ptr<GameObject> newAmbientLight();
+		std::unique_ptr<Honeycomb::Object::GameObject> newAmbientLight();
 
 		/// <summary>
 		/// Builds a new Camera Game Object. The Game Object will have the name
@@ -34,7 +34,7 @@ namespace Honeycomb { namespace Object {
 		/// <returns>
 		/// The pointer to the new Camera Object.
 		/// </returns>
-		std::unique_ptr<GameObject> newCamera();
+		std::unique_ptr<Honeycomb::Object::GameObject> newCamera();
 
 		/// <summary>
 		/// Builds a new Cone Game Object. The Game Object will have the name
@@ -45,7 +45,7 @@ namespace Honeycomb { namespace Object {
 		/// <returns>
 		/// The pointer to the Cone Object.
 		/// </returns>
-		std::unique_ptr<GameObject> newCone();
+		std::unique_ptr<Honeycomb::Object::GameObject> newCone();
 
 		/// <summary>
 		/// Builds a new Directional Light Game Object. The Game Object will
@@ -55,7 +55,7 @@ namespace Honeycomb { namespace Object {
 		/// <returns>
 		/// The pointer to the Directional Light Object.
 		/// </returns>
-		std::unique_ptr<GameObject> newDirectionalLight();
+		std::unique_ptr<Honeycomb::Object::GameObject> newDirectionalLight();
 
 		/// <summary>
 		/// Builds a new Cube Game Object. The Game Object will have the name
@@ -66,7 +66,19 @@ namespace Honeycomb { namespace Object {
 		/// <returns>
 		/// The pointer to the Cube Object.
 		/// </returns>
-		std::unique_ptr<GameObject> newCube();
+		std::unique_ptr<Honeycomb::Object::GameObject> newCube();
+
+		/// <summary>
+		/// Creates a new Game Object from the specified Model.
+		/// </summary>
+		/// <param name="model">
+		/// The model, from which the Game Object should be made.
+		/// </param>
+		/// <returns>
+		/// The unique pointer to the cloned Game Object of the model.
+		/// </returns>
+		std::unique_ptr<Honeycomb::Object::GameObject> newGameObject(const 
+				Honeycomb::Geometry::Model &model);
 
 		/// <summary>
 		/// Builds a new Icosphere Game Object. The Game Object will have the 
@@ -77,28 +89,7 @@ namespace Honeycomb { namespace Object {
 		/// <returns>
 		/// The pointer to the Icosphere Object.
 		/// </returns>
-		std::unique_ptr<GameObject> newIcosphere();
-
-//TODO
-		/// Imports a new model from the specified path and constructs a game
-		/// object from it. The game object will be the the root node of the
-		/// model, with all the individual objects parented to the root node.
-		/// Each object in the hierarchy will receive the Transform component,
-		/// and all meshes in the hierarchy will receive the Mesh Renderer
-		/// component, initialized to the data extracted from the Model file.
-		/// If the model has been previously imported, a copy of the game obj.
-		/// from that model will be returned, rather than re-importing the 
-		/// entire model again. If the model has not been previously imported,
-		/// it will be imported and the settings specified will be used when
-		/// importing.
-		/// const std::string &path : The path of the Model.
-		/// const ModelSettings &settings : The settings to be used for
-		///								    importing the model.
-		/// return : The constructed Game Object.
-		std::unique_ptr<GameObject> newModel(const std::string &path,
-			const Honeycomb::Geometry::ModelSettings &settings = 
-			Honeycomb::Geometry::ModelSettings());
-//TODO
+		std::unique_ptr<Honeycomb::Object::GameObject> newIcosphere();
 
 		/// <summary>
 		/// Builds a new Plane Game Object. The Game Object will have the 
@@ -109,7 +100,7 @@ namespace Honeycomb { namespace Object {
 		/// <returns>
 		/// The pointer to the Plane Object.
 		/// </returns>
-		std::unique_ptr<GameObject> newPlane();
+		std::unique_ptr<Honeycomb::Object::GameObject> newPlane();
 
 		/// <summary>
 		/// Builds a new Point Light Game Object. The Game Object will have the
@@ -119,7 +110,7 @@ namespace Honeycomb { namespace Object {
 		/// <returns>
 		/// The pointer to the Point Light Object.
 		/// </returns>
-		std::unique_ptr<GameObject> newPointLight();
+		std::unique_ptr<Honeycomb::Object::GameObject> newPointLight();
 
 		/// <summary>
 		/// Builds a new Sphere Game Object. The Game Object will have the 
@@ -130,7 +121,7 @@ namespace Honeycomb { namespace Object {
 		/// <returns>
 		/// The pointer to the Sphere Object.
 		/// </returns>
-		std::unique_ptr<GameObject> newSphere();
+		std::unique_ptr<Honeycomb::Object::GameObject> newSphere();
 
 		/// <summary>
 		/// Builds a new Spot Light Game Object. The Game Object will have the
@@ -140,7 +131,7 @@ namespace Honeycomb { namespace Object {
 		/// <returns>
 		/// The pointer to the Spot Light Object.
 		/// </returns>
-		std::unique_ptr<GameObject> newSpotLight();
+		std::unique_ptr<Honeycomb::Object::GameObject> newSpotLight();
 
 		/// <summary>
 		/// Builds a new Suzanne Game Object. The Game Object will have the 
@@ -151,32 +142,26 @@ namespace Honeycomb { namespace Object {
 		/// <returns>
 		/// The pointer to the Sphere Object.
 		/// </returns>
-		std::unique_ptr<GameObject> newSuzanne();
+		std::unique_ptr<Honeycomb::Object::GameObject> newSuzanne();
 	private:
-		// File Location of all of the Default Models
-		const static std::string CONE_LOCATION;
-		const static std::string CUBE_LOCATION;
-		const static std::string ICOSPHERE_LOCATION;
-		const static std::string PLANE_LOCATION;
-		const static std::string SPHERE_LOCATION;
-		const static std::string SUZANNE_LOCATION;
-		
 		/// <summary>
-		/// Helper method for loading in default models. For the model path and
-		/// name specified, this method will clone the model's game object and
-		/// return a copy of the child game object containing the default model
-		/// (i.e. stripping the root and returning only the child).
+		/// Helper method for loading in default models. This creates an object
+		/// clone from the specified model and then fetches the child of the
+		/// specified name and deparents it from the RootNode. The independent
+		/// child is then returned.
 		/// </summary>
+		/// <param name="model">
+		/// The model from which the Game Object is to be cloned.
+		/// </param>
 		/// <param name="name">
-		/// The name of the model (this must be equivalent to the name of the
-		/// child of the Game Object).
+		/// The name of the child of the RootNode.
 		/// </param>
-		/// <param name="path">
-		/// The path from which the model should be loaded.
-		/// </param>
-		/// <returns></returns>
-		std::unique_ptr<GameObject> newDefaultImport(const std::string &name,
-				const std::string &path);
+		/// <returns>
+		/// The unique pointer to the imported Game Object clone.
+		/// </returns>
+		std::unique_ptr<GameObject> newDefaultImport(
+				const Honeycomb::Geometry::Model &model,
+				const std::string &name);
 	};
 } }
 

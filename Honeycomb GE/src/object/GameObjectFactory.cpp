@@ -23,19 +23,6 @@ using Honeycomb::Geometry::ModelSettings;
 using Honeycomb::Math::Vector4f;
 
 namespace Honeycomb { namespace Object {
-	const std::string GameObjectFactory::CONE_LOCATION =
-		"../Honeycomb GE/res/models/default/cone.fbx";
-	const std::string GameObjectFactory::CUBE_LOCATION = 
-		"../Honeycomb GE/res/models/default/cube.fbx";
-	const std::string GameObjectFactory::ICOSPHERE_LOCATION =
-		"../Honeycomb GE/res/models/default/icosphere.fbx";
-	const std::string GameObjectFactory::PLANE_LOCATION =
-		"../Honeycomb GE/res/models/default/plane.fbx";
-	const std::string GameObjectFactory::SPHERE_LOCATION =
-		"../Honeycomb GE/res/models/default/sphere.fbx";
-	const std::string GameObjectFactory::SUZANNE_LOCATION =
-		"../Honeycomb GE/res/models/default/suzanne.fbx";
-
 	GameObjectFactory& GameObjectFactory::getFactory() {
 		static GameObjectFactory factory;
 		return factory;
@@ -63,27 +50,28 @@ namespace Honeycomb { namespace Object {
 	}
 
 	std::unique_ptr<GameObject> GameObjectFactory::newCone() {
-		return newDefaultImport("Cone", CONE_LOCATION);
+		static Model cone{ "../Honeycomb GE/res/models/default/cone.fbx" };
+		return newDefaultImport(cone, "Cone");
 	}
 
 	std::unique_ptr<GameObject> GameObjectFactory::newCube() {
-		return newDefaultImport("Cube", CUBE_LOCATION);
+		static Model cube{ "../Honeycomb GE/res/models/default/cube.fbx" };
+		return newDefaultImport(cube, "Cube");
+	}
+
+	std::unique_ptr<GameObject> GameObjectFactory::newGameObject(
+			const Model &model) {
+		return model.getGameObjectClone();
 	}
 
 	std::unique_ptr<GameObject> GameObjectFactory::newIcosphere() {
-		return newDefaultImport("Icosphere", ICOSPHERE_LOCATION);
-	}
-
-	std::unique_ptr<GameObject> GameObjectFactory::newModel(
-			const std::string &path, const ModelSettings &settings) {
-		auto clone = Model::loadModel(path, settings).getGameObjectClone();
-		auto clonePtr = std::unique_ptr<GameObject>(std::move(clone));
-
-		return clonePtr;
+		static Model ico{ "../Honeycomb GE/res/models/default/icosphere.fbx" };
+		return newDefaultImport(ico, "Icosphere");
 	}
 
 	std::unique_ptr<GameObject> GameObjectFactory::newPlane() {
-		return newDefaultImport("Plane", PLANE_LOCATION);
+		static Model plane{ "../Honeycomb GE/res/models/default/plane.fbx" };
+		return newDefaultImport(plane, "Plane");
 	}
 
 	std::unique_ptr<GameObject> GameObjectFactory::newPointLight() {
@@ -94,7 +82,8 @@ namespace Honeycomb { namespace Object {
 	}
 
 	std::unique_ptr<GameObject> GameObjectFactory::newSphere() {
-		return newDefaultImport("Sphere", SPHERE_LOCATION);
+		static Model sphere{ "../Honeycomb GE/res/models/default/sphere.fbx" };
+		return newDefaultImport(sphere, "Sphere");
 	}
 
 	std::unique_ptr<GameObject> GameObjectFactory::newSpotLight() {
@@ -105,21 +94,15 @@ namespace Honeycomb { namespace Object {
 	}
 
 	std::unique_ptr<GameObject> GameObjectFactory::newSuzanne() {
-		return newDefaultImport("Suzanne", SUZANNE_LOCATION);
+		static Model suz{ "../Honeycomb GE/res/models/default/suzanne.fbx" };
+		return newDefaultImport(suz, "Suzanne");
 	}
 
 	std::unique_ptr<GameObject> GameObjectFactory::newDefaultImport(
-			const std::string &name, const std::string &path) {
-		// Get the parent model and extract the child with the given name from
-		// it.
-		auto parent = Model::loadModel(path).getGameObjectClone();
-		//GameObject &child = parent->getChild(name);
-		//child.deparent();
-		std::unique_ptr<GameObject> child = 
-				parent->removeChild(&parent->getChild(name));
+			const Model &model, const std::string &name) {
+		auto root = model.getGameObjectClone();
+		auto child = root->removeChild(&(root->getChild(name)));
 
-		// Recycle the parent and return the child (keep the Model since the
-		// Model class will use it to avoid re-importation of models).
 		return std::move(child);
 	}
 } }

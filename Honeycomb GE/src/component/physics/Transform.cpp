@@ -399,8 +399,9 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		transf->scaleMatrix = this->scaleMatrix;
 		transf->orientationMatrix = this->orientationMatrix;
 
-		//TODO: Issue with event handlers...
-		transf->changedEvent = this->changedEvent;
+		//TODO: Issue with event handlers... ?????????????????????????????????? :-(
+		//transf->changedEvent = this->changedEvent;
+		//transf->parentChanged = this->parentChanged;
 		
 
 		return transf;

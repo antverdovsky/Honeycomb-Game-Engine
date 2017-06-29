@@ -47,9 +47,9 @@ namespace HoneycombTest {
 
 		// Import all of the mesh game objects and construct them
 		this->car = GameObjectFactory::getFactory().
-			newModel("../Test Game/res/models/car.fbx");
+			newGameObject(Model("../Test Game/res/models/car.fbx"));
 		this->cube = GameObjectFactory::getFactory().
-			newModel("../Test Game/res/models/brick-cube/cube.fbx");
+			newGameObject(Model("../Test Game/res/models/brick-cube/cube.fbx"));
 		this->plane = GameObjectFactory::getFactory().newPlane();
 	
 		// Give the plane a textured material
@@ -81,6 +81,7 @@ namespace HoneycombTest {
 			GameInput::KEY_CODE_B, GameInput::KEY_CODE_N,
 			3.5F, 3.5F, 3.5F, Space::GLOBAL);
 		std::unique_ptr<InputTransformable> suzInputTransf2 = suzInputTranfs->clone();
+		auto suzInputTransf3 = suzInputTransf2->clone();
 		this->car->addComponent(std::move(suzInputTranfs));
 
 		// Construct a default Ambient and Directional Light; decrease the

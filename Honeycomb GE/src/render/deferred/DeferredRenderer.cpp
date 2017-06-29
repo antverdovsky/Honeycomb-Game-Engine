@@ -13,6 +13,7 @@
 #include "../../../include/component/render/CameraController.h"
 #include "../../../include/component/render/MeshRenderer.h"
 
+#include "../../../include/geometry/Model.h"
 #include "../../../include/geometry/Vertex.h"
 #include "../../../include/math/MathUtils.h"
 #include "../../../include/object/GameObjectFactory.h"
@@ -30,6 +31,7 @@ using Honeycomb::Component::Physics::Transform;
 using Honeycomb::Component::Render::CameraController;
 using Honeycomb::Component::Render::MeshRenderer;
 using Honeycomb::Geometry::Mesh;
+using Honeycomb::Geometry::Model;
 using Honeycomb::Geometry::Vertex;
 using Honeycomb::Graphics::Texture2D;
 using Honeycomb::Math::Matrix4f;
@@ -97,10 +99,10 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 	void DeferredRenderer::initializeLightVolumes() {
 		// Get the models containing the Light Volumes
-		auto pLModel = GameObjectFactory::getFactory().newModel(
-			POINT_LIGHT_VOLUME_MODEL);
-		auto sLModel = GameObjectFactory::getFactory().newModel(
-			SPOT_LIGHT_VOLUME_MODEL);
+		auto pLModel = GameObjectFactory::getFactory().newGameObject(
+			Model(POINT_LIGHT_VOLUME_MODEL));
+		auto sLModel = GameObjectFactory::getFactory().newGameObject(
+			Model(SPOT_LIGHT_VOLUME_MODEL));
 
 		// Extract the actual light volume meshes from the Model
 		this->lightVolumePoint = pLModel->getChild("Icosphere").

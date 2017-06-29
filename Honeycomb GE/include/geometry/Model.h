@@ -78,153 +78,230 @@ namespace Honeycomb { namespace Geometry {
 	/// </summary>
 	class Model {
 	public:
-		/// Deletes this model, and the materials / textures imported from it.
-		~Model();
+		/// <summary>
+		/// Initializes a new Model instance and loads the model from the
+		/// specified file. The model is loaded in using the default settings,
+		/// using the default instance of the Model Settings class.
+		/// 
+		/// If the model could not be loaded for some reason, a 
+		/// ModelLoadException is thrown.
+		/// </summary>
+		/// <param name="path">
+		/// The path to the file.
+		/// </param>
+		/// <param name="settings">
+		/// The settings to be used when loading in the Model. By default, the
+		/// default instance of the Model is used.
+		/// </param>
+		/// <exception cref="ModelLoadException">
+		/// Thrown if the model could not be loaded.
+		/// </exception>
+		Model(const std::string &path, const ModelSettings &settings = 
+				ModelSettings());
 
-		/// Loads a model from the specified path and returns it. If the model
-		/// has previously been imported, the model will be returned but not 
-		/// re-imported to prevent duplication. The settings will only be used
-		/// if the model has not been previously imported.
-		/// const std::string &path : The path to the model.
-		static const Model& loadModel(const std::string &path,
-			const ModelSettings &settings = ModelSettings());
-/*
-		/// Returns the Game Object loaded in from the Model. This game object
-		/// is directly linked to the Model and IS NOT independent of the
-		/// Model. Modifying this object will result in the modification of all
-		/// future clones of this Game Object.
-		/// return : The loaded Game Object.
-		Honeycomb::Object::GameObject* getGameObject();
-*/
-		/// Returns a Clone of the loaded Game Object. The game object will be
-		/// completely independent, with its own unique children and 
-		/// components, and it does not depend on the Model in any way.
-		/// return : A clone of the loaded Game Object.
-		std::unique_ptr<Honeycomb::Object::GameObject> getGameObjectClone() const;
+		/// <summary>
+		/// Returns a clone of the loaded in model Game Object. The clone will
+		/// be independent and not attached to any scene or parent.
+		/// </summary>
+		/// <returns>
+		/// The unique pointer to the clone.
+		/// </returns>
+		std::unique_ptr<Honeycomb::Object::GameObject> getGameObjectClone() 
+				const;
 
-		/// Gets the system path to the file from which the Model was loaded.
-		/// return : The string containing the system path.
+		/// <summary>
+		/// Gets the path from which this Model was loaded in from.
+		/// </summary>
+		/// <returns>
+		/// The path string.
+		/// </returns>
 		const std::string& getPath() const;
-
-		/// TO BE IMPLEMENTED:
-		/// void reloadModel(const ModelSettings &settings);
 	private:
-		static std::vector<Model*> imports; // All imported models
+		std::string path;           // The system path to the model
+		ModelSettings settings;     // The settings used to import this model
 
-		const aiScene* scene; // The ASSIMP Scene for this model
-		std::string path; // The system path to the model
-		std::unique_ptr<Honeycomb::Object::GameObject> gameObject; // The built model object
+		const aiScene* scene;       // Pointer to ASSIMP scene
 
-		// These refer to the initialized components from the imported data.
-		// All game objects built from this model will reference these in some
-		// form.
-		std::vector<std::shared_ptr<const Honeycomb::Geometry::Mesh>> meshes;
-		std::vector<std::shared_ptr<const Honeycomb::Graphics::Texture2D>> textures;
-		std::vector<std::shared_ptr<const Honeycomb::Graphics::Material>> materials;
+		// The constructed Game Object. All Game Object clones returned from
+		// this instance are clones of this Game Object.
+		std::unique_ptr<Honeycomb::Object::GameObject> gameObject;
 
-		ModelSettings settings; // The settings used to import this model
+		/// <summary>
+		/// Fetches the specified float material property from the given
+		/// ASSIMP material and writes it to the specified Honeycomb material.
+		/// 
+		/// Note that the "pKey", "type", and "idx" arguments should be passed
+		/// via then AI_MATKEY_&lt__PROPERTY__&gt value.
+		/// </summary>
+		/// <param name="aMat">
+		/// The ASSIMP material from which the property should be extracted 
+		/// from.
+		/// </param>
+		/// <param name="mat">
+		/// The Honeycomb material, passed by reference, to which the material
+		/// property should be written to.
+		/// </param>
+		/// <param name="prop">
+		/// The name of the property, as it appears in the material's variable
+		/// maps, for which the fetched property value is to be written for.
+		/// </param>
+		/// <param name="def">
+		/// The default value to be written to the material property if the
+		/// material does not contain the property requested.
+		/// </param>
+		/// <param name="pKey">
+		/// The ASSIMP property key (use AI_MATKEY_&lt__PROPERTY__&gt).
+		/// </param>
+		/// <param name="type">
+		/// The ASSIMP property type.
+		/// </param>
+		/// <param name="idx">
+		/// The ASSIMP property index.
+		/// </param>
+		/// <returns>
+		/// True if the property was successfully fetched and written to the
+		/// material. False if the property could not be fetched and the 
+		/// default value was written to the material instead.
+		/// </returns>
+		bool fetchMaterialProperty(
+				const aiMaterial &aMat, Honeycomb::Graphics::Material &mat,
+				const std::string &prop, const float &def,
+				const char *pKey, unsigned int type, unsigned int idx);
 
-		/// Initializes a new Model from the specified file path.
-		/// const std::string &path : The system file path to the model.
-		/// const ModelSettings &settings : The settings to be used when
-		///									importing the model.
-		Model(const std::string &path, const ModelSettings &settings);
+		/// <summary>
+		/// Fetches the specified Vector3f material property from the given
+		/// ASSIMP material and writes it to the specified Honeycomb material.
+		/// 
+		/// Note that the "pKey", "type", and "idx" arguments should be passed
+		/// via then AI_MATKEY_&lt__PROPERTY__&gt value.
+		/// </summary>
+		/// <param name="aMat">
+		/// The ASSIMP material from which the property should be extracted 
+		/// from.
+		/// </param>
+		/// <param name="mat">
+		/// The Honeycomb material, passed by reference, to which the material
+		/// property should be written to.
+		/// </param>
+		/// <param name="prop">
+		/// The name of the property, as it appears in the material's variable
+		/// maps, for which the fetched property value is to be written for.
+		/// </param>
+		/// <param name="def">
+		/// The default value to be written to the material property if the
+		/// material does not contain the property requested.
+		/// </param>
+		/// <param name="pKey">
+		/// The ASSIMP property key (use AI_MATKEY_&lt__PROPERTY__&gt).
+		/// </param>
+		/// <param name="type">
+		/// The ASSIMP property type.
+		/// </param>
+		/// <param name="idx">
+		/// The ASSIMP property index.
+		/// </param>
+		/// <returns>
+		/// True if the property was successfully fetched and written to the
+		/// material. False if the property could not be fetched and the 
+		/// default value was written to the material instead.
+		/// </returns>
+		bool fetchMaterialProperty(
+				const aiMaterial &aMat, Honeycomb::Graphics::Material &mat,
+				const std::string &prop, const Honeycomb::Math::Vector3f &def,
+				const char *pKey, unsigned int type, unsigned int idx);
 
-		/// Fetches the specified float property from the given material and
-		/// writes it to the material. For the three parameters "pKey", "type",
-		///	"idx", it is suggested that they are passed via 
-		/// AI_MATKEY_<PROPERTY>.
-		/// const aiMaterial &mat : The ASSIMP Material.
-		/// const char *pKey : The string containing the name of the material
-		///					   property.
-		/// unsigned int type : The property type.
-		/// unsigned int idx : The property index.
-		/// Material &mat : The material to which the fetched property should
-		///					be written to.
-		/// const string &matUni : The name of the uniform in the Material.
-		/// const float &def : If an error occurs, this will be the written to
-		///					   the material.
-		/// bool err : Logs a warning to the Honeycomb Logger if an error
-		///			   occurs and this is true. No log otherwise.
-		void fetchMaterialProperty(const aiMaterial &aMat, const char *pKey,
-			unsigned int type, unsigned int idx, Honeycomb::Graphics::Material 
-			&mat, const std::string &matUni, const float &def = 0.0F, 
-			bool err = true);
-
-		/// Fetches the specified Vector3 property from the given material and
-		/// writes it to the specified material. For the three parameters 
-		/// "pKey", "type", "idx", it is suggested that they are passed via 
-		/// AI_MATKEY_<PROPERTY>.
-		/// const aiMaterial &aMat : The ASSIMP Material.
-		/// const char *pKey : The string containing the name of the material
-		///					   property.
-		/// unsigned int type : The property type.
-		/// unsigned int idx : The property index.
-		/// Material &mat : The material to write the texture to.
-		/// const string &matUni : The name of the texture uniform in the
-		///						   Material.
-		/// const Vector3f &def : If an error occurs, this will be the value
-		///						  written.
-		/// bool err : Logs a warning to the Honeycomb Logger if an error
-		///			   occurs and this is true. No log otherwise.
-		void fetchMaterialProperty(const aiMaterial &aMat, const char *pKey, 
-			unsigned int type, unsigned int idx, Honeycomb::Graphics::Material
-			&mat, const std::string &matUni, const Honeycomb::Math::Vector3f 
-			&def = Honeycomb::Math::Vector3f(), bool err = true);
-
-		/// Fetches the texture of the specified texture type from the 
-		///	specified ASSIMP material and writes it to the standard material.
-		/// const aiMaterial &mat : The ASSIMP Material.
-		/// const int &tT : The texture type we want to fetch.
-		/// Material &mat : The material to which to write the texture.
-		/// const string &matUni : The name of the texture uniform in the
-		///						   Material.
-		/// const int &r : The red component of the texture to be set to
-		///				   the color of the texture IF the texture does
-		///				   cannot be imported. Bounded to [0, 255].
-		/// const int &g : The green component of the texture to be set to
-		///				   the color of the texture IF the texture does
-		///				   cannot be imported. Bounded to [0, 255].
-		/// const int &b : The blue component of the texture to be set to
-		///				   the color of the texture IF the texture does
-		///				   cannot be imported. Bounded to [0, 255].
-		void fetchMaterialTexture(const aiMaterial &aMat, const int &tT, 
-			Honeycomb::Graphics::Material &mat, const std::string &matUni,
-			const Honeycomb::Graphics::Texture2DCommonFillColor &defColor);
-
-		/// Loads the model object from the file path and using settings stored
-		/// in this Model.
+		/// <summary>
+		/// Loads this model from the path stored in this instance using the
+		/// model settings stored in this instance.
+		/// </summary>
+		/// <exception cref="ModelLoadException">
+		/// Thrown if the Model could not be loaded from the path.
+		/// </exception>
 		void loadFromPath();
 
-		/// Converts the ASSIMP Node into a Honeycomb GameObject, and returns
-		/// the GameObject instance. Each child node of the ASSIMP node will
-		/// also be converted into a GameObject, and parented to the returned
-		/// instance, recursively. All Objects will be equipped with a
-		/// Transform, and those which contain Mesh data will be equipped with
-		/// a MeshRenderer component.
-		/// aiNode *aNode : The ASSIMP node to be processed into a Honeycomb
-		///					GameObject.
-		/// return : The dynamically allocated Honeycomb GameObject instance,
-		///			 containing the information extracted from the ASSIMP node.
-		std::unique_ptr<Honeycomb::Object::GameObject> processAiNode(aiNode *aNode);
+		/// <summary>
+		/// Fetches the specified material texture from the given ASSIMP
+		/// material and writes it to the specified Honeycomb material.
+		/// </summary>
+		/// <param name="aMat">
+		/// The ASSIMP material from which the property should be extracted
+		/// from.
+		/// </param>
+		/// <param name="mat">
+		/// The Honeycomb material, passed by reference to which the material
+		/// texture should be written to.
+		/// </param>
+		/// <param name="prop">
+		/// The name of the texture, as it appears in the material's variable
+		/// map, for which the fetched texture is to be written for.
+		/// </param>
+		/// <param name="def">
+		/// If the material texture could not be fetched, this default color
+		/// will be written to the material instead.
+		/// </param>
+		/// <param name="type">
+		/// The ASSIMP type of texture to be fetched.
+		/// </param>
+		/// <returns>
+		/// True if the texture was successfully fetched and written to the
+		/// material. False if the texture could not be fetched and the
+		/// default value was written to the material instead.
+		/// </returns>
+		bool fetchMaterialTexture(
+				const aiMaterial &aMat, Honeycomb::Graphics::Material &mat,
+				const std::string &prop,
+				const Honeycomb::Graphics::Texture2DCommonFillColor &def,
+				const int &type);
 
-		/// Converts the ASSIMP Material into a Honeycomb Material, and returns
-		/// the Material instance.
-		/// aiMaterial *aMat : The ASSIMP Material to be converted into a
-		///					   Honeycomb Material.
-		/// return : The dynamically allocated Honeycomb Material instance,
-		///			 containing the information extracted from the ASSIMP 
-		///			 Material.
-		std::shared_ptr<Honeycomb::Graphics::Material> processAiMeshMaterial(aiMaterial *aMat);
+		/// <summary>
+		/// Creates a Honeycomb Mesh from the specified ASSIMP Mesh. The mesh
+		/// will contain the vertex positions, normals, tangents and index zero
+		/// texture coordinates for each vertex of the ASSIMP mesh.
+		/// </summary>
+		/// <param name="aMesh">
+		/// The ASSIMP mesh which is to be converted to a Game Object.
+		/// </param>
+		/// <returns>
+		/// The shared pointer to the Honeycomb Mesh.
+		/// </returns>
+		std::shared_ptr<Honeycomb::Geometry::Mesh> processAiMeshGeometry(
+				aiMesh *aMesh);
 
-		/// Converts the ASSIMP Mesh into a Honeycomb Mesh, and returns the 
-		/// Mesh instance.
-		/// aiMesh *aMesh : The ASSIMP Mesh to be converted into a Honeycomb 
-		///					Mesh.
-		/// return : The dynamically allocated Honeycomb Mesh instance,
-		///			 containing the information extracted from the ASSIMP 
-		///			 Mesh.
-		std::shared_ptr<Honeycomb::Geometry::Mesh> processAiMeshGeometry(aiMesh *aMesh);
+		/// <summary>
+		/// Creates a Honeycomb Material from the specified ASSIMP material.
+		/// The Honeycomb Material will be initialized using the Standard
+		/// Honeycomb Material and will have all of its properties initialized
+		/// to the ASSIMP material's values, if possible. If a particular value
+		/// cannot be fetched from the ASSIMP material, it will be default
+		/// constructed.
+		/// </summary>
+		/// <param name="aMat">
+		/// The ASSIMP material which is to be converted to a Game Object.
+		/// </param>
+		/// <returns>
+		/// The shared pointer to the Honeycomb Material.
+		/// </returns>
+		std::shared_ptr<Honeycomb::Graphics::Material> processAiMeshMaterial(
+			aiMaterial *aMat);
+
+		/// <summary>
+		/// Creates a Honeycomb Game Object from the specified ASSIMP node. 
+		/// The Game Object will contain a Transform component containing the
+		/// imported transformation of the ASSIMP node. If the ASSIMP node has
+		/// a Mesh attached to it, a MeshRenderer component will also be
+		/// attached, containing the Meshes and Materials of the ASSIMP node.
+		/// For any children ASSIMP nodes of the specified node, they will be
+		/// converted to Game Objects as well (recursively) and be added as
+		/// children to this Game Object.
+		/// </summary>
+		/// <param name="aNode">
+		/// The ASSIMP node who is to be converted to a Game Object.
+		/// </param>
+		/// <returns>
+		/// The unique pointer to the Honeycomb Game Object.
+		/// </returns>
+		std::unique_ptr<Honeycomb::Object::GameObject> processAiNode(
+				aiNode *aNode);
 	};
 
 	/// <summary>
