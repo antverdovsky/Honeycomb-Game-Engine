@@ -211,15 +211,6 @@ namespace Honeycomb { namespace Geometry {
 				const char *pKey, unsigned int type, unsigned int idx);
 
 		/// <summary>
-		/// Loads this model from the path stored in this instance using the
-		/// model settings stored in this instance.
-		/// </summary>
-		/// <exception cref="ModelLoadException">
-		/// Thrown if the Model could not be loaded from the path.
-		/// </exception>
-		void loadFromPath();
-
-		/// <summary>
 		/// Fetches the specified material texture from the given ASSIMP
 		/// material and writes it to the specified Honeycomb material.
 		/// </summary>
@@ -252,6 +243,15 @@ namespace Honeycomb { namespace Geometry {
 				const std::string &prop,
 				const Honeycomb::Graphics::Texture2DCommonFillColor &def,
 				const int &type);
+
+		/// <summary>
+		/// Loads this model from the path stored in this instance using the
+		/// model settings stored in this instance.
+		/// </summary>
+		/// <exception cref="ModelLoadException">
+		/// Thrown if the Model could not be loaded from the path.
+		/// </exception>
+		void loadFromPath();
 
 		/// <summary>
 		/// Creates a Honeycomb Mesh from the specified ASSIMP Mesh. The mesh

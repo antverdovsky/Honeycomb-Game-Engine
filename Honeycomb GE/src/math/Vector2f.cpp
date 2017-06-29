@@ -29,6 +29,7 @@ namespace Honeycomb { namespace Math {
 		float magMult = this->magnitude() * v2.magnitude();
 		float cosTheta = dot / magMult;
 
+		// Inverse cosine to get the theta value
 		return (float)acos(cosTheta);
 	}
 
@@ -58,7 +59,11 @@ namespace Honeycomb { namespace Math {
 	}
 
 	float Vector2f::magnitude() const {
-		return (float)sqrt(x * x + y * y);
+		return (float)sqrt(this->magnitude2());
+	}
+
+	float Vector2f::magnitude2() const {
+		return (x * x + y * y);
 	}
 
 	Vector2f Vector2f::multiply(const Matrix4f &mat) const {
@@ -166,5 +171,17 @@ namespace Honeycomb { namespace Math {
 
 	Vector2f& Vector2f::operator-=(const Vector2f &v2) {
 		return this->addTo(-v2);
+	}
+
+	bool Vector2f::operator<(const Vector2f &v2) const {
+		return this->magnitude2() < v2.magnitude2();
+	}
+
+	bool Vector2f::operator>(const Vector2f &v2) const {
+		return this->magnitude2() > v2.magnitude2();
+	}
+
+	std::ostream& operator<<(std::ostream &stream, const Vector2f &vec) {
+		return stream << "(" << vec.getX() << ", " << vec.getY() << ")";
 	}
 } }

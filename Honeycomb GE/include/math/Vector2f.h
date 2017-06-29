@@ -2,214 +2,426 @@
 #ifndef VECTOR_2F_H
 #define VECTOR_2F_H
 
+#include <ostream>
+
 namespace Honeycomb { namespace Math { class Matrix4f; } }
 
 namespace Honeycomb { namespace Math {
+	/// <summary>
+	/// Represents a two dimensional float vector containing x, y components.
+	/// </summary>
 	class Vector2f {
 	public:
-		/// Creates a new two dimensional vector with 0.0 for both the x and y
+		/// <summary>
+		/// Creates a new two dimensional vector with zeros for the x and y
 		/// components.
+		/// </summary>
 		Vector2f();
 
-		/// Creates a new two dimensional vector with the specified x and y
-		/// components.
-		/// const float &x : The x-component.
-		/// const float &y : The y-component.
+		/// <summary>
+		/// Creates a new two dimensional vector with the specified values for
+		/// the x and y components.
+		/// </summary>
+		/// <param name="x">
+		/// The x component value.
+		/// </param>
+		/// <param name="y">
+		/// The y component value.
+		/// </param>
 		Vector2f(const float &x, const float &y);
 
-		/// Gets a vector equivalent to the resultant of this vector and the
-		/// specified second vector. This instance is not modified.
-		/// const Vector2f &v2 : The second vector.
-		/// return : The resultant of the two vectors.
+		/// <summary>
+		/// Returns a vector which is equivalent to the component sum of this
+		/// vector and the specified vector.
+		/// </summary>
+		/// <param name="v2">
+		/// The vector to be added with this.
+		/// </param>
+		/// <returns>
+		/// The sum vector.
+		/// </returns>
 		Vector2f add(const Vector2f &v2) const;
 
-		/// Adds the specified vector to this vector, resulting in this 
-		/// instance equaling to the resultant of the sum.
-		/// const Vector2f &v2 : The second vector.
-		/// return : This resultant vector.
+		/// <summary>
+		/// Adds the specified vector to this vector and returns this.
+		/// </summary>
+		/// <param name="v2">
+		/// The vector to be added to this.
+		/// </param>
+		/// <returns>
+		/// This vector.
+		/// </returns>
 		Vector2f& addTo(const Vector2f &v2);
 
-		/// Calculates the angle (in radians) between this vector and the 
-		/// specified second vector.
-		/// const Vector2f &v2 : The second vector.
-		/// return : The angle between, in radians.
+		/// <summary>
+		/// Calculates the angle, in radians, between this vector and the
+		/// specified vector.
+		/// </summary>
+		/// <param name="v2">
+		/// The other vector.
+		/// </param>
+		/// <returns>
+		/// The angle between the vectors, in radians.
+		/// </returns>
 		float angle(const Vector2f &v2) const;
 
-		/// Gets the dot product of this vector and the specified second vetor.
-		/// const Vector2f &v2 : The second vector.
-		/// return : The dot product scalar.
+		/// <summary>
+		/// Returns the dot product of this vector and the specified vector.
+		/// </summary>
+		/// <param name="v2">
+		/// The other vector.
+		/// </param>
+		/// <returns>
+		/// The dot product of the vectors.
+		/// </returns>
 		float dot(const Vector2f &v2) const;
 
-		/// Gets the x and y components of the vector and writes them to the 
-		/// passed in reference values.
-		/// float &x : The ref. to where the x-component is to be written to.
-		/// float &y : The ref. to where the y-component is to be written to.
+		/// <summary>
+		/// Fetches the x and y component values of this vector and writes them
+		/// to the specified references.
+		/// </summary>
+		/// <param name="x">
+		/// The reference to which the x component is to be written.
+		/// </param>
+		/// <param name="y">
+		/// The reference to which the y component is to be written.
+		/// </param>
 		void get(float &x, float &y) const;
 
-		/// Gets the reference to the x-component of the vector.
-		/// return : The reference to the x-component.
+		/// <summary>
+		/// Returns the reference to the x component.
+		/// </summary>
+		/// <returns>
+		/// The reference to the x component.
+		/// </returns>
 		float& getX();
 
-		/// Gets the constant reference to the x-component of the vector.
-		/// return : The constant reference to the x-component.
+		/// <summary>
+		/// Returns the constant reference to the x component.
+		/// </summary>
+		/// <returns>
+		/// The constant reference to the x component.
+		/// </returns>
 		const float& getX() const;
 
-		/// Gets the reference to the y-component of the vector.
-		/// return : The reference to the y-component.
+		/// <summary>
+		/// Returns the reference to the y component.
+		/// </summary>
+		/// <returns>
+		/// The reference to the y component.
+		/// </returns>
 		float& getY();
 
-		/// Gets the constant reference to the y-component of the vector.
-		/// return : The constant reference to the y-component.
+		/// <summary>
+		/// Returns the constant reference to the y component.
+		/// </summary>
+		/// <returns>
+		/// The constant reference to the y component.
+		/// </returns>
 		const float& getY() const;
 
-		/// Gets the magnitude of the vector.
-		/// return : The magnitude.
+		/// <summary>
+		/// Calculates, and returns the magnitude of this Vector.
+		/// </summary>
+		/// <returns>
+		/// The magnitude value.
+		/// </returns>
 		float magnitude() const;
 
-		/// Returns an instance of a Vector2f equal to the product of this
-		/// Vector and the specified Matrix.
-		/// const Matrix4f &mat : The matrix to be multiplied by this instance.
-		/// return : The product of this vector and that matrix.
+		/// <summary>
+		/// Calculates, and returns the squared magnitude of this Vector. This
+		/// does not perform the square root operation when calculating the
+		/// magnitude and is therefore faster than <see cref="magnitude"/>, but
+		/// should only be used for comparing whether vectors are bigger.
+		/// </summary>
+		/// <returns>
+		/// The squared magnitude value.
+		/// </returns>
+		float magnitude2() const;
+
+		/// <summary>
+		/// Returns an instance of the Vector2f which contains the product of
+		/// this vector and the specified Matrix4f.
+		/// </summary>
+		/// <param name="mat">
+		/// The matrix to be multiplied with this.
+		/// </param>
+		/// <returns>
+		/// The product vector.
+		/// </returns>
 		Vector2f multiply(const Matrix4f &mat) const;
 
-		/// Multiplies this instance by the specified Matrix and returns this
-		/// instance.
-		/// const Matrix4f &mat : The matrix to be multiplied to this instance.
-		/// return : This instance, as the product of this Vector and the 
-		///			 matrix.
+		/// <summary>
+		/// Multiplies this vector by the specified Matrix4f and returns this.
+		/// </summary>
+		/// <param name="mat">
+		/// The matrix to be multiplied to this.
+		/// </param>
+		/// <returns>
+		/// This vector.
+		/// </returns>
 		Vector2f& multiplyTo(const Matrix4f &mat);
 
-		/// Normalizes this vector.
-		/// return : The reference to this normalized vector.
+		/// <summary>
+		/// Normalies this vector and returns it.
+		/// </summary>
+		/// <returns>
+		/// This vector.
+		/// </returns>
 		Vector2f& normalize();
 
-		/// Gets a normalized version of this vector, without modifying it.
-		/// return : A copy of this vector, normalized.
+		/// <summary>
+		/// Returns a vector which is the normalized version of this vector.
+		/// </summary>
+		/// <returns>
+		/// The normalized vector.
+		/// </returns>
 		Vector2f normalized() const;
 
-		/// Returns a vector which is equivalent to this instance, rotated by 
-		/// the specified amount of radians, on the { 1, 0, 0 } vector axis.
-		/// const float &rad : The amount by which to rotate the vector, in 
-		///					   radians. A positive amount rotates the vector 
-		///					   counterclockwise, and a negative amount rotates 
-		///					   the vector clockwise.
-		/// return : The rotated vector.
+		/// <summary>
+		/// Creates a copy of this vector, rotates it by the specified amount
+		/// and returns it.
+		/// </summary>
+		/// <param name="rad">
+		/// The amount of radians by which the vector is to be rotated on the
+		/// global forward axis ( 0, 0, 1 ). A positive amount rotates the
+		/// vector counterclockwise, and a negative amount rotates the vector
+		/// clockwise.
+		/// </param>
+		/// <returns>
+		/// The rotated Vector.
+		/// </returns>
 		Vector2f rotate(const float &rad) const;
 
-		/// Rotates this vector by the specified amount in radians, on the 
-		/// { 1, 0, 0 } vector axis.
-		/// const float &rad : The amount by which to rotate the vector, in 
-		///					   radians. A positive amount rotates the vector 
-		///					   counterclockwise, and a negative amount rotates 
-		///					   the vector clockwise.
-		/// return : The reference to this rotated vector.
+		/// <summary>
+		/// Rotates this vector by the specified amount and returns it.
+		/// </summary>
+		/// <param name="rad">
+		/// The amount of radians by which the vector is to be rotated on the
+		/// global forward axis ( 0, 0, 1 ). A positive amount rotates the
+		/// vector counterclockwise, and a negative amount rotates the vector
+		/// clockwise.
+		/// </param>
+		/// <returns>
+		/// This Vector.
+		/// </returns>
 		Vector2f& rotateTo(const float &rad);
 
-		/// Returns a vector which is equivalent to this vector, but scaled by
-		/// the specified scaling factor. This vector is not modified.
-		/// const float &scale : The constant by which to scale the vector.
-		/// return : A copy of this vector, scaled by the constant.
+		/// <summary>
+		/// Creates a copy of this Vector, scales it by the specified amount
+		/// and returns it.
+		/// </summary>
+		/// <param name="scale">
+		/// The amount by which the vector is to be scaled on each component.
+		/// </param>
+		/// <returns>
+		/// The scaled vector.
+		/// </returns>
 		Vector2f scale(const float &scale) const;
 
-		/// Scales this vector by specified scalar factor.
-		/// const float &scale : The constant by which to scale the vector.
-		/// return : This scaled vector.
+		/// <summary>
+		/// Scales this vector by the specified amount and returns it.
+		/// </summary>
+		/// <param name="scale">
+		/// The amount by which the vector is to be scaled on each component.
+		/// </param>
+		/// <returns>
+		/// This vector.
+		/// </returns>
 		Vector2f& scaleTo(const float &scale);
 
-		/// Sets the x and y components of the vector.
-		/// const float &x : The new x-component.
-		/// const float &y : The new y-component.
+		/// <summary>
+		/// Sets the x and y components of the Vector.
+		/// </summary>
+		/// <param name="x">
+		/// The new x component.
+		/// </param>
+		/// <param name="y">
+		/// The new y component.
+		/// </param>
 		void set(const float &x, const float &y);
 
-		/// Sets the x-component of the vector.
-		/// const float &x : The new x-component.
+		/// <summary>
+		/// Sets the x component of the Vector.
+		/// </summary>
+		/// <param name="x">
+		/// The new x component.
+		/// </param>
 		void setX(const float &x);
 
-		/// Sets the y-component of the vector.
-		/// const float &y : The new y-component.
+		/// <summary>
+		/// Sets the y component of the Vector.
+		/// </summary>
+		/// <param name="y">
+		/// The new y component.
+		/// </param>
 		void setY(const float &y);
 
-		/// Overloads the multiplication operator to return a vector instance
-		/// which is equivalent to this vector, scaled by the specified amount.
-		/// This vector instance is not modified.
-		/// const float &scale : The constant by which to scale the vector.
-		/// return : The scaled vector.
+		/// <summary>
+		/// Overloads the multiplication operator to return a copy of this
+		/// vector scaled by the right hand side.
+		/// </summary>
+		/// <param name="scale">
+		/// The amount by which to scale the vector.
+		/// </param>
+		/// <returns>
+		/// The scaled copy of this Vector.
+		/// </returns>
 		Vector2f operator*(const float &scale) const;
 
-		/// Overloads the multiplication operator to return a vector instance
-		/// which is equivalent to this Vector, multiplied by the specified
-		/// Matrix. Do note that the Matrix is treated as a 2x2 for this
-		/// calculation.
-		/// const Matrix4f &mat : The Matrix by whih to multiply this vector.
-		/// return : The Vector, post multiplication.
+		/// <summary>
+		/// Overloads the multiplication operator to return a copy of this
+		/// vector multiplied by the right hand side.
+		/// </summary>
+		/// <param name="mat">
+		/// The amount by which to multiply the vector.
+		/// </param>
+		/// <returns>
+		/// The product copy of this Vector.
+		/// </returns>
 		Vector2f operator*(const Matrix4f &mat) const;
 
-		/// Overloads the multiplication set operator to set this vector equal 
-		/// to the scaled vector, and return it.
-		/// const float &scale : The constant by which to scale this vector.
-		/// return : This scaled vector.
+		/// <summary>
+		/// Overloads the multiplication-set operator to multiply this
+		/// instance by the specified scale and return this.
+		/// </summary>
+		/// <param name="scale">
+		/// The amount by which to scale the vector.
+		/// </param>
+		/// <returns>
+		/// This Vector.
+		/// </returns>
 		Vector2f& operator*=(const float &scale);
 
-		/// Overloads the multiplication set operator to set this vector equal
-		/// to the product of this Vector and the specified Matrix, and return
-		/// it. Do note that the Matrix is treated as a 2x2 for this
-		/// calculation.
-		/// const Matrix4f &mat : The Matrix by which to multiply this Vector.
-		/// return : This Vector, post multiplication.
+		/// <summary>
+		/// Overloads the multiplication-set operator to multiply this
+		/// instance by the specified matrix and return this.
+		/// </summary>
+		/// <param name="mat">
+		/// The amount by which to multiply this vector.
+		/// </param>
+		/// <returns>
+		/// This Vector.
+		/// </returns>
 		Vector2f& operator*=(const Matrix4f &mat);
 
-		/// Overloads the division operator to return a vector instance
-		/// which is equivalent to this vector, inversely scaled by the 
-		/// specified amount. This vector instance is not modified.
-		/// const float &scale : The inverse constant by which to scale the 
-		///						 vector.
-		/// return : The scaled vector.
+		/// <summary>
+		/// Overloads the division operator to return a copy of this Vector,
+		/// inversely scaled by the specified amount.
+		/// </summary>
+		/// <param name="scale">
+		/// The amount by which to inversely scale the vector.
+		/// </param>
+		/// <returns>
+		/// The inversely scaled Vector.
+		/// </returns>
 		Vector2f operator/(const float &scale) const;
 
-		/// Overloads the division set operator to set this vector to the 
-		/// inversely scaled vector. 
-		/// const float &scale : The inverse constant by which to scale this 
-		///					     vector.
-		/// return : This scaled vector.
+		/// <summary>
+		/// Overloads the division-set operator to inversely scale this Vector
+		/// by the specified amount and return this.
+		/// </summary>
+		/// <param name="scale">
+		/// The right hand side by which to inversely scale this vector.
+		/// </param>
+		/// <returns>
+		/// This Vector.
+		/// </returns>
 		Vector2f& operator/=(const float &scale);
 
-		/// Overloads the addition operator to return a vector instance
-		/// which is equivalent to the resultant of this vector and the 
-		/// specified vector. Neither this nor the specified vector's values 
-		/// are modified.
-		/// const Vector2f &v2 : Reference to the second vector.
-		/// return : The resultant vector.
-		Vector2f operator+(const Vector2f &v2) const;;
+		/// <summary>
+		/// Overloads the addition operator to return the component sum of the 
+		/// copy of this Vector and the specified vector.
+		/// </summary>
+		/// <param name="v2">
+		/// The other vector.
+		/// </param>
+		/// <returns>
+		/// The sum Vector.
+		/// </returns>
+		Vector2f operator+(const Vector2f &v2) const;
 
-		/// Overloads the addition set operator to set this vector equal to the
-		/// resultant of this and the specified vector, and return it.
-		/// const Vector2f &v2 : Reference to the second vector.
-		/// return : This resultant vector.
+		/// <summary>
+		/// Overloads the addition-set operator to the add the specified
+		/// vector to this vector, by component, and return this vector.
+		/// </summary>
+		/// <param name="v2">
+		/// The other vector.
+		/// </param>
+		/// <returns>
+		/// This Vector.
+		/// </returns>
 		Vector2f& operator+=(const Vector2f &v2);
 
-		/// Unary operator overload which returns a vector instance which is
-		/// equivalent to this vector, negated. This vector is not modified.
-		/// return : The negated copy of this vector.
+		/// <summary>
+		/// Overloads the unary minus operator to return a vector whose
+		/// components are the negated components of this vector.
+		/// </summary>
+		/// <returns>
+		/// The negated components Vector.
+		/// </returns>
 		Vector2f operator-() const;
 
-		/// Overloads the subtraction operator to return a vector instance
-		/// which is equivalent to the difference of this vector and the 
-		/// specified vector. Neither this nor the specified vector's values 
-		/// are modified.
-		/// const Vector2f &v2 : Reference to the second vector.
-		/// return : The resultant vector.
+		/// <summary>
+		/// Overloads the subtraction operator to return the component 
+		/// difference between this vector and the specified vector.
+		/// </summary>
+		/// <param name="v2">
+		/// The other vector.
+		/// </param>
+		/// <returns>
+		/// The component difference Vector.
+		/// </returns>
 		Vector2f operator-(const Vector2f &v2) const;
 
-		/// Overloads the subtraction set operator to return this vector 
-		/// instance, equal to the resultant difference of this and the 
-		/// specified vector.
-		/// const Vector2f &v2 : Reference to the second vector.
-		/// return : The resultant vector.
+		/// <summary>
+		/// Overloads the subtraction-set operator to component subtract the
+		/// specified vector from this vector.
+		/// </summary>
+		/// <param name="v2">
+		/// The other vector.
+		/// </param>
+		/// <returns>
+		/// This vector.
+		/// </returns>
 		Vector2f& operator-=(const Vector2f &v2);
+
+		/// <summary>
+		/// Overloads the greater than operator to return whether this 
+		/// instance's magnitude is larger than the specified instance's
+		/// magnitude.
+		/// </summary>
+		/// <param name="v2">
+		/// The other vector.
+		/// </param>
+		/// <returns>
+		/// True if the magnitude of this vector is greater than the magnitude
+		/// of the specified vector.
+		/// </returns>
+		bool operator>(const Vector2f &v2) const;
+
+		/// <summary>
+		/// Overloads the less than operator to return whether this instance's
+		/// magnitude is less than the specified instance's magnitude.
+		/// </summary>
+		/// <param name="v2">
+		/// The other vector.
+		/// </param>
+		/// <returns>
+		/// True if the magnitude of this vector is less than the magnitude of
+		/// the specified vector.
+		/// </returns>
+		bool operator<(const Vector2f &v2) const;
 	private:
-		float x; // The x-component
-		float y; // The y-component
+		float x;                           // The x-component
+		float y;                           // The y-component
 	};
+
+	/// <summary>
+	/// Returns an output stream containg the x and y components of the vector
+	/// in the format: "(X, Y)".
+	/// </summary>
+	std::ostream& operator<<(std::ostream &stream, const Vector2f &vec);
 } }
 
 #endif
