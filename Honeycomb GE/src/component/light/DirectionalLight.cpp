@@ -64,12 +64,12 @@ namespace Honeycomb { namespace Component { namespace Light {
 		this->transformChangeHandler.addAction(
 			std::bind(&DirectionalLight::onTransformChange, this));
 		this->transform->getChangedEvent().addEventHandler(
-			this->transformChangeHandler);
+			&this->transformChangeHandler);
 	}
 
 	void DirectionalLight::onDetach() {
 		this->transform->getChangedEvent().removeEventHandler(
-			this->transformChangeHandler);
+			&this->transformChangeHandler);
 		this->transform = nullptr;
 	}
 

@@ -9,50 +9,91 @@
 namespace Honeycomb { namespace Conjuncture {
 	class Event {
 	public:
-		/// Instantiates a new event.
+		/// <summary>
+		/// Instantiates a new, empty event.
+		/// </summary>
 		Event();
 
-		/// Deletes this event.
+		/// <summary>
+		/// Copying of the Event class is forbidden.
+		/// </summary>
+		Event(const Event &) = delete;
+
+		/// <summary>
+		/// Unsubscribes all of the event handlers from this Event, as it is
+		/// killed.
+		/// </summary>
 		~Event();
 
-		/// Adds the specified event handler to this event, so that it may be
-		/// notified once the event occurs.
-		/// const EventHandler &eH : The event handler to be attached to this
-		///							 Event.
-		void addEventHandler(const EventHandler &eH);
+		/// <summary>
+		/// Adds the specified Event Handler to this event. If the Event 
+		/// Handler is already added to this, it is not added again.
+		/// </summary>
+		/// <param name="eH">
+		/// The constant pointer to the Event Handler to be added. Note that
+		/// this may not be null, this is checked by a runtime assertion.
+		/// </param>
+		void addEventHandler(EventHandler *eH);
 
-		/// Clears all of the event handlers attached to this event. The event
-		/// handlers will no longer be notified once the event occurs, however,
-		/// the event handler itself is not modified.
+		/// <summary>
+		/// Removes all of the Event Handlers from this event.
+		/// </summary>
 		void clearEventHandlers();
 
-		/// Should be called when an event occurs. This will notify all event 
-		/// handlers that this event is occuring, in the order in which they
-		/// were added.
+		/// <summary>
+		/// Function which triggers the event. For each event handler attached
+		/// to this Event, the event handler is notified of the event.
+		/// </summary>
 		void onEvent() const;
 
-		/// Removes the specified event handler from this event, so that it may
-		/// no longer be notified once the event occurs.
-		/// const EventHandler &eH : The event handler which is to be detached
-		///							 from this event.
-		void removeEventHandler(const EventHandler &eH);
+		/// <summary>
+		/// Removes the specified event handler from the event handlers of this
+		/// event. If the event handler is not attached to this event, no 
+		/// further action is taken.
+		/// </summary>
+		/// <param name="eH">
+		/// The constant pointer to the Event Handler to be removed. Note that
+		/// this may not be null, this is checked by a runtime assertion.
+		/// </param>
+		void removeEventHandler(EventHandler *eH);
 
-		/// Adds the specified event handler to this event, so that it may be
-		/// notified once the event occurs.
-		/// const EventHandler &eH : The event handler to be attached to this
-		///							 Event.
-		Event& operator+=(const EventHandler &eH);
+		/// <summary>
+		/// Adds the specified Event Handler to this event. If the Event 
+		/// Handler is already added to this, it is not added again.
+		/// </summary>
+		/// <param name="eH">
+		/// The event handler to be added to the event. This may not be null,
+		/// this is checked by a runtime assertion.
+		/// </param>
+		/// <returns>
+		/// This instance.
+		/// </returns>
+		Event& operator+=(EventHandler *eH);
 
-		/// Removes the specified event handler from this event, so that it may
-		/// no longer be notified once the event occurs.
-		/// const EventHandler &eH : The event handler to be detached from this
-		///							 Event.
-		Event& operator-=(const EventHandler &eH);
+		/// <summary>
+		/// Removes the specified Event Handler from this event. If the event
+		/// handler is not attached to this event, no further action is taken.
+		/// </summary>
+		/// <param name="eH">
+		/// The event handler to be removed from the event. This may not be
+		/// null, this is checked by a runtime assertion.
+		/// </param>
+		/// <returns>
+		/// This instance.
+		/// </returns>
+		Event& operator-=(EventHandler *eH);
 
-		/// Triggers the on event of this Event.
+		/// <summary>
+		/// Triggers this Event.
+		/// </summary>
 		void operator()();
+
+		/// <summary>
+		/// Assignment of Event class is forbidden.
+		/// </summary>
+		Event& operator=(Event &eH) = delete;
 	private:
-		std::vector<const EventHandler*> eHandlers; // All event handlers
+		std::vector<EventHandler*> handlers; // The Event Handlers
 	};
 } }
 

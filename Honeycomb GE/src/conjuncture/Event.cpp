@@ -1,7 +1,7 @@
 #include "../../include/conjuncture/Event.h"
 
 #include <algorithm>
-
+#include <cassert>
 #include <iostream>
 
 namespace Honeycomb { namespace Conjuncture {
@@ -10,38 +10,48 @@ namespace Honeycomb { namespace Conjuncture {
 	}
 
 	Event::~Event() {
-
+		for (int i = this->handlers.size() - 1; i >= 0; --i)
+			this->removeEventHandler(this->handlers.at(i));
 	}
 
-	void Event::addEventHandler(const EventHandler &eH) {
-		this->eHandlers.push_back(&eH); // Add handler to list of handlers
+	void Event::addEventHandler(EventHandler *eH) {
+		assert(eH != nullptr);
+
+		if (std::find(this->handlers.begin(), this->handlers.end(), eH)
+				!= this->handlers.end()) 
+			return;
+
+		this->handlers.push_back(eH);
+		eH->events.push_back(this);
 	}
 
 	void Event::clearEventHandlers() {
-		this->eHandlers.clear();
+		this->handlers.clear();
 	}
 
 	void Event::onEvent() const {
-		// Notifies all event handlers that the event is occuring
-		for (const EventHandler *eH : this->eHandlers) eH->onEvent();
+		for (const EventHandler *eH : this->handlers) 
+			eH->onEvent();
 	}
 
-	void Event::removeEventHandler(const EventHandler &eH) {
-		if (this->eHandlers.size() == 0) return; // If empty, return
-		const EventHandler *eH_ptr = &eH; // Pointer to reference, for compare
+	void Event::removeEventHandler(EventHandler *eH) {
+		assert(eH != nullptr);
 
-		this->eHandlers.erase( // Remove handler from list of handlers
-			std::remove(eHandlers.begin(), eHandlers.end(), eH_ptr),
-			eHandlers.end());
+		this->handlers.erase(
+			std::remove(handlers.begin(), handlers.end(), eH),
+			handlers.end());
+		eH->events.erase(
+			std::remove(eH->events.begin(), eH->events.end(), this),
+			eH->events.end());
 	}
 
-	Event& Event::operator+=(const EventHandler &eH) {
+	Event& Event::operator+=(EventHandler *eH) {
 		this->addEventHandler(eH);
 
 		return *this;
 	}
 
-	Event& Event::operator-=(const EventHandler &eH) {
+	Event& Event::operator-=(EventHandler *eH) {
 		this->removeEventHandler(eH);
 		
 		return *this;

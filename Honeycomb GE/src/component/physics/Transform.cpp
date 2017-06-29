@@ -364,17 +364,17 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		// from the current parent. If the new parent is NULL and the current
 		// parent is NULL, nothing is modified.
 		if (parent == nullptr && this->parent != nullptr) {
-			this->parent->changedEvent -= this->parentChanged;
+			this->parent->changedEvent -= &this->parentChanged;
 			this->parent = nullptr;
 		} else if (parent != nullptr) {	   // If the new parent is not NULL
 			// If the current parent is not NULL, unsubscribe from the current
 			// parent's changed event.
 			if (this->parent != nullptr)
-				this->parent->changedEvent -= this->parentChanged;
+				this->parent->changedEvent -= &this->parentChanged;
 
 			// Subscribe to the new parent's changed event and set the argument
 			// as the new parent.
-			parent->changedEvent += this->parentChanged;
+			parent->changedEvent += &this->parentChanged;
 			this->parent = parent;
 		}
 

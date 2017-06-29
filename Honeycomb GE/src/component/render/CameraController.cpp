@@ -126,7 +126,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 		this->windowResizeHandler.addAction(
 			std::bind(&CameraController::setProjectionSizeToWindow, this));
 		GameWindow::getGameWindow()->getResizeEvent().addEventHandler(
-			this->windowResizeHandler);
+			&this->windowResizeHandler);
 		this->windowResizeHandler.addAction(
 			std::bind(&CameraController::calcProjectionView, this));
 		this->windowResizeHandler.addAction(
@@ -141,14 +141,14 @@ namespace Honeycomb { namespace Component { namespace Render {
 		this->transformChangeHandler.addAction(
 			std::bind(&CameraController::calcProjection, this));
 		this->transform->getChangedEvent().addEventHandler(
-			this->transformChangeHandler);
+			&this->transformChangeHandler);
 	}
 
 	void CameraController::onDetach() {
 		// Remove the changed event handler from the Transform and set this
 		// Transform pointer to NULL since we are not attached to anything.
 		this->transform->getChangedEvent().removeEventHandler(
-			this->transformChangeHandler);
+			&this->transformChangeHandler);
 		this->transform = nullptr;
 	}
 

@@ -130,7 +130,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		GLItem::initialize();
 
 		GameWindow::getGameWindow()->getResizeEvent() += 
-			this->windowResizeHandler;
+			&this->windowResizeHandler;
 		this->windowResizeHandler += std::bind(&GBuffer::resizeTextures, this);
 
 		// Fetch the Height and Width of the Game Window

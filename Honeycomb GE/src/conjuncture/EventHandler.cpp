@@ -2,13 +2,16 @@
 
 #include <algorithm>
 
+#include "../../include/conjuncture/Event.h"
+
 namespace Honeycomb { namespace Conjuncture {
 	EventHandler::EventHandler() {
 
 	}
 
 	EventHandler::~EventHandler() {
-
+		for (auto *e : this->events) 
+			e->removeEventHandler(this);
 	}
 
 	void EventHandler::addAction(std::function<void()> f) {
@@ -26,10 +29,9 @@ namespace Honeycomb { namespace Conjuncture {
 	}
 
 	void EventHandler::onEvent() const {
-		std::vector<std::function<void()>>::const_iterator i; // Get Iterator
-
 		// Call all of the functions which are binded to this event handler
-		for (i = this->actions.begin(); i < this->actions.end(); i++) (*i)();
+		for (auto i = this->actions.begin(); i < this->actions.end(); i++) 
+			(*i)();
 	}
 
 	void EventHandler::operator()() const {
