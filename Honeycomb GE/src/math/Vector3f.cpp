@@ -5,20 +5,33 @@
 #include "../../include/math/Quaternion.h"
 
 namespace Honeycomb { namespace Math {
-	Vector3f Vector3f::forward = Vector3f(0, 0, -1);
-	Vector3f Vector3f::right = Vector3f(1, 0, 0);
-	Vector3f Vector3f::up = Vector3f(0, 1, 0);
+	const Vector3f& Vector3f::getGlobalForward() {
+		static Vector3f forward{ 0.0F, 0.0F, -1.0F };
+		return forward;
+	}
 
-	Vector3f::Vector3f() : Vector3f(0.0F, 0.0F, 0.0F) { }
+	const Vector3f& Vector3f::getGlobalRight() {
+		static Vector3f right{ 1.0F, 0.0F, 0.0F };
+		return right;
+	}
+
+	const Vector3f& Vector3f::getGlobalUp() {
+		static Vector3f up{ 0.0F, 1.0F, 0.0F };
+		return up;
+	}
+
+	Vector3f::Vector3f() : Vector3f(0.0F, 0.0F, 0.0F) {
+	
+	}
+
+	Vector3f::Vector3f(const float &all) : Vector3f(all, all, all) {
+
+	}
 
 	Vector3f::Vector3f(const float &x, const float &y, const float &z) {
 		this->x = x;
 		this->y = y;
 		this->z = z;
-	}
-
-	Vector3f::~Vector3f() {
-
 	}
 
 	Vector3f Vector3f::add(const Vector3f& v2) const {
@@ -57,14 +70,25 @@ namespace Honeycomb { namespace Math {
 		return *this;
 	}
 
-	Vector3f Vector3f::divide(const Vector3f &vec) const {
-		return Vector3f(this->x / vec.x, this->y / vec.y, this->z / vec.z);
+	Vector3f Vector3f::divide(const float &scale) const {
+		return Vector3f(this->x / scale, this->y / scale, this->z / scale);
 	}
 
-	Vector3f& Vector3f::divideTo(const Vector3f &vec) {
-		Vector3f prod = this->divide(vec);
+	Vector3f Vector3f::divide(const Vector3f &v2) const {
+		return Vector3f(this->x / v2.x, this->y / v2.y, this->z / v2.z);
+	}
 
-		this->set(prod.x, prod.y, prod.z);
+	Vector3f& Vector3f::divideTo(const float &scale) {
+		Vector3f divided = this->divide(scale);
+
+		this->set(divided.x, divided.y, divided.z);
+		return *this;
+	}
+
+	Vector3f& Vector3f::divideTo(const Vector3f &v2) {
+		Vector3f divided = this->divide(v2);
+
+		this->set(divided.x, divided.y, divided.z);
 		return *this;
 	}
 
@@ -76,18 +100,6 @@ namespace Honeycomb { namespace Math {
 		x = this->x;
 		y = this->y;
 		z = this->z;
-	}
-
-	Vector3f& Vector3f::getGlobalForward() {
-		return forward;
-	}
-
-	Vector3f& Vector3f::getGlobalUp() {
-		return up;
-	}
-
-	Vector3f& Vector3f::getGlobalRight() {
-		return right;
 	}
 
 	float& Vector3f::getX() {
@@ -115,7 +127,11 @@ namespace Honeycomb { namespace Math {
 	}
 
 	float Vector3f::magnitude() const {
-		return (float)sqrt(x * x + y * y + z * z);
+		return (float)sqrt(this->magnitude2());
+	}
+
+	float Vector3f::magnitude2() const {
+		return x * x + y * y + z * z;
 	}
 
 	Vector3f Vector3f::multiply(const Matrix4f &mat) const {
@@ -224,12 +240,20 @@ namespace Honeycomb { namespace Math {
 		return this->multiply(mat);
 	}
 
+	Vector3f Vector3f::operator*(const Vector3f &v2) const {
+		return this->multiply(v2);
+	}
+
 	Vector3f& Vector3f::operator*=(const float &scale) {
 		return this->scaleTo(scale);
 	}
 
 	Vector3f& Vector3f::operator*=(const Matrix4f &mat) {
 		return this->multiplyTo(mat);
+	}
+
+	Vector3f& Vector3f::operator*=(const Vector3f &v2) {
+		return this->multiplyTo(v2);
 	}
 
 	Vector3f Vector3f::operator/(const float &scale) const {
@@ -258,5 +282,18 @@ namespace Honeycomb { namespace Math {
 
 	Vector3f& Vector3f::operator-=(const Vector3f &v2) {
 		return this->addTo(-v2);
+	}
+
+	bool Vector3f::operator<(const Vector3f &v2) const {
+		return this->magnitude2() < v2.magnitude2();
+	}
+
+	bool Vector3f::operator>(const Vector3f &v2) const {
+		return this->magnitude2() > v2.magnitude2();
+	}
+
+	std::ostream& operator<<(std::ostream &stream, const Vector3f &vec) {
+		return stream << "(" << vec.getX() << ", " << vec.getY() << ", " <<
+				vec.getZ() << ")";
 	}
 } }

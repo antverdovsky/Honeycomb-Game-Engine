@@ -5,7 +5,13 @@
 #include "../../include/math/Matrix4f.h"
 
 namespace Honeycomb { namespace Math {
-	Vector2f::Vector2f() : Vector2f(0.0F, 0.0F) { }
+	Vector2f::Vector2f() : Vector2f(0.0F, 0.0F) {
+	
+	}
+
+	Vector2f::Vector2f(const float &all) : Vector2f(all, all) {
+	
+	}
 
 	Vector2f::Vector2f(const float &x, const float &y) {
 		this->x = x;
@@ -31,6 +37,28 @@ namespace Honeycomb { namespace Math {
 
 		// Inverse cosine to get the theta value
 		return (float)acos(cosTheta);
+	}
+
+	Vector2f Vector2f::divide(const float &scale) const {
+		return Vector2f(this->x / scale, this->y / scale);
+	}
+
+	Vector2f Vector2f::divide(const Vector2f &v2) const {
+		return Vector2f(this->x / v2.x, this->y / v2.y);
+	}
+
+	Vector2f& Vector2f::divideTo(const float &scale) {
+		Vector2f divided = this->divide(scale);
+
+		this->set(divided.x, divided.y);
+		return *this;
+	}
+
+	Vector2f& Vector2f::divideTo(const Vector2f &v2) {
+		Vector2f divided = this->divide(v2);
+
+		this->set(divided.x, divided.y);
+		return *this;
 	}
 
 	float Vector2f::dot(const Vector2f &v2) const {
@@ -70,8 +98,19 @@ namespace Honeycomb { namespace Math {
 		return mat.multiply(*this);
 	}
 
+	Vector2f Vector2f::multiply(const Vector2f &v2) const {
+		return Vector2f(this->x * v2.x, this->y * v2.y);
+	}
+
 	Vector2f& Vector2f::multiplyTo(const Matrix4f &mat) {
 		Vector2f prod = this->multiply(mat);
+
+		this->set(prod.x, prod.y);
+		return *this;
+	}
+
+	Vector2f& Vector2f::multiplyTo(const Vector2f &v2) {
+		Vector2f prod = this->multiply(v2);
 
 		this->set(prod.x, prod.y);
 		return *this;
@@ -137,12 +176,20 @@ namespace Honeycomb { namespace Math {
 		return this->multiply(mat);
 	}
 
+	Vector2f Vector2f::operator*(const Vector2f &v2) const {
+		return this->multiply(v2);
+	}
+
 	Vector2f& Vector2f::operator*=(const float &scale) {
 		return this->scaleTo(scale);
 	}
 
 	Vector2f& Vector2f::operator*=(const Matrix4f &mat) {
 		return this->multiplyTo(mat);
+	}
+
+	Vector2f& Vector2f::operator*=(const Vector2f &v2) {
+		return this->multiplyTo(v2);
 	}
 
 	Vector2f Vector2f::operator/(const float &scale) const {

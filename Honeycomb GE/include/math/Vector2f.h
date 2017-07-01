@@ -8,7 +8,8 @@ namespace Honeycomb { namespace Math { class Matrix4f; } }
 
 namespace Honeycomb { namespace Math {
 	/// <summary>
-	/// Represents a two dimensional float vector containing x, y components.
+	/// Represents a two dimensional float vector containing the x, y 
+	/// components.
 	/// </summary>
 	class Vector2f {
 	public:
@@ -17,6 +18,15 @@ namespace Honeycomb { namespace Math {
 		/// components.
 		/// </summary>
 		Vector2f();
+		
+		/// <summary>
+		/// Creates a new two dimensional vector whose x and y component values
+		/// are equal to the specified value.
+		/// </summary>
+		/// <param name="all">
+		/// The value to be used for the x and y components of the Vector.
+		/// </param>
+		Vector2f(const float &all);
 
 		/// <summary>
 		/// Creates a new two dimensional vector with the specified values for
@@ -64,6 +74,54 @@ namespace Honeycomb { namespace Math {
 		/// The angle between the vectors, in radians.
 		/// </returns>
 		float angle(const Vector2f &v2) const;
+
+		/// <summary>
+		/// Returns a copy of this vector where each component of the vector is
+		/// divided by the specified scale factor.
+		/// </summary>
+		/// <param name="scale">
+		/// The scale factor.
+		/// </param>
+		/// <returns>
+		/// The divided vector.
+		/// </returns>
+		Vector2f divide(const float &scale) const;
+
+		/// <summary>
+		/// Returns a copy of this vector where each component of the vector is
+		/// divided by the respective component of the specified vector.
+		/// </summary>
+		/// <param name="v2">
+		/// The other vector.
+		/// </param>
+		/// <returns>
+		/// The divided vector.
+		/// </returns>
+		Vector2f divide(const Vector2f &v2) const;
+
+		/// <summary>
+		/// Divides each component of this Vector by the specified scale 
+		/// factor.
+		/// </summary>
+		/// <param name="scale">
+		/// The scale factor.
+		/// </param>
+		/// <returns>
+		/// This Vector.
+		/// </returns>
+		Vector2f& divideTo(const float &scale);
+
+		/// <summary>
+		/// Divides each component of this Vector by the respective component
+		/// of the specified vector.
+		/// </summary>
+		/// <param name="v2">
+		/// The other vector.
+		/// </param>
+		/// <returns>
+		/// This Vector.
+		/// </returns>
+		Vector2f& divideTo(const Vector2f &v2);
 
 		/// <summary>
 		/// Returns the dot product of this vector and the specified vector.
@@ -140,8 +198,8 @@ namespace Honeycomb { namespace Math {
 		float magnitude2() const;
 
 		/// <summary>
-		/// Returns an instance of the Vector2f which contains the product of
-		/// this vector and the specified Matrix4f.
+		/// Returns an instance of Vector2f which contains the product of this
+		/// vector and the specified Matrix4f.
 		/// </summary>
 		/// <param name="mat">
 		/// The matrix to be multiplied with this.
@@ -150,6 +208,18 @@ namespace Honeycomb { namespace Math {
 		/// The product vector.
 		/// </returns>
 		Vector2f multiply(const Matrix4f &mat) const;
+
+		/// <summary>
+		/// Returns an instance of Vector2f which contains the component
+		/// product of this vector and the specified vector.
+		/// </summary>
+		/// <param name="v2">
+		/// The other vector.
+		/// </param>
+		/// <returns>
+		/// The component product of the vectors.
+		/// </returns>
+		Vector2f multiply(const Vector2f &v2) const;
 
 		/// <summary>
 		/// Multiplies this vector by the specified Matrix4f and returns this.
@@ -163,7 +233,19 @@ namespace Honeycomb { namespace Math {
 		Vector2f& multiplyTo(const Matrix4f &mat);
 
 		/// <summary>
-		/// Normalies this vector and returns it.
+		/// Multiplies this vector by the specified Matrix4f and stores the
+		/// product in this instance.
+		/// </summary>
+		/// <param name="v2">
+		/// The other vector.
+		/// </param>
+		/// <returns>
+		/// This vector.
+		/// </returns>
+		Vector2f& multiplyTo(const Vector2f &v2);
+
+		/// <summary>
+		/// Normalizes this vector and returns it.
 		/// </summary>
 		/// <returns>
 		/// This vector.
@@ -282,6 +364,18 @@ namespace Honeycomb { namespace Math {
 		Vector2f operator*(const Matrix4f &mat) const;
 
 		/// <summary>
+		/// Overloads the multiplication operator to return the component
+		/// product of this vector and the specified vector.
+		/// </summary>
+		/// <param name="v2">
+		/// The other vector.
+		/// </param>
+		/// <returns>
+		/// The product copy of this Vector.
+		/// </returns>
+		Vector2f operator*(const Vector2f &v2) const;
+
+		/// <summary>
 		/// Overloads the multiplication-set operator to multiply this
 		/// instance by the specified scale and return this.
 		/// </summary>
@@ -304,6 +398,18 @@ namespace Honeycomb { namespace Math {
 		/// This Vector.
 		/// </returns>
 		Vector2f& operator*=(const Matrix4f &mat);
+
+		/// <summary>
+		/// Overloads the multiplication-set operator to component multiply
+		/// this instance by the specified vector and return this.
+		/// </summary>
+		/// <param name="v2">
+		/// The other vector.
+		/// </param>
+		/// <returns>
+		/// This Vector.
+		/// </returns>
+		Vector2f& operator*=(const Vector2f &v2);
 
 		/// <summary>
 		/// Overloads the division operator to return a copy of this Vector,
