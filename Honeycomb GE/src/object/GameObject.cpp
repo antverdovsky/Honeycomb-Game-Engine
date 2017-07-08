@@ -84,7 +84,7 @@ namespace Honeycomb { namespace Object {
 		// Get the components of the same type as the Game Component passed in
 		// and move the Game Component into the list. Get a reference to the
 		// back of the list since that is where the Component was moved to.
-		auto& componentsOfType = this->getComponentsOfType(
+		auto& componentsOfType = this->getComponentsInternal(
 			component->getGameComponentID());
 		componentsOfType.push_back(std::move(component));
 		GameComponent &componentRef = *componentsOfType.back();
@@ -146,16 +146,6 @@ namespace Honeycomb { namespace Object {
 	const std::vector<std::unique_ptr<GameObject>>& GameObject::getChildren()
 			const {
 		return this->children;
-	}
-
-	const std::vector<std::vector<std::unique_ptr<GameComponent>>>& 
-			GameObject::getComponents() const {
-		return this->components;
-	}
-
-	const std::vector<std::unique_ptr<GameComponent>>& 
-			GameObject::getComponentsOfType(const unsigned int &id) const {
-		return this->components.at(id);
 	}
 
 	bool GameObject::getIsActive() const {
@@ -378,7 +368,12 @@ namespace Honeycomb { namespace Object {
 	}
 
 	std::vector<std::unique_ptr<GameComponent>>& 
-			GameObject::getComponentsOfType(const unsigned int &id) {
+			GameObject::getComponentsInternal(const unsigned int &id) {
+		return this->components.at(id);
+	}
+
+	const std::vector<std::unique_ptr<GameComponent>>&
+			GameObject::getComponentsInternal(const unsigned int &id) const {
 		return this->components.at(id);
 	}
 

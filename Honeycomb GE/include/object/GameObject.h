@@ -2,6 +2,7 @@
 #ifndef GAME_OBJECT_H
 #define GAME_OBJECT_H
 
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
@@ -259,7 +260,7 @@ namespace Honeycomb { namespace Object {
 		/// </exception>
 		template<class T> 
 		const T& getComponent() const {
-			auto &componentsOfType = this->getComponentsOfType<T>();
+			auto &componentsOfType = this->getComponentsInternal<T>();
 
 			for (auto &comp : componentsOfType)
 				return dynamic_cast<const T&>(*comp.get());
@@ -268,17 +269,58 @@ namespace Honeycomb { namespace Object {
 		}
 
 		/// <summary>
-		/// Gets a 2D representation of the Game Components attached to this
-		/// Game Object. For each Game Component, there exists a 1D array 
-		/// inside the 2D array, at the index of the Game Component ID, such
-		/// that the 1D array contains pointers to all of the Game Components
-		/// of that type that are attached to this Game Object.
+		/// Gets all of the components of this Game Object which have the
+		/// specified Type and returns a list of the references to them. If the
+		/// Game Object has no such component, the vector returned is empty.
 		/// </summary>
+		/// <typeparam name="T">
+		/// The type of the game component which is attached to this Game
+		/// Object.
+		/// </typeparam>
 		/// <returns>
-		/// The 2D representation of the Game Components.
+		/// The vector of references to the game components.
 		/// </returns>
-		const std::vector<std::vector<std::unique_ptr<
-				Honeycomb::Component::GameComponent>>>& getComponents() const;
+		template<class T>
+		std::vector<std::reference_wrapper<T>> getComponents() {
+			auto &rawComponents = this->getComponentsInternal<T>();
+			std::vector<std::reference_wrapper<T>> components;
+
+			for (auto &raw : rawComponents) {
+				auto &downcast = dynamic_cast<T&>(*raw.get());
+				auto refWrapped = std::ref(downcast);
+
+				components.push_back(refWrapped);
+			}
+
+			return components;
+		}
+
+		/// <summary>
+		/// Gets all of the components of this Game Object which have the
+		/// specified Type and returns a list of the references to them. If the
+		/// Game Object has no such component, the vector returned is empty.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of the game component which is attached to this Game
+		/// Object.
+		/// </typeparam>
+		/// <returns>
+		/// The vector of constant references to the game components.
+		/// </returns>
+		template<class T>
+		std::vector<std::reference_wrapper<const T>> getComponents() const {
+			auto &rawComponents = this->getComponentsInternal<T>();
+			std::vector<std::reference_wrapper<const T>> components;
+
+			for (auto &raw : rawComponents) {
+				auto &downcast = dynamic_cast<T&>(*raw.get());
+				auto refWrapped = std::cref(downcast);
+
+				components.push_back(refWrapped);
+			}
+
+			return components;
+		}
 
 		/// <summary>
 		/// Gets a boolean representing whether or not the Game Object is
@@ -299,7 +341,7 @@ namespace Honeycomb { namespace Object {
 		/// True if the object is self active, false otherwise.
 		/// </returns>
 		const bool& getIsSelfActive() const;
-
+		
 		/// <summary>
 		/// Gets the name of this Game Object.
 		/// </summary>
@@ -347,43 +389,6 @@ namespace Honeycomb { namespace Object {
 		/// the Component ID with the parameter.
 		/// </returns>
 		unsigned int getNumberOfComponents(const unsigned int &id) const;
-
-		/// <summary>
-		/// Returns the list of components attached to this Game Object which
-		/// share the same Component ID as the specified parameter.
-		/// </summary>
-		/// <param name="id">
-		/// The Component ID.
-		/// </param>
-		/// <returns>
-		/// The list of components attached to this Game Object which have the
-		/// same Component ID as the parameter, by means of a constant 
-		/// reference.
-		/// </returns>
-		const std::vector<std::unique_ptr<
-				Honeycomb::Component::GameComponent>>& getComponentsOfType(
-				const unsigned int &id) const;
-
-		/// <summary>
-		/// Returns the list of components of the specified type which are
-		/// attached to this Game Object.
-		/// </summary>
-		/// <typeparam name="T">
-		/// The type of the component.
-		/// </typeparam>
-		/// <returns>
-		/// The list of components of type T attached to this Game Object, by
-		/// means of a constant reference.
-		/// </returns>
-		template<typename T>
-		const std::vector<std::unique_ptr<
-				Honeycomb::Component::GameComponent>>& getComponentsOfType() 
-				const {
-			// Get the list of components of the specified type and return it
-			unsigned int id = Honeycomb::Component::GameComponent::
-				getGameComponentTypeID<T>();
-			return this->components.at(id);
-		}
 
 		/// <summary>
 		/// Returns the parent of this Game Object, or null if this object has
@@ -645,7 +650,7 @@ namespace Honeycomb { namespace Object {
 		/// same Component ID as the parameter, by means of a reference.
 		/// </returns>
 		std::vector<std::unique_ptr<Honeycomb::Component::GameComponent>>&
-				getComponentsOfType(const unsigned int &id);
+				getComponentsInternal(const unsigned int &id);
 
 		/// <summary>
 		/// Returns the list of components of the specified type which are
@@ -660,7 +665,44 @@ namespace Honeycomb { namespace Object {
 		/// </returns>
 		template<typename T>
 		std::vector<std::unique_ptr<Honeycomb::Component::GameComponent>>&
-				getComponentsOfType() {
+				getComponentsInternal() {
+			// Get the list of components of the specified type and return it
+			unsigned int id = Honeycomb::Component::GameComponent::
+				getGameComponentTypeID<T>();
+
+			return this->components.at(id);
+		}
+
+		/// <summary>
+		/// Returns the list of components attached to this Game Object which
+		/// share the same Component ID as the specified parameter.
+		/// </summary>
+		/// <param name="id">
+		/// The Component ID.
+		/// </param>
+		/// <returns>
+		/// The list of components attached to this Game Object which have the
+		/// same Component ID as the parameter, by means of a reference.
+		/// </returns>
+		const std::vector<std::unique_ptr<
+				Honeycomb::Component::GameComponent>>&
+				getComponentsInternal(const unsigned int &id) const;
+
+		/// <summary>
+		/// Returns the list of components of the specified type which are
+		/// attached to this Game Object.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of the component.
+		/// </typeparam>
+		/// <returns>
+		/// The list of components of type T attached to this Game Object, by
+		/// means of a reference.
+		/// </returns>
+		template<typename T>
+		const std::vector<std::unique_ptr<
+				Honeycomb::Component::GameComponent>>& 
+				getComponentsInternal() const {
 			// Get the list of components of the specified type and return it
 			unsigned int id = Honeycomb::Component::GameComponent::
 				getGameComponentTypeID<T>();

@@ -51,15 +51,15 @@ namespace HoneycombTest {
 		this->cube = GameObjectFactory::getFactory().
 			newGameObject(Model("../Test Game/res/models/brick-cube/cube.fbx"));
 		this->plane = GameObjectFactory::getFactory().newPlane();
-	
+		
 		// Give the plane a textured material
-		auto colorMaterial = 
+		auto colorMaterial =
 			this->plane->getComponent<MeshRenderer>().getMaterials()[0];
 		auto colorTexture = Texture2D::newTexture2DShared();
 		colorTexture->
 			setImageDataIO(ImageIO("../Test Game/res/textures/colors.bmp"));
 		colorTexture->setAnisotropicFiltering(8);
-		colorMaterial->glSampler2Ds.setValue("albedoTexture.sampler", 
+		colorMaterial->glSampler2Ds.setValue("albedoTexture.sampler",
 			colorTexture);
 		colorMaterial->glFloats.setValue("shininess", 128.0F);
 		colorMaterial->glVector2fs.setValue("globalTiling",
@@ -89,8 +89,8 @@ namespace HoneycombTest {
 		this->ambient = GameObjectFactory::getFactory().newAmbientLight();
 		this->directional = GameObjectFactory::getFactory().newDirectionalLight();
 		this->ambient->getComponent<AmbientLight>().setIntensity(0.01F);
-		this->directional->getComponent<DirectionalLight>().
-			setIntensity(0.05F);
+		this->directional->getComponents<DirectionalLight>()[0].get().
+			setIntensity(0.25F);
 		this->directional->getComponent<DirectionalLight>().
 			getShadow().setShadowType(ShadowType::SHADOW_VARIANCE_AA);
 		this->directional->getComponent<DirectionalLight>().
@@ -101,13 +101,13 @@ namespace HoneycombTest {
 		this->camera = GameObjectFactory::getFactory().newCamera();
 		auto camTransf = std::make_unique<InputTransformable>();
 		this->camera->addComponent(std::move(camTransf));
-		
+
 		// Scale and position the Game Objects
-		this->plane->getComponent<Transform>().setScale(
+		this->plane->getComponents<Transform>()[0].get().setScale(
 			Vector3f(15.0F, 1.0F, 25.0F));
-		this->cube->getComponent<Transform>().setTranslation(
+		this->cube->getComponents<Transform>()[0].get().setTranslation(
 			Vector3f(-2.5F, 1.0F, -5.0F));
-		this->car->getComponent<Transform>().setTranslation(
+		this->car->getComponents<Transform>()[0].get().setTranslation(
 			Vector3f(-3.0F, 1.36F, 8.0F));
 		this->car->getComponent<Transform>().setScale(
 			Vector3f(2.0F, 2.0F, 2.0F));
@@ -136,14 +136,14 @@ namespace HoneycombTest {
 		carHeadlightR.getComponent<SpotLight>().setIntensity(8.0F);
 		carHeadlightR.getComponent<SpotLight>().getShadow().setIntensity(1.0F);
 		carHeadlightR.getComponent<Transform>().setTranslation(
-			Vector3f( -1.391F, 0.709F, 3.321F));
+			Vector3f(-1.391F, 0.709F, 3.321F));
 		carHeadlightL.getComponent<SpotLight>().getShadow().setShadowType(ShadowType::SHADOW_NONE);
 		carHeadlightR.getComponent<SpotLight>().getShadow().setShadowType(ShadowType::SHADOW_NONE);
 
-		this->car->getChild("Body").getComponent<MeshRenderer>().
+		this->car->getChild("Body").getComponents<MeshRenderer>()[0].get().
 			getMaterials()[1]->glVector3fs.setValue(
-			"albedoColor", Vector3f(0.0F, 0.0F, 0.0F));
-
+			"albedoColor", Vector3f(1.0F, 1.0F, 1.0F));
+		
 		// Add all of the initialized objects to the Game Scene hierarchy
 		this->gameScene.addChild(std::move(this->car));;
 		this->gameScene.addChild(std::move(this->cube));

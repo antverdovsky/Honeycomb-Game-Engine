@@ -10,8 +10,8 @@ namespace Honeycomb { namespace Conjuncture {
 	}
 
 	EventHandler::~EventHandler() {
-		for (auto *e : this->events) 
-			e->removeEventHandler(this);
+		for (int i = this->events.size() - 1; i >= 0; --i) 
+			this->events[i]->removeEventHandler(this);
 	}
 
 	void EventHandler::addAction(std::function<void()> f) {
