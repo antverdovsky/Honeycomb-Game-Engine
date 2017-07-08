@@ -216,9 +216,20 @@ namespace Honeycomb { namespace Object {
 		/// Returns a list of all of the children of this Game Object.
 		/// </summary>
 		/// <returns>
-		/// The list of the children, returned by constant reference.
+		/// The vector containing the references to the children of this Game
+		/// Object.
 		/// </returns>
-		const std::vector<std::unique_ptr<GameObject>>& getChildren() const;
+		std::vector<std::reference_wrapper<GameObject>> getChildren();
+
+		/// <summary>
+		/// Returns a list of all of the children of this Game Object.
+		/// </summary>
+		/// <returns>
+		/// The vector containing the constant references to the children of 
+		/// this Game Object.
+		/// </returns>
+		std::vector<std::reference_wrapper<const GameObject>> getChildren()
+				const;
 
 		/// <summary>
 		/// Gets the component of this Game Object which has the specified Type

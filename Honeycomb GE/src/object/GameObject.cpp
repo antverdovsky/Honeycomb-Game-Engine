@@ -143,9 +143,23 @@ namespace Honeycomb { namespace Object {
 		throw GameEntityNotAttachedException(this, name);
 	}
 
-	const std::vector<std::unique_ptr<GameObject>>& GameObject::getChildren()
-			const {
-		return this->children;
+	std::vector<std::reference_wrapper<GameObject>> GameObject::getChildren() {
+		std::vector<std::reference_wrapper<GameObject>> refChildren;
+
+		for (auto &childPtr : this->children)
+			refChildren.push_back(std::ref(*childPtr.get()));
+
+		return refChildren;
+	}
+
+	std::vector<std::reference_wrapper<const GameObject>> 
+			GameObject::getChildren() const {
+		std::vector<std::reference_wrapper<const GameObject>> refChildren;
+
+		for (auto &childPtr : this->children)
+			refChildren.push_back(std::cref(*childPtr.get()));
+
+		return refChildren;
 	}
 
 	bool GameObject::getIsActive() const {
