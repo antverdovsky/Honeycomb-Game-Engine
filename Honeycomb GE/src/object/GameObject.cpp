@@ -162,6 +162,32 @@ namespace Honeycomb { namespace Object {
 		return refChildren;
 	}
 
+	std::vector<std::reference_wrapper<GameObject>> GameObject::getChildren(
+			const std::string &name) {
+		std::vector<std::reference_wrapper<GameObject>> refChildren;
+
+		for (auto &childPtr : this->children) {
+			if (childPtr->getName() == name) {
+				refChildren.push_back(std::ref(*childPtr.get()));
+			}
+		}
+
+		return refChildren;
+	}
+
+	std::vector<std::reference_wrapper<const GameObject>> 
+			GameObject::getChildren(const std::string &name) const {
+		std::vector<std::reference_wrapper<const GameObject>> refChildren;
+
+		for (auto &childPtr : this->children) {
+			if (childPtr->getName() == name) {
+				refChildren.push_back(std::cref(*childPtr.get()));
+			}
+		}
+
+		return refChildren;
+	}
+
 	bool GameObject::getIsActive() const {
 		if (!this->hasParent()) return false;
 
@@ -364,6 +390,10 @@ namespace Honeycomb { namespace Object {
 		--this->numComponents;
 		componentsOfType.erase(comp);
 		return std::move(compPtr);
+	}
+
+	void GameObject::setName(const std::string &name) {
+		this->name = name;
 	}
 
 	GameObject::GameObject(const std::string &name, 

@@ -116,7 +116,6 @@ namespace Honeycomb { namespace Base {
 
 		// Initialize the Game & Start!
 		this->game->start();
-		if (GameScene::getActiveScene()) GameScene::getActiveScene()->onStart();
 	}
 
 	void BaseMain::stop() {

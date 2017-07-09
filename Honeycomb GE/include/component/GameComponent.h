@@ -29,8 +29,7 @@ namespace Honeycomb { namespace Component {
 		/// </returns>
 		template <typename T>
 		static GameComponentID getGameComponentTypeID() noexcept {
-			static_assert(std::is_base_of<GameComponent, T>::value,
-					"Type \"T\" must inherit from the GameComponent class.");
+			GameComponent::assertIsBaseOf<T>();
 
 			// Every time this function is called with a unique type parameter,
 			// the type variable is instantiated to the current game component
@@ -39,6 +38,20 @@ namespace Honeycomb { namespace Component {
 			static GameComponentID type = 
 					GameComponent::getGameComponentIDCounter();
 			return type;
+		}
+
+		/// <summary>
+		/// Performs a static assertion which checks if the specified type T
+		/// is inherited from this Game Component class. The assertion fails if
+		/// GameComponent is not the base class of type T.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of class which is to be checked.
+		/// </typeparam>
+		template <typename T>
+		static void assertIsBaseOf() noexcept {
+			static_assert(std::is_base_of<GameComponent, T>::value,
+				"Type \"T\" must inherit from the GameComponent class.");
 		}
 
 		/// <summary>

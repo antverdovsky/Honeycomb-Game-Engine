@@ -146,9 +146,10 @@ namespace HoneycombTest {
 
 		auto __test = this->car->getComponentsInDescendants<Transform>();
 		auto __test2 = this->car->getComponentsInDescendants<SpotLight>();     // how can this work with baselight if baselight.id != spotlight.id ?
-		
+		this->car->setName("Car Root");
+
 		// Add all of the initialized objects to the Game Scene hierarchy
-		this->gameScene.addChild(std::move(this->car));;
+		this->gameScene.addChild(std::move(this->car));
 		this->gameScene.addChild(std::move(this->cube));
 		this->gameScene.addChild(std::move(this->plane));
 		this->gameScene.addChild(std::move(this->ambient));

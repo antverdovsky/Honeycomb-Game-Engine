@@ -148,6 +148,10 @@ namespace Honeycomb { namespace Object {
 		/// </param>
 		template<typename T, typename ...TArgs>
 		Honeycomb::Component::GameComponent& addComponent(TArgs&&... args) {
+			static_assert(
+				std::is_base_of<Honeycomb::Component::GameComponent, T>::value,
+				"Type \"T\" must inherit from the GameComponent class.");
+
 			std::unique_ptr<Honeycomb::Component::GameComponent> component =
 				std::make_unique<T>(std::forward<TArgs>(args)...);
 
@@ -233,6 +237,34 @@ namespace Honeycomb { namespace Object {
 				const;
 
 		/// <summary>
+		/// Returns a list of all of the children of this Game Object whose
+		/// name matches thes the specified string.
+		/// </summary>
+		/// <param name="name">
+		/// The name of the game objects.
+		/// </param>
+		/// <returns>
+		/// The vector containing the references to the children of this Game
+		/// Object with the specified name.
+		/// </returns>
+		std::vector<std::reference_wrapper<GameObject>> getChildren(
+				const std::string &name);
+
+		/// <summary>
+		/// Returns a list of all of the children of this Game Object whose
+		/// name matches thes the specified string.
+		/// </summary>
+		/// <param name="name">
+		/// The name of the game objects.
+		/// </param>
+		/// <returns>
+		/// The vector containing the constant references to the children of 
+		/// this Game Object with the specified name.
+		/// </returns>
+		std::vector<std::reference_wrapper<const GameObject>> getChildren(
+				const std::string &name) const;
+
+		/// <summary>
 		/// Gets the component of this Game Object which has the specified Type
 		/// and downcasts it to that type. If the game object has multiple game
 		/// components of the specified type, the first component of that type
@@ -272,8 +304,7 @@ namespace Honeycomb { namespace Object {
 		/// </exception>
 		template<class T> 
 		const T& getComponent() const {
-			static_assert(std::is_base_of<GameComponent, T>::value,
-				"Type \"T\" must inherit from the GameComponent class.");
+			Honeycomb::Component::GameComponent::assertIsBaseOf<T>();
 
 			auto &componentsOfType = this->getComponentsInternal<T>();
 
@@ -297,8 +328,7 @@ namespace Honeycomb { namespace Object {
 		/// </returns>
 		template<class T>
 		std::vector<std::reference_wrapper<T>> getComponents() {
-			static_assert(std::is_base_of<GameComponent, T>::value,
-				"Type \"T\" must inherit from the GameComponent class.");
+			Honeycomb::Component::GameComponent::assertIsBaseOf<T>();
 
 			auto &rawComponents = this->getComponentsInternal<T>();
 			std::vector<std::reference_wrapper<T>> components;
@@ -348,8 +378,7 @@ namespace Honeycomb { namespace Object {
 		/// </returns>
 		template<class T>
 		std::vector<std::reference_wrapper<T>> getComponentsInAncestors() {
-			static_assert(std::is_base_of<GameComponent, T>::value,
-				"Type \"T\" must inherit from the GameComponent class.");
+			Honeycomb::Component::GameComponent::assertIsBaseOf<T>();
 
 			std::vector<std::reference_wrapper<T>> ancestorComponents;
 
@@ -414,8 +443,7 @@ namespace Honeycomb { namespace Object {
 		/// </returns>
 		template<class T>
 		std::vector<std::reference_wrapper<T>> getComponentsInDescendants() {
-			static_assert(std::is_base_of<GameComponent, T>::value,
-				"Type \"T\" must inherit from the GameComponent class.");
+			Honeycomb::Component::GameComponent::assertIsBaseOf<T>();
 
 			std::vector<std::reference_wrapper<T>> descendantComponents;
 
@@ -624,6 +652,8 @@ namespace Honeycomb { namespace Object {
 		/// </returns>
 		template<typename T>
 		bool hasComponent() const {
+			Honeycomb::Component::GameComponent::assertIsBaseOf<T>();
+
 			return this->getNumberOfComponents<T>() > 0;
 		}
 
@@ -750,6 +780,14 @@ namespace Honeycomb { namespace Object {
 				*component);
 
 		/// <summary>
+		/// Sets the name of this Game Object.
+		/// </summary>
+		/// <param name="name">
+		/// The new name of the Game Object.
+		/// </param>
+		void setName(const std::string &name);
+
+		/// <summary>
 		/// No assignment operator exists for the Game Object class.
 		/// </summary>
 		GameObject& operator=(const GameObject &object) = delete;
@@ -813,6 +851,8 @@ namespace Honeycomb { namespace Object {
 		template<typename T>
 		std::vector<std::unique_ptr<Honeycomb::Component::GameComponent>>&
 				getComponentsInternal() {
+			Honeycomb::Component::GameComponent::assertIsBaseOf<T>();
+
 			// Get the list of components of the specified type and return it
 			unsigned int id = Honeycomb::Component::GameComponent::
 				getGameComponentTypeID<T>();
@@ -850,6 +890,8 @@ namespace Honeycomb { namespace Object {
 		const std::vector<std::unique_ptr<
 				Honeycomb::Component::GameComponent>>& 
 				getComponentsInternal() const {
+			Honeycomb::Component::GameComponent::assertIsBaseOf<T>();
+
 			// Get the list of components of the specified type and return it
 			unsigned int id = Honeycomb::Component::GameComponent::
 				getGameComponentTypeID<T>();
