@@ -13,6 +13,8 @@
 
 namespace Honeycomb { namespace Component { class GameComponent; } }
 namespace Honeycomb { namespace Scene { class GameScene; } }
+namespace Honeycomb { namespace Component { namespace Light { 
+	class BaseLight; } } }
 
 namespace Honeycomb { namespace Object {
 	/// <summary>
@@ -674,18 +676,6 @@ namespace Honeycomb { namespace Object {
 		bool hasScene() const;
 
 		/// <summary>
-		/// This function is called after the Game Object is attached to a
-		/// parent game object or scene, and should handle any attach events.
-		/// </summary>
-		virtual void onAttach();
-
-		/// <summary>
-		/// This function is called after the Game Object is detached from a
-		/// parent game object or scene, and should handle any detach events.
-		/// </summary>
-		virtual void onDetach();
-
-		/// <summary>
 		/// This function is called after the Game Object is disabled, and
 		/// should handle any (re)disabiling events for the object.
 		/// </summary>
@@ -792,8 +782,8 @@ namespace Honeycomb { namespace Object {
 		/// </summary>
 		GameObject& operator=(const GameObject &object) = delete;
 	protected:
-		bool isSelfActive;                 // Is this object self active?
-		std::string name;                  // Name of this Game Object
+		bool isSelfActive;                  // Is this object self active?
+		std::string name;                   // Name of this Game Object
 		
 		GameObject *parent;                 // The parent of this Game Object
 		Honeycomb::Scene::GameScene *scene; // Scene to which this belongs to
@@ -900,12 +890,46 @@ namespace Honeycomb { namespace Object {
 		}
 
 		/// <summary>
-		/// Sets the scene of this Game Object and all of its children.
+		/// This function is called right after this Game Object is attached to
+		/// a new parent.
+		/// </summary>
+		/// <param name="object">
+		/// The object to which this Game Object was attached to. An assertion
+		/// checks that this is not null.
+		/// </param>
+		virtual void onAttach(GameObject *object);
+
+		/// <summary>
+		/// This function is called when this Game Object is attached to a new
+		/// scene. This function is called recursively for all children of this
+		/// Game Object.
 		/// </summary>
 		/// <param name="scene">
-		/// The new scene of the Game Object hierarchy.
+		/// The scene to which this Game Object was attached to. An assertion
+		/// checks that this is not null.
 		/// </param>
-		void setScene(Honeycomb::Scene::GameScene *scene);
+		virtual void onAttach(Honeycomb::Scene::GameScene *scene);
+
+		/// <summary>
+		/// This function is called right before this Game Object is detached
+		/// from its parent.
+		/// </summary>
+		/// <param name="object">
+		/// The object from which this Game Object was detached from. An 
+		/// assertion checks that this is not null.
+		/// </param>
+		virtual void onDetach(GameObject *object);
+
+		/// <summary>
+		/// This function is called right before this Game Object is detached
+		/// from its scene. This function is called recursively for all 
+		/// children of this Game Object.
+		/// </summary>
+		/// <param name="scene">
+		/// The scene from which this Game Object was detached from. An 
+		/// assertion checks that this is not null.
+		/// </param>
+		virtual void onDetach(Honeycomb::Scene::GameScene *scene);
 	};
 } }
 

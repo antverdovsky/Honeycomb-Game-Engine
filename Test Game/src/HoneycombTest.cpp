@@ -164,6 +164,8 @@ namespace HoneycombTest {
 		this->gameScene.onStart();
 		GameScene::setActiveScene(this->gameScene);
 
+		auto &imrunningoutofnames = this->gameScene.getChild("Car Root");
+
 		GameWindow::getGameWindow()->setWindowTitle("Honeycomb Test Game"); 
 	}
 

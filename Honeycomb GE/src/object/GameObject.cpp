@@ -55,13 +55,9 @@ namespace Honeycomb { namespace Object {
 		this->children.push_back(std::move(object));
 		GameObject &childRef = *this->children.back();
 		
-		// Notify the child that its parent and scene have changed
-		childRef.parent = this;
-		childRef.setScene(this->scene);
-		
-		// Notify the Transform of the child that its parent has changed
-		Transform &childTransf = childRef.getComponent<Transform>();
-		childTransf.setParent(&this->getComponent<Transform>());
+		// Trigger the onAttach event function with this as the new parent of
+		// the child.
+		childRef.onAttach(this);
 		
 		return childRef;
 	}
@@ -247,14 +243,6 @@ namespace Honeycomb { namespace Object {
 		return this->scene != nullptr;
 	}
 
-	void GameObject::onAttach() {
-
-	}
-
-	void GameObject::onDetach() {
-
-	}
-
 	void GameObject::onDisable() {
 		
 	}
@@ -343,9 +331,8 @@ namespace Honeycomb { namespace Object {
 		childPtr->parent = nullptr;
 		childPtr->scene = nullptr;
 
-		// Notify the Transform of the child that it has lost a parent.
-		Transform &childTransf = childPtr->getComponent<Transform>();
-		childTransf.setParent(nullptr);
+		// Trigger the onDetach event for the child
+		childPtr->onDetach(this);
 		
 		// Erase the child from my children vector, and move the pointer out
 		// of this instance.
@@ -421,10 +408,37 @@ namespace Honeycomb { namespace Object {
 		return this->components.at(id);
 	}
 
-	void GameObject::setScene(GameScene *scene) {
+	void GameObject::onAttach(GameObject *object) {
+		// Set the object as the parent in the GameObject class and the 
+		// Transform component.
+		this->parent = object;
+		this->getComponent<Transform>().setParent(
+			&object->getComponent<Transform>());
+
+		// Attach this object to the same scene as the new parent
+		this->onAttach(object->scene);
+	}
+
+	void GameObject::onAttach(GameScene *scene) {
 		this->scene = scene;
 
-		for (auto &child : this->children)
-			child->setScene(scene);
+		for (auto &child : this->children) {
+			child->onAttach(scene);
+		}
+	}
+
+	void GameObject::onDetach(GameObject *object) {
+		this->parent = nullptr;
+		this->getComponent<Transform>().setParent(nullptr);
+
+		this->onDetach(this->scene);
+	}
+
+	void GameObject::onDetach(GameScene *scene) {
+		this->scene = nullptr;
+
+		for (auto &child : this->children) {
+			child->onDetach(scene);
+		}
 	}
 } }

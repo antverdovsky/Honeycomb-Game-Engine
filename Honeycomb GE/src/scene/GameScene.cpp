@@ -17,7 +17,7 @@ namespace Honeycomb { namespace Scene {
 	}
 
 	void GameScene::addChild(std::unique_ptr<GameObject> obj) {
-		obj->setScene(this);
+		obj->onAttach(this);	// TODO: need to call onDetach sometime...
 
 		GameObject::addChild(std::move(obj));
 	}
