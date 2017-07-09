@@ -51,7 +51,7 @@ namespace HoneycombTest {
 		this->cube = GameObjectFactory::getFactory().
 			newGameObject(Model("../Test Game/res/models/brick-cube/cube.fbx"));
 		this->plane = GameObjectFactory::getFactory().newPlane();
-		
+
 		// Give the plane a textured material
 		auto colorMaterial =
 			this->plane->getComponent<MeshRenderer>().getMaterials()[0];
@@ -143,6 +143,9 @@ namespace HoneycombTest {
 		this->car->getChild("Body").getComponents<MeshRenderer>()[0].get().
 			getMaterials()[1]->glVector3fs.setValue(
 			"albedoColor", Vector3f(1.0F, 1.0F, 1.0F));
+
+		auto __test = this->car->getComponentsInDescendants<Transform>();
+		auto __test2 = this->car->getComponentsInDescendants<SpotLight>();     // how can this work with baselight if baselight.id != spotlight.id ?
 		
 		// Add all of the initialized objects to the Game Scene hierarchy
 		this->gameScene.addChild(std::move(this->car));;

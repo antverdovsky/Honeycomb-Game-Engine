@@ -2,6 +2,7 @@
 #ifndef GAME_OBJECT_H
 #define GAME_OBJECT_H
 
+#include <deque>
 #include <functional>
 #include <memory>
 #include <string>
@@ -271,6 +272,9 @@ namespace Honeycomb { namespace Object {
 		/// </exception>
 		template<class T> 
 		const T& getComponent() const {
+			static_assert(std::is_base_of<GameComponent, T>::value,
+				"Type \"T\" must inherit from the GameComponent class.");
+
 			auto &componentsOfType = this->getComponentsInternal<T>();
 
 			for (auto &comp : componentsOfType)
@@ -293,6 +297,9 @@ namespace Honeycomb { namespace Object {
 		/// </returns>
 		template<class T>
 		std::vector<std::reference_wrapper<T>> getComponents() {
+			static_assert(std::is_base_of<GameComponent, T>::value,
+				"Type \"T\" must inherit from the GameComponent class.");
+
 			auto &rawComponents = this->getComponentsInternal<T>();
 			std::vector<std::reference_wrapper<T>> components;
 
@@ -320,17 +327,146 @@ namespace Honeycomb { namespace Object {
 		/// </returns>
 		template<class T>
 		std::vector<std::reference_wrapper<const T>> getComponents() const {
-			auto &rawComponents = this->getComponentsInternal<T>();
-			std::vector<std::reference_wrapper<const T>> components;
+			return this->getComponent<const T>();
+		}
 
-			for (auto &raw : rawComponents) {
-				auto &downcast = dynamic_cast<T&>(*raw.get());
-				auto refWrapped = std::cref(downcast);
+		/// <summary>
+		/// Gets all of the components of this Game Object and all of the
+		/// components of all of the ancestors of this Game Object which have
+		/// the specified Type and returns a list of the references to them.
+		/// This function works recursively so it will contain the components
+		/// of the parent, and parent of parent, etc. Note that since the scene
+		/// is considered to be a parent, it may also contain components
+		/// attached to the scene. If the Game Object nor any parents have the
+		/// components of the specified type, the returned vector is empty.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of the game component.
+		/// </typeparam>
+		/// <returns>
+		/// The vector of references to the game components.
+		/// </returns>
+		template<class T>
+		std::vector<std::reference_wrapper<T>> getComponentsInAncestors() {
+			static_assert(std::is_base_of<GameComponent, T>::value,
+				"Type \"T\" must inherit from the GameComponent class.");
 
-				components.push_back(refWrapped);
+			std::vector<std::reference_wrapper<T>> ancestorComponents;
+
+			// Traverse up the parent hierarchy
+			GameObject *current = this;
+			do {
+				// Get the components of type T of the current object
+				auto &currentComponents = current->getComponentsInternal<T>();
+
+				// For each component, downcast to type T, convert to reference
+				// and store into components vector.
+				for (auto &raw : currentComponents) {
+					auto &downcast = dynamic_cast<T&>(*raw.get());
+					auto refWrapped = std::ref(downcast);
+
+					ancestorComponents.push_back(refWrapped);
+				}
+
+				// Go to next parent
+				current = current->parent;
+			} while (current != nullptr);
+
+			return ancestorComponents;
+		}
+
+		/// <summary>
+		/// Gets all of the components of this Game Object and all of the
+		/// components of all of the ancestors of this Game Object which have
+		/// the specified Type and returns a list of the references to them.
+		/// This function works recursively so it will contain the components
+		/// of the parent, and parent of parent, etc. Note that since the scene
+		/// is considered to be a parent, it may also contain components
+		/// attached to the scene. If neither the Game Object nor any parents 
+		/// have components of the specified type, the returned vector is 
+		/// empty.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of the game component.
+		/// </typeparam>
+		/// <returns>
+		/// The vector of constant references to the game components.
+		/// </returns>
+		template<class T>
+		std::vector<std::reference_wrapper<const T>> getComponentsInAncestors()
+				const {
+			return this->getComponentsInAncestors<const T>();
+		}
+
+		/// <summary>
+		/// Gets all of the components of this Game Object and all of the
+		/// components of all of the descendants of this Game Object which have
+		/// the specified Type and returns a list of the references to them.
+		/// This function uses the Depth First Search algorithm to find the
+		/// game components. If neither the Game Object nor any children have
+		/// components of the specified type, the returned vector is empty.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of the game component.
+		/// </typeparam>
+		/// <returns>
+		/// The vector of references to the game components.
+		/// </returns>
+		template<class T>
+		std::vector<std::reference_wrapper<T>> getComponentsInDescendants() {
+			static_assert(std::is_base_of<GameComponent, T>::value,
+				"Type \"T\" must inherit from the GameComponent class.");
+
+			std::vector<std::reference_wrapper<T>> descendantComponents;
+
+			// For DFS, make a toVisit list and add root (this) node to it
+			std::deque<std::reference_wrapper<GameObject>> toVisit;
+			toVisit.push_back(std::ref(*this));
+
+			while (!toVisit.empty()) {
+				// Get the front node and remove it from the toVisit list
+				auto current = toVisit.front();
+				toVisit.pop_front();
+
+				// Add the children of this Game Object to the toVisit list
+				auto &currentChildren = current.get().getChildren();
+				for (auto &child : currentChildren) {
+					toVisit.push_back(child);
+				}
+
+				// Fetch components of type T from current object, downcast
+				// them, turn them to references, append to components list.
+				auto &currentComponents = 
+					current.get().getComponentsInternal<T>();
+				for (auto &comp : currentComponents) {
+					auto &downcast = dynamic_cast<T&>(*comp.get());
+					auto refWrapped = std::ref(downcast);
+
+					descendantComponents.push_back(refWrapped);
+				}
 			}
 
-			return components;
+			return descendantComponents;
+		}
+
+		/// <summary>
+		/// Gets all of the components of this Game Object and all of the
+		/// components of all of the descendants of this Game Object which have
+		/// the specified Type and returns a list of the references to them.
+		/// This function uses the Depth First Search algorithm to find the
+		/// game components. If neither the Game Object nor any children have
+		/// components of the specified type, the returned vector is empty.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of the game component.
+		/// </typeparam>
+		/// <returns>
+		/// The vector of constant references to the game components.
+		/// </returns>
+		template<class T>
+		const std::vector<std::reference_wrapper<T>> 
+				getComponentsInDescendants() const {
+			return this->getComponentsInDescendants<const T>();
 		}
 
 		/// <summary>
