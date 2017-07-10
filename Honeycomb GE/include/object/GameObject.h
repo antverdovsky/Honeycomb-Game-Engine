@@ -150,9 +150,7 @@ namespace Honeycomb { namespace Object {
 		/// </param>
 		template<typename T, typename ...TArgs>
 		Honeycomb::Component::GameComponent& addComponent(TArgs&&... args) {
-			static_assert(
-				std::is_base_of<Honeycomb::Component::GameComponent, T>::value,
-				"Type \"T\" must inherit from the GameComponent class.");
+			Honeycomb::Component::GameComponent::assertIsBaseOf<T>();
 
 			std::unique_ptr<Honeycomb::Component::GameComponent> component =
 				std::make_unique<T>(std::forward<TArgs>(args)...);
@@ -359,7 +357,7 @@ namespace Honeycomb { namespace Object {
 		/// </returns>
 		template<class T>
 		std::vector<std::reference_wrapper<const T>> getComponents() const {
-			return this->getComponent<const T>();
+			return this->getComponents<const T>();
 		}
 
 		/// <summary>
@@ -446,7 +444,6 @@ namespace Honeycomb { namespace Object {
 		template<class T>
 		std::vector<std::reference_wrapper<T>> getComponentsInDescendants() {
 			Honeycomb::Component::GameComponent::assertIsBaseOf<T>();
-
 			std::vector<std::reference_wrapper<T>> descendantComponents;
 
 			// For DFS, make a toVisit list and add root (this) node to it
@@ -497,6 +494,137 @@ namespace Honeycomb { namespace Object {
 		const std::vector<std::reference_wrapper<T>> 
 				getComponentsInDescendants() const {
 			return this->getComponentsInDescendants<const T>();
+		}
+
+		/// <summary>
+		/// Gets all of the components of this Game Object which have the
+		/// specified Type or which are inherited from the specified Type and
+		/// returns a list of the references to them.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of the game component. If the type specified is 
+		/// GameComponent, this returns a list of references to all of the
+		/// components of the Game Object.
+		/// </typeparam>
+		/// <returns>
+		/// A list of references to the components of type T or which inherit
+		/// from type T.
+		/// </returns>
+		template<typename T>
+		std::vector<std::reference_wrapper<T>> getComponentsInherited() {
+			Honeycomb::Component::GameComponent::assertIsBaseOf<T>();
+			std::vector<std::reference_wrapper<T>> refComponents;
+
+			// Go through each component type
+			for (auto &componentsOfType : this->components) {
+				// If no components of this type exist, continue to next set
+				if (componentsOfType.empty()) continue;
+
+				// If any component in the set does not downcast to type T,
+				// continue to next set.
+				auto first = componentsOfType[0].get();
+				if (dynamic_cast<T*>(first) == nullptr) continue;
+
+				// Else, downcast each component to type T and store in
+				// the reference vector.
+				for (auto &component : componentsOfType) {
+					auto &downcast = dynamic_cast<T&>(*component.get());
+					auto refWrapped = std::ref(downcast);
+
+					refComponents.push_back(refWrapped);
+				}
+			}
+
+			return refComponents;
+		}
+
+		/// <summary>
+		/// Gets all of the components of this Game Object or any of its
+		/// ancestors which have the specified Type or which are inherited from
+		/// the specified Type and returns a list of the references to them.
+		/// This function works recursively so it will contain the components
+		/// of the parent, and parent of parent, etc. Note that since the scene
+		/// is considered to be a parent, it may also contain components
+		/// attached to the scene.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of the game component. If the type specified is 
+		/// GameComponent, this returns a list of references to all of the
+		/// components of this and the ancestor Game Objects.
+		/// </typeparam>
+		/// <returns>
+		/// A list of references to the components of type T or which inherit
+		/// from type T.
+		/// </returns>
+		template<typename T>
+		std::vector<std::reference_wrapper<T>> 
+				getComponentsInheritedInAncestors() {
+			Honeycomb::Component::GameComponent::assertIsBaseOf<T>();
+			std::vector<std::reference_wrapper<T>> ancestorComponents;
+
+			// Traverse up the parent hierarchy
+			GameObject *current = this;
+			do {
+				// Get the components of type T of the current object
+				auto &currentComponents = current->getComponentsInherited<T>();
+
+				// Add the fetched components to the ancestor components list
+				ancestorComponents.insert(ancestorComponents.end(),
+					currentComponents.begin(), currentComponents.end());
+
+				// Go to next parent
+				current = current->parent;
+			} while (current != nullptr);
+
+			return ancestorComponents;
+		}
+
+		/// <summary>
+		/// Gets all of the components of this Game Object or any of its
+		/// descendants which have the specified Type or which are inherited 
+		/// from the specified Type and returns a list of the references to 
+		/// them. This function uses the Depth First Search algorithm to find 
+		/// the game components.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of the game component. If the type specified is 
+		/// GameComponent, this returns a list of references to all of the
+		/// components of this and the descendant Game Objects.
+		/// </typeparam>
+		/// <returns>
+		/// A list of references to the components of type T or which inherit
+		/// from type T.
+		/// </returns>
+		template<typename T>
+		std::vector<std::reference_wrapper<T>> 
+				getComponentsInheritedInDescendants() {
+			Honeycomb::Component::GameComponent::assertIsBaseOf<T>();
+			std::vector<std::reference_wrapper<T>> descendantComponents;
+
+			// For DFS, make a toVisit list and add root (this) node to it
+			std::deque<std::reference_wrapper<GameObject>> toVisit;
+			toVisit.push_back(std::ref(*this));
+
+			while (!toVisit.empty()) {
+				// Get the front node and remove it from the toVisit list
+				auto current = toVisit.front();
+				toVisit.pop_front();
+
+				// Add the children of this Game Object to the toVisit list
+				auto &currentChildren = current.get().getChildren();
+				for (auto &child : currentChildren) {
+					toVisit.push_back(child);
+				}
+
+				// Get the components of type T of the current object and add 
+				// the fetched components to the ancestor components list.
+				auto &currentComponents = 
+					current.get().getComponentsInherited<T>();
+				descendantComponents.insert(descendantComponents.end(),
+					currentComponents.begin(), currentComponents.end());
+			}
+
+			return descendantComponents;
 		}
 
 		/// <summary>

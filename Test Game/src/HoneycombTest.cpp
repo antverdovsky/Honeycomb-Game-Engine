@@ -119,6 +119,8 @@ namespace HoneycombTest {
 		// add to the car (similar to headlights).
 		auto carHeadlightLPtr = GameObjectFactory::getFactory().newSpotLight();
 		auto carHeadlightRPtr = GameObjectFactory::getFactory().newSpotLight();
+		carHeadlightLPtr->setName("HeadlightL");
+		carHeadlightRPtr->setName("HeadlightR");
 		auto &carHeadlightL = this->car->addChild(std::move(carHeadlightLPtr));
 		auto &carHeadlightR = this->car->addChild(std::move(carHeadlightRPtr));
 		carHeadlightL.getComponent<SpotLight>().setAttenuation(
@@ -144,10 +146,10 @@ namespace HoneycombTest {
 			getMaterials()[1]->glVector3fs.setValue(
 			"albedoColor", Vector3f(1.0F, 1.0F, 1.0F));
 
-		auto __test = this->car->getComponentsInDescendants<Transform>();
-		auto __test2 = this->car->getComponentsInDescendants<SpotLight>();     // how can this work with baselight if baselight.id != spotlight.id ?
+		auto test1 = this->car->getComponentsInheritedInDescendants<BaseLight>();
+		auto test2 = this->car->getChild("HeadlightL").getComponentsInheritedInAncestors<BaseLight>();
 		this->car->setName("Car Root");
-
+		
 		// Add all of the initialized objects to the Game Scene hierarchy
 		this->gameScene.addChild(std::move(this->car));
 		this->gameScene.addChild(std::move(this->cube));
