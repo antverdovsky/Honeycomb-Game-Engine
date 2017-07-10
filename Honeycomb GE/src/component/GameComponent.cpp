@@ -120,9 +120,12 @@ namespace Honeycomb { namespace Component {
 
 	}
 
-	GameComponentID GameComponent::getGameComponentIDCounter() noexcept {
+	GameComponentID GameComponent::getGameComponentIDCounter(bool inc) 
+			noexcept {
 		static GameComponentID type = 0U;
-		return type++;
+		
+		if (inc) return type++;
+		else     return type;
 	}
 
 	bool GameComponent::getProperty_AllowsMultiple() const noexcept {

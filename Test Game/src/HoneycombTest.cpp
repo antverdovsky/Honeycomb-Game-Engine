@@ -148,6 +148,7 @@ namespace HoneycombTest {
 
 		auto test1 = this->car->getComponentsInheritedInDescendants<BaseLight>();
 		auto test2 = this->car->getChild("HeadlightL").getComponentsInheritedInAncestors<BaseLight>();
+		auto test3 = this->car->getComponentsInherited<GameComponent>();
 		this->car->setName("Car Root");
 		
 		// Add all of the initialized objects to the Game Scene hierarchy

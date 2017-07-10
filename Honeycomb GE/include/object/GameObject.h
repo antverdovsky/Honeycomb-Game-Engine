@@ -344,23 +344,6 @@ namespace Honeycomb { namespace Object {
 		}
 
 		/// <summary>
-		/// Gets all of the components of this Game Object which have the
-		/// specified Type and returns a list of the references to them. If the
-		/// Game Object has no such component, the vector returned is empty.
-		/// </summary>
-		/// <typeparam name="T">
-		/// The type of the game component which is attached to this Game
-		/// Object.
-		/// </typeparam>
-		/// <returns>
-		/// The vector of constant references to the game components.
-		/// </returns>
-		template<class T>
-		std::vector<std::reference_wrapper<const T>> getComponents() const {
-			return this->getComponents<const T>();
-		}
-
-		/// <summary>
 		/// Gets all of the components of this Game Object and all of the
 		/// components of all of the ancestors of this Game Object which have
 		/// the specified Type and returns a list of the references to them.
@@ -402,29 +385,6 @@ namespace Honeycomb { namespace Object {
 			} while (current != nullptr);
 
 			return ancestorComponents;
-		}
-
-		/// <summary>
-		/// Gets all of the components of this Game Object and all of the
-		/// components of all of the ancestors of this Game Object which have
-		/// the specified Type and returns a list of the references to them.
-		/// This function works recursively so it will contain the components
-		/// of the parent, and parent of parent, etc. Note that since the scene
-		/// is considered to be a parent, it may also contain components
-		/// attached to the scene. If neither the Game Object nor any parents 
-		/// have components of the specified type, the returned vector is 
-		/// empty.
-		/// </summary>
-		/// <typeparam name="T">
-		/// The type of the game component.
-		/// </typeparam>
-		/// <returns>
-		/// The vector of constant references to the game components.
-		/// </returns>
-		template<class T>
-		std::vector<std::reference_wrapper<const T>> getComponentsInAncestors()
-				const {
-			return this->getComponentsInAncestors<const T>();
 		}
 
 		/// <summary>
@@ -474,26 +434,6 @@ namespace Honeycomb { namespace Object {
 			}
 
 			return descendantComponents;
-		}
-
-		/// <summary>
-		/// Gets all of the components of this Game Object and all of the
-		/// components of all of the descendants of this Game Object which have
-		/// the specified Type and returns a list of the references to them.
-		/// This function uses the Depth First Search algorithm to find the
-		/// game components. If neither the Game Object nor any children have
-		/// components of the specified type, the returned vector is empty.
-		/// </summary>
-		/// <typeparam name="T">
-		/// The type of the game component.
-		/// </typeparam>
-		/// <returns>
-		/// The vector of constant references to the game components.
-		/// </returns>
-		template<class T>
-		const std::vector<std::reference_wrapper<T>> 
-				getComponentsInDescendants() const {
-			return this->getComponentsInDescendants<const T>();
 		}
 
 		/// <summary>
@@ -923,7 +863,7 @@ namespace Honeycomb { namespace Object {
 		// Game Component, there exists an array, at the index of the Game
 		// Component ID, which contains all of the Game Components of that
 		// type which are attached to this Game Object.
-		std::vector<std::vector<std::unique_ptr<
+		mutable std::vector<std::vector<std::unique_ptr<
 				Honeycomb::Component::GameComponent>>> components;
 		unsigned int numComponents;
 
@@ -943,7 +883,10 @@ namespace Honeycomb { namespace Object {
 
 		/// <summary>
 		/// Returns the list of components attached to this Game Object which
-		/// share the same Component ID as the specified parameter.
+		/// share the same Component ID as the specified parameter. This
+		/// function also automatically resizes the components vector if new
+		/// component types were added since it (or its overrides) was last 
+		/// called.
 		/// </summary>
 		/// <param name="id">
 		/// The Component ID.
@@ -956,31 +899,11 @@ namespace Honeycomb { namespace Object {
 				getComponentsInternal(const unsigned int &id);
 
 		/// <summary>
-		/// Returns the list of components of the specified type which are
-		/// attached to this Game Object.
-		/// </summary>
-		/// <typeparam name="T">
-		/// The type of the component.
-		/// </typeparam>
-		/// <returns>
-		/// The list of components of type T attached to this Game Object, by
-		/// means of a reference.
-		/// </returns>
-		template<typename T>
-		std::vector<std::unique_ptr<Honeycomb::Component::GameComponent>>&
-				getComponentsInternal() {
-			Honeycomb::Component::GameComponent::assertIsBaseOf<T>();
-
-			// Get the list of components of the specified type and return it
-			unsigned int id = Honeycomb::Component::GameComponent::
-				getGameComponentTypeID<T>();
-
-			return this->components.at(id);
-		}
-
-		/// <summary>
 		/// Returns the list of components attached to this Game Object which
-		/// share the same Component ID as the specified parameter.
+		/// share the same Component ID as the specified parameter. This
+		/// function also automatically resizes the components vector if new
+		/// component types were added since it (or its overrides) was last 
+		/// called.
 		/// </summary>
 		/// <param name="id">
 		/// The Component ID.
@@ -995,7 +918,35 @@ namespace Honeycomb { namespace Object {
 
 		/// <summary>
 		/// Returns the list of components of the specified type which are
-		/// attached to this Game Object.
+		/// attached to this Game Object. This function also automatically 
+		/// resizes the components vector if new component types were added 
+		/// since it (or its overrides) was last called.
+		/// </summary>
+		/// <typeparam name="T">
+		/// The type of the component.
+		/// </typeparam>
+		/// <returns>
+		/// The list of components of type T attached to this Game Object, by
+		/// means of a reference.
+		/// </returns>
+		template<typename T>
+		std::vector<std::unique_ptr<Honeycomb::Component::GameComponent>>&
+				getComponentsInternal() {
+			Honeycomb::Component::GameComponent::assertIsBaseOf<T>();
+			this->resizeComponents();
+
+			// Get the list of components of the specified type and return it
+			unsigned int id = Honeycomb::Component::GameComponent::
+				getGameComponentTypeID<T>();
+
+			return this->components.at(id);
+		}
+
+		/// <summary>
+		/// Returns the list of components of the specified type which are
+		/// attached to this Game Object. This function also automatically 
+		/// resizes the components vector if new component types were added 
+		/// since it (or its overrides) was last called.
 		/// </summary>
 		/// <typeparam name="T">
 		/// The type of the component.
@@ -1009,6 +960,7 @@ namespace Honeycomb { namespace Object {
 				Honeycomb::Component::GameComponent>>& 
 				getComponentsInternal() const {
 			Honeycomb::Component::GameComponent::assertIsBaseOf<T>();
+			this->resizeComponents();
 
 			// Get the list of components of the specified type and return it
 			unsigned int id = Honeycomb::Component::GameComponent::
@@ -1058,6 +1010,13 @@ namespace Honeycomb { namespace Object {
 		/// assertion checks that this is not null.
 		/// </param>
 		virtual void onDetach(Honeycomb::Scene::GameScene *scene);
+
+		/// <summary>
+		/// Resizes the components vector of this Game Object to be roughly
+		/// twice the size of the number of component types if the number of
+		/// component types exceeds the components vector size.
+		/// </summary>
+		void resizeComponents() const;
 	};
 } }
 

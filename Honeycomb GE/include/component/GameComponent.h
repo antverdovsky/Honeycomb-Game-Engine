@@ -36,7 +36,7 @@ namespace Honeycomb { namespace Component {
 			// ID value and then the game component ID value is incremented.
 			// This allows for unique Component IDs for each different type.
 			static GameComponentID type = 
-					GameComponent::getGameComponentIDCounter();
+					GameComponent::getGameComponentIDCounter(true);
 			return type;
 		}
 
@@ -229,10 +229,15 @@ namespace Honeycomb { namespace Component {
 		/// Returns the static Game Component ID variable and increments it
 		/// after returning.
 		/// </summary>
+		/// <param name="inc">
+		/// Should the variable be incremented? False should be used if this
+		/// method is called simply to check the value of the counter. True
+		/// should be used if a new Game Component is being created.
+		/// </param>
 		/// <returns>
 		/// The Game Component ID variable.
 		/// </returns>
-		static GameComponentID getGameComponentIDCounter() noexcept;
+		static GameComponentID getGameComponentIDCounter(bool inc) noexcept;
 
 		/// <summary>
 		/// Internal helper function for cloning this Game Component. This must

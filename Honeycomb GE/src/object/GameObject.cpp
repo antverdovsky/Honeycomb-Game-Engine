@@ -204,7 +204,7 @@ namespace Honeycomb { namespace Object {
 
 	unsigned int GameObject::getNumberOfComponents(const unsigned int &id) 
 			const {
-		return this->components.at(id).size();
+		return this->getComponentsInternal(id).size();
 	}
 
 	GameObject* GameObject::getParent() {
@@ -348,8 +348,8 @@ namespace Honeycomb { namespace Object {
 
 		// Get the list of components which have the same type as the component
 		// paramter specified.
-		auto& componentsOfType = 
-			this->components.at(component->getGameComponentID());
+		auto& componentsOfType = this->getComponentsInternal(
+			component->getGameComponentID());
 		
 		// Try to find the Game Component by comparing the pointers for 
 		// equality. If failed, throw the exception.
@@ -390,9 +390,7 @@ namespace Honeycomb { namespace Object {
 		this->parent = nullptr;
 		this->scene = nullptr;
 
-		// todo, while 256 should be 10x more components than needed, this will
-		// still cause issues if there are more than 256...
-		this->components.resize(256);
+		this->components.resize(32);
 		this->numComponents = 0;
 
 		if (attachTransform) this->addComponent<Transform>();
@@ -400,11 +398,13 @@ namespace Honeycomb { namespace Object {
 
 	std::vector<std::unique_ptr<GameComponent>>& 
 			GameObject::getComponentsInternal(const unsigned int &id) {
+		this->resizeComponents();
 		return this->components.at(id);
 	}
 
 	const std::vector<std::unique_ptr<GameComponent>>&
 			GameObject::getComponentsInternal(const unsigned int &id) const {
+		this->resizeComponents();
 		return this->components.at(id);
 	}
 
@@ -440,5 +440,12 @@ namespace Honeycomb { namespace Object {
 		for (auto &child : this->children) {
 			child->onDetach(scene);
 		}
+	}
+
+	void GameObject::resizeComponents() const {
+		int componentCount = GameComponent::getGameComponentIDCounter(false);
+
+		if (componentCount >= this->components.size())
+			this->components.resize(2 * componentCount);
 	}
 } }
