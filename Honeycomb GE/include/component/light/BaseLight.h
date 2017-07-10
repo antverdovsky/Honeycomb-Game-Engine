@@ -101,6 +101,10 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// Returns a constant reference to the type of this Light.
 		/// return : The type of this light.
 		const LightType& getType() const;
+		//todo
+		void onAttach() override;
+		//todo
+		void onDetach() override;
 
 		/// Sets the color of this Base Light.
 		/// const Vector4f &col : The new color of this BaseLight.
@@ -109,12 +113,6 @@ namespace Honeycomb { namespace Component { namespace Light {
 		/// Sets the intensity of this Base Light.
 		/// const float &inten : The new intensity of this Base Light.
 		void setIntensity(const float &inten);
-
-		/// Starts this base light.
-		virtual void onStart() override;
-
-		/// Stops this base light.
-		virtual void onStop() override;
 	protected:
 		LightType type; // The type of this Light
 	private:

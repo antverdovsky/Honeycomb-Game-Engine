@@ -369,8 +369,8 @@ namespace Honeycomb { namespace Object {
 		std::unique_ptr<GameComponent> compPtr = std::move(*comp);
 		
 		// Notify the Game Component that it has lost a parent
-		compPtr->attached = nullptr;
 		compPtr->onDetach();
+		compPtr->attached = nullptr;
 		
 		// Erase the component from my components vector, and move the pointer
 		// out of this instance.

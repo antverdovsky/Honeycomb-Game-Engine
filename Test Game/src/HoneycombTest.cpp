@@ -152,7 +152,7 @@ namespace HoneycombTest {
 		this->car->setName("Car Root");
 		
 		// Add all of the initialized objects to the Game Scene hierarchy
-		this->gameScene.addChild(std::move(this->car));
+		this->carPtr = &this->gameScene.addChild(std::move(this->car));
 		this->gameScene.addChild(std::move(this->cube));
 		this->gameScene.addChild(std::move(this->plane));
 		this->gameScene.addChild(std::move(this->ambient));
@@ -165,8 +165,7 @@ namespace HoneycombTest {
 
 		// Start the Game Scene and set it as the active scene
 		this->gameScene.onStart();
-		GameScene::setActiveScene(this->gameScene);
-
+		
 		auto &imrunningoutofnames = this->gameScene.getChild("Car Root");
 
 		GameWindow::getGameWindow()->setWindowTitle("Honeycomb Test Game"); 
@@ -177,6 +176,24 @@ namespace HoneycombTest {
 	}
 
 	void TestGame::update() {
-		
+		float LO = -10.0F;
+		float HI = 10.0F;
+		float LO2 = 0.0F;
+		float HI2 = 2.0F;
+
+		if (GameInput::getGameInput()->getKeyReleased(GameInput::KEY_CODE_1)) {
+			auto light = GameObjectFactory::getFactory().newPointLight();
+			light->getComponent<Transform>().setTranslation(
+				Vector3f(LO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (HI - LO))),
+					LO2 + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (HI2 - LO2))),
+					LO + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (HI - LO)))));
+			light->getComponent<PointLight>().setIntensity(5.0F);
+			
+			this->gameScene.addChild(std::move(light));
+		} else if (GameInput::getGameInput()->getKeyReleased(GameInput::KEY_CODE_2)) {
+			this->gameScene.removeChild(&this->gameScene.getChild("Point Light"));
+		}
+
+		std::cout << this->gameScene.getSceneLights().size() << std::endl;
 	}
 }

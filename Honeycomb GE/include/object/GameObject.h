@@ -99,7 +99,7 @@ namespace Honeycomb { namespace Object {
 		/// <returns>
 		/// The reference to the new child Game Object.
 		/// </returns>
-		GameObject& addChild(std::unique_ptr<GameObject> object);
+		virtual GameObject& addChild(std::unique_ptr<GameObject> object);
 
 		/// <summary>
 		/// Adds the specified Game Component to this Game Object. If the
@@ -811,7 +811,7 @@ namespace Honeycomb { namespace Object {
 		/// <exception cref="GameEntityNotAttachedException">
 		/// Thrown if the Game Object specified is not attached to this.
 		/// </exception>
-		std::unique_ptr<GameObject> removeChild(GameObject *object);
+		virtual std::unique_ptr<GameObject> removeChild(GameObject *object);
 
 		/// <summary>
 		/// Removes the specfied Game Component from this Game Object. If the

@@ -79,10 +79,14 @@ namespace Honeycomb { namespace Component { namespace Light {
 		// Get the position from the Transform.
 		this->position = &this->getAttached()->getComponent<Transform>().
 			getGlobalTranslation();
+
+		BaseLight::onAttach();
 	}
 
 	void PointLight::onDetach() {
 		this->position = nullptr;
+
+		BaseLight::onDetach();
 	}
 
 	void PointLight::toShader(ShaderProgram &shader, const std::string &uni)

@@ -7,34 +7,39 @@ using Honeycomb::Component::Light::BaseLight;
 namespace Honeycomb { namespace Scene {
 	GameScene* GameScene::activeScene = nullptr;
 
+	GameScene* GameScene::getActiveScene() {
+		return GameScene::activeScene;
+	}
+
 	GameScene::GameScene() : GameScene("GameScene") {
 
 	}
 
-	GameScene::GameScene(const std::string &nam) : GameObject(nam) {
-		this->scene = this; //todo
+	GameScene::GameScene(const std::string &name) : GameObject(name) {
+		this->scene = this;
 		this->isSelfActive = true;
 	}
 
-	void GameScene::addChild(std::unique_ptr<GameObject> obj) {
-		obj->onAttach(this);	// TODO: need to call onDetach sometime...
+	GameObject& GameScene::addChild(std::unique_ptr<GameObject> object) {
+		// Add the object as a child of this, using the GameObject class
+		auto &child = GameObject::addChild(std::move(object));
 
-		GameObject::addChild(std::move(obj));
+		// Fetch all of the lights of the object and its children and add them
+		// to the scene's lights list.
+		auto lights = child.getComponentsInheritedInDescendants<BaseLight>();
+		this->sceneLights.insert(this->sceneLights.end(), 
+				lights.begin(), lights.end());
+
+		return child;
 	}
 
-	bool GameScene::getIsActive() const {
-		return true; //tmp
-	}
-
-	GameScene* GameScene::clone() const {
-		GameScene *clone = new GameScene();
-
-		clone->name = this->name;
-		clone->isSelfActive = this->isSelfActive;
+	std::unique_ptr<GameScene> GameScene::clone() const {
+		auto clone = std::make_unique<GameScene>(this->name);
 
 		// Copy over all of the children and the components, once duplicated
-		for (auto &child : this->children)
+		for (auto &child : this->children) {
 			clone->addChild(child->clone());
+		}
 		for (auto &componentsOfType : this->components) {
 			for (auto &component : componentsOfType) {
 				clone->addComponent(component->clone());
@@ -44,19 +49,47 @@ namespace Honeycomb { namespace Scene {
 		return clone;
 	}
 
-	GameScene* GameScene::getActiveScene() {
-		return GameScene::activeScene;
+	bool GameScene::getIsActive() const {
+		return GameScene::activeScene == this &&
+			this->isSelfActive;
 	}
 
-	std::vector<BaseLight*>& GameScene::getActiveLights() {
-		return this->activeLights;
+	const std::vector<std::reference_wrapper<
+			Honeycomb::Component::Light::BaseLight>>& 
+			GameScene::getSceneLights() const {
+		return this->sceneLights;
 	}
 
-	const std::vector<BaseLight*>& GameScene::getActiveLights() const {
-		return this->activeLights;
+	void GameScene::onDisable() {
+		if (GameScene::activeScene == this)
+			GameScene::activeScene = nullptr;
 	}
 
-	void GameScene::setActiveScene(GameScene &scene) {
-		GameScene::activeScene = &scene;
+	void GameScene::onEnable() {
+		// If any other scene is already enabled, disable it
+		if (GameScene::activeScene != nullptr) 
+			GameScene::activeScene->doDisable();
+
+		GameScene::activeScene = this;
+	}
+
+	std::unique_ptr<GameObject> GameScene::removeChild(GameObject *object) {
+		// Remove the child from this using the GameObject class
+		auto child = GameObject::removeChild(object);
+
+		// Fetch all of the lights of the object and its children and remove 
+		// them from the scene's lights list.
+		auto lights = child->getComponentsInheritedInDescendants<BaseLight>();
+		this->sceneLights.erase(
+			std::remove_if(this->sceneLights.begin(), this->sceneLights.end(),
+				[&](const auto &sceneLight) {
+					return std::find_if(lights.begin(), lights.end(), 
+						[&](const auto &light) {
+							return &light.get() == &sceneLight.get();
+						}) != lights.end();
+				}),
+			this->sceneLights.end());
+
+		return child;
 	}
 } }

@@ -155,13 +155,15 @@ namespace Honeycomb { namespace Component {
 
 		/// <summary>
 		/// Handles any events when this component is attached to a Game
-		/// Object, if necessary.
+		/// Object, if necessary. This is called immediately after the 
+		/// component has been attached to something.
 		/// </summary>
 		virtual void onAttach();
 
 		/// <summary>
 		/// Handles any events when this component is detached from a Game
-		/// Object, if necessary.
+		/// Object, if necessary. This is called immediately before the
+		/// component has been detached from something.
 		/// </summary>
 		virtual void onDetach();
 

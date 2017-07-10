@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <vector>
 
 #include "../../../include/debug/Logger.h"
 #include "../../../include/object/GameObject.h"
@@ -52,26 +53,35 @@ namespace Honeycomb { namespace Component { namespace Light {
 		return this->type;
 	}
 
+	void BaseLight::onAttach() {
+		// If the object to which we are attached is attached to some scene,
+		// add this light to the scene's lights list.
+		if (this->attached != nullptr &&
+				this->attached->getScene() != nullptr) {
+			this->attached->getScene()->sceneLights.push_back(std::ref(*this));
+		}
+	}
+
+	void BaseLight::onDetach() {
+		// If the object to which we are attached is attached to some scene,
+		// remove this light to the scene's lights list.
+		if (this->attached != nullptr &&
+				this->attached->getScene() != nullptr) {
+			auto &sceneLights = this->attached->getScene()->sceneLights;
+
+			sceneLights.erase(std::remove_if(
+				sceneLights.begin(), sceneLights.end(), [&](auto &light) {
+					return &light.get() == this;
+			}));
+		}
+	}
+
 	void BaseLight::setColor(const Honeycomb::Math::Vector3f &col) {
 		this->getColor() = col;
 	}
 
 	void BaseLight::setIntensity(const float &inten) {
 		this->getIntensity() = inten;
-	}
-
-	void BaseLight::onStart() {
-		this->getAttached()->getScene()->activeLights.push_back(this);
-
-		this->doEnable();
-	}
-
-	void BaseLight::onStop() {
-		std::vector<BaseLight*> &lights =
-			this->getAttached()->getScene()->activeLights;
-
-		lights.erase(std::remove(lights.begin(), lights.end(), this),
-			lights.end());
 	}
 
 	BaseLight* BaseLight::cloneInternal() const {

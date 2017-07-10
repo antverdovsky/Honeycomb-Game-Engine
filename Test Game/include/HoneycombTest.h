@@ -25,6 +25,8 @@ namespace HoneycombTest {
 	private:
 		Honeycomb::Scene::GameScene gameScene;	 // The main scene
 
+		Honeycomb::Object::GameObject *carPtr;
+
 		std::unique_ptr<Honeycomb::Object::GameObject> plane;		// The plane Game Object
 		std::unique_ptr<Honeycomb::Object::GameObject> cube;		// The cube Game Object
 		std::unique_ptr<Honeycomb::Object::GameObject> car;			// The car Game Object

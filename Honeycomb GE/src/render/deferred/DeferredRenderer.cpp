@@ -393,20 +393,24 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 		// mode when drawing lights.
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-		for (BaseLight *bL : scene.getActiveLights()) {
-			switch (bL->getType()) {
+		auto sceneLights = scene.getSceneLights();
+		for (auto &bL : sceneLights) {
+			if (!bL.get().getIsActive()) continue;
+
+			switch (bL.get().getType()) {
 			case LightType::LIGHT_TYPE_AMBIENT:
-				this->renderLightAmbient(*(bL->downcast<AmbientLight>()));
+				this->renderLightAmbient(*(bL.get().downcast<AmbientLight>()));
 				break;
 			case LightType::LIGHT_TYPE_DIRECTIONAL:
 				this->renderLightDirectional(*(
-					bL->downcast<DirectionalLight>()), scene);
+					bL.get().downcast<DirectionalLight>()), scene);
 				break;
 			case LightType::LIGHT_TYPE_POINT:
-				this->renderLightPoint(*(bL->downcast<PointLight>()));
+				this->renderLightPoint(*(bL.get().downcast<PointLight>()));
 				break;
 			case LightType::LIGHT_TYPE_SPOT:
-				this->renderLightSpot(*(bL->downcast<SpotLight>()), scene);
+				this->renderLightSpot(*(bL.get().downcast<SpotLight>()), 
+					scene);
 				break;
 			}
 		}
