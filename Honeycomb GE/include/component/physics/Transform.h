@@ -382,37 +382,48 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		void translate(const Honeycomb::Math::Vector3f &vec, 
 			const Transform &relTo);
 	private:
-		Transform *parent;                         // Pointer to Parent
+		Transform *parent;                                   // Pointer->Parent
 
-		Honeycomb::Math::Vector3f lclTranslation;  // Local Position
-		Honeycomb::Math::Quaternion lclRotation;   // Local Rotation
-		Honeycomb::Math::Vector3f lclScale;        // Local Scale
+		mutable Honeycomb::Math::Vector3f lclTranslation;    // Local Position
+		mutable Honeycomb::Math::Quaternion lclRotation;     // Local Rotation
+		mutable Honeycomb::Math::Vector3f lclScale;          // Local Scale
 
-		Honeycomb::Math::Vector3f gblTranslation;  // Global Position
-		Honeycomb::Math::Quaternion gblRotation;   // Global Rotation
-		Honeycomb::Math::Vector3f gblScale;        // Global Scale
+		mutable Honeycomb::Math::Vector3f gblTranslation;    // Global Position
+		mutable Honeycomb::Math::Quaternion gblRotation;     // Global Rotation
+		mutable Honeycomb::Math::Vector3f gblScale;          // Global Scale
 
-		Honeycomb::Math::Vector3f forward;         // Local Forward Direction
-		Honeycomb::Math::Vector3f right;           // Local Right Direction
-		Honeycomb::Math::Vector3f up;              // Local Up Direction
+		mutable Honeycomb::Math::Vector3f forward;           // Local Forward
+		mutable Honeycomb::Math::Vector3f right;             // Local Right
+		mutable Honeycomb::Math::Vector3f up;                // Local Up
 
-		Honeycomb::Math::Matrix4f transformationMatrix; // Transformation Mat
-		Honeycomb::Math::Matrix4f translationMatrix;    // Translation Mat
-		Honeycomb::Math::Matrix4f rotationMatrix;       // Rotation Mat
-		Honeycomb::Math::Matrix4f scaleMatrix;          // Scale Mat
-		Honeycomb::Math::Matrix4f orientationMatrix;    // Orientation Mat
+		// Do note that due to the clean/dirty states, these should NEVER be
+		// used directly. Always use the appropriate get methods for each
+		// matrix since these will automatically recompute the matrix values
+		// should it be dirty.
+		mutable Honeycomb::Math::Matrix4f transformMatrix;   // Transf. Mat
+		mutable Honeycomb::Math::Matrix4f translationMatrix; // Translation Mat
+		mutable Honeycomb::Math::Matrix4f rotationMatrix;    // Rotation Mat
+		mutable Honeycomb::Math::Matrix4f scaleMatrix;       // Scale Mat
+		mutable Honeycomb::Math::Matrix4f orientationMatrix; // Orientation Mat
 
-		Honeycomb::Conjuncture::Event changedEvent;         // Transform Change
-		Honeycomb::Conjuncture::EventHandler parentChanged; // Parent Changed
+		// For each of these variables, a property is considered dirty if it
+		// has been modified since the last calculation of its matrix.
+		mutable bool isDirtyRotation;
+		mutable bool isDirtyScale;
+		mutable bool isDirtyTranslation;
+		mutable bool isDirtyTransformation;
+
+		Honeycomb::Conjuncture::Event changedEvent;          // This Changed
+		Honeycomb::Conjuncture::EventHandler parentChanged;  // Parent Changed
 
 		/// <summary>
-		/// Calculates thr orientation matrix for this Transform based on the
+		/// Calculates the orientation matrix for this Transform based on the
 		/// current rotation.
 		/// </summary>
 		/// <returns>
 		/// The orientation matrix.
 		/// </returns>
-		const Honeycomb::Math::Matrix4f& calculateOrientationMatrix();
+		const Honeycomb::Math::Matrix4f& calculateOrientationMatrix() const;
 
 		/// <summary>
 		/// Calculates the rotation matrix for this Transform based on the
@@ -421,7 +432,7 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		/// <returns>
 		/// The rotation matrix.
 		/// </returns>
-		const Honeycomb::Math::Matrix4f& calculateRotationMatrix();
+		const Honeycomb::Math::Matrix4f& calculateRotationMatrix() const;
 
 		/// <summary>
 		/// Calculates the scale matrix for this Transform based on the
@@ -430,7 +441,7 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		/// <returns>
 		/// The scale matrix.
 		/// </returns>
-		const Honeycomb::Math::Matrix4f& calculateScaleMatrix();
+		const Honeycomb::Math::Matrix4f& calculateScaleMatrix() const;
 
 		/// <summary>
 		/// Calculates the transformation matrix for this Transform based on 
@@ -440,7 +451,8 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		/// <returns>
 		/// The rotation matrix.
 		/// </returns>
-		const Honeycomb::Math::Matrix4f& calculateTransformationMatrix();
+		const Honeycomb::Math::Matrix4f& calculateTransformationMatrix()
+				const;
 
 		/// <summary>
 		/// Calculates the translation matrix for this Transform based on the
@@ -449,7 +461,7 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		/// <returns>
 		/// The translation matrix.
 		/// </returns>
-		const Honeycomb::Math::Matrix4f& calculateTranslationMatrix();
+		const Honeycomb::Math::Matrix4f& calculateTranslationMatrix() const;
 
 		/// <summary>
 		/// Callback function which is called when the parent of this Transform

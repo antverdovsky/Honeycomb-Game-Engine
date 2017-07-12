@@ -78,22 +78,47 @@ namespace Honeycomb { namespace Component { namespace Physics {
 	}
 
 	const Matrix4f& Transform::getMatrixOrientation() const {
+		// For orientation/matrix we need to calculate both since each method
+		// marks the rotation as being clean.
+		if (this->isDirtyRotation) {
+			this->calculateOrientationMatrix();
+			this->calculateRotationMatrix();
+		}
+
 		return this->orientationMatrix;
 	}
 
 	const Matrix4f& Transform::getMatrixRotation() const {
+		// See above
+		if (this->isDirtyRotation) {
+			this->calculateOrientationMatrix();
+			this->calculateRotationMatrix();
+		}
+
 		return this->rotationMatrix;
 	}
 
 	const Matrix4f& Transform::getMatrixScale() const {
+		if (this->isDirtyScale) {
+			this->calculateScaleMatrix();
+		}
+
 		return this->scaleMatrix;
 	}
 
 	const Matrix4f& Transform::getMatrixTransformation() const {
-		return this->transformationMatrix;
+		if (this->isDirtyTransformation) {
+			this->calculateTransformationMatrix();
+		}
+
+		return this->transformMatrix;
 	}
 
 	const Matrix4f& Transform::getMatrixTranslation() const {
+		if (this->isDirtyTranslation) {
+			this->calculateTranslationMatrix();
+		}
+
 		return this->translationMatrix;
 	}
 
@@ -110,11 +135,11 @@ namespace Honeycomb { namespace Component { namespace Physics {
 	}
 
 	Vector3f Transform::inverseTransformDirection(const Vector3f &dir) const {
-		return this->rotationMatrix.getInverse() * dir;
+		return this->getMatrixRotation().getInverse() * dir;
 	}
 
 	Vector3f Transform::inverseTransformPoint(const Vector3f &pos) const {
-		return this->transformationMatrix.getInverse() * pos;
+		return this->getMatrixTransformation().getInverse() * pos;
 	}
 	
 	bool Transform::isOddNegativelyScaled() const {
@@ -155,6 +180,7 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		this->calculateTransformationMatrix();
 
 		this->changedEvent.onEvent();
+		this->isDirtyRotation = true;
 	}
 
 	void Transform::setScale(const Vector3f &scl, const Space &space) {
@@ -176,6 +202,8 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		this->calculateTransformationMatrix();
 
 		this->changedEvent.onEvent();
+		this->isDirtyScale = true;
+		this->isDirtyTransformation = true;
 	}
 
 	void Transform::setTranslation(const Vector3f &p, const Space& space) {
@@ -198,7 +226,10 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		// Recalculate Translation & Transformation, trigger changed event
 		this->calculateTranslationMatrix();
 		this->calculateTransformationMatrix();
+
 		this->changedEvent.onEvent();
+		this->isDirtyTranslation = true;
+		this->isDirtyTransformation = true;
 	}
 
 	void Transform::rotate(const Vector3f &axis, const float &rad, 
@@ -238,13 +269,13 @@ namespace Honeycomb { namespace Component { namespace Physics {
 	}
 
 	Vector3f Transform::transformDirection(const Vector3f &dir) const {
-		return this->rotationMatrix * dir;
+		return this->getMatrixRotation() * dir;
 	}
 
 	Vector3f Transform::transformPoint(const Vector3f &pos) const {
 		// Multiply pos by the transformation matrix in order to account for
 		// all transformations (scale, rotation, position).
-		return this->transformationMatrix * pos;
+		return this->getMatrixTransformation() * pos;
 	}
 
 	void Transform::translate(const Vector3f &vec, const Space &space) {
@@ -264,7 +295,7 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		this->translate(relTo.transformDirection(vec), Space::GLOBAL);
 	}
 
-	const Matrix4f& Transform::calculateOrientationMatrix() {
+	const Matrix4f& Transform::calculateOrientationMatrix() const {
 		this->orientationMatrix = Matrix4f::getMatrixIdentity();
 
 		// Calculate new directions using the rotations
@@ -290,10 +321,11 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		this->orientationMatrix.setAt(1, 2, this->up.getZ());
 		this->orientationMatrix.setAt(2, 2, this->forward.getZ());
 
+		this->isDirtyRotation = false;
 		return this->orientationMatrix;
 	}
 
-	const Matrix4f& Transform::calculateTransformationMatrix() {
+	const Matrix4f& Transform::calculateTransformationMatrix() const {
 		// Create individual matricies for each component of the transform
 		Matrix4f transMat = this->getMatrixTranslation();
 		Matrix4f rotMat = this->getMatrixRotation();
@@ -301,17 +333,20 @@ namespace Honeycomb { namespace Component { namespace Physics {
 
 		// Perform matrix multiplication on the components (first scale, then
 		// rotate, then translate).
-		this->transformationMatrix = transMat * rotMat * sclMat;
-		return this->transformationMatrix;
+		this->transformMatrix = transMat * rotMat * sclMat;
+
+		this->isDirtyTransformation = false;
+		return this->transformMatrix;
 	}
 
-	const Matrix4f& Transform::calculateRotationMatrix() {
+	const Matrix4f& Transform::calculateRotationMatrix() const {
 		this->rotationMatrix = this->gblRotation.toRotationMatrix4f();
 
+		this->isDirtyRotation = false;
 		return this->rotationMatrix;
 	}
 
-	const Matrix4f& Transform::calculateScaleMatrix() {
+	const Matrix4f& Transform::calculateScaleMatrix() const {
 		this->scaleMatrix = Matrix4f::getMatrixIdentity();
 
 		// A scale matrix is composed as an identity matrix whose diagonal
@@ -325,10 +360,11 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		// [ 0.0   Y   0.0  0.0 ]
 		// [ 0.0  0.0   Z   0.0 ]
 		// [ 0.0  0.0  0.0  1.0 ]
+		this->isDirtyScale = false;
 		return this->scaleMatrix;
 	}
 
-	const Matrix4f& Transform::calculateTranslationMatrix() {
+	const Matrix4f& Transform::calculateTranslationMatrix() const {
 		this->translationMatrix = Matrix4f::getMatrixIdentity();
 
 		// A translation matrix is composed as an identity matrix whose last
@@ -345,6 +381,7 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		// [ 0.0  1.0  0.0   y  ]
 		// [ 0.0  0.0  1.0   z  ]
 		// [ 0.0  0.0  0.0  1.0 ]
+		this->isDirtyTranslation = false;
 		return this->translationMatrix;
 	}
 
@@ -391,11 +428,16 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		transf->gblRotation = this->gblRotation;
 		transf->gblScale = this->gblScale;
 
-		transf->transformationMatrix = this->transformationMatrix;
+		transf->transformMatrix = this->transformMatrix;
 		transf->translationMatrix = this->translationMatrix;
 		transf->rotationMatrix = this->rotationMatrix;
 		transf->scaleMatrix = this->scaleMatrix;
 		transf->orientationMatrix = this->orientationMatrix;
+
+		transf->isDirtyRotation = this->isDirtyRotation;
+		transf->isDirtyScale = this->isDirtyScale;
+		transf->isDirtyTransformation = this->isDirtyTransformation;
+		transf->isDirtyRotation = this->isDirtyRotation;
 
 		return transf;
 	}
