@@ -668,7 +668,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 	void DeferredRenderer::writePointLightTransform(const PointLight &pL) {
 		const Transform &pLT = pL.getAttached()->getComponent<Transform>();
-		Matrix4f transformM = pLT.getTransformationMatrix();
+		Matrix4f transformM = pLT.getMatrixTransformation();
 		float pLRange = pL.getRange();
 
 		this->pointLightShader.setUniform_mat4("objTransform", transformM);
@@ -682,7 +682,7 @@ namespace Honeycomb { namespace Render { namespace Deferred {
 
 	void DeferredRenderer::writeSpotLightTransform(const SpotLight &sL) {
 		const Transform &sLT = sL.getAttached()->getComponent<Transform>();
-		Matrix4f transformM = sLT.getTransformationMatrix();
+		Matrix4f transformM = sLT.getMatrixTransformation();
 		float sLRange = sL.getRange();
 		float sLAngle = sL.getAngle();
 

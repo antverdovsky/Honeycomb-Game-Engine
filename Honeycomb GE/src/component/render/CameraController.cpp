@@ -186,7 +186,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 	}
 
 	const Matrix4f& CameraController::calcProjectionOrientation() {
-		this->projectionOrien = this->transform->getOrientationMatrix();
+		this->projectionOrien = this->transform->getMatrixOrientation();
 
 		// Negate the local forwards of the camera since the camera faces the
 		// opposite direction as the objects when rendering them.
@@ -219,7 +219,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 	}
 
 	const Matrix4f& CameraController::calcProjectionTranslation() {
-		this->projectionTrans = this->transform->getTranslationMatrix();
+		this->projectionTrans = this->transform->getMatrixTranslation();
 
 		// Negate the local forwards of the camera since the camera faces the
 		// opposite direction as the objects when rendering them.

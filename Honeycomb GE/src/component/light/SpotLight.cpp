@@ -137,14 +137,14 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 		// Fetch the orientation matrix and reverse its forward components (see
 		// the CameraController calculate projection code).
-		Matrix4f orientationMat = this->transform->getOrientationMatrix();
+		Matrix4f orientationMat = this->transform->getMatrixOrientation();
 		orientationMat.setAt(2, 0, -orientationMat.getAt(2, 0));
 		orientationMat.setAt(2, 1, -orientationMat.getAt(2, 1));
 		orientationMat.setAt(2, 2, -orientationMat.getAt(2, 2));
 
 		// Fetch the translation matrix from the transform and reverse its
 		// forward components (again, see the CameraController for reasoning).
-		Matrix4f translationMat = this->transform->getTranslationMatrix();
+		Matrix4f translationMat = this->transform->getMatrixTranslation();
 		translationMat.setAt(0, 3, -translationMat.getAt(0, 3));
 		translationMat.setAt(1, 3, -translationMat.getAt(1, 3));
 		translationMat.setAt(2, 3, -translationMat.getAt(2, 3));

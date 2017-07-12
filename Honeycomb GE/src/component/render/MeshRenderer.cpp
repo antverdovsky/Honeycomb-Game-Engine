@@ -74,7 +74,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 	void MeshRenderer::onRender(ShaderProgram &shader) {
 		// Write the Transformation Matrix to the Shader
 		shader.setUniform_mat4("objTransform",
-			this->transform->getTransformationMatrix());
+			this->transform->getMatrixTransformation());
 
 		// If the current Transform is negatively scaled on an odd number of
 		// axes, then flip the winding order for the front face.

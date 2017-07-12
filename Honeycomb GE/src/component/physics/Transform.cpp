@@ -77,23 +77,23 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		return this->up;
 	}
 
-	const Matrix4f& Transform::getOrientationMatrix() const {
+	const Matrix4f& Transform::getMatrixOrientation() const {
 		return this->orientationMatrix;
 	}
 
-	const Matrix4f& Transform::getRotationMatrix() const {
+	const Matrix4f& Transform::getMatrixRotation() const {
 		return this->rotationMatrix;
 	}
 
-	const Matrix4f& Transform::getScaleMatrix() const {
+	const Matrix4f& Transform::getMatrixScale() const {
 		return this->scaleMatrix;
 	}
 
-	const Matrix4f& Transform::getTransformationMatrix() const {
+	const Matrix4f& Transform::getMatrixTransformation() const {
 		return this->transformationMatrix;
 	}
 
-	const Matrix4f& Transform::getTranslationMatrix() const {
+	const Matrix4f& Transform::getMatrixTranslation() const {
 		return this->translationMatrix;
 	}
 
@@ -136,20 +136,18 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		this->calculateTransformationMatrix();
 		
 		this->changedEvent.onEvent();
-
-		this->doEnable();
 	}
 
-	void Transform::setRotation(const Quaternion &quat, const Space &space) {
+	void Transform::setRotation(const Quaternion &rot, const Space &space) {
 		if (space == Space::LOCAL) {
-			this->lclRotation = quat;
-			if (this->parent == nullptr) this->gblRotation = quat;
-			else this->gblRotation = this->parent->gblRotation * quat;
+			this->lclRotation = rot;
+			if (this->parent == nullptr) this->gblRotation = rot;
+			else this->gblRotation = this->parent->gblRotation * rot;
 		} else {
-			this->gblRotation = quat;
-			if (this->parent == nullptr) this->lclRotation = quat;
+			this->gblRotation = rot;
+			if (this->parent == nullptr) this->lclRotation = rot;
 			else this->lclRotation = 
-				this->parent->gblRotation.getInverse() * quat;
+				this->parent->gblRotation.getInverse() * rot;
 		}
 
 		this->calculateOrientationMatrix();
@@ -297,9 +295,9 @@ namespace Honeycomb { namespace Component { namespace Physics {
 
 	const Matrix4f& Transform::calculateTransformationMatrix() {
 		// Create individual matricies for each component of the transform
-		Matrix4f transMat = this->getTranslationMatrix();
-		Matrix4f rotMat = this->getRotationMatrix();
-		Matrix4f sclMat = this->getScaleMatrix();
+		Matrix4f transMat = this->getMatrixTranslation();
+		Matrix4f rotMat = this->getMatrixRotation();
+		Matrix4f sclMat = this->getMatrixScale();
 
 		// Perform matrix multiplication on the components (first scale, then
 		// rotate, then translate).
@@ -398,11 +396,6 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		transf->rotationMatrix = this->rotationMatrix;
 		transf->scaleMatrix = this->scaleMatrix;
 		transf->orientationMatrix = this->orientationMatrix;
-
-		//TODO: Issue with event handlers... ?????????????????????????????????? :-(
-		//transf->changedEvent = this->changedEvent;
-		//transf->parentChanged = this->parentChanged;
-		
 
 		return transf;
 	}

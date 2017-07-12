@@ -10,43 +10,63 @@
 
 namespace Honeycomb { namespace Component { namespace Physics {
 	enum Space {
-		LOCAL,		// Represents the Local Coordinate System of some Object
-		GLOBAL		// Represents the Global Coordinate System of all Objects
+		LOCAL,      // Represents the Local Coordinate System of some Object
+		GLOBAL      // Represents the Global Coordinate System of all Objects
 	};
 
 	class Transform : public GameComponent {
 		friend class Honeycomb::Object::GameObject;
 	public:
-		/// Default constructor which initializes the position, rotation and
-		/// scale of the transform to default values. The position and rotation
-		/// will both be initialized with zeros values, however, the scale will
-		/// be initialized with ones values.
+		/// <summary>
+		/// Default Constructor which initializes the position, rotation and
+		/// scale of the Transform. The position and rotation will be a default
+		/// constructed Vector and Quaternion, respectively, and the scale will
+		/// be a vector with a value of one for each component.
+		/// </summary>
 		Transform();
 
-		/// Initializes an instance of the Transform object to the specified
-		/// position, rotation, and scale.
-		/// const Vector3f &pos : The position of the object.
-		/// const Quaternion &rot : The rotation of the object.
-		/// const Vector3f &scl : The scale of the object.
+		/// <summary>
+		/// Initializes the Transform using the specified position, rotation
+		/// and scale.
+		/// </summary>
+		/// <param name="pos">
+		/// The position of the Transform.
+		/// </param>
+		/// <param name="rot">
+		/// The rotation of the Transform.
+		/// </param>
+		/// <param name="scl">
+		/// The scale of the Transform.
+		/// </param>
 		Transform(const Honeycomb::Math::Vector3f &pos,
 			const Honeycomb::Math::Quaternion &rot,
 			const Honeycomb::Math::Vector3f &scl);
 
-		/// Clones this Transform into a new, dynamically allocated Transform. 
-		/// This function should be used instead of the copy constructor to 
-		/// prevent object slicing. The cloned transform is an independent
-		/// component and will lose any parent or children!
-		/// return : The pointer to the newly cloned Transform.
+		/// <summary>
+		/// Clones this Transform component into a new, independent Transform
+		/// component.
+		/// </summary>
+		/// <returns>
+		/// The unique pointer to the cloned Transform.
+		/// </returns>
 		std::unique_ptr<Transform> clone() const;
 
-		/// Gets the event which will be triggered once the transform is 
-		/// changed in any way (scaled, translated or rotated).
-		/// return : The reference to the event.
+		/// <summary>
+		/// Gets the Changed Event. This event is triggered whenever the
+		/// transform is changed in some way.
+		/// </summary>
+		/// <returns>
+		/// The reference to the Changed Event.
+		/// </returns>
 		Honeycomb::Conjuncture::Event& getChangedEvent();
 
-		/// Gets the event which will be triggered once the transform is 
-		/// changed in any way (scaled, translated or rotated).
-		/// return : The constant reference to the event.
+		/// <summary>
+		/// Gets the Changed Event. This event is triggered whenever the
+		/// transform is changed in some way.
+		/// </summary>
+		/// <returns>
+		/// The constant reference to the Changed Event.
+		/// </returns>
 		const Honeycomb::Conjuncture::Event& getChangedEvent() const;
 
 		/// <summary>
@@ -57,244 +77,408 @@ namespace Honeycomb { namespace Component { namespace Physics {
 		/// </returns>
 		virtual GameComponentID getGameComponentID() const noexcept override;
 
-		/// Gets the quaternion representing the global rotation of this
-		/// transform.
-		/// return : The global rotation quaternion.
+		/// <summary>
+		/// Gets the global rotation of this Transform. This rotation is
+		/// dependent on both the local rotation of this Transform and the
+		/// global rotation of this Transform's parent.
+		/// </summary>
+		/// <returns>
+		/// The rotation quaternion.
+		/// </returns>
 		const Honeycomb::Math::Quaternion& getGlobalRotation() const;
 
-		/// Gets the vector representing the global scale of this transform.
-		/// return : The global scale vector.
+		/// <summary>
+		/// Gets the global scale of this Transform. This scale is dependent on 
+		/// both the local scale of this Transform and the global scale of this
+		/// Transform's parent.
+		/// </summary>
+		/// <returns>
+		/// The scale vector.
+		/// </returns>
 		const Honeycomb::Math::Vector3f& getGlobalScale() const;
 
-		/// Gets the vector representing the global translation of this
-		/// transform.
-		/// return : The global translation vector.
+		/// <summary>
+		/// Gets the global translation of this Transform. This translation is 
+		/// dependent on both the local translation of this Transform and the
+		/// global translation of this Transform's parent.
+		/// </summary>
+		/// <returns>
+		/// The translation vector.
+		/// </returns>
 		const Honeycomb::Math::Vector3f& getGlobalTranslation() const;
 
+		/// <summary>
 		/// Gets the vector pointing in the local forward direction of this
-		/// transform.
-		/// return : The local forward vector.
+		/// Transform.
+		/// </summary>
+		/// <returns>
+		/// The local forward vector.
+		/// </returns>
 		const Honeycomb::Math::Vector3f& getLocalForward() const;
 
+		/// <summary>
 		/// Gets the vector pointing in the local right direction of this
-		/// transform.
-		/// return : The local right vector.
+		/// Transform.
+		/// </summary>
+		/// <returns>
+		/// The local right vector.
+		/// </returns>
 		const Honeycomb::Math::Vector3f& getLocalRight() const;
 
-		/// Gets the vector pointing in the local up direction of this
-		/// transform.
-		/// return : The local up vector.
-		const Honeycomb::Math::Vector3f& getLocalUp() const;
-
-		/// Gets the orientation matrix for this transform.
-		/// return : The orientation matrix.
-		const Honeycomb::Math::Matrix4f& getOrientationMatrix() const;
-
-		/// Gets the local rotation quaternion of this transform.
-		/// return : The rotation quaternion.
+		/// <summary>
+		/// Gets the local rotation of this Transform. This rotation is
+		/// dependent on the local rotation of this Transform only.
+		/// </summary>
+		/// <returns>
+		/// The local rotation quaternion.
+		/// </returns>
 		const Honeycomb::Math::Quaternion& getLocalRotation() const;
 
-		/// Gets the current rotation matrix for this transform.
-		/// return : The rotation matrix.
-		const Honeycomb::Math::Matrix4f& getRotationMatrix() const;
-
-		/// Gets the scale vector of this uniform.
-		/// return : The scale vector.
+		/// <summary>
+		/// Gets the local scale of this Transform. This scale is dependent on
+		/// the local scale of this Transform only.
+		/// </summary>
+		/// <returns>
+		/// The local scale vector.
+		/// </returns>
 		const Honeycomb::Math::Vector3f& getLocalScale() const;
 
-		/// Gets the current global scale matrix for this transform.
-		/// return : The scale matrix.
-		const Honeycomb::Math::Matrix4f& getScaleMatrix() const;
-
-		/// Gets the current global transformation matrix for this transform.
-		/// return : The transformation matrix.
-		const Honeycomb::Math::Matrix4f& getTransformationMatrix() const;
-
-		/// Gets the local position vector of this transform.
-		/// return : The position vector.
+		/// <summary>
+		/// Gets the local translation of this Transform. This translation is
+		/// dependent on the local translation of this Transform only.
+		/// </summary>
+		/// <returns>
+		/// The local translation vector.
+		/// </returns>
 		const Honeycomb::Math::Vector3f& getLocalTranslation() const;
 
-		/// Gets the global current translation matrix for this transform.
-		/// return : The translation matrix.
-		const Honeycomb::Math::Matrix4f& getTranslationMatrix() const;
+		/// <summary>
+		/// Gets the vector pointing in the local up direction of this 
+		/// Transform.
+		/// </summary>
+		/// <returns>
+		/// The local up vector.
+		/// </returns>
+		const Honeycomb::Math::Vector3f& getLocalUp() const;
 
-		/// Transforms the specified local coordinate system direction vector
-		/// into a global coordinate system direction vector.
-		/// const Vector3f &pos : The Vector which is to be transformed.
-		/// return : The transformed vector.
+		/// <summary>
+		/// Gets the orientation matrix of this Transform.
+		/// </summary>
+		/// <returns>
+		/// The orientation matrix.
+		/// </returns>
+		const Honeycomb::Math::Matrix4f& getMatrixOrientation() const;
+
+		/// <summary>
+		/// Gets the rotation matrix of this Transform.
+		/// </summary>
+		/// <returns>
+		/// The rotation matrix.
+		/// </returns>
+		const Honeycomb::Math::Matrix4f& getMatrixRotation() const;
+
+		/// <summary>
+		/// Gets the scale matrix of this Transform.
+		/// </summary>
+		/// <returns>
+		/// The scale matrix.
+		/// </returns>
+		const Honeycomb::Math::Matrix4f& getMatrixScale() const;
+
+		/// <summary>
+		/// Gets the transformation matrix of this Transform.
+		/// </summary>
+		/// <returns>
+		/// The transformation matrix.
+		/// </returns>
+		const Honeycomb::Math::Matrix4f& getMatrixTransformation() const;
+
+		/// <summary>
+		/// Gets the translation matrix of this Transform.
+		/// </summary>
+		/// <returns>
+		/// The translation matrix.
+		/// </returns>
+		const Honeycomb::Math::Matrix4f& getMatrixTranslation() const;
+
+		/// <summary>
+		/// Transforms the specified global direction vector into a local
+		/// direction vector.
+		/// </summary>
+		/// <param name="dir">
+		/// The global direction vector which is to be transformed.
+		/// </param>
+		/// <returns>
+		/// The transformed local direction vector.
+		/// </returns>
 		Honeycomb::Math::Vector3f inverseTransformDirection(
 			const Honeycomb::Math::Vector3f &dir) const;
 
-		/// Transforms the specified global coordinate system position vector
-		/// into a local coordinate system position vector.
-		/// const Vector3f &pos : The Vector which is to be transformed.
-		/// return : The Transformed Vector.
+		/// <summary>
+		/// Transforms the specified global position vector into a local
+		/// position vector.
+		/// </summary>
+		/// <param name="pos">
+		/// The global position vector which is to be transformed.
+		/// </param>
+		/// <returns>
+		/// The transformed local position vector.
+		/// </returns>
 		Honeycomb::Math::Vector3f inverseTransformPoint(
 			const Honeycomb::Math::Vector3f &pos) const;
 
+		/// <summary>
 		/// Checks if this Transform is negatively scaled on an odd number of
-		/// axes (either one or three).
-		/// return : True if the axis is negatively scaled on an odd number of
-		///			 axes; False otherwise.
+		/// axes.
+		/// </summary>
+		/// <returns>
+		/// True if the Transform's scale is negative for an odd number of
+		/// axes, false otherwise.
+		/// </returns>
 		bool isOddNegativelyScaled() const;
 
-		/// Starts this Transform instance.
+		/// <summary>
+		/// Starts this Transform. This automatically calculates the initial
+		/// matrices of the Transform.
+		/// </summary>
 		void onStart() override;
 
-		/// Sets the rotation of this transform in the local or world
-		/// coordinate system space. By default, the Rotation is set in the
-		/// global world space.
-		/// const Quaternion &quat : The new rotation quaternion.
-		/// const Space &space : The coordinate space in which the Transform is
-		///						 to be rotated.
-		void setRotation(const Honeycomb::Math::Quaternion &quat,
+		/// <summary>
+		/// Sets the rotation of this Transform to the specified quaternion.
+		/// If the space parameter is not specified, the rotation is 
+		/// automatically set in the global world space.
+		/// </summary>
+		/// <param name="rot">
+		/// The new rotation of the Transform.
+		/// </param>
+		/// <param name="space">
+		/// The space in which the rotation is to be set. If this is not
+		/// specified, global is used by default.
+		/// </param>
+		void setRotation(const Honeycomb::Math::Quaternion &rot,
 			const Space &space = Space::GLOBAL);
 
-		/// Sets the scaling of this Transform in the specified space. By
-		///	default, the scaling is set in the global world space.
-		/// const Vector3f &scl : The new scale vector.
-		/// const Space &space : The coordinate space in which the Transform is
-		///						 to be scaled.
-		void setScale(const Honeycomb::Math::Vector3f &scl, const Space 
-			&space = Space::GLOBAL);
+		/// <summary>
+		/// Sets the scaling of this Transform to the specified vector.
+		/// If the space parameter is not specified, the scaling is 
+		/// automatically set in the global world space.
+		/// </summary>
+		/// <param name="scl">
+		/// The new scale of the Transform.
+		/// </param>
+		/// <param name="space">
+		/// The space in which the scaling is to be set. If this is not
+		/// specified, global is used by default.
+		/// </param>
+		void setScale(const Honeycomb::Math::Vector3f &scl, 
+			const Space &space = Space::GLOBAL);
 
-		/// Sets the translation of this Transform in the local or world
-		/// coordinate system space. By default, the Translation is set in the
-		/// global world space.
-		/// const Vector3f &pos : The new position of the Transform.
-		/// const Space &space : The coordinate space in which the Transform is
-		///						 to be translated.
+		/// <summary>
+		/// Sets the position of this Transform to the specified vector.
+		/// If the space parameter is not specified, the position is 
+		/// automatically set in the global world space.
+		/// </summary>
+		/// <param name="pos">
+		/// The new position of the Transform.
+		/// </param>
+		/// <param name="space">
+		/// The space in which the position is to be set. If this is not
+		/// specified, global is used by default.
+		/// </param>
 		void setTranslation(const Honeycomb::Math::Vector3f &pos, 
 			const Space &space = Space::GLOBAL);
 
-		/// Rotates this transform by the specified amount of radians on the
-		/// axis, where the axis is relative to the world or to the object.
-		/// const Vector3f &axis : The axis on which to rotate the vector.
-		/// const float &rad : The amount by which to rotate the vector, in 
-		///					   radians. A positive amount rotates the vector 
-		///					   counterclockwise, and a negative amount rotates 
-		///					   the angle clockwise.
-		/// const Space &space : The space in which the rotation is to occur.
-		///						 If this is set to LOCAL or left off, the
-		///						 object will rotate around its own local axes.
-		///						 Otherwise, the object will rotate around the
-		///						 global world axes.
+		/// <summary>
+		/// Rotates this Transform by the specified amount of radians on the
+		/// specified axis.
+		/// </summary>
+		/// <param name="axis">
+		/// The axis on which to rotate the vector. Whether this axis is local
+		/// or global is determined by the <paramref name="space"/> 
+		/// pararameter.
+		/// </param>
+		/// <param name="rad">
+		/// The amount of radians by which the Transform is to be rotated.
+		/// </param>
+		/// <param name="space">
+		/// The space in which the object is to be rotated. If this is not
+		/// specified, local is used by default.
+		/// </param>
 		void rotate(const Honeycomb::Math::Vector3f &axis, const float &rad,
 			const Space &space = Space::LOCAL);
 
+		/// <summary>
 		/// Rotates this transform around the specified world axis by the
 		/// specified amount of radians.
-		/// const Vector3f &center : The position in the world through which 
-		///							 the axis vector goes through.
-		/// const Vector3f &axis : The axis on which to rotate the vector,
-		///						   this axis goes through the position given.
-		/// const float &rad : The amount by which to rotate the vector, in 
-		///					   radians. A positive amount rotates the vector 
-		///					   counterclockwise, and a negative amount rotates 
-		///					   the angle clockwise.
+		/// </summary>
+		/// <param name="center">
+		/// The point through which the axis goes.
+		/// </param>
+		/// <param name="axis">
+		/// The direction of the axis.
+		/// </param>
+		/// <param name="rad">
+		/// The amount, in radians, by which the object is to be rotated on the
+		/// axis.
+		/// </param>
 		void rotateAround(const Honeycomb::Math::Vector3f &center, 
 			const Honeycomb::Math::Vector3f &axis, const float &rad);
 
-		/// Transforms the specified Local coordinate system direction vector
-		/// into a World coordinate system direction vector. Only the rotation
-		/// of this Transform is taken into account for this calculation.
-		/// const Vector3f &dir : The Vector which is to be transformed.
-		/// return : The Transformed Vector.
+		/// <summary>
+		/// Transforms the specified local direction vector into a global
+		/// direction vector.
+		/// </summary>
+		/// <param name="dir">
+		/// The local direction vector which is to be transformed.
+		/// </param>
+		/// <returns>
+		/// The transformed global direction vector.
+		/// </returns>
 		Honeycomb::Math::Vector3f transformDirection(
 			const Honeycomb::Math::Vector3f &dir) const;
 
-		/// Transforms the specified local position vector into a world
-		/// position vector. The rotation, position and scale of this Transform
-		/// is taken into account for this calculation.
-		/// const Vector3f &p : The local position vector which is to be 
-		///                     transformed.
-		/// return : The Transformed vector.
+		/// <summary>
+		/// Transforms the specified local position vector into a global
+		/// position vector.
+		/// </summary>
+		/// <param name="dir">
+		/// The local position vector which is to be transformed.
+		/// </param>
+		/// <returns>
+		/// The transformed global position vector.
+		/// </returns>
 		Honeycomb::Math::Vector3f transformPoint(
 			const Honeycomb::Math::Vector3f &p) const;
 
-		/// Translates this transform by the specified amounts on the 
-		/// { X, Y, Z } axes. If the space parameter is set to local, the
-		/// transform is translated along it's local coordinate system.
-		/// Otherwise, the transform is translated along the world coordinate
-		/// system.
-		/// const Vector3f &vec : The distance to travel on each axis.
-		/// const Space &space : The coordinate space in which the Transform is
-		///						 to be translated.
+		/// <summary>
+		/// Translates this Transform by the specified vector. If the space
+		/// parameter is set to local, the Transform is translated along its
+		/// local coordinate system. Otherwise, the Transform is translated
+		/// along the world coordinate system.
+		/// </summary>
+		/// <param name="vec">
+		/// The distance to travel, where each component represents the 
+		/// displacement on each axis.
+		/// </param>
+		/// <param name="space">
+		/// The space on which to travel. If this is not specified, local space
+		/// is used by default.
+		/// </param>
 		void translate(const Honeycomb::Math::Vector3f &vec, 
 			const Space &space = Space::LOCAL);
 
-		/// Translates this transform by the specified amounts on the
-		/// { X, Y, Z } axes relative to the specified Transform. This
-		/// Transform will be translated on the local coordinate system of the
-		/// relative Transform.
-		/// const Vector3f &vec : The distance to travel on each axis.
-		/// const Transform &relTo : The Transform relative to which the
-		///							 translation is to occur.
+		/// <summary>
+		/// Translates this Transform by the specified amount relative to the
+		/// specified Transform. This Transform will be translated on the local
+		/// coordinate axes of the relative Transform.
+		/// </summary>
+		/// <param name="vec">
+		/// The distance to travel, where each component represents the 
+		/// displacement on each axis.
+		/// </param>
+		/// <param name="relTo">
+		/// The Transform, relative to which, the displacement is to occur.
+		/// </param>
 		void translate(const Honeycomb::Math::Vector3f &vec, 
 			const Transform &relTo);
 	private:
-		Transform *parent; // The pointer to the parent of this Transform
+		Transform *parent;                         // Pointer to Parent
 
-		Honeycomb::Math::Vector3f lclTranslation;  // Local position Vector
-		Honeycomb::Math::Quaternion lclRotation;   // Local rotation Quaternion
-		Honeycomb::Math::Vector3f lclScale;		   // Local scale Vector
+		Honeycomb::Math::Vector3f lclTranslation;  // Local Position
+		Honeycomb::Math::Quaternion lclRotation;   // Local Rotation
+		Honeycomb::Math::Vector3f lclScale;        // Local Scale
 
-		Honeycomb::Math::Vector3f gblTranslation;  // Global position Vector
-		Honeycomb::Math::Quaternion gblRotation;   // Global rotation Quat.
-		Honeycomb::Math::Vector3f gblScale;		   // Global scale Vector
+		Honeycomb::Math::Vector3f gblTranslation;  // Global Position
+		Honeycomb::Math::Quaternion gblRotation;   // Global Rotation
+		Honeycomb::Math::Vector3f gblScale;        // Global Scale
 
-		Honeycomb::Math::Vector3f forward;	// Local Forward Direction
-		Honeycomb::Math::Vector3f up;		// Local Up Direction
-		Honeycomb::Math::Vector3f right;	// Local Right Direction
+		Honeycomb::Math::Vector3f forward;         // Local Forward Direction
+		Honeycomb::Math::Vector3f right;           // Local Right Direction
+		Honeycomb::Math::Vector3f up;              // Local Up Direction
 
 		Honeycomb::Math::Matrix4f transformationMatrix; // Transformation Mat
-		Honeycomb::Math::Matrix4f translationMatrix;	// Translation Mat
-		Honeycomb::Math::Matrix4f rotationMatrix;		// Rotation Mat
-		Honeycomb::Math::Matrix4f scaleMatrix;			// Scale Mat
-		Honeycomb::Math::Matrix4f orientationMatrix;	// Orientation Mat
+		Honeycomb::Math::Matrix4f translationMatrix;    // Translation Mat
+		Honeycomb::Math::Matrix4f rotationMatrix;       // Rotation Mat
+		Honeycomb::Math::Matrix4f scaleMatrix;          // Scale Mat
+		Honeycomb::Math::Matrix4f orientationMatrix;    // Orientation Mat
 
-		Honeycomb::Conjuncture::Event changedEvent; // Transform changed event
+		Honeycomb::Conjuncture::Event changedEvent;         // Transform Change
 		Honeycomb::Conjuncture::EventHandler parentChanged; // Parent Changed
 
-		/// Calculates the orientation matrix from the forward, up and right of
-		/// this transform.
-		/// return : The orientation matrix.
+		/// <summary>
+		/// Calculates thr orientation matrix for this Transform based on the
+		/// current rotation.
+		/// </summary>
+		/// <returns>
+		/// The orientation matrix.
+		/// </returns>
 		const Honeycomb::Math::Matrix4f& calculateOrientationMatrix();
 
-		/// Constructs a rotation matrix from the rotation vector of this
-		/// transform.
-		/// return : The rotation matrix.
+		/// <summary>
+		/// Calculates the rotation matrix for this Transform based on the
+		/// current rotation.
+		/// </summary>
+		/// <returns>
+		/// The rotation matrix.
+		/// </returns>
 		const Honeycomb::Math::Matrix4f& calculateRotationMatrix();
 
-		/// Constructs a scale matrix from the scale vector of this transform.
-		/// return : The scale vector.
+		/// <summary>
+		/// Calculates the scale matrix for this Transform based on the
+		/// current scale.
+		/// </summary>
+		/// <returns>
+		/// The scale matrix.
+		/// </returns>
 		const Honeycomb::Math::Matrix4f& calculateScaleMatrix();
 
-		/// Calculates the transformation matrix for the transform. This should
-		/// be called every time either the rotation, scale, or translation of 
-		/// the transform is modified.
-		/// return : The updated transformation matrix.
+		/// <summary>
+		/// Calculates the transformation matrix for this Transform based on 
+		/// the current rotation, scale and translation matrices. Note that 
+		/// these matrices must be calculated before this method is called.
+		/// </summary>
+		/// <returns>
+		/// The rotation matrix.
+		/// </returns>
 		const Honeycomb::Math::Matrix4f& calculateTransformationMatrix();
 
-		/// Constructs a translation matrix from the position vector of this
-		/// transform.
-		/// return : The translation matrix.
+		/// <summary>
+		/// Calculates the translation matrix for this Transform based on the
+		/// current translation.
+		/// </summary>
+		/// <returns>
+		/// The translation matrix.
+		/// </returns>
 		const Honeycomb::Math::Matrix4f& calculateTranslationMatrix();
 
-		/// Function called by the parentChanged event handler. Automatically
-		/// updates the global position, rotation and scale of this Transform
-		/// depending on how the parent was changed.
+		/// <summary>
+		/// Callback function which is called when the parent of this Transform
+		/// changes. This function adjusts the global properties of this
+		/// Transform.
+		/// </summary>
 		void onParentChange();
 
+		/// <summary>
 		/// Sets the parent of this Transformation. This transform will
 		/// automatically subscribe to the new parent's transform and if this
 		/// transform already has a parent, it will unsubscribe from the old
 		/// parent's transform. Once the new transform is set, the world
 		/// coordinates of this Transform will remain the same, though the
 		/// local coordinates will be modified.
-		/// Transform *parent : The pointer to the new Transform (may be null).
+		/// </summary>
+		/// <param name="parent">
+		/// The pointer to the new Transform. If the Transform loses a parent,
+		/// this should be a nullptr.
+		/// </param>
 		void setParent(Transform *parent);
 
+		/// <summary>
+		/// Clones this Transform instance. All values are copied with the
+		/// exception of the parent, and the event/event handlers.
+		/// </summary>
+		/// <returns>
+		/// The pointer to the dynamically allocated Transform instance.
+		/// </returns>
 		virtual Transform* cloneInternal() const override;
 
 		/// <summary>

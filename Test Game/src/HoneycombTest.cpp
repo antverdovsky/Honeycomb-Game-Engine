@@ -194,6 +194,6 @@ namespace HoneycombTest {
 			this->gameScene.removeChild(&this->gameScene.getChild("Point Light"));
 		}
 
-		std::cout << this->gameScene.getSceneLights().size() << std::endl;
+		
 	}
 }
