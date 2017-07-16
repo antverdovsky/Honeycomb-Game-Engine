@@ -85,8 +85,9 @@ namespace Honeycomb { namespace Component { namespace Light {
 	}
 
 	BaseLight* BaseLight::cloneInternal() const {
-		return new BaseLight(*GenericStruct::SHADER_SOURCE,
-			GenericStruct::structName, this->type);
+		return new BaseLight(
+			GenericStruct::getShaderSource(), GenericStruct::getStructName(), 
+			this->type);
 	}
 
 	const std::string Attenuation::STRUCT_FILE = "../Honeycomb GE/res/"
@@ -114,7 +115,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 			&atten, const float &minI) {
 		// Retrieve the RGBA color of the Light and get the maximum RGB 
 		// component of the color.
-		Vector3f rgb = bL.glVector3fs.getValue(PointLight::COLOR_VEC3);
+		Vector3f rgb = bL.getVector3fs().getValue(PointLight::COLOR_VEC3);
 		float kM = fmaxf(rgb.getX(), fmaxf(rgb.getY(), rgb.getZ()));
 
 		// Constant representing the inverse of the brightness at the radius of

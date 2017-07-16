@@ -104,9 +104,9 @@ namespace Honeycomb { namespace Geometry {
 		bool success = result == aiReturn::aiReturn_SUCCESS;
 
 		if (success) {
-			mat.glFloats.setValue(prop, fetched);
+			mat.getFloats().setValue(prop, fetched);
 		} else {
-			mat.glFloats.setValue(prop, def);
+			mat.getFloats().setValue(prop, def);
 		}
 
 		return success;
@@ -120,10 +120,10 @@ namespace Honeycomb { namespace Geometry {
 		bool success = result == aiReturn::aiReturn_SUCCESS;
 
 		if (success) {
-			mat.glVector3fs.setValue(
+			mat.getVector3fs().setValue(
 				prop, Vector3f(fetched.r, fetched.g, fetched.b));
 		} else {
-			mat.glVector3fs.setValue(prop, def);
+			mat.getVector3fs().setValue(prop, def);
 		}
 
 		return success;
@@ -147,24 +147,24 @@ namespace Honeycomb { namespace Geometry {
 				ImageIO image = ImageIO(dir.C_Str());
 				auto texture = Texture2D::newTexture2DShared();
 				texture->setImageDataIO(image);
-				mat.glSampler2Ds.setValue(prop + ".sampler", texture);
+				mat.getSampler2Ds().setValue(prop + ".sampler", texture);
 				success = true;
 			} 
 			// Otherwise set the texture to the default common fill color
 			catch (ImageIOLoadException e) {
 				auto texture = Texture2D::getTextureCommonFill(def);
-				mat.glSampler2Ds.setValue(prop + ".sampler", texture);
+				mat.getSampler2Ds().setValue(prop + ".sampler", texture);
 			}
 		} 
 		// If the material does not have the texture 
 		else {
 			// Set the previously initialized texture to default value
 			auto texture = Texture2D::getTextureCommonFill(def);
-			mat.glSampler2Ds.setValue(prop + ".sampler", texture);
+			mat.getSampler2Ds().setValue(prop + ".sampler", texture);
 		}
 
 		// By default, set the intensity of the texture to 1.0F
-		mat.glFloats.setValue(prop + ".intensity", 1.0F);
+		mat.getFloats().setValue(prop + ".intensity", 1.0F);
 		return success;
 	}
 
@@ -219,14 +219,16 @@ namespace Honeycomb { namespace Geometry {
 		// Special default value for diffuse map, this is always white by
 		// default.
 		auto diffuse = Texture2D::getTextureWhite();
-		material->glSampler2Ds.setValue("diffuseTexture.sampler", diffuse);
-		material->glFloats.setValue("diffuseTexture.intensity", 1.0F);
-		material->glVector3fs.setValue("diffuseColor",
+		material->getSampler2Ds().setValue("diffuseTexture.sampler", diffuse);
+		material->getFloats().setValue("diffuseTexture.intensity", 1.0F);
+		material->getVector3fs().setValue("diffuseColor",
 			Vector3f(1.0F, 1.0F, 1.0F));
 
 		// Set global tiling and offset for all Material Textures
-		material->glVector2fs.setValue("globalTiling", Vector2f(1.0F, 1.0F));
-		material->glVector2fs.setValue("globalOffset", Vector2f(0.0F, 0.0F));
+		material->getVector2fs().setValue("globalTiling", 
+			Vector2f(1.0F, 1.0F));
+		material->getVector2fs().setValue("globalOffset", 
+			Vector2f(0.0F, 0.0F));
 
 		return material;
 	}

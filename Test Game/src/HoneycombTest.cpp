@@ -59,12 +59,13 @@ namespace HoneycombTest {
 		colorTexture->
 			setImageDataIO(ImageIO("../Test Game/res/textures/colors.bmp"));
 		colorTexture->setAnisotropicFiltering(8);
-		colorMaterial->glSampler2Ds.setValue("albedoTexture.sampler",
+		colorMaterial->getSampler2Ds().setValue("albedoTexture.sampler",
 			colorTexture);
-		colorMaterial->glFloats.setValue("shininess", 128.0F);
-		colorMaterial->glVector2fs.setValue("globalTiling",
+		colorMaterial->getFloats().setValue("shininess", 128.0F);
+		colorMaterial->getVector2fs().setValue("globalTiling",
 			Vector2f(10.0F, 10.0F));
-		colorMaterial->glVector3fs.setValue("diffuseColor", Vector3f(1, 1, 0));
+		colorMaterial->getVector3fs().setValue("diffuseColor", 
+			Vector3f(1, 1, 0));
 		this->plane->getComponent<MeshRenderer>().getMaterials().clear();
 		this->plane->getComponent<MeshRenderer>().addMaterial(colorMaterial);
 
@@ -143,7 +144,7 @@ namespace HoneycombTest {
 		carHeadlightR.getComponent<SpotLight>().getShadow().setShadowType(ShadowType::SHADOW_NONE);
 
 		this->car->getChild("Body").getComponents<MeshRenderer>()[0].get().
-			getMaterials()[1]->glVector3fs.setValue(
+			getMaterials()[1]->getVector3fs().setValue(
 			"albedoColor", Vector3f(1.0F, 1.0F, 1.0F));
 
 		auto test1 = this->car->getComponentsInheritedInDescendants<BaseLight>();
