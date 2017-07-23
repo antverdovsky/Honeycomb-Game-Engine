@@ -17,7 +17,7 @@ namespace Honeycomb { namespace Scene {
 
 	GameScene::GameScene(const std::string &name) : GameObject(name) {
 		this->scene = this;
-		this->isSelfActive = true;
+		this->isSelfActive = false;
 	}
 
 	GameObject& GameScene::addChild(std::unique_ptr<GameObject> object) {

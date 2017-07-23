@@ -102,6 +102,7 @@ namespace HoneycombTest {
 		this->camera = GameObjectFactory::getFactory().newCamera();
 		auto camTransf = std::make_unique<InputTransformable>();
 		this->camera->addComponent(std::move(camTransf));
+		this->camera->onStart();
 
 		// Scale and position the Game Objects
 		this->plane->getComponents<Transform>()[0].get().setScale(

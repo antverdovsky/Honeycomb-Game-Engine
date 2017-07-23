@@ -32,15 +32,17 @@ namespace Honeycomb { namespace Component { namespace Render {
 	const std::string CameraController::STRUCT_NAME = "Camera";
 
 	CameraController::CameraController() : 
-			CameraController(CameraType::PERSPECTIVE, 1.31F, 1000.0F, 0.30F,
+			CameraController(ProjectionType::PERSPECTIVE, 1.31F, 
+			1000.0F, 0.30F, 
 			(float)GameWindow::getGameWindow()->getWindowHeight(),
 			(float)GameWindow::getGameWindow()->getWindowWidth()) {
-		CameraController::activeCamera = this; // TEMP
+
 	}
 
-	CameraController::CameraController(const CameraType &cT, const float &cTP,
-			const float &clF, const float &clN, const float &projH,
-			const float &projW) : 
+	CameraController::CameraController(
+			const ProjectionType &cT, const float &cTP, 
+			const float &clF, const float &clN, 
+			const float &projH, const float &projW, const bool &fit) : 
 			GenericStruct(*ShaderSource::getShaderSource(STRUCT_FILE),
 				STRUCT_NAME) {
 		this->type = cT;
@@ -51,10 +53,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 
 		this->projectionHeight = projH;
 		this->projectionWidth = projW;
-	}
-
-	CameraController::~CameraController() {
-
+		this->fitToWindow = fit;
 	}
 
 	std::unique_ptr<CameraController> CameraController::clone() const {
@@ -65,8 +64,8 @@ namespace Honeycomb { namespace Component { namespace Render {
 		return activeCamera;
 	}
 
-	const CameraController::CameraType& CameraController::getCameraType() 
-			const {
+	const CameraController::ProjectionType& 
+			CameraController::getProjectionType() const {
 		return this->type;
 	}
 
@@ -78,11 +77,19 @@ namespace Honeycomb { namespace Component { namespace Render {
 		return this->clipNear;
 	}
 
+	const bool& CameraController::getFitToWindow() const {
+		return this->fitToWindow;
+	}
+
 	GameComponentID CameraController::getGameComponentID() const noexcept {
 		return GameComponent::getGameComponentTypeID<CameraController>();
 	}
 
-	const float& CameraController::getTypeParameter() const {
+	bool CameraController::getIsActive() const {
+		return this == CameraController::getActiveCamera();
+	}
+
+	const float& CameraController::getProjectionParameter() const {
 		return this->typeParameter;
 	}
 
@@ -124,13 +131,9 @@ namespace Honeycomb { namespace Component { namespace Render {
 		// Create an event for window resize; set the projection size and
 		// recalculate the projection view and projection when it occurs.
 		this->windowResizeHandler.addAction(
-			std::bind(&CameraController::setProjectionSizeToWindow, this));
+			std::bind(&CameraController::onWindowResize, this));
 		GameWindow::getGameWindow()->getResizeEvent().addEventHandler(
 			&this->windowResizeHandler);
-		this->windowResizeHandler.addAction(
-			std::bind(&CameraController::calcProjectionView, this));
-		this->windowResizeHandler.addAction(
-			std::bind(&CameraController::calcProjection, this));
 
 		// Create an event for transform change; recalculate the orientation,
 		// translation and projection when it occurs.
@@ -152,22 +155,42 @@ namespace Honeycomb { namespace Component { namespace Render {
 		this->transform = nullptr;
 	}
 
+	void CameraController::onDisable() {
+		if (CameraController::activeCamera == this)
+			CameraController::activeCamera = nullptr;
+	}
+
+	void CameraController::onEnable() {
+		// If any other camera is already enabled, disable it
+		if (CameraController::activeCamera != nullptr)
+			CameraController::activeCamera->doDisable();
+
+		CameraController::activeCamera = this;
+	}
+
+	void CameraController::setFitToWindow(const bool &fit) {
+		this->fitToWindow = fit;
+	}
+
 	void CameraController::setProjectionSize(float h, float w) {
 		// Write the new values into the Camera instance
 		this->projectionHeight = h;
 		this->projectionWidth = w;
 
-		this->calcProjection(); // Recalculate the Projection
+		// Recalculate the Projection
+		this->calcProjectionView();
+		this->calcProjection();
 	}
 
-	void CameraController::setProjectionSizeToWindow() {
+	void CameraController::setProjectionSizeToWindowSize() {
 		this->setProjectionSize(
 			(float)GameWindow::getGameWindow()->getWindowHeight(),
 			(float)GameWindow::getGameWindow()->getWindowWidth());
 	}
 
 	const Matrix4f& CameraController::calcProjection() {
-		this->projection = this->getProjectionView() *
+		this->projection = 
+			this->getProjectionView() *
 			this->getProjectionOrientation() *
 			this->getProjectionTranslation();
 
@@ -213,8 +236,8 @@ namespace Honeycomb { namespace Component { namespace Render {
 	const Matrix4f& CameraController::calcProjectionViewPerspective() {
 		float aR = this->projectionWidth / this->projectionHeight;
 
-		this->projectionView = Matrix4f::getMatrixPerspective(this->typeParameter,
-				aR, this->clipNear, this->clipFar);
+		this->projectionView = Matrix4f::getMatrixPerspective(
+				this->typeParameter, aR, this->clipNear, this->clipFar);
 		return this->projectionView;
 	}
 
@@ -234,10 +257,10 @@ namespace Honeycomb { namespace Component { namespace Render {
 		// Call the appropriate matrix projection calculation method according
 		// to the type of Camera.
 		switch (this->type) {
-		case CameraType::PERSPECTIVE:
+		case ProjectionType::PERSPECTIVE:
 			this->projectionView = this->calcProjectionViewPerspective();
 			break;
-		case CameraType::ORTHOGRAPHIC:
+		case ProjectionType::ORTHOGRAPHIC:
 			this->projectionView = this->calcProjectionViewOrthographic();
 			break;
 		}
@@ -250,5 +273,9 @@ namespace Honeycomb { namespace Component { namespace Render {
 			this->type, this->typeParameter,
 			this->clipFar, this->clipNear, 
 			this->projectionHeight, this->projectionWidth);
+	}
+
+	void CameraController::onWindowResize() {
+		if (this->fitToWindow) this->setProjectionSizeToWindowSize();
 	}
 } } }
