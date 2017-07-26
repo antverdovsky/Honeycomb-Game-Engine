@@ -181,6 +181,7 @@ namespace Honeycomb { namespace Component { namespace Physics {
 
 		this->changedEvent.onEvent();
 		this->isDirtyRotation = true;
+		this->isDirtyTransformation = true;
 	}
 
 	void Transform::setScale(const Vector3f &scl, const Space &space) {

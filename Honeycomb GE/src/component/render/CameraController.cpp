@@ -51,8 +51,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 		this->clipFar = clF;
 		this->clipNear = clN;
 
-		this->projectionHeight = projH;
-		this->projectionWidth = projW;
+		this->setProjectionSize(projW, projH);
 		this->fitToWindow = fit;
 	}
 
@@ -94,6 +93,9 @@ namespace Honeycomb { namespace Component { namespace Render {
 	}
 
 	const Matrix4f& CameraController::getProjection() const {
+		if (this->isProjectionDirty) 
+			this->calcProjection();
+
 		return this->projection;
 	}
 
@@ -102,14 +104,23 @@ namespace Honeycomb { namespace Component { namespace Render {
 	}
 
 	const Matrix4f& CameraController::getProjectionOrientation() const {
+		if (this->isProjectionOrienDirty)
+			this->calcProjectionOrientation();
+
 		return this->projectionOrien;
 	}
 
 	const Matrix4f& CameraController::getProjectionTranslation() const {
+		if (this->isProjectionTransDirty)
+			this->calcProjectionTranslation();
+
 		return this->projectionTrans;
 	}
 
 	const Matrix4f& CameraController::getProjectionView() const {
+		if (this->isProjectionViewDirty)
+			this->calcProjectionView();
+
 		return this->projectionView;
 	}
 
@@ -121,12 +132,11 @@ namespace Honeycomb { namespace Component { namespace Render {
 		// Fetch the Transform of the Game Object to which we are now attached
 		this->transform = &this->getAttached()->getComponent<Transform>();
 
-		// Calculate the initial projection orientation, translation and view
-		// matricies; use the matricies to calculate the projection matrix.
-		this->calcProjectionOrientation();
-		this->calcProjectionTranslation();
-		this->calcProjectionView();
-		this->calcProjection();
+		// Recalculate everything since the new Transform has different values
+		this->isProjectionDirty = true;
+		this->isProjectionOrienDirty = true;
+		this->isProjectionTransDirty = true;
+		this->isProjectionViewDirty = true;
 
 		// Create an event for window resize; set the projection size and
 		// recalculate the projection view and projection when it occurs.
@@ -138,11 +148,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 		// Create an event for transform change; recalculate the orientation,
 		// translation and projection when it occurs.
 		this->transformChangeHandler.addAction(
-			std::bind(&CameraController::calcProjectionOrientation, this));
-		this->transformChangeHandler.addAction(
-			std::bind(&CameraController::calcProjectionTranslation, this));
-		this->transformChangeHandler.addAction(
-			std::bind(&CameraController::calcProjection, this));
+			std::bind(&CameraController::onTransformChange, this));
 		this->transform->getChangedEvent().addEventHandler(
 			&this->transformChangeHandler);
 	}
@@ -172,43 +178,46 @@ namespace Honeycomb { namespace Component { namespace Render {
 		this->fitToWindow = fit;
 	}
 
-	void CameraController::setProjectionSize(float h, float w) {
+	void CameraController::setProjectionSize(float w, float h) {
 		// Write the new values into the Camera instance
-		this->projectionHeight = h;
 		this->projectionWidth = w;
+		this->projectionHeight = h;
 
-		// Recalculate the Projection
-		this->calcProjectionView();
-		this->calcProjection();
+		this->isProjectionViewDirty = true;
+		this->isProjectionDirty = true;
+
+		// Write new width and height to the GenericStruct
+		this->glFloats.setValue(CameraController::WIDTH_F,
+			this->projectionWidth);
+		this->glFloats.setValue(CameraController::HEIGHT_F,
+			this->projectionHeight);
 	}
 
 	void CameraController::setProjectionSizeToWindowSize() {
 		this->setProjectionSize(
-			(float)GameWindow::getGameWindow()->getWindowHeight(),
-			(float)GameWindow::getGameWindow()->getWindowWidth());
+			(float)GameWindow::getGameWindow()->getWindowWidth(),
+			(float)GameWindow::getGameWindow()->getWindowHeight());
 	}
 
-	const Matrix4f& CameraController::calcProjection() {
+	const Matrix4f& CameraController::calcProjection() const {
+		// Calculate the Projection using the View, Orientation and Translation
+		// matrices.
 		this->projection = 
 			this->getProjectionView() *
 			this->getProjectionOrientation() *
 			this->getProjectionTranslation();
 
-		this->glFloats.setValue(CameraController::WIDTH_F,
-			this->projectionWidth);
-		this->glFloats.setValue(CameraController::HEIGHT_F,
-			this->projectionHeight);
+		// Write new projection and view matrices to the GenericStruct
 		this->glMatrix4fs.setValue(CameraController::PROJECTION_MAT4,
 			this->projection);
-		this->glVector3fs.setValue(CameraController::TRANSLATION_VEC3,
-			this->transform->getGlobalTranslation());
 		this->glMatrix4fs.setValue(CameraController::VIEW_MAT4,
 			this->projectionView * this->projectionOrien);
 
-		return this->getProjection();
+		this->isProjectionDirty = false;
+		return this->projection;
 	}
 
-	const Matrix4f& CameraController::calcProjectionOrientation() {
+	const Matrix4f& CameraController::calcProjectionOrientation() const {
 		this->projectionOrien = this->transform->getMatrixOrientation();
 
 		// Negate the local forwards of the camera since the camera faces the
@@ -217,10 +226,11 @@ namespace Honeycomb { namespace Component { namespace Render {
 		this->projectionOrien.setAt(2, 1, -this->projectionOrien.getAt(2, 1));
 		this->projectionOrien.setAt(2, 2, -this->projectionOrien.getAt(2, 2));
 
+		this->isProjectionOrienDirty = false;
 		return this->projectionOrien;
 	}
 
-	const Matrix4f& CameraController::calcProjectionViewOrthographic() {
+	const Matrix4f& CameraController::calcProjectionViewOrthographic() const {
 		// Calculate the "top" and "right" sections of the projection. Since 
 		// the viewport is divided into positive and negative sides, the top 
 		// and right must be halfed. Additionally, left and bottom are not
@@ -230,18 +240,20 @@ namespace Honeycomb { namespace Component { namespace Render {
 
 		this->projectionView = Matrix4f::getMatrixOrthographic(right, top,
 				this->clipNear, this->clipFar);
+
 		return this->projectionView;
 	}
 
-	const Matrix4f& CameraController::calcProjectionViewPerspective() {
+	const Matrix4f& CameraController::calcProjectionViewPerspective() const {
 		float aR = this->projectionWidth / this->projectionHeight;
 
 		this->projectionView = Matrix4f::getMatrixPerspective(
 				this->typeParameter, aR, this->clipNear, this->clipFar);
+
 		return this->projectionView;
 	}
 
-	const Matrix4f& CameraController::calcProjectionTranslation() {
+	const Matrix4f& CameraController::calcProjectionTranslation() const {
 		this->projectionTrans = this->transform->getMatrixTranslation();
 
 		// Negate the local forwards of the camera since the camera faces the
@@ -250,10 +262,15 @@ namespace Honeycomb { namespace Component { namespace Render {
 		this->projectionTrans.setAt(1, 3, -this->projectionTrans.getAt(1, 3));
 		this->projectionTrans.setAt(2, 3, -this->projectionTrans.getAt(2, 3));
 
+		// Write new translation to GenericStruct
+		this->glVector3fs.setValue(CameraController::TRANSLATION_VEC3,
+			this->transform->getGlobalTranslation());
+
+		this->isProjectionTransDirty = false;
 		return this->projectionTrans;
 	}
 
-	const Matrix4f& CameraController::calcProjectionView() {
+	const Matrix4f& CameraController::calcProjectionView() const {
 		// Call the appropriate matrix projection calculation method according
 		// to the type of Camera.
 		switch (this->type) {
@@ -265,14 +282,25 @@ namespace Honeycomb { namespace Component { namespace Render {
 			break;
 		}
 
+		this->isProjectionViewDirty = false;
 		return this->projectionView;
 	}
 
 	CameraController* CameraController::cloneInternal() const {
-		return new CameraController(
+		auto clone = new CameraController(
 			this->type, this->typeParameter,
 			this->clipFar, this->clipNear, 
-			this->projectionHeight, this->projectionWidth);
+			this->projectionHeight, this->projectionWidth, fitToWindow);
+
+		return clone;
+	}
+
+	void CameraController::onTransformChange() {
+		this->isProjectionOrienDirty = true;
+		this->isProjectionTransDirty = true;
+		this->isProjectionDirty = true;
+
+		this->getProjection(); // Trigger recalculation of all matrices
 	}
 
 	void CameraController::onWindowResize() {

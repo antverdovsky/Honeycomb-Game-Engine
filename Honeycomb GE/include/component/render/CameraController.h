@@ -238,13 +238,13 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// method has no effect is this camera is set to fit to the window
 		/// size.
 		/// </summary>
-		/// <param name="h">
-		/// The new height of the Camera.
-		/// </param>
 		/// <param name="w">
 		/// The new width of the Camera.
 		/// </param>
-		void setProjectionSize(float h, float w);
+		/// <param name="h">
+		/// The new height of the Camera.
+		/// </param>
+		void setProjectionSize(float w, float h);
 
 		/// <summary>
 		/// Sets the projection width and height of this Camera to the current
@@ -273,10 +273,15 @@ namespace Honeycomb { namespace Component { namespace Render {
 		// Transform of the game object this camera is attached to
 		Honeycomb::Component::Physics::Transform *transform;
 
-		Honeycomb::Math::Matrix4f projection;      // Full Projection
-		Honeycomb::Math::Matrix4f projectionView;  // View
-		Honeycomb::Math::Matrix4f projectionOrien; // Orientation
-		Honeycomb::Math::Matrix4f projectionTrans; // Translation
+		mutable Honeycomb::Math::Matrix4f projection;      // Full Projection
+		mutable Honeycomb::Math::Matrix4f projectionView;  // View
+		mutable Honeycomb::Math::Matrix4f projectionOrien; // Orientation
+		mutable Honeycomb::Math::Matrix4f projectionTrans; // Translation
+
+		mutable bool isProjectionDirty;
+		mutable bool isProjectionViewDirty;
+		mutable bool isProjectionOrienDirty;
+		mutable bool isProjectionTransDirty;
 
 		/// <summary>
 		/// Calculates the projection matrix, stores it in this instance and
@@ -286,7 +291,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// <returns>
 		/// The constant reference to the projection matrix.
 		/// </returns>
-		const Honeycomb::Math::Matrix4f& calcProjection();
+		const Honeycomb::Math::Matrix4f& calcProjection() const;
 
 		/// <summary>
 		/// Calculates the orientation projection matrix, stores it in this
@@ -295,7 +300,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// <returns>
 		/// The constant reference to the orientation matrix.
 		/// </returns>
-		const Honeycomb::Math::Matrix4f& calcProjectionOrientation();
+		const Honeycomb::Math::Matrix4f& calcProjectionOrientation() const;
 
 		/// <summary>
 		/// Calculates the translation projection matrix, stores it in this 
@@ -304,7 +309,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// <returns>
 		/// The constant reference to the translation view projection.
 		/// </returns>
-		const Honeycomb::Math::Matrix4f& calcProjectionTranslation();
+		const Honeycomb::Math::Matrix4f& calcProjectionTranslation() const;
 
 		/// <summary>
 		/// Calculates the orthographic view projection matrix, stores it in 
@@ -313,7 +318,8 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// <returns>
 		/// The constant reference to the orthographic view projection.
 		/// </returns>
-		const Honeycomb::Math::Matrix4f& calcProjectionViewOrthographic();
+		const Honeycomb::Math::Matrix4f& calcProjectionViewOrthographic() 
+				const;
 
 		/// <summary>
 		/// Calculates the perspective view projection matrix, stores it in 
@@ -322,7 +328,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// <returns>
 		/// The constant reference to the perspective view projection.
 		/// </returns>
-		const Honeycomb::Math::Matrix4f& calcProjectionViewPerspective();
+		const Honeycomb::Math::Matrix4f& calcProjectionViewPerspective() const;
 
 		/// <summary>
 		/// Calculates the view projection matrix based on the type of this
@@ -331,7 +337,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 		/// <returns>
 		/// The constant reference to the view projection.
 		/// </returns>
-		const Honeycomb::Math::Matrix4f& calcProjectionView();
+		const Honeycomb::Math::Matrix4f& calcProjectionView() const;
 
 		/// <summary>
 		/// Internal clone method for the Camera Controller component.
@@ -343,6 +349,15 @@ namespace Honeycomb { namespace Component { namespace Render {
 		virtual CameraController* cloneInternal() const override;
 
 		/// <summary>
+		/// Event which should be triggered when the Transform to which this
+		/// is attached is changed. This will mark any transform related 
+		/// matrices as dirty so that they may be recalculated when they are to
+		/// be used.
+		/// </summary>
+		void onTransformChange();
+
+		/// <summary>
+		/// Event which should be triggered when the game window is resized. 
 		/// Checks if the Camera is set to be automatically resized to fit the
 		/// window scale on a window resize event. If so, the camera's size is
 		/// adjusted to fit the window size.

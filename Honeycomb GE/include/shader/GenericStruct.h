@@ -249,14 +249,14 @@ namespace Honeycomb { namespace Shader {
 	protected:
 		// For each map, the key is the uniform name as it is found in a GLSL
 		// Struct, and the value is the uniform value.
-		VariableMap<float> glFloats;
-		VariableMap<int> glInts;
-		VariableMap<Honeycomb::Math::Matrix4f> glMatrix4fs;
-		VariableMap<Honeycomb::Math::Vector2f> glVector2fs;
-		VariableMap<Honeycomb::Math::Vector3f> glVector3fs;
-		VariableMap<Honeycomb::Math::Vector4f> glVector4fs;
-		VariableMap<std::shared_ptr<const Honeycomb::Graphics::Texture2D>>
-				glSampler2Ds;
+		mutable VariableMap<float> glFloats;
+		mutable VariableMap<int> glInts;
+		mutable VariableMap<Honeycomb::Math::Matrix4f> glMatrix4fs;
+		mutable VariableMap<Honeycomb::Math::Vector2f> glVector2fs;
+		mutable VariableMap<Honeycomb::Math::Vector3f> glVector3fs;
+		mutable VariableMap<Honeycomb::Math::Vector4f> glVector4fs;
+		mutable VariableMap<std::shared_ptr<
+				const Honeycomb::Graphics::Texture2D>> glSampler2Ds;
 
 		/// <summary>
 		/// Initializes a new GLSL Generic Structure instance. This constructor
