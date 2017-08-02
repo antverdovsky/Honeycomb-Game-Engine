@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <regex>
+#include <sstream>
 
 #include "../../include/debug/Logger.h"
 #include "../../include/file/FileIO.h"
@@ -14,6 +15,18 @@ namespace Honeycomb { namespace Shader {
 		&type) {
 		this->name = name;
 		this->type = type;
+	}
+
+	ShaderLoadException::ShaderLoadException(const std::string &path) :
+			std::runtime_error("Shader could not be loaded") {
+		this->directory = path;
+	}
+
+	const char* ShaderLoadException::what() const {
+		std::ostringstream oss("");
+		oss << std::runtime_error::what() << " from directory " <<
+			this->directory << ".";
+		return oss.str().c_str();
 	}
 
 	ShaderSourceProperties::ShaderSourceProperties() :

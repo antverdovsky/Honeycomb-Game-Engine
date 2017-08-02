@@ -5,27 +5,66 @@
 #include <iostream>
 #include <unordered_map>
 #include <regex>
+#include <string>
 
 namespace Honeycomb { namespace Shader {
-	/// Represents any variable or uniform in the Shader Source.
+	/// <summary>
+	/// Represents any variable in a GLSL Shader Structure.
+	/// </summary>
 	struct SourceVariable {
 		std::string name; // The name of the variable
 		std::string type; // The type of the variable
 
-		/// Initializes a new variable structure with the specified name and
-		/// type.
-		/// const string &name : The name of the variable.
-		/// const string &type : The type of the variable.
+		/// <summary>
+		/// Initializes a new struct variable with the specified name and type.
+		/// </summary>
+		/// <param name="name">
+		/// The name of the variable.
+		/// </param>
+		/// <param name="type">
+		/// The type of the variable.
+		/// </param>
 		SourceVariable(const std::string &name, const std::string &type);
 	};
 
+	/// <summary>
+	/// Represents an exception which is thrown when a Shader cannot be loaded
+	/// from the system directory.
+	/// </summary>
+	class ShaderLoadException : public std::runtime_error {
+	public:
+		/// <summary>
+		/// Creates a new Model Load Exception for the shader which could not 
+		/// be loaded from the specified path.
+		/// </summary>
+		/// <param name="path">
+		/// The path from which the shader could not be loaded.
+		/// </param>
+		ShaderLoadException(const std::string &path);
+
+		/// <summary>
+		/// Returns a constant character string containing the description of
+		/// the exception.
+		/// </summary>
+		/// <returns>
+		/// The constant character string exception info containing the
+		/// directory of the shader.
+		/// </returns>
+		virtual const char* what() const throw();
+	private:
+		std::string directory;
+	};
+
+	/// <summary>
+	/// Represents the properties, using which, a GLSL Shader is to be parsed.
+	/// </summary>
 	class ShaderSourceProperties {
 		friend class ShaderSource;
-
 	public:
-		/// Initializes a new set of Shader Source Properties with all 
-		/// properties (detect structs, detect uniforms, include dependencies,
-		/// and remove comments) being set to true.
+		/// <summary>
+		/// Initializes a new Shader Source Properties instance with all of the
+		/// properties being set to true.
+		/// </summary>
 		ShaderSourceProperties();
 
 		/// Initializes a new set of Shader Source Properties with the
@@ -35,6 +74,33 @@ namespace Honeycomb { namespace Shader {
 		/// const bool &dU : Should uniforms be automatically detected?
 		/// const bool &iD : Should external depedencies be automatically
 		///					 imported into the shader code?
+		/// <summary>
+		/// Initializes a new Shader Source Properties instance with the
+		/// specified properties.
+		/// </summary>
+		/// <param name="dC">
+		/// Should comments be removed from the source? It is highly 
+		/// recommended that this is true, so that the parser does not attempt
+		/// to parse commented out/disabled code.
+		/// </param>
+		/// <param name="dS">
+		/// Should structures be automatically detected? It is recommended that
+		/// this is true so that the parser may detect and parse any user
+		/// created structures.
+		/// </param>
+		/// <param name="dU">
+		/// Should uniforms be automatically detected? It is recommended that
+		/// this is true, so that the parser may detect and automatically bind
+		/// to OpenGL any user created uniforms.
+		/// </param>
+		/// <param name="iD">
+		/// Should external files be automatically included if the include
+		/// preprocessor directive is encountered? It is recommended that this
+		/// is true since GLSL does not support the include preprocessor
+		/// directive by default. Note that importing with this setting may 
+		/// throw a ShaderNotFound exception, if any of the include directives 
+		/// attempt to include a non-existant file.
+		/// </param>
 		ShaderSourceProperties(const bool &dC, const bool &dS, const bool &dU,
 				const bool &iD);
 	private:
