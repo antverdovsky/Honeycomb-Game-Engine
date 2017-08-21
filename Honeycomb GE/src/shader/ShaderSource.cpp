@@ -12,13 +12,13 @@ using namespace Honeycomb::Debug;
 
 namespace Honeycomb { namespace Shader {
 	SourceVariable::SourceVariable(const std::string &name, const std::string
-		&type) {
+			&type) {
 		this->name = name;
 		this->type = type;
 	}
 
 	ShaderLoadException::ShaderLoadException(const std::string &path) :
-			std::runtime_error("Shader could not be loaded") {
+			std::runtime_error("shader could not be loaded") {
 		this->directory = path;
 	}
 
@@ -42,41 +42,66 @@ namespace Honeycomb { namespace Shader {
 		this->includeDependencies = iD;
 	}
 
-	std::unordered_map<std::string, ShaderSource*> ShaderSource::shaderSources
-		= std::unordered_map<std::string, ShaderSource*>();
-
-	ShaderSource* ShaderSource::getShaderSource(const std::string &file) {
-		return ShaderSource::getShaderSource(file, ShaderSourceProperties());
+	bool ShaderSourceProperties::operator==(
+			const ShaderSourceProperties &rhs) const {
+		return this->deleteComments == rhs.deleteComments &&
+			this->detectStructs == rhs.detectStructs &&
+			this->detectUniforms == rhs.detectUniforms &&
+			this->includeDependencies == rhs.includeDependencies;
 	}
 
-	ShaderSource* ShaderSource::getShaderSource(const std::string &file,
-		const ShaderSourceProperties &prop) {
-		// Try to find the file in the already imported source files
-		std::unordered_map<std::string, ShaderSource*>::iterator it =
-			ShaderSource::shaderSources.find(file);
+	bool ShaderSourceProperties::operator!=(
+			const ShaderSourceProperties &rhs) const {
+		return !(*this == rhs);
+	}
 
-		// If the file has not yet been imported, import it and return the
-		// pointer to the newly imported shader source. Otherwise, return a
-		// pointer to the existing shader source.
-		if (it == ShaderSource::shaderSources.end())
-			return new ShaderSource(file, prop);
-		else
-			return it->second;
+	ShaderSource& ShaderSource::getShaderSource(const std::string &file,
+			const ShaderSourceProperties &prop) {
+		auto it = std::find_if(
+			ShaderSource::getShaderImports().begin(),
+			ShaderSource::getShaderImports().end(),
+			[&](const std::unique_ptr<ShaderSource>& imp) {
+				return imp->getFile() == file && imp->getProperties() == prop;
+		});
+
+		if (it == ShaderSource::getShaderImports().end()) {
+			return *(new ShaderSource(file, prop));
+		} else {
+			return *(it->get());
+		}
 	}
 
 	const std::string& ShaderSource::getFile() const {
 		return this->file;
 	}
 
+	const ShaderSourceProperties& ShaderSource::getProperties() const {
+		return this->properties;
+	}
+
 	const std::string& ShaderSource::getSource() const {
 		return this->source;
+	}
+
+	bool ShaderSource::operator==(const ShaderSource &rhs) const {
+		return this->file == rhs.file && this->properties == rhs.properties;
+	}
+
+	bool ShaderSource::operator!=(const ShaderSource &rhs) const {
+		return this->file != rhs.file || this->properties != rhs.properties;
+	}
+
+	std::vector<std::unique_ptr<ShaderSource>>& 
+			ShaderSource::getShaderImports() {
+		static std::vector<std::unique_ptr<ShaderSource>> shaders;
+		return shaders;
 	}
 
 	ShaderSource::ShaderSource(const std::string &file, const
 		ShaderSourceProperties &prop) {
 		this->file = file;
+		this->properties = prop;
 
-		// Import the original source, copy into this instance, and clean up
 		std::string *srcPtr = File::readFileToStr(file);
 		this->source = *srcPtr;
 		delete srcPtr;
@@ -86,7 +111,8 @@ namespace Honeycomb { namespace Shader {
 		if (prop.detectStructs) this->detectStructs();
 		if (prop.detectUniforms) this->detectUniforms();
 
-		ShaderSource::shaderSources.insert({ file, this });
+		ShaderSource::getShaderImports().push_back(
+				std::unique_ptr<ShaderSource>(this));
 	}
 
 	void ShaderSource::deleteComments() {
@@ -137,20 +163,20 @@ namespace Honeycomb { namespace Shader {
 			std::string includeFile = includeDir + "/" + rawDir;
 
 			// Import the Shader Source code (process with the standard props)
-			ShaderSource* includeSrc = ShaderSource::getShaderSource(
-				includeFile);
+			ShaderSource includeSrc = ShaderSource::getShaderSource(
+					includeFile, this->getProperties());
 
 			// Delete the entire include declaration and replace it with the
 			// imported source code.
 			source.replace(include->position(), include->length(),
-				includeSrc->source.c_str());
+				includeSrc.source.c_str());
 
 			// Add any structs and uniforms which exist in the imported src
 			this->detUniforms.insert(this->detUniforms.end(),
-				includeSrc->detUniforms.begin(),
-				includeSrc->detUniforms.end());
-			this->detStructs.insert(includeSrc->detStructs.begin(),
-				includeSrc->detStructs.end());
+				includeSrc.detUniforms.begin(),
+				includeSrc.detUniforms.end());
+			this->detStructs.insert(includeSrc.detStructs.begin(),
+				includeSrc.detStructs.end());
 
 			// Since the iterator has been invalidated, rebuild it (but this
 			// time, offset the iterator to begin after the included source

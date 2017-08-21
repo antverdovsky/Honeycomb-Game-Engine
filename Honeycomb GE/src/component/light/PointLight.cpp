@@ -30,7 +30,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 	PointLight::PointLight(const float &inten, const Honeycomb::Math::Vector3f
 			&col, const Attenuation &atten, const float &ran) : 
-			BaseLight(*ShaderSource::getShaderSource(structFile), structName, 
+			BaseLight(ShaderSource::getShaderSource(structFile), structName, 
 				LightType::LIGHT_TYPE_POINT) {
 		this->glFloats.setValue(PointLight::INTENSITY_F, inten);
 		this->glVector3fs.setValue(PointLight::COLOR_VEC3, col);

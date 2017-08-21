@@ -3,9 +3,10 @@
 #define SHADER_SOURCE_H
 
 #include <iostream>
-#include <unordered_map>
+#include <memory>
 #include <regex>
 #include <string>
+#include <unordered_map>
 
 namespace Honeycomb { namespace Shader {
 	/// <summary>
@@ -67,13 +68,6 @@ namespace Honeycomb { namespace Shader {
 		/// </summary>
 		ShaderSourceProperties();
 
-		/// Initializes a new set of Shader Source Properties with the
-		/// specified properties.
-		/// const bool &dC : Should comments be removed from the source?
-		/// const bool &dS : Should structures be automatically detected?
-		/// const bool &dU : Should uniforms be automatically detected?
-		/// const bool &iD : Should external depedencies be automatically
-		///					 imported into the shader code?
 		/// <summary>
 		/// Initializes a new Shader Source Properties instance with the
 		/// specified properties.
@@ -103,62 +97,125 @@ namespace Honeycomb { namespace Shader {
 		/// </param>
 		ShaderSourceProperties(const bool &dC, const bool &dS, const bool &dU,
 				const bool &iD);
+
+		/// <summary>
+		/// Compares this set of properties to the specified set for equality.
+		/// </summary>
+		/// <param name="rhs">
+		/// The other shader properties set.
+		/// </param>
+		/// <returns>
+		/// True if this is equal to <paramref name="rhs"/>, false otherwise.
+		/// </returns>
+		bool operator==(const ShaderSourceProperties &rhs) const;
+
+		/// <summary>
+		/// Compares this set of properties to the specified set for 
+		/// inequality.
+		/// </summary>
+		/// <param name="rhs">
+		/// The other shader properties set.
+		/// </param>
+		/// <returns>
+		/// True if this is not equal to <paramref name="rhs"/>, false 
+		/// otherwise.
+		/// </returns>
+		bool operator!=(const ShaderSourceProperties &rhs) const;
 	private:
-		bool deleteComments; // Remove comments from the source?
-		bool detectStructs; // Should structures be automatically detected?
-		bool detectUniforms; // Should uniforms be automatically detected?
+		bool deleteComments;      // Remove comments from the source?
+		bool detectStructs;       // Should structures be detected and parsed?
+		bool detectUniforms;      // Should uniforms be detected?
 		bool includeDependencies; // Import external dependencies?
 	};
 
 	class ShaderSource {
 		friend class GenericStruct;
 		friend class ShaderProgram;
-
 	public:
-		/// If the Shader Source has not been previously imported (or if it's
-		/// import had been deleted), this will (re)import the Shader Source
-		/// and return a pointer to it. The Shader Source pointer should not
-		/// be deleted after it is used as it may be needed in the future, and
-		/// that will result in a reimport of it. The Shader Source will be 
-		/// imported with the default properties of the ShaderSourceProperties.
-		/// If the file has been previously imported, a pointer to the existing
-		/// instance will be returned instead. 
-		/// const string &file : The file which is to be imported.
-		static ShaderSource* getShaderSource(const std::string &file);
+		/// <summary>
+		/// Imports the shader source from the specified file and processes it
+		/// using the specified properties. If the shader has previously been
+		/// imported with those properties, it is not re-imported again, and
+		/// the previously processed instance is returned instead.
+		/// 
+		/// If the source could not be processed, or if any of its dependencies
+		/// could not be processed, this throws a Shader Load exception.
+		/// </summary>
+		/// <param name="file">
+		/// The system path to the shader file.
+		/// </param>
+		/// <param name="prop">
+		/// The properties using which the shader source is to be imported and
+		/// processed.
+		/// </param>
+		/// <exception cref="ShaderLoadException">
+		/// Thrown if the shader or any of its dependencies could not be 
+		/// loaded.
+		/// </exception>
+		static ShaderSource& getShaderSource(const std::string &file,
+				const ShaderSourceProperties &prop = ShaderSourceProperties());
 
-		/// If the Shader Source has not been previously imported (or if it's
-		/// import had been deleted), this will (re)import the Shader Source
-		/// and return a pointer to it. The Shader Source pointer should not
-		/// be deleted after it is used as it may be needed in the future, and
-		/// that will result in a reimport of it. The Shader Source will be 
-		/// imported with the specified properties.If the file has been 
-		/// previously imported, a pointer to the existing instance will be 
-		/// returned instead. Do note that the file may have been imported with
-		/// different properties.
-		/// const string &file : The file which is to be imported.
-		/// const ShaderSourceProperties &prop : The properties with which to
-		///										 import the file. These are
-		///										 ignored if the file has been
-		///										 already imported.
-		static ShaderSource* getShaderSource(const std::string &file, const 
-				ShaderSourceProperties &prop);
-
-		/// Gets the file directory from which this Shader Source was imported
-		/// from.
-		/// return : The directory to the file.
+		/// <summary>
+		/// Gets the system path to the shader file.
+		/// </summary>
+		/// <returns>
+		/// The system path string.
+		/// </returns>
 		const std::string& getFile() const;
 
-		/// Gets the full source code of this Shader Source file.
-		/// return : The full, processed source code of this file.
-		const std::string& getSource() const;
-	private:
-		// Map of the file name of the shader source to the processed Shader
-		// Source instance. This allows for fast fetching of already processed
-		// Shader Source.
-		static std::unordered_map<std::string, ShaderSource*> shaderSources;
+		/// <summary>
+		/// Gets the properties used to process this shader file.
+		/// </summary>
+		/// <returns>
+		/// The properties set.
+		/// </returns>
+		const ShaderSourceProperties& getProperties() const;
 
-		std::string file; // File which this Shader Source represents
-		std::string source; // The source code of this Shader Source File
+		/// <summary>
+		/// Gets the source contents of the shader file, post processing.
+		/// </summary>
+		/// <returns>
+		/// The source contents string.
+		/// </returns>
+		const std::string& getSource() const;
+
+		/// <summary>
+		/// Compares this set of shader source to the shader source for 
+		/// equality.
+		/// </summary>
+		/// <param name="rhs">
+		/// The other shader source.
+		/// </param>
+		/// <returns>
+		/// True if this is equal to <paramref name="rhs"/>, false otherwise.
+		/// </returns>
+		bool operator==(const ShaderSource &rhs) const;
+
+		/// <summary>
+		/// Compares this set of shader source to the shader source for 
+		/// inequality.
+		/// </summary>
+		/// <param name="rhs">
+		/// The other shader source.
+		/// </param>
+		/// <returns>
+		/// True if this is not equal to <paramref name="rhs"/>, false 
+		/// otherwise.
+		/// </returns>
+		bool operator!=(const ShaderSource &rhs) const;
+	private:
+		/// <summary>
+		/// Returns a vector of unique pointers to all of the thus far imported
+		/// shader sources.
+		/// </summary>
+		/// <returns>
+		/// All of the Shader Sources which have been imported.
+		/// </returns>
+		static std::vector<std::unique_ptr<ShaderSource>>& getShaderImports();
+
+		std::string file;                  // System path and file name of this
+		std::string source;                // Source code of this
+		ShaderSourceProperties properties; // Properties used to process this
 
 		// Map of the name of the struct to a list of the variable names in the
 		// struct. If the type of the variable in the struct is actually 
@@ -173,35 +230,53 @@ namespace Honeycomb { namespace Shader {
 		// instead. 
 		std::vector<SourceVariable> detUniforms;
 
-		/// Initializes a new instance of the Shader Source class for the
-		/// specified source code file. The Shader Source from the specified
-		/// file will be imported and be processed with specified properties.
-		/// Afterwards, the instance will be added to the Shader Sources Map.
-		/// const string &file : The file from which the source is being
-		///						 imported.
-		/// const ShaderSourceProperties &prop : The properties with which to
-		///										 import the source code.
-		ShaderSource(const std::string &file, const ShaderSourceProperties 
-				&prop);
+		/// <summary>
+		/// Initializes a new instance of the Shader Source class with the
+		/// specified source code file. The source code from the specified file
+		/// will be imported and processed with the given properties. 
+		/// 
+		/// If the source could not be processed, or if any of its dependencies
+		/// could not be processed, this throws a Shader Load exception.
+		/// </summary>
+		/// <param name="file">
+		/// The system path to the shader file.
+		/// </param>
+		/// <param name="prop">
+		/// The properties using which the shader source is to be imported and
+		/// processed.
+		/// </param>
+		/// <exception cref="ShaderLoadException">
+		/// Thrown if the shader or any of its dependencies could not be 
+		/// loaded.
+		/// </exception>
+		ShaderSource(const std::string &file,
+				const ShaderSourceProperties &prop);
 
-		/// Removes C-style (//, /* */) comments from this source code. It is 
-		/// strongly advised that this method be run before uniforms are 
-		/// detected or dependencies are imported as any comments containing 
-		/// uniform or include directives may be seen as actual directives!
+		/// <summary>
+		/// Removes any C style comments from the current shader source.
+		/// </summary>
 		void deleteComments();
 
-		/// Detects any structs defined in this source code and adds the name 
-		/// of the struct to the detected structs vector list as the key, and 
-		/// adds the names of the variables of the struct to the detected 
-		/// structs vector list as the value of the key.
+		/// <summary>
+		/// Detects structs in the current shader source and adds them to the
+		/// detected structs map.
+		/// </summary>
 		void detectStructs();
 
-		/// Detects any uniforms in this source code and adds them to the 
-		/// detected uniforms vector list.
+		/// <summary>
+		/// Detects uniforms in the current shader source and adds them to the
+		/// detected uniforms vector.
+		/// </summary>
 		void detectUniforms();
 
-		/// Finds any include directives in this source code and replaces the 
-		/// directive with the included source code.
+		/// <summary>
+		/// Finds and replaces any include directives with the source code of
+		/// the include file. Each dependency is imported with the same 
+		/// properties as the file which is dependent on it.
+		/// </summary>
+		/// <exception cref="ShaderLoadException">
+		/// Thrown if any include directive fails.
+		/// </exception>
 		void includeDependencies();
 	};
 } }

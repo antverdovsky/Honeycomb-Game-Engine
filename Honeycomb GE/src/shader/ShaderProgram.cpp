@@ -33,9 +33,9 @@ namespace Honeycomb { namespace Shader {
 
 		// Read in & process the source code from the file specified, and get
 		// its raw source code string.
-		ShaderSource *source = ShaderSource::getShaderSource(file);
-		this->sources.push_back(source);
-		const char *srcPtr = source->getSource().c_str();
+		ShaderSource &source = ShaderSource::getShaderSource(file);
+		this->sources.push_back(&source);
+		const char *srcPtr = source.getSource().c_str();
 
 		GLuint shaderID = glCreateShader(type);
 		glShaderSource(shaderID, 1, &srcPtr, NULL);

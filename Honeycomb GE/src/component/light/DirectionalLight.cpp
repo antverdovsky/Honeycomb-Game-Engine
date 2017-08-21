@@ -30,7 +30,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 	DirectionalLight::DirectionalLight(const float &inten, const
 			Honeycomb::Math::Vector3f &col, const ShadowType &shdw) : 
-			BaseLight(*ShaderSource::getShaderSource(structFile), structName,
+			BaseLight(ShaderSource::getShaderSource(structFile), structName,
 				LightType::LIGHT_TYPE_DIRECTIONAL) {
 		this->glFloats.setValue(DirectionalLight::INTENSITY_F, inten);
 		this->glVector3fs.setValue(DirectionalLight::COLOR_VEC3, col);

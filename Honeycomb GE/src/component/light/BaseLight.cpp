@@ -104,7 +104,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 
 	Attenuation::Attenuation(const float &atC, const float &atL, 
 			const float &atQ) : 
-			GenericStruct(*ShaderSource::getShaderSource(STRUCT_FILE), 
+			GenericStruct(ShaderSource::getShaderSource(STRUCT_FILE), 
 				STRUCT_NAME) {
 		this->setConstantTerm(atC);
 		this->setLinearTerm(atL);
@@ -195,7 +195,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 	}
 
 	Shadow::Shadow(const ShadowType &shdw) :
-			GenericStruct(*ShaderSource::getShaderSource(STRUCT_FILE),
+			GenericStruct(ShaderSource::getShaderSource(STRUCT_FILE),
 			STRUCT_NAME) {
 		this->setShadowType(shdw);
 		this->setProjection(Matrix4f::getMatrixIdentity());

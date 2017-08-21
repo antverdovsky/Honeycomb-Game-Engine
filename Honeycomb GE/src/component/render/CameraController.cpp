@@ -43,7 +43,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 			const ProjectionType &cT, const float &cTP, 
 			const float &clF, const float &clN, 
 			const float &projH, const float &projW, const bool &fit) : 
-			GenericStruct(*ShaderSource::getShaderSource(STRUCT_FILE),
+			GenericStruct(ShaderSource::getShaderSource(STRUCT_FILE),
 				STRUCT_NAME) {
 		this->type = cT;
 		this->typeParameter = cTP;

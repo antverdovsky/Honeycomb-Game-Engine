@@ -18,7 +18,7 @@ namespace Honeycomb { namespace Component { namespace Light {
 	}
 
 	AmbientLight::AmbientLight(const float &inten, const Vector3f &col) :
-			BaseLight(*ShaderSource::getShaderSource(structFile), structName,
+			BaseLight(ShaderSource::getShaderSource(structFile), structName,
 				LightType::LIGHT_TYPE_AMBIENT) {
 		this->glFloats.setValue(AmbientLight::INTENSITY_F, inten);
 		this->glVector3fs.setValue(AmbientLight::COLOR_VEC3, col);

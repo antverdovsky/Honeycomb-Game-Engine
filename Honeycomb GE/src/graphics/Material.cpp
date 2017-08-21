@@ -13,7 +13,7 @@ namespace Honeycomb { namespace Graphics {
 		"../Honeycomb GE/res/shaders/standard/structs/stdMaterial.glsl";
 	const std::string Material::DEFAULT_STRUCT = "Material";
 
-	Material::Material() : Material(*ShaderSource::getShaderSource(
+	Material::Material() : Material(ShaderSource::getShaderSource(
 			Material::DEFAULT_FILE), Material::DEFAULT_STRUCT) {
 
 	}
