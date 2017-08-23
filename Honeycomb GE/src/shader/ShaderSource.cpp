@@ -103,6 +103,8 @@ namespace Honeycomb { namespace Shader {
 		this->properties = prop;
 
 		std::string *srcPtr = File::readFileToStr(file);
+		if (srcPtr == nullptr) throw ShaderLoadException(file);
+
 		this->source = *srcPtr;
 		delete srcPtr;
 
