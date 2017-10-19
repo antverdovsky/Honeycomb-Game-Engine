@@ -443,7 +443,7 @@ namespace Honeycomb { namespace Object {
 	}
 
 	void GameObject::resizeComponents() const {
-		int componentCount = GameComponent::getGameComponentIDCounter(false);
+		auto componentCount = GameComponent::getGameComponentIDCounter(false);
 
 		if (componentCount >= this->components.size())
 			this->components.resize(2 * componentCount);

@@ -102,7 +102,7 @@ namespace Honeycomb { namespace Component { namespace Render {
 		}
 		// If meshes == materials > 1 -> Render each Mesh using each Material
 		else {
-			for (int i = 0; i < this->meshes.size(); ++i) {
+			for (std::size_t i = 0; i < this->meshes.size(); ++i) {
 				this->materials[i]->toShader(shader, "material");
 				this->meshes[i]->render(shader);
 			}

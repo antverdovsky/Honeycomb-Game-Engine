@@ -369,11 +369,12 @@ namespace Honeycomb { namespace Object {
 			GameObject *current = this;
 			do {
 				// Get the components of type T of the current object
-				auto &currentComponents = current->getComponentsInternal<T>();
+				const auto &currentComponents = 
+					current->getComponentsInternal<T>();
 
 				// For each component, downcast to type T, convert to reference
 				// and store into components vector.
-				for (auto &raw : currentComponents) {
+				for (const auto &raw : currentComponents) {
 					auto &downcast = dynamic_cast<T&>(*raw.get());
 					auto refWrapped = std::ref(downcast);
 
@@ -416,7 +417,7 @@ namespace Honeycomb { namespace Object {
 				toVisit.pop_front();
 
 				// Add the children of this Game Object to the toVisit list
-				auto &currentChildren = current.get().getChildren();
+				const auto &currentChildren = current.get().getChildren();
 				for (auto &child : currentChildren) {
 					toVisit.push_back(child);
 				}
@@ -506,7 +507,8 @@ namespace Honeycomb { namespace Object {
 			GameObject *current = this;
 			do {
 				// Get the components of type T of the current object
-				auto &currentComponents = current->getComponentsInherited<T>();
+				const auto &currentComponents = 
+					current->getComponentsInherited<T>();
 
 				// Add the fetched components to the ancestor components list
 				ancestorComponents.insert(ancestorComponents.end(),
@@ -551,14 +553,14 @@ namespace Honeycomb { namespace Object {
 				toVisit.pop_front();
 
 				// Add the children of this Game Object to the toVisit list
-				auto &currentChildren = current.get().getChildren();
+				const auto &currentChildren = current.get().getChildren();
 				for (auto &child : currentChildren) {
 					toVisit.push_back(child);
 				}
 
 				// Get the components of type T of the current object and add 
 				// the fetched components to the ancestor components list.
-				auto &currentComponents = 
+				const auto &currentComponents = 
 					current.get().getComponentsInherited<T>();
 				descendantComponents.insert(descendantComponents.end(),
 					currentComponents.begin(), currentComponents.end());
@@ -619,7 +621,7 @@ namespace Honeycomb { namespace Object {
 		/// </returns>
 		template<typename T>
 		unsigned int getNumberOfComponents() const {
-			return this->getComponentsOfType<T>().size();
+			return this->getComponentsInternal<T>().size();
 		}
 
 		/// <summary>

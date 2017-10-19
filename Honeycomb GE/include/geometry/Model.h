@@ -332,7 +332,7 @@ namespace Honeycomb { namespace Geometry {
 		/// directory of the model which could not be loaded and the error
 		/// returned by the ASSIMP library.
 		/// </returns>
-		virtual const char* what() const throw();
+		virtual const char* what() const noexcept;
 	private:
 		std::string directory;
 		std::string assimpError;

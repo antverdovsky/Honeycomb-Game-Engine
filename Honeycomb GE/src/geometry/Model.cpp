@@ -350,7 +350,7 @@ namespace Honeycomb { namespace Geometry {
 		this->assimpError = err;
 	}
 
-	const char* ModelLoadException::what() const {
+	const char* ModelLoadException::what() const noexcept {
 		std::ostringstream oss("");
 		oss << std::runtime_error::what() << " from directory " <<
 			this->directory << " | " << this->assimpError;

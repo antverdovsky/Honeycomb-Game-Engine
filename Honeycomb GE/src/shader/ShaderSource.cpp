@@ -22,7 +22,7 @@ namespace Honeycomb { namespace Shader {
 		this->directory = path;
 	}
 
-	const char* ShaderLoadException::what() const {
+	const char* ShaderLoadException::what() const noexcept {
 		std::ostringstream oss("");
 		oss << std::runtime_error::what() << " from directory " <<
 			this->directory << ".";

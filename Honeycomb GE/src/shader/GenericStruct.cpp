@@ -119,7 +119,7 @@ namespace Honeycomb { namespace Shader {
 			} else if (var.type == "vec4") {
 				this->glVector4fs.map.insert({ var.name, Vector4f() });
 			} else if (var.type == "sampler2D") {
-				auto &white = Texture2D::getTextureWhite();
+				const auto &white = Texture2D::getTextureWhite();
 				this->glSampler2Ds.map.insert({ var.name, white });
 			}
 		}

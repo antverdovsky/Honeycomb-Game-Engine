@@ -261,7 +261,7 @@ namespace Honeycomb { namespace Component { namespace Physics {
 
 		// Calculate the new translation of the Transform and the new rotation
 		// (for the rotation, the object should look at the center position).
-		Vector3f newPos = center + direction;
+		// Vector3f newPos = center + direction;
 		Quaternion newRot = oldRot * oldRot.getInverse() * rot * oldRot;
 
 		// Apply the new Rotation and Translation

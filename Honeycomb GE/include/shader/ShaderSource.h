@@ -51,7 +51,7 @@ namespace Honeycomb { namespace Shader {
 		/// The constant character string exception info containing the
 		/// directory of the shader.
 		/// </returns>
-		virtual const char* what() const throw();
+		virtual const char* what() const noexcept;
 	private:
 		std::string directory;
 	};

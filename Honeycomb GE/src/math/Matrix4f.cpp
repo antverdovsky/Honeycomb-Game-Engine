@@ -1,6 +1,7 @@
 #include "../../include/math/Matrix4f.h"
 
 #include <cassert>
+#include <cmath>
 
 namespace Honeycomb { namespace Math {
 	const Matrix4f& Matrix4f::getMatrixIdentity() {
@@ -42,7 +43,7 @@ namespace Honeycomb { namespace Math {
 		float pmA = 1 / right;
 		float pmB = 1 / top;
 		float pmC = -2 / (zFar - zNear);
-		float pmD = -(zFar + zNear) / (zFar - zNear);
+		// float pmD = -(zFar + zNear) / (zFar - zNear);
 
 		// Construct the Projection Matrix:
 		Matrix4f mat = Matrix4f::getMatrixIdentity();
@@ -62,7 +63,7 @@ namespace Honeycomb { namespace Math {
 		float pmA = 2 / (right - left);
 		float pmB = 2 / (top - bottom);
 		float pmC = -2 / (zFar - zNear);
-		float pmD = -(zFar + zNear) / (zFar - zNear);
+		// float pmD = -(zFar + zNear) / (zFar - zNear);
 		float pmE = -(right + left) / (right - left);
 		float pmF = -(top + bottom) / (top - bottom);
 

@@ -6,6 +6,8 @@
 #include <functional>
 
 namespace Honeycomb { namespace Conjuncture {
+	class Event;
+
 	class EventHandler {
 		friend class Event;
 	public:

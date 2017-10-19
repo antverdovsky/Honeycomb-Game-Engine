@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)     # Version 3.1 required
 
-set(CMAKE_CXX_FLAGS "-std=c++11 -Wall -g")
+set(CMAKE_CXX_FLAGS "-std=c++14 -Wall -g")
 
 file(GLOB_RECURSE SOURCES               # Fetch all of the Engine's Srcs
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
